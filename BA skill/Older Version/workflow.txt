@@ -1,0 +1,14 @@
+Context:
+I am a QA in company. Now I need to setup an agentic workflow that start when there is a new Jira ticket from BA for new features. I don't know what is needed to setup an agentic workflow
+
+Requirement for this workflow:
+- We will input a Jira ticket from BA
+- The agentic need to travel through the context of the ticket and understand the requirement.
+- Then the agentic need to create a new Jira ticket in QG project with the following structure:
+    - Epic
+    - Parent Task
+    - Sub-task
+- We need to create required SKILL.md files, each for one step in provisioning the test case ticket
+
+Output requirement:
+- What we need to do to setup that agentic workflow?
