@@ -1,0 +1,86 @@
+<mxfile version="21.6.8">
+  <diagram name="analyze-synthesize-ks-ticket Workflow" id="wf1">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <mxCell id="2" value="User provides KS ticket ID" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="340" y="40" width="160" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="3" value="Step 1: Trigger &amp;amp; Intent Recognition" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="320" y="140" width="200" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="4" value="Step 2: Fetch KS Ticket Data&lt;br&gt;&lt;span style=&quot;font-size: 11px; font-weight: normal;&quot;&gt;(Phase 1)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="320" y="240" width="200" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="5" value="Step 3: Analyze &amp;amp; Resolve Comments&lt;br&gt;&lt;span style=&quot;font-size: 11px; font-weight: normal;&quot;&gt;(Phase 1)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="320" y="340" width="200" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="6" value="Step 4: Synthesize &amp;amp; Structure&lt;br&gt;&lt;span style=&quot;font-size: 11px; font-weight: normal;&quot;&gt;(Phase 2)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="320" y="440" width="200" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="7" value="Step 5: Auto-Save Requirements File&lt;br&gt;&lt;span style=&quot;font-size: 11px; font-weight: normal;&quot;&gt;(&amp;lt;KS-ID&amp;gt;_requirements.md)&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="320" y="540" width="200" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="8" value="Step 6: Present Summary to User&lt;br&gt;&lt;span style=&quot;font-size: 11px; font-weight: normal;&quot;&gt;(Phase 3)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="320" y="660" width="200" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="9" value="Previous run exists?&lt;br&gt;&lt;span style=&quot;font-size: 11px; font-weight: normal;&quot;&gt;(Phase 4)&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="330" y="760" width="180" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="10" value="Step 7: Generate Comparison Doc&lt;br&gt;&lt;span style=&quot;font-size: 11px; font-weight: normal;&quot;&gt;(compare_run_vs_run.md)&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="580" y="770" width="200" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="11" value="End Process" style="ellipse;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontFamily=Inter;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="360" y="920" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" edge="1" parent="1" source="2" target="3" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;fontFamily=Inter;fontSize=11;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="3" target="4" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;fontFamily=Inter;fontSize=11;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="4" target="5" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;fontFamily=Inter;fontSize=11;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="5" target="6" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;fontFamily=Inter;fontSize=11;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="6" target="7" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;fontFamily=Inter;fontSize=11;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="7" target="8" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;fontFamily=Inter;fontSize=11;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="8" target="9" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;fontFamily=Inter;fontSize=11;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="Yes" edge="1" parent="1" source="9" target="10" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;fontFamily=Inter;fontSize=11;fontStyle=1;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="No" edge="1" parent="1" source="9" target="11" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;fontFamily=Inter;fontSize=11;fontStyle=1;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="10" target="11" style="html=1;labelBackgroundColor=#FFFDF5;labelBorderColor=none;edgeStyle=orthogonalEdgeStyle;fontFamily=Inter;fontSize=11;fontColor=#1a1a1a;strokeColor=#9CA3AF;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="950" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
