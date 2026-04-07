@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1280"/>
+<title>Details Tab – IMG Cash Forecast</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',Arial,sans-serif;background:#f1f5f9;color:#1e293b;font-size:13px}
+  .topnav{display:flex;align-items:center;background:#1e293b;height:44px;padding:0 24px;gap:4px}
+  .topnav a{color:#94a3b8;font-size:13px;padding:0 14px;height:44px;display:flex;align-items:center;text-decoration:none;border-bottom:3px solid transparent}
+  .topnav a.active{color:#fff;border-bottom:3px solid #3b82f6}
+  .pageheader{display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0;background:#fff;border-bottom:1px solid #e2e8f0}
+  .pageheader h1{font-size:20px;font-weight:700}
+  .btn-outline{border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:6px 14px;font-size:13px;color:#374151;display:flex;align-items:center;gap:6px}
+  .subnav{display:flex;padding:0 24px;background:#fff;border-bottom:1px solid #e2e8f0}
+  .subnav a{font-size:13px;padding:12px 16px;text-decoration:none;color:#64748b;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px}
+  .subnav a.active{color:#3b82f6;border-bottom:2px solid #3b82f6;font-weight:600}
+  .main{padding:20px 24px}
+  .card{background:#fff;border-radius:8px;border:1px solid #e2e8f0;overflow:hidden}
+  /* filters */
+  .filter-row{display:flex;align-items:flex-end;gap:12px;padding:16px 20px;border-bottom:1px solid #f1f5f9;flex-wrap:wrap}
+  .filter-group{display:flex;flex-direction:column;gap:4px}
+  .filter-group label{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em}
+  .filter-select{border:1px solid #cbd5e1;border-radius:6px;padding:6px 28px 6px 10px;font-size:13px;color:#374151;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E") no-repeat right 10px center;-webkit-appearance:none;min-width:140px}
+  .filter-date{border:1px solid #cbd5e1;border-radius:6px;padding:6px 10px;font-size:13px;color:#374151;min-width:180px;display:flex;align-items:center;gap:6px}
+  .export-btn{margin-left:auto;background:#fff;border:1px solid #16a34a;border-radius:6px;padding:6px 14px;font-size:13px;color:#16a34a;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer}
+  /* table */
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead tr{background:#f8fafc}
+  thead th{padding:9px 12px;text-align:left;font-weight:600;font-size:11px;color:#475569;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;white-space:nowrap}
+  tbody tr{border-bottom:1px solid #f1f5f9}
+  tbody tr:hover{background:#f8fafc}
+  tbody tr.hypo{background:#fefce8}
+  tbody td{padding:8px 12px;white-space:nowrap}
+  .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:#fde68a;color:#92400e;border:1px solid #fcd34d}
+  .mono{font-family:'Consolas',monospace;font-size:11px}
+  .text-right{text-align:right}
+  .pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid #f1f5f9;font-size:12px;color:#64748b}
+  .page-btn{border:1px solid #e2e8f0;background:#fff;border-radius:4px;padding:4px 10px;font-size:12px;color:#374151;cursor:pointer}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="#">Overview</a>
+  <a href="#" class="active">Cash Forecast</a>
+  <a href="#">Return (Public)</a>
+  <a href="#">Return (Private)</a>
+  <a href="#">Risk</a>
+  <a href="#">Liquidity</a>
+  <a href="#">Scenario Test</a>
+</nav>
+<div class="pageheader">
+  <h1>IMG Cash Forecast</h1>
+  <button class="btn-outline">⚙ Forecast Parameters</button>
+</div>
+<nav class="subnav">
+  <a href="#">📊 Dashboard</a>
+  <a href="#">↩ Historical Flows</a>
+  <a href="#" class="active">☰ Details</a>
+</nav>
+<div class="main">
+  <div class="card">
+    <!-- Filters -->
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Transaction Type</label>
+        <select class="filter-select"><option>All</option><option>Capital Call</option><option>Distribution</option><option>Trade Order</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Asset Class</label>
+        <select class="filter-select"><option>All</option><option>Venture Capital</option><option>Buyouts &amp; Growth Equity</option><option>Real Estate</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Cash Date Range</label>
+        <div class="filter-date">
+          📅 04/01/2026 – 04/30/2026
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Fund</label>
+        <select class="filter-select"><option>All</option><option>Citadel Kensington</option><option>Payden US Treasury</option><option>ASAF</option></select>
+      </div>
+      <button class="export-btn">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4M8 2v8"/><rect x="2" y="11" width="12" height="3" rx="1"/></svg>
+        Export to Excel
+      </button>
+    </div>
+
+    <!-- Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Transaction ID</th>
+          <th>Fund</th>
+          <th>Transaction Type</th>
+          <th class="text-right">Amount ($)</th>
+          <th>Cash Date</th>
+          <th>Effective Date</th>
+          <th>Asset Class</th>
+          <th class="text-right">Beta</th>
+          <th class="text-right">Beta Contribution</th>
+          <th class="text-right">Beta Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">TXN-001</td>
+          <td>Payden US Treasury</td>
+          <td>Trade Order</td>
+          <td class="text-right">$558,225,625</td>
+          <td>04/01/2026</td>
+          <td>04/30/2026</td>
+          <td>Fixed Income</td>
+          <td class="text-right">0.7600</td>
+          <td class="text-right">0.0012</td>
+          <td class="text-right">0.0008</td>
+        </tr>
+        <tr>
+          <td class="mono">TXN-002</td>
+          <td>WFS Futures Collateral Account</td>
+          <td>Trade Order</td>
+          <td class="text-right">$42,698,827</td>
+          <td>04/01/2026</td>
+          <td>04/30/2026</td>
+          <td>Derivatives</td>
+          <td class="text-right">0.7600</td>
+          <td class="text-right">0.0031</td>
+          <td class="text-right">0.0021</td>
+        </tr>
+        <tr>
+          <td class="mono">TXN-003</td>
+          <td>Endowment Cash</td>
+          <td>Trade Order</td>
+          <td class="text-right">$441,123,734</td>
+          <td>04/01/2026</td>
+          <td>04/30/2026</td>
+          <td>Cash</td>
+          <td class="text-right">0.0000</td>
+          <td class="text-right">0.0000</td>
+          <td class="text-right">0.0000</td>
+        </tr>
+        <tr class="hypo">
+          <td class="mono">HYP-001 <span class="badge">Hypothetical</span></td>
+          <td>Citadel Kensington Global Strategies Fund Ltd.</td>
+          <td>Capital Call</td>
+          <td class="text-right">$2,000</td>
+          <td>04/03/2026</td>
+          <td>04/30/2026</td>
+          <td>Absolute Return</td>
+          <td class="text-right">0.2500</td>
+          <td class="text-right">0.0001</td>
+          <td class="text-right">0.0001</td>
+        </tr>
+        <tr class="hypo">
+          <td class="mono">HYP-002 <span class="badge">Hypothetical</span></td>
+          <td>ASAF</td>
+          <td>Trade Order</td>
+          <td class="text-right">$100</td>
+          <td>04/05/2026</td>
+          <td>04/06/2026</td>
+          <td>Absolute Return</td>
+          <td class="text-right">0.7600</td>
+          <td class="text-right">0.0000</td>
+          <td class="text-right">0.0000</td>
+        </tr>
+        <tr>
+          <td class="mono">TXN-004</td>
+          <td>DE Short Collateral Account</td>
+          <td>Capital Call</td>
+          <td class="text-right">$9,060</td>
+          <td>04/03/2026</td>
+          <td>04/30/2026</td>
+          <td>Derivatives</td>
+          <td class="text-right">0.2500</td>
+          <td class="text-right">0.0000</td>
+          <td class="text-right">0.0000</td>
+        </tr>
+        <tr>
+          <td class="mono">TXN-005</td>
+          <td>FI Futures Account Syn Cash Offset</td>
+          <td>Trade Order</td>
+          <td class="text-right">$1,108,591</td>
+          <td>04/04/2026</td>
+          <td>04/30/2026</td>
+          <td>Fixed Income</td>
+          <td class="text-right">0.7600</td>
+          <td class="text-right">0.0008</td>
+          <td class="text-right">0.0006</td>
+        </tr>
+        <tr>
+          <td class="mono">TXN-006</td>
+          <td>Non-US DE Futures Syn Cash Offset</td>
+          <td>Trade Order</td>
+          <td class="text-right">-$2,845,766</td>
+          <td>04/04/2026</td>
+          <td>04/30/2026</td>
+          <td>Derivatives</td>
+          <td class="text-right">0.7600</td>
+          <td class="text-right">-0.0022</td>
+          <td class="text-right">-0.0015</td>
+        </tr>
+        <tr>
+          <td class="mono">TXN-007</td>
+          <td>Cash In Transit</td>
+          <td>Trade Order</td>
+          <td class="text-right">$18,124,056</td>
+          <td>04/05/2026</td>
+          <td>04/30/2026</td>
+          <td>Cash</td>
+          <td class="text-right">0.0000</td>
+          <td class="text-right">0.0000</td>
+          <td class="text-right">0.0000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <span>Showing 1–9 of 142 transactions</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="page-btn">‹ Prev</button>
+        <button class="page-btn" style="background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8;font-weight:600">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <span style="color:#94a3b8">…</span>
+        <button class="page-btn">16</button>
+        <button class="page-btn">Next ›</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

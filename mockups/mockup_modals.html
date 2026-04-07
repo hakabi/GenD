@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1280"/>
+<title>Modals – Forecast Parameters & Save Flows</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',Arial,sans-serif;background:#e2e8f0;color:#1e293b;font-size:13px;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;gap:32px;padding:40px 24px;flex-wrap:wrap}
+  /* Modal card */
+  .modal{background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(15,23,42,.18);width:400px;overflow:hidden}
+  .modal-header{display:flex;justify-content:space-between;align-items:flex-start;padding:20px 20px 0}
+  .modal-title{font-size:16px;font-weight:700;color:#0f172a}
+  .modal-subtitle{font-size:12px;color:#64748b;margin-top:3px}
+  .modal-close{color:#94a3b8;font-size:18px;cursor:pointer;line-height:1;background:none;border:none;padding:0}
+  .modal-body{padding:20px}
+  .modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:16px 20px;border-top:1px solid #f1f5f9}
+  /* Form elements */
+  .form-section{margin-bottom:18px}
+  .form-section:last-child{margin-bottom:0}
+  .form-label{font-size:12px;font-weight:600;color:#374151;margin-bottom:8px;display:block}
+  .form-label .req{color:#ef4444;margin-left:2px}
+  .form-hint{font-size:11px;color:#94a3b8;margin-top:4px}
+  /* Radio group */
+  .radio-group{display:flex;flex-direction:column;gap:10px}
+  .radio-item{display:flex;align-items:center;gap:10px;cursor:pointer}
+  .radio-circle{width:16px;height:16px;border-radius:50%;border:2px solid #cbd5e1;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .radio-circle.checked{border-color:#3b82f6;background:#3b82f6}
+  .radio-circle.checked::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+  .radio-label{font-size:13px;color:#374151}
+  /* Input fields */
+  .input{width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:8px 12px;font-size:13px;color:#1e293b;outline:none}
+  .input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+  .textarea{width:100%;border:1px solid #cbd5e1;border-radius:6px;padding:8px 12px;font-size:13px;color:#1e293b;resize:vertical;min-height:80px;outline:none;font-family:inherit}
+  .char-count{text-align:right;font-size:11px;color:#94a3b8;margin-top:3px}
+  /* Toggle */
+  .toggle-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .toggle-info .toggle-title{font-size:13px;font-weight:600;color:#374151}
+  .toggle-info .toggle-desc{font-size:11px;color:#94a3b8;margin-top:2px}
+  .toggle-switch{position:relative;width:38px;height:22px;flex-shrink:0;cursor:pointer}
+  .toggle-switch input{opacity:0;width:0;height:0}
+  .slider{position:absolute;inset:0;background:#cbd5e1;border-radius:22px;transition:.2s}
+  .slider::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .toggle-switch.on .slider{background:#3b82f6}
+  .toggle-switch.on .slider::after{left:19px}
+  /* Info box */
+  .info-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:10px 12px;display:flex;gap:8px;font-size:12px;color:#1d4ed8;margin-top:14px}
+  .info-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+  /* Section divider */
+  .section-divider{border:none;border-top:1px solid #f1f5f9;margin:18px 0}
+  /* Buttons */
+  .btn-ghost{background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:8px 18px;font-size:13px;color:#374151;cursor:pointer;font-weight:500}
+  .btn-primary{background:#3b82f6;border:1px solid #3b82f6;border-radius:6px;padding:8px 18px;font-size:13px;color:#fff;cursor:pointer;font-weight:600}
+  .btn-primary:hover{background:#2563eb}
+  /* Dollar input wrap */
+  .input-prefix{position:relative}
+  .input-prefix span{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:13px}
+  .input-prefix input{padding-left:22px}
+  /* Section title inside modal */
+  .section-title{font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+  /* Manual pacing sub-fields (shown when selected) */
+  .sub-fields{margin-top:12px;padding:12px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0;display:flex;flex-direction:column;gap:10px}
+</style>
+</head>
+<body>
+
+<!-- MODAL 1: Forecast Parameters -->
+<div class="modal">
+  <div class="modal-header">
+    <div>
+      <div class="modal-title">Forecast Parameters</div>
+      <div class="modal-subtitle">Configure parameters before running Calculate Impact</div>
+    </div>
+    <button class="modal-close">×</button>
+  </div>
+  <div class="modal-body">
+    <!-- Illiquid Pacing -->
+    <div class="form-section">
+      <div class="section-title">Illiquid Pacing Method</div>
+      <div class="radio-group">
+        <label class="radio-item">
+          <div class="radio-circle checked"></div>
+          <span class="radio-label">Last 3 months historical pacing</span>
+        </label>
+        <label class="radio-item">
+          <div class="radio-circle"></div>
+          <span class="radio-label">Last 12 months historical pacing</span>
+        </label>
+        <label class="radio-item">
+          <div class="radio-circle"></div>
+          <span class="radio-label">Manual Pacing</span>
+        </label>
+      </div>
+      <!-- (shown only when Manual Pacing selected — grayed out here) -->
+      <div class="sub-fields" style="opacity:.45;pointer-events:none">
+        <div>
+          <div class="form-label">Annual Estimated Distribution (%)</div>
+          <input class="input" type="text" placeholder="0.00 – 100.00" disabled/>
+          <div class="form-hint">USD equivalent: calculated on entry</div>
+        </div>
+        <div>
+          <div class="form-label">Annual Estimated Contribution (%)</div>
+          <input class="input" type="text" placeholder="0.00 – 100.00" disabled/>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider"/>
+
+    <!-- Buffer Parameters -->
+    <div class="form-section">
+      <div class="section-title">Buffer Parameters</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <div class="form-label">Minimum Buffer ($)</div>
+          <div class="input-prefix">
+            <span>$</span>
+            <input class="input" type="text" value="50,000,000"/>
+          </div>
+        </div>
+        <div>
+          <div class="form-label">Minimum Notional Buffer (%)</div>
+          <input class="input" type="text" value="10.00%"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-ghost">Cancel</button>
+    <button class="btn-primary">Apply</button>
+  </div>
+</div>
+
+<!-- MODAL 2: Save Flows -->
+<div class="modal">
+  <div class="modal-header">
+    <div>
+      <div class="modal-title">Save Flows</div>
+      <div class="modal-subtitle">Save your current hypothetical flows as a named set</div>
+    </div>
+    <button class="modal-close">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="form-section">
+      <label class="form-label">Name <span class="req">*</span></label>
+      <input class="input" type="text" placeholder="e.g. Stress Test Q3"/>
+      <div class="char-count">0 / 60</div>
+    </div>
+    <div class="form-section">
+      <label class="form-label">Description</label>
+      <textarea class="textarea" placeholder="Optional: brief note about this scenario"></textarea>
+    </div>
+    <div class="form-section">
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">Share with Team</div>
+          <div class="toggle-desc">When ON, this set will appear in Team Flows for all users</div>
+        </div>
+        <div class="toggle-switch">
+          <input type="checkbox"/>
+          <div class="slider"></div>
+        </div>
+      </div>
+      <div class="info-box">
+        <span class="info-icon">ℹ</span>
+        <span>Private by default — only you can see this set until you share it.</span>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn-ghost">Cancel</button>
+    <button class="btn-primary">Save Flows</button>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1280"/>
+<title>Capital Calls & NAV Table – IMG Cash Forecast</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',Arial,sans-serif;background:#f1f5f9;color:#1e293b;font-size:13px}
+  .topnav{display:flex;align-items:center;background:#1e293b;height:44px;padding:0 24px;gap:4px}
+  .topnav a{color:#94a3b8;font-size:13px;padding:0 14px;height:44px;display:flex;align-items:center;text-decoration:none;border-bottom:3px solid transparent}
+  .topnav a.active{color:#fff;border-bottom:3px solid #3b82f6}
+  .pageheader{display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0;background:#fff;border-bottom:1px solid #e2e8f0}
+  .pageheader h1{font-size:20px;font-weight:700;color:#0f172a}
+  .btn-outline{border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:6px 14px;font-size:13px;color:#374151;display:flex;align-items:center;gap:6px}
+  .subnav{display:flex;gap:0;padding:0 24px;background:#fff;border-bottom:1px solid #e2e8f0}
+  .subnav a{font-size:13px;padding:12px 16px;text-decoration:none;color:#64748b;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px}
+  .subnav a.active{color:#3b82f6;border-bottom:2px solid #3b82f6;font-weight:600}
+  .main{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+  .card{background:#fff;border-radius:8px;border:1px solid #e2e8f0;padding:20px}
+  .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .card-title{font-size:14px;font-weight:600;color:#0f172a}
+  /* filter chips */
+  .filter-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .chip{display:flex;align-items:center;gap:4px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:20px;padding:3px 10px 3px 12px;font-size:12px;color:#1d4ed8;font-weight:500}
+  .chip-x{cursor:pointer;color:#93c5fd;font-size:14px;line-height:1}
+  .filter-input{border:1px solid #e2e8f0;border-radius:6px;padding:5px 10px;font-size:12px;color:#64748b;min-width:120px}
+  /* chart */
+  .chart-wrap{height:240px;margin-bottom:8px}
+  .chart-svg{width:100%;height:100%}
+  /* table */
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead th{background:#f8fafc;padding:8px 12px;text-align:left;font-weight:600;color:#475569;font-size:11px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;white-space:nowrap}
+  thead th:first-child{position:sticky;left:0;background:#f8fafc;z-index:1}
+  tbody tr:nth-child(even){background:#fafafa}
+  tbody tr:last-child td{background:#f1f5f9;font-weight:700}
+  tbody td{padding:7px 12px;border-bottom:1px solid #f1f5f9;white-space:nowrap}
+  tbody td:first-child{position:sticky;left:0;background:inherit;font-weight:500}
+  .sub-row{display:flex;flex-direction:column;gap:2px}
+  .sub-label{font-size:10px;color:#94a3b8}
+  .sub-val{font-size:12px;color:#1e293b;font-weight:500}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#475569}
+  .legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="#">Overview</a>
+  <a href="#" class="active">Cash Forecast</a>
+  <a href="#">Return (Public)</a>
+  <a href="#">Return (Private)</a>
+  <a href="#">Risk</a>
+  <a href="#">Liquidity</a>
+  <a href="#">Scenario Test</a>
+</nav>
+<div class="pageheader">
+  <h1>IMG Cash Forecast</h1>
+  <button class="btn-outline">⚙ Forecast Parameters</button>
+</div>
+<nav class="subnav">
+  <a href="#">📊 Dashboard</a>
+  <a href="#" class="active">↩ Historical Flows</a>
+  <a href="#">☰ Details</a>
+</nav>
+
+<div class="main">
+  <!-- Capital Calls & Distributions Chart -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Capital Calls &amp; Distributions by Asset Class</div>
+    </div>
+    <div class="filter-bar">
+      <span style="font-size:11px;color:#64748b;font-weight:600">Asset Class:</span>
+      <div class="chip">Venture Capital <span class="chip-x">×</span></div>
+      <div class="chip">Buyouts &amp; Growth Equity <span class="chip-x">×</span></div>
+      <div class="chip">Real Estate <span class="chip-x">×</span></div>
+      <div class="chip">Absolute Return <span class="chip-x">×</span></div>
+      <div class="chip">Distressed &amp; Credit <span class="chip-x">×</span></div>
+      <select class="filter-input"><option>+ Add more...</option></select>
+    </div>
+    <div class="chart-wrap">
+      <svg class="chart-svg" viewBox="0 0 1100 230" xmlns="http://www.w3.org/2000/svg">
+        <!-- Grid -->
+        <line x1="60" y1="10" x2="60" y2="190" stroke="#e2e8f0"/>
+        <line x1="60" y1="50" x2="1090" y2="50" stroke="#f1f5f9"/>
+        <line x1="60" y1="100" x2="1090" y2="100" stroke="#f1f5f9"/>
+        <line x1="60" y1="150" x2="1090" y2="150" stroke="#f1f5f9"/>
+        <line x1="60" y1="190" x2="1090" y2="190" stroke="#e2e8f0"/>
+        <text x="50" y="53" font-size="10" fill="#94a3b8" text-anchor="end">40B</text>
+        <text x="50" y="103" font-size="10" fill="#94a3b8" text-anchor="end">20B</text>
+        <text x="50" y="153" font-size="10" fill="#94a3b8" text-anchor="end">10B</text>
+        <text x="50" y="193" font-size="10" fill="#94a3b8" text-anchor="end">0</text>
+
+        <!-- Q1 2025 — Capital Calls (orange tones) + Distributions (green tones) -->
+        <!-- Capital Calls -->
+        <g transform="translate(80,0)">
+          <rect x="0" y="100" width="55" height="90" fill="#f97316"/>
+          <rect x="0" y="80" width="55" height="20" fill="#fb923c"/>
+          <rect x="0" y="70" width="55" height="10" fill="#fdba74"/>
+          <rect x="0" y="65" width="55" height="5" fill="#fed7aa"/>
+          <text x="27" y="62" font-size="10" fill="#475569" text-anchor="middle">Calls</text>
+          <!-- Distributions -->
+          <rect x="62" y="120" width="55" height="70" fill="#059669"/>
+          <rect x="62" y="105" width="55" height="15" fill="#34d399"/>
+          <rect x="62" y="97" width="55" height="8" fill="#6ee7b7"/>
+          <text x="89" y="94" font-size="10" fill="#475569" text-anchor="middle">Dist.</text>
+          <text x="61" y="215" font-size="10" fill="#94a3b8" text-anchor="middle">Q1 2025</text>
+        </g>
+        <!-- Q2 2025 -->
+        <g transform="translate(275,0)">
+          <rect x="0" y="90" width="55" height="100" fill="#f97316"/>
+          <rect x="0" y="72" width="55" height="18" fill="#fb923c"/>
+          <rect x="0" y="62" width="55" height="10" fill="#fdba74"/>
+          <text x="27" y="59" font-size="10" fill="#475569" text-anchor="middle">Calls</text>
+          <rect x="62" y="115" width="55" height="75" fill="#059669"/>
+          <rect x="62" y="100" width="55" height="15" fill="#34d399"/>
+          <rect x="62" y="92" width="55" height="8" fill="#6ee7b7"/>
+          <text x="89" y="89" font-size="10" fill="#475569" text-anchor="middle">Dist.</text>
+          <text x="61" y="215" font-size="10" fill="#94a3b8" text-anchor="middle">Q2 2025</text>
+        </g>
+        <!-- Q3 2025 -->
+        <g transform="translate(470,0)">
+          <rect x="0" y="95" width="55" height="95" fill="#f97316"/>
+          <rect x="0" y="78" width="55" height="17" fill="#fb923c"/>
+          <rect x="0" y="68" width="55" height="10" fill="#fdba74"/>
+          <text x="27" y="65" font-size="10" fill="#475569" text-anchor="middle">Calls</text>
+          <rect x="62" y="110" width="55" height="80" fill="#059669"/>
+          <rect x="62" y="95" width="55" height="15" fill="#34d399"/>
+          <rect x="62" y="87" width="55" height="8" fill="#6ee7b7"/>
+          <text x="89" y="84" font-size="10" fill="#475569" text-anchor="middle">Dist.</text>
+          <text x="61" y="215" font-size="10" fill="#94a3b8" text-anchor="middle">Q3 2025</text>
+        </g>
+        <!-- Q4 2025 -->
+        <g transform="translate(665,0)">
+          <rect x="0" y="85" width="55" height="105" fill="#f97316"/>
+          <rect x="0" y="68" width="55" height="17" fill="#fb923c"/>
+          <rect x="0" y="58" width="55" height="10" fill="#fdba74"/>
+          <text x="27" y="55" font-size="10" fill="#475569" text-anchor="middle">Calls</text>
+          <rect x="62" y="105" width="55" height="85" fill="#059669"/>
+          <rect x="62" y="90" width="55" height="15" fill="#34d399"/>
+          <rect x="62" y="82" width="55" height="8" fill="#6ee7b7"/>
+          <text x="89" y="79" font-size="10" fill="#475569" text-anchor="middle">Dist.</text>
+          <text x="61" y="215" font-size="10" fill="#94a3b8" text-anchor="middle">Q4 2025</text>
+        </g>
+        <!-- Q1 2026 -->
+        <g transform="translate(860,0)">
+          <rect x="0" y="125" width="55" height="65" fill="#f97316"/>
+          <rect x="0" y="110" width="55" height="15" fill="#fb923c"/>
+          <rect x="0" y="102" width="55" height="8" fill="#fdba74"/>
+          <text x="27" y="99" font-size="10" fill="#475569" text-anchor="middle">Calls</text>
+          <rect x="62" y="135" width="55" height="55" fill="#059669"/>
+          <rect x="62" y="122" width="55" height="13" fill="#34d399"/>
+          <text x="89" y="119" font-size="10" fill="#475569" text-anchor="middle">Dist.</text>
+          <text x="61" y="215" font-size="10" fill="#94a3b8" text-anchor="middle">Q1 2026</text>
+        </g>
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div>Capital Calls – Venture Capital</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fb923c"></div>Capital Calls – Buyouts &amp; Growth Equity</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fdba74"></div>Capital Calls – Real Estate</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#059669"></div>Distributions – Venture Capital</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#34d399"></div>Distributions – Buyouts &amp; Growth Equity</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#6ee7b7"></div>Distributions – Real Estate</div>
+    </div>
+  </div>
+
+  <!-- NAV Summary Table -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom:14px">Capital Calls &amp; Distributions % of NAV</div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Asset Class</th>
+            <th>Q1 2025</th>
+            <th>Q2 2025</th>
+            <th>Q3 2025</th>
+            <th>Q4 2025</th>
+            <th>Q1 2026</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Venture Capital</td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">2.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">2.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">2.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">2.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">2.50%</span></div></td>
+          </tr>
+          <tr>
+            <td>Buyouts &amp; Growth Equity</td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">5.10%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">4.10%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">4.70%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">5.20%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">5.10%</span></div></td>
+          </tr>
+          <tr>
+            <td>Distressed &amp; Credit</td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.30%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.90%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.50%</span></div></td>
+          </tr>
+          <tr>
+            <td>HTI</td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.30%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.20%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.30%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.30%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.30%</span></div></td>
+          </tr>
+          <tr>
+            <td>Real Estate</td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">4.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">4.20%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">4.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">4.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">4.20%</span></div></td>
+          </tr>
+          <tr>
+            <td>Natural Resources</td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">1.30%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">1.10%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">1.10%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">1.20%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">1.10%</span></div></td>
+          </tr>
+          <tr>
+            <td>Absolute Return</td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.80%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.20%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.30%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.90%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">0.10%</span></div></td>
+          </tr>
+          <tr>
+            <td>All Other</td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">2.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">2.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">1.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">1.50%</span></div></td>
+            <td><div class="sub-row"><span class="sub-label">% of NAV</span><span class="sub-val">1.50%</span></div></td>
+          </tr>
+          <tr>
+            <td><strong>Total</strong></td>
+            <td><strong>17.50%</strong></td>
+            <td><strong>15.10%</strong></td>
+            <td><strong>15.40%</strong></td>
+            <td><strong>17.00%</strong></td>
+            <td><strong>15.30%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1280"/>
+<title>Historical Flows – IMG Cash Forecast</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',Arial,sans-serif;background:#f1f5f9;color:#1e293b;font-size:13px}
+  /* top nav */
+  .topnav{display:flex;align-items:center;background:#1e293b;height:44px;padding:0 24px;gap:4px}
+  .topnav a{color:#94a3b8;font-size:13px;padding:0 14px;height:44px;display:flex;align-items:center;text-decoration:none;border-bottom:3px solid transparent}
+  .topnav a.active{color:#fff;border-bottom:3px solid #3b82f6}
+  /* page header */
+  .pageheader{display:flex;justify-content:space-between;align-items:center;padding:16px 24px 0;background:#fff;border-bottom:1px solid #e2e8f0}
+  .pageheader h1{font-size:20px;font-weight:700;color:#0f172a}
+  .btn-outline{border:1px solid #cbd5e1;background:#fff;border-radius:6px;padding:6px 14px;font-size:13px;color:#374151;display:flex;align-items:center;gap:6px;cursor:pointer}
+  .btn-outline svg{width:14px;height:14px;color:#6b7280}
+  /* subnav */
+  .subnav{display:flex;gap:0;padding:0 24px;background:#fff;border-bottom:1px solid #e2e8f0}
+  .subnav a{font-size:13px;padding:12px 16px;text-decoration:none;color:#64748b;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px}
+  .subnav a.active{color:#3b82f6;border-bottom:2px solid #3b82f6;font-weight:600}
+  /* main */
+  .main{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+  /* date range bar */
+  .daterow{display:flex;align-items:center;gap:16px;background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e2e8f0}
+  .daterow label{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px}
+  .dateinput{display:flex;align-items:center;gap:8px;border:1px solid #cbd5e1;border-radius:6px;padding:5px 10px;background:#fff;font-size:13px;color:#1e293b;min-width:150px}
+  .dateinput svg{color:#94a3b8;width:14px;height:14px;flex-shrink:0}
+  /* card */
+  .card{background:#fff;border-radius:8px;border:1px solid #e2e8f0;padding:20px}
+  .card-title{font-size:14px;font-weight:600;color:#0f172a;margin-bottom:16px}
+  /* chart area */
+  .chart-wrap{position:relative;height:280px}
+  .chart-svg{width:100%;height:100%}
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#475569}
+  .legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+</style>
+</head>
+<body>
+<!-- Top Nav -->
+<nav class="topnav">
+  <a href="#">Overview</a>
+  <a href="#" class="active">Cash Forecast</a>
+  <a href="#">Return (Public)</a>
+  <a href="#">Return (Private)</a>
+  <a href="#">Risk</a>
+  <a href="#">Liquidity</a>
+  <a href="#">Scenario Test</a>
+</nav>
+<!-- Page Header -->
+<div class="pageheader">
+  <h1>IMG Cash Forecast</h1>
+  <button class="btn-outline">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+    Forecast Parameters
+  </button>
+</div>
+<!-- Sub Nav -->
+<nav class="subnav">
+  <a href="#">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M2 6h12"/></svg>
+    Dashboard
+  </a>
+  <a href="#" class="active">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12V7l5-5 5 5v5"/><path d="M6 12V9h4v3"/></svg>
+    Historical Flows
+  </a>
+  <a href="#">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h5"/></svg>
+    Details
+  </a>
+</nav>
+
+<div class="main">
+  <!-- Date range -->
+  <div class="daterow">
+    <div>
+      <label>Start Date</label>
+      <div class="dateinput">
+        12/31/2024
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>
+      </div>
+    </div>
+    <div>
+      <label>End Date</label>
+      <div class="dateinput">
+        04/07/2026
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>
+      </div>
+    </div>
+    <div style="margin-left:auto;font-size:11px;color:#94a3b8">Monthly intervals (period &lt; 1.5 years) — month-end dates only</div>
+  </div>
+
+  <!-- Net Cash Flow Chart -->
+  <div class="card">
+    <div class="card-title">Net Cash Flow by Asset Class</div>
+    <div class="chart-wrap">
+      <svg class="chart-svg" viewBox="0 0 1100 260" xmlns="http://www.w3.org/2000/svg">
+        <!-- Y axis -->
+        <line x1="60" y1="10" x2="60" y2="220" stroke="#e2e8f0" stroke-width="1"/>
+        <!-- Grid lines -->
+        <line x1="60" y1="60" x2="1090" y2="60" stroke="#f1f5f9" stroke-width="1"/>
+        <line x1="60" y1="110" x2="1090" y2="110" stroke="#f1f5f9" stroke-width="1"/>
+        <line x1="60" y1="160" x2="1090" y2="160" stroke="#f1f5f9" stroke-width="1"/>
+        <line x1="60" y1="210" x2="1090" y2="210" stroke="#e2e8f0" stroke-width="1"/>
+        <!-- Y labels -->
+        <text x="50" y="63" font-size="10" fill="#94a3b8" text-anchor="end">400M</text>
+        <text x="50" y="113" font-size="10" fill="#94a3b8" text-anchor="end">200M</text>
+        <text x="50" y="163" font-size="10" fill="#94a3b8" text-anchor="end">0</text>
+        <text x="50" y="213" font-size="10" fill="#94a3b8" text-anchor="end">-200M</text>
+
+        <!-- Bars: 16 months Jan 2025 - Apr 2026, bar width ~56, gap 12 -->
+        <!-- Colors: VC=#1d4ed8, BGE=#3b82f6, RE=#0891b2, AR=#6366f1, DC=#64748b, HTI=#334155, NR=#0f172a, Other=#cbd5e1 -->
+        <!-- Month labels and stacked bars -->
+        <!-- Jan 25 -->
+        <g transform="translate(75,0)">
+          <rect x="0" y="110" width="44" height="40" fill="#1d4ed8"/>
+          <rect x="0" y="90" width="44" height="20" fill="#3b82f6"/>
+          <rect x="0" y="75" width="44" height="15" fill="#0891b2"/>
+          <rect x="0" y="65" width="44" height="10" fill="#6366f1"/>
+          <rect x="0" y="60" width="44" height="5" fill="#64748b"/>
+          <text x="22" y="56" font-size="9" fill="#475569" text-anchor="middle">108M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Jan 25</text>
+        </g>
+        <!-- Feb 25 -->
+        <g transform="translate(133,0)">
+          <rect x="0" y="185" width="44" height="25" fill="#1d4ed8" opacity="0.8"/>
+          <rect x="0" y="195" width="44" height="15" fill="#3b82f6" opacity="0.8"/>
+          <text x="22" y="178" font-size="9" fill="#ef4444" text-anchor="middle">-60M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Feb 25</text>
+        </g>
+        <!-- Mar 25 -->
+        <g transform="translate(191,0)">
+          <rect x="0" y="100" width="44" height="50" fill="#1d4ed8"/>
+          <rect x="0" y="85" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="75" width="44" height="10" fill="#0891b2"/>
+          <text x="22" y="71" font-size="9" fill="#475569" text-anchor="middle">200M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Mar 25</text>
+        </g>
+        <!-- Apr 25 -->
+        <g transform="translate(249,0)">
+          <rect x="0" y="80" width="44" height="50" fill="#1d4ed8"/>
+          <rect x="0" y="65" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="55" width="44" height="10" fill="#0891b2"/>
+          <rect x="0" y="48" width="44" height="7" fill="#6366f1"/>
+          <text x="22" y="44" font-size="9" fill="#475569" text-anchor="middle">280M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Apr 25</text>
+        </g>
+        <!-- May 25 -->
+        <g transform="translate(307,0)">
+          <rect x="0" y="105" width="44" height="45" fill="#1d4ed8"/>
+          <rect x="0" y="90" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="80" width="44" height="10" fill="#0891b2"/>
+          <text x="22" y="76" font-size="9" fill="#475569" text-anchor="middle">170M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">May 25</text>
+        </g>
+        <!-- Jun 25 -->
+        <g transform="translate(365,0)">
+          <rect x="0" y="90" width="44" height="55" fill="#1d4ed8"/>
+          <rect x="0" y="75" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="65" width="44" height="10" fill="#0891b2"/>
+          <text x="22" y="61" font-size="9" fill="#475569" text-anchor="middle">200M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Jun 25</text>
+        </g>
+        <!-- Jul 25 -->
+        <g transform="translate(423,0)">
+          <rect x="0" y="70" width="44" height="65" fill="#1d4ed8"/>
+          <rect x="0" y="55" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="45" width="44" height="10" fill="#0891b2"/>
+          <rect x="0" y="38" width="44" height="7" fill="#6366f1"/>
+          <text x="22" y="34" font-size="9" fill="#475569" text-anchor="middle">280M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Jul 25</text>
+        </g>
+        <!-- Aug 25 -->
+        <g transform="translate(481,0)">
+          <rect x="0" y="60" width="44" height="75" fill="#1d4ed8"/>
+          <rect x="0" y="45" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="35" width="44" height="10" fill="#0891b2"/>
+          <rect x="0" y="28" width="44" height="7" fill="#6366f1"/>
+          <text x="22" y="24" font-size="9" fill="#475569" text-anchor="middle">355M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Aug 25</text>
+        </g>
+        <!-- Sep 25 -->
+        <g transform="translate(539,0)">
+          <rect x="0" y="115" width="44" height="40" fill="#1d4ed8"/>
+          <rect x="0" y="100" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="92" width="44" height="8" fill="#0891b2"/>
+          <text x="22" y="88" font-size="9" fill="#475569" text-anchor="middle">180M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Sep 25</text>
+        </g>
+        <!-- Oct 25 -->
+        <g transform="translate(597,0)">
+          <rect x="0" y="100" width="44" height="50" fill="#1d4ed8"/>
+          <rect x="0" y="85" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="77" width="44" height="8" fill="#0891b2"/>
+          <text x="22" y="73" font-size="9" fill="#475569" text-anchor="middle">220M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Oct 25</text>
+        </g>
+        <!-- Nov 25 -->
+        <g transform="translate(655,0)">
+          <rect x="0" y="105" width="44" height="45" fill="#1d4ed8"/>
+          <rect x="0" y="90" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="80" width="44" height="10" fill="#0891b2"/>
+          <text x="22" y="76" font-size="9" fill="#475569" text-anchor="middle">255M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Nov 25</text>
+        </g>
+        <!-- Dec 25 -->
+        <g transform="translate(713,0)">
+          <rect x="0" y="120" width="44" height="35" fill="#1d4ed8"/>
+          <rect x="0" y="108" width="44" height="12" fill="#3b82f6"/>
+          <rect x="0" y="100" width="44" height="8" fill="#0891b2"/>
+          <text x="22" y="96" font-size="9" fill="#475569" text-anchor="middle">120M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Dec 25</text>
+        </g>
+        <!-- Jan 26 -->
+        <g transform="translate(771,0)">
+          <rect x="0" y="55" width="44" height="70" fill="#1d4ed8"/>
+          <rect x="0" y="40" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="30" width="44" height="10" fill="#0891b2"/>
+          <rect x="0" y="22" width="44" height="8" fill="#6366f1"/>
+          <text x="22" y="18" font-size="9" fill="#475569" text-anchor="middle">380M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Jan 26</text>
+        </g>
+        <!-- Feb 26 -->
+        <g transform="translate(829,0)">
+          <rect x="0" y="60" width="44" height="65" fill="#1d4ed8"/>
+          <rect x="0" y="45" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="35" width="44" height="10" fill="#0891b2"/>
+          <rect x="0" y="28" width="44" height="7" fill="#6366f1"/>
+          <text x="22" y="24" font-size="9" fill="#475569" text-anchor="middle">370M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Feb 26</text>
+        </g>
+        <!-- Mar 26 -->
+        <g transform="translate(887,0)">
+          <rect x="0" y="58" width="44" height="67" fill="#1d4ed8"/>
+          <rect x="0" y="43" width="44" height="15" fill="#3b82f6"/>
+          <rect x="0" y="33" width="44" height="10" fill="#0891b2"/>
+          <rect x="0" y="26" width="44" height="7" fill="#6366f1"/>
+          <text x="22" y="22" font-size="9" fill="#475569" text-anchor="middle">380M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Mar 26</text>
+        </g>
+        <!-- Apr 26 -->
+        <g transform="translate(945,0)">
+          <rect x="0" y="140" width="44" height="30" fill="#1d4ed8"/>
+          <rect x="0" y="128" width="44" height="12" fill="#3b82f6"/>
+          <rect x="0" y="120" width="44" height="8" fill="#0891b2"/>
+          <text x="22" y="116" font-size="9" fill="#475569" text-anchor="middle">95M</text>
+          <text x="22" y="230" font-size="9" fill="#94a3b8" text-anchor="middle">Apr 26</text>
+        </g>
+      </svg>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#1d4ed8"></div>Venture Capital</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Buyouts &amp; Growth Equity</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#0891b2"></div>Real Estate</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#6366f1"></div>Absolute Return</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#64748b"></div>Distressed &amp; Credit</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#334155"></div>HTI</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#0f172a"></div>Natural Resources</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#cbd5e1"></div>All Other</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
