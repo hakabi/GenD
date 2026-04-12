@@ -123,7 +123,7 @@ After presenting the preview, explicitly ask the user for permission to create t
 Immediately after the user confirms, preserve the approved preview to:
 
 ```markdown
-QA skills/create-qg-jira-tasks-from-ks/task-analysis-records/[SMALLEST-TICKET-ID]_QG-Jira-Task-Structure-Preview.md
+../create-qg-jira-tasks-from-ks/task-analysis-records/[SMALLEST-TICKET-ID]_QG-Jira-Task-Structure-Preview.md
 ```
 
 File content should include:

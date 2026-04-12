@@ -146,7 +146,7 @@ flowchart TD
 ## Auto-Saved Files (Historical Record)
 
 ```
-QA skills/create-qg-jira-tasks-from-ks/task-analysis-records/
+task-analysis-records/   (inside this skill folder: `.cursor/skills/create-qg-jira-tasks-from-ks/`)
 ├── [Smallest-KS-ID]_requirements.md                        ← saved at end of Step 3 (Phase 3)
 └── [Smallest-KS-ID]_QG-Jira-Task-Structure-Preview.md      ← preview saved at end of Step 4 (Phase 4)
 ```

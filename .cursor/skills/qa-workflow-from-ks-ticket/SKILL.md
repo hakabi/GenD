@@ -42,26 +42,26 @@ Step 4 → Create QG Jira Tickets    (skill: step-4-create-qg-tickets)
 ## Step-by-Step Instructions
 
 ### Step 1 — Ingest KS Ticket
-Follow **`QA skills/step-1-ingest-ks-ticket/SKILL.md`** in full.
+Follow **`../step-1-ingest-ks-ticket/SKILL.md`** in full (this skill’s sibling under `.cursor/skills/`).
 - Input: KS ticket ID(s) provided by the user.
 - Output: Raw ticket data object (summary, description, resolved comments).
 - Pass the output forward to Step 2.
 
 ### Step 2 — Synthesize Requirements
-Follow **`QA skills/step-2-synthesize-requirements/SKILL.md`** in full.
+Follow **`../step-2-synthesize-requirements/SKILL.md`** in full.
 - Input: Raw ticket data from Step 1.
 - Output: Structured QA breakdown (Epic / Parent Tasks / Sub-tasks) and the auto-saved `_requirements.md` file.
 - Pass the breakdown forward to Step 3.
 
 ### Step 3 — Preview & User Approval
-Follow **`QA skills/step-3-preview-and-approve/SKILL.md`** in full.
+Follow **`../step-3-preview-and-approve/SKILL.md`** in full.
 - Input: Structured breakdown from Step 2.
 - Output: User-confirmed breakdown + resolved Sprint ID + Reporter account ID.
 - Pause here and ask the user to confirm. Proceeding without confirmation risks creating incorrect structures in Jira.
 - Auto-save `_QG-Jira-Task-Structure-Preview.md` after they approve.
 
 ### Step 4 — Create QG Jira Tickets
-Follow **`QA skills/step-4-create-qg-tickets/SKILL.md`** in full.
+Follow **`../step-4-create-qg-tickets/SKILL.md`** in full.
 - Input: Confirmed breakdown, Sprint ID, Reporter account ID from Step 3.
 - Output: Created Epic, Parent Tasks, and Sub-tasks in QG; final summary table.
 
@@ -69,10 +69,11 @@ Follow **`QA skills/step-4-create-qg-tickets/SKILL.md`** in full.
 
 ## Document Auto-Save (Building the Audit Trail)
 
-To maintain a clear and historical audit trail for QA reviews, save the two persistent output files under:
+To maintain a clear and historical audit trail for QA reviews, the step skills persist output files under:
 ```markdown
-QA skills/qa-workflow-from-ks-ticket/task-analysis-records/
+../create-qg-jira-tasks-from-ks/task-analysis-records/
 ```
+(relative to this orchestrator skill folder: `.cursor/skills/qa-workflow-from-ks-ticket/`)
 
 Derive the file name prefix from the **smallest** (minimum numerical value) KS ticket ID provided:
 ```markdown

@@ -112,7 +112,7 @@ Example:
 Immediately after completing the analysis and before showing any preview to the user, please save the requirements to a file to preserve an audit trail:
 
 ```markdown
-QA skills/create-qg-jira-tasks-from-ks/task-analysis-records/[SMALLEST-TICKET-ID]_requirements.md
+../create-qg-jira-tasks-from-ks/task-analysis-records/[SMALLEST-TICKET-ID]_requirements.md
 ```
 
 The file should contain:
