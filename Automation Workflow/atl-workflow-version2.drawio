@@ -1,0 +1,263 @@
+<mxfile host="app.diagrams.net" compressed="false">
+    <diagram id="atl-overview-v2" name="ATL Overview Version 2">
+        <mxGraphModel dx="1200" dy="800" grid="1" gridSize="8" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2048" background="#ffffff" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="a0_title" value="Automation Testing Lifecycle (ATL) — Version 2 — &lt;TICKET_ID&gt; Project" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=20;fontStyle=1;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="16" width="1556" height="36" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_sub" value="Requirement analysis → test design → POM as pom.md (docs/aloha/user-steps) → NUnit scripts → execution &amp; branching → failure investigation (RCA before Jira)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontStyle=2;fontColor=#6B7280;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="52" width="1556" height="28" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_input" value="INPUT — Business / Dev Jira ticket(s) for &lt;TICKET_ID&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontColor=#1e3a8a;fontSize=13;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="437" y="88" width="780" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_e_in_p1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6B7280;" parent="1" source="a0_input" target="a0_ph1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+
+                <!-- Phase 1 -->
+                <mxCell id="a0_ph1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="148" width="1580" height="188" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph1_title" value="Phase 1: Requirement Analysis" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#1e3a8a;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="152" width="1500" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph1_goal" value="&lt;b&gt;Goal:&lt;/b&gt; Synthesize clear and testable technical requirements from Business/Dev tickets.&lt;br/&gt;&lt;i&gt;Skill: analyze-synthesize-ks-ticket&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=#1e3a8a;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="186" width="286" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph1_in" value="INPUT&#10;Jira &lt;TICKET_ID&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3B82F6;fontSize=10;fontColor=#1e3a8a;" parent="1" vertex="1">
+                    <mxGeometry x="352" y="200" width="160" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph1_action" value="Run analyze-synthesize-ks-ticket for &lt;TICKET_ID&gt;&#10;Output: Ticket Summary + _YYYYMMDD_HHMMSS_.md" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#3B82F6;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="528" y="200" width="328" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph1_val" value="✓ Validate&#10;Completeness" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;fontSize=11;fontStyle=1;fontColor=#78350F;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="184" width="136" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph1_out" value="OUTPUT&#10;Synthesized requirements doc (.md)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=10;fontColor=#14532D;" parent="1" vertex="1">
+                    <mxGeometry x="1032" y="200" width="232" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph1_stop" value="STOP: Ticket not found&#10;or unusable description" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#F43F5E;fontSize=10;fontColor=#9F1239;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="200" width="289" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_e_p1_p2" value="Requirements doc" style="edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#1a1a1a;strokeColor=#6B7280;labelBackgroundColor=#FFFDF5;labelBorderColor=none;" parent="1" source="a0_ph1" target="a0_ph2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+
+                <!-- Phase 2 -->
+                <mxCell id="a0_ph2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#8B5CF6;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="356" width="1580" height="198" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph2_title" value="Phase 2: Test Design" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#4C1D95;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="360" width="1500" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph2_goal" value="&lt;b&gt;Goal:&lt;/b&gt; Break down requirements into structured test scenarios in Jira.&lt;br/&gt;&lt;i&gt;Skill: ks-requirements-to-qg-tasks&lt;/i&gt;&lt;br/&gt;&lt;i&gt;Naming: [PHASE 2] &lt;Summary&gt;&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=#4C1D95;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="394" width="286" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph2_in" value="INPUT&#10;Phase 1 requirements doc" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#8B5CF6;fontSize=10;fontColor=#4C1D95;" parent="1" vertex="1">
+                    <mxGeometry x="352" y="408" width="160" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph2_action" value="Run ks-requirements-to-qg-tasks (Phase 1 output)&#10;Epic → Stories → Sub-tasks (QG); push scenarios to Jira" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#8B5CF6;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="528" y="408" width="328" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph2_val" value="✓ Validate&#10;Jira structure" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;fontSize=11;fontStyle=1;fontColor=#78350F;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="392" width="136" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph2_out" value="OUTPUT&#10;QG Epic + Stories + Sub-tasks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=10;fontColor=#14532D;" parent="1" vertex="1">
+                    <mxGeometry x="1032" y="408" width="232" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph2_stop" value="STOP: Jira create/update failure" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#F43F5E;fontSize=10;fontColor=#9F1239;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="408" width="289" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_e_p2_p3" value="QG hierarchy" style="edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#1a1a1a;strokeColor=#6B7280;labelBackgroundColor=#FFFDF5;labelBorderColor=none;" parent="1" source="a0_ph2" target="a0_ph3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+
+                <!-- Phase 3 -->
+                <mxCell id="a0_ph3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="574" width="1580" height="218" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph3_title" value="Phase 3: Automation Architecture (xpath-to-csharp-pom + pom-to-csharp-page → pom.md)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#78350F;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="578" width="1500" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph3_goal" value="&lt;b&gt;Goal:&lt;/b&gt; Establish POM + validate UI compatibility.&lt;br/&gt;&lt;i&gt;3.1 xpath-to-csharp-pom | 3.2 validate (pom-to-csharp-page) | 3.3 pom.md (pom-to-csharp-page)&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=#78350F;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="612" width="286" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph3_in" value="INPUT&#10;Stories + page URL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#F59E0B;fontSize=10;fontColor=#78350F;" parent="1" vertex="1">
+                    <mxGeometry x="352" y="616" width="160" height="88" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph3_action" value="3.1 xpath-to-csharp-pom: scan page → unique XPaths&#10;3.2 pom-to-csharp-page: validate XPaths vs Phase 2 (branch)&#10;3.3 pom-to-csharp-page: output pom.md (e.g. cash-forecast-xpath.md) → docs/aloha/user-steps/&lt;module&gt;/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#F59E0B;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="528" y="616" width="328" height="88" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph3_val" value="XPaths match&#10;required UI?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;fontSize=11;fontStyle=1;fontColor=#78350F;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="604" width="136" height="112" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph3_out" value="OUTPUT&#10;pom.md under docs/aloha/user-steps/&lt;module&gt;/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=10;fontColor=#14532D;" parent="1" vertex="1">
+                    <mxGeometry x="1032" y="616" width="232" height="88" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph3_stop" value="HALT: XPath mismatch — log, notify user&#10;Update Jira or UI scan before continue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#F43F5E;fontSize=10;fontColor=#9F1239;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="616" width="289" height="88" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_e_p3_p4" value="pom.md" style="edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#1a1a1a;strokeColor=#6B7280;labelBackgroundColor=#FFFDF5;labelBorderColor=none;" parent="1" source="a0_ph3" target="a0_ph4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+
+                <!-- Phase 4 -->
+                <mxCell id="a0_ph4" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="812" width="1580" height="228" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph4_title" value="Phase 4: Automation Scripting" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#14532D;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="816" width="1500" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph4_goal" value="&lt;b&gt;Goal:&lt;/b&gt; Robust NUnit C# test scripts (DRY, data-driven, logging).&lt;br/&gt;&lt;i&gt;Auto-read: constitution.md + ref templates (RiskModelPage.cs, RiskModelTest.cs)&lt;/i&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=#14532D;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="850" width="286" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph4_in" value="INPUT&#10;① Jira Stories (Phase 2)&#10;② pom.md (Phase 3)&#10;Auto-read: constitution.md&#10;Auto-read: RiskModelPage.cs, RiskModelTest.cs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#22C55E;fontSize=10;fontColor=#14532D;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="352" y="864" width="160" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph4_action" value="Fuse scenarios + pom.md locators → C# NUnit tests&#10;Standard assertions; enforce constitution + template structure" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#22C55E;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="528" y="864" width="328" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph4_val" value="✓ Validate&#10;Compile / structure" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;fontSize=11;fontStyle=1;fontColor=#78350F;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="856" width="136" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph4_out" value="OUTPUT&#10;C# test scripts (NUnit)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=10;fontColor=#14532D;" parent="1" vertex="1">
+                    <mxGeometry x="1032" y="864" width="232" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph4_stop" value="STOP: Missing inputs or invalid story fields" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#F43F5E;fontSize=10;fontColor=#9F1239;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="864" width="289" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_e_p4_p5" value="Test scripts" style="edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;fontColor=#1a1a1a;strokeColor=#6B7280;labelBackgroundColor=#FFFDF5;labelBorderColor=none;" parent="1" source="a0_ph4" target="a0_ph5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+
+                <!-- Phase 5 -->
+                <mxCell id="a0_ph5" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F9FAFB;strokeColor=#16A34A;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="1060" width="1580" height="248" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph5_title" value="Phase 5: Test Execution &amp; Branching" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#14532D;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="1064" width="1500" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph5_goal" value="&lt;b&gt;Goal:&lt;/b&gt; Execute tests, generate reports, handle failures (5.1 + 5.2).&lt;br/&gt;&lt;i&gt;Skill: run-autotest (dotnet test, filters, -p:Platform=x64)&lt;/i&gt;&lt;br/&gt;&lt;b&gt;On fail:&lt;/b&gt; record + Isolated_Bug_Repro → Phase 6 — &lt;b&gt;no Jira&lt;/b&gt; until RCA" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=#14532D;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="1098" width="286" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph5_in" value="INPUT&#10;Phase 4 .cs tests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#16A34A;fontSize=10;fontColor=#14532D;" parent="1" vertex="1">
+                    <mxGeometry x="352" y="1120" width="160" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph5_action" value="5.1 run-autotest: console (detailed logger) + TestResults/*.trx&#10;5.2 On fail: failed TCs + errors + stacks; Isolated_Bug_Repro_&lt;ID&gt;.cs each failure → Phase 6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#16A34A;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="528" y="1112" width="328" height="88" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph5_branch" value="All tests&#10;passed?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;fontSize=11;fontStyle=1;fontColor=#78350F;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="1104" width="136" height="112" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph5_out_pass" value="OUTPUT (Pass)&#10;Final execution summary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=10;fontColor=#14532D;" parent="1" vertex="1">
+                    <mxGeometry x="1032" y="1104" width="232" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph5_out_fail" value="OUTPUT (Fail)&#10;Evidence + Isolated_Bug_Repro → Phase 6 (no Jira bug yet)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;fontSize=10;fontColor=#78350F;" parent="1" vertex="1">
+                    <mxGeometry x="1032" y="1176" width="232" height="56" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph5_stop" value="STOP: Runner / solution misconfiguration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#F43F5E;fontSize=10;fontColor=#9F1239;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="1120" width="289" height="72" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_e_p5_pass" value="All pass" style="edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;strokeColor=#16A34A;fontColor=#14532D;labelBackgroundColor=#FFFDF5;labelBorderColor=none;" parent="1" source="a0_ph5" target="a0_end_pass" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_e_p5_p6" value="Any fail" style="edgeStyle=orthogonalEdgeStyle;fontSize=11;fontStyle=1;strokeColor=#D97706;fontColor=#78350F;labelBackgroundColor=#FFFDF5;labelBorderColor=none;" parent="1" source="a0_ph5" target="a0_ph6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+
+                <!-- Phase 6 -->
+                <mxCell id="a0_ph6" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#6366F1;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="1328" width="1580" height="288" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph6_title" value="Phase 6: Failure Investigation (RCA before Jira)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;fontColor=#312E81;spacingLeft=12;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="1332" width="1500" height="32" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph6_goal" value="&lt;b&gt;Goal:&lt;/b&gt; RCA per failure: App vs Broken XPath vs Script.&lt;br/&gt;&lt;i&gt;Skill: investigate-failed-tests&lt;/i&gt;&lt;br/&gt;🟡 → Phase 3 (xpath-doc-generator) | 🟠 → Phase 4 | 🔴 → Jira QG + Epic link" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontColor=#312E81;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="1366" width="286" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph6_in" value="INPUT&#10;① Phase 5 console log&#10;② TestResults/*.trx&#10;③ Cross-ref pom.md / locators" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6366F1;fontSize=10;fontColor=#312E81;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="352" y="1384" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph6_action" value="6.1 Parse: TC name, error, stack, XPath (from pom.md)&#10;6.2 Live browser → decision tree 🔴 App / 🟡 XPath / 🟠 Script&#10;6.3 Save TestResults/FailureReport_YYYYMMDD_HHMMSS.md (format per v2 spec)&#10;6.4 Present report → route each failure (remediation table)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6366F1;fontSize=11;fontColor=#1a1a1a;align=left;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="528" y="1376" width="560" height="96" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph6_route" value="&lt;b&gt;Remediation (6.4)&lt;/b&gt;&#10;🟡 Broken XPath → ↪ Phase 3 (xpath-doc-generator); no Jira&#10;🟠 Script bug → ↪ Phase 4; no Jira&#10;🔴 App bug → 📋 Jira QG + evidence + link Epic&#10;✅ All pass investigation → final Test Execution Summary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#818CF8;fontSize=10;fontColor=#1e1b4b;align=left;spacingLeft=10;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1104" y="1376" width="465" height="104" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_ph6_note" value="Jira bug only for confirmed 🔴 App Bug — full evidence: steps, stack trace, expected vs actual, screenshots/logs; link to QG Epic." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#A5B4FC;fontSize=10;fontStyle=2;fontColor=#4338CA;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="352" y="1496" width="1217" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_e_p6_summary" value="All paths" style="edgeStyle=orthogonalEdgeStyle;fontSize=10;fontStyle=2;strokeColor=#9CA3AF;fontColor=#6B7280;labelBackgroundColor=#FFFDF5;dashed=1;" parent="1" source="a0_ph6" target="a0_end_mixed" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+
+                <!-- End states -->
+                <mxCell id="a0_end_pass" value="✅ Lifecycle complete — all tests passed; final Test Execution Summary (Phase 5)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=13;fontStyle=1;fontColor=#14532D;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="1648" width="760" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_end_mixed" value="🏁 After Phase 6 — FailureReport in TestResults/ + loops to Phase 3/4 or QG bug (🔴 only)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#6366F1;fontSize=12;fontStyle=1;fontColor=#312E81;" parent="1" vertex="1">
+                    <mxGeometry x="825" y="1648" width="760" height="52" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_end_note" value="ATL Version 2 (see atl version 2.md): pom.md path + TestResults/FailureReport_*; 🟡 uses xpath-doc-generator when returning to Phase 3." style="text;html=1;strokeColor=none;fillColor=none;align=center;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#6B7280;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="1712" width="1536" height="32" as="geometry"/>
+                </mxCell>
+
+                <!-- Legend -->
+                <mxCell id="a0_leg_title" value="LEGEND" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=13;fontStyle=1;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="1760" width="200" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l1s" value="" style="rounded=1;fillColor=#EFF6FF;strokeColor=#3B82F6;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="1792" width="28" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l1t" value="Phase 1 — Requirements (input / data)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="85" y="1792" width="328" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l2s" value="" style="rounded=1;fillColor=#F5F3FF;strokeColor=#8B5CF6;" parent="1" vertex="1">
+                    <mxGeometry x="437" y="1792" width="28" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l2t" value="Phase 2 — Test design (Jira)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="473" y="1792" width="328" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l3s" value="" style="rounded=1;fillColor=#FFFBEB;strokeColor=#F59E0B;" parent="1" vertex="1">
+                    <mxGeometry x="825" y="1792" width="28" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l3t" value="Phase 3 — POM as pom.md + XPath validation (amber)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="861" y="1792" width="360" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l4s" value="" style="rounded=1;fillColor=#F0FDF4;strokeColor=#22C55E;" parent="1" vertex="1">
+                    <mxGeometry x="1229" y="1792" width="28" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l4t" value="Phase 4 — Scripting (green)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="1265" y="1792" width="320" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l5s" value="" style="rounded=1;fillColor=#F9FAFB;strokeColor=#16A34A;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="1824" width="28" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l5t" value="Phase 5 — Execution (neutral + green stroke)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="85" y="1824" width="328" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l6s" value="" style="rounded=1;fillColor=#EEF2FF;strokeColor=#6366F1;" parent="1" vertex="1">
+                    <mxGeometry x="437" y="1824" width="28" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l6t" value="Phase 6 — Failure investigation (indigo)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="473" y="1824" width="328" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l7s" value="" style="rhombus;fillColor=#FFFBEB;strokeColor=#F59E0B;" parent="1" vertex="1">
+                    <mxGeometry x="825" y="1822" width="28" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l7t" value="Decision / validation gate" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="861" y="1824" width="360" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l8s" value="" style="rounded=1;fillColor=#FFF1F2;strokeColor=#F43F5E;" parent="1" vertex="1">
+                    <mxGeometry x="1229" y="1824" width="28" height="22" as="geometry"/>
+                </mxCell>
+                <mxCell id="a0_l8t" value="Stop / HALT / hard failure" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;fontColor=#1a1a1a;" parent="1" vertex="1">
+                    <mxGeometry x="1265" y="1824" width="320" height="22" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
