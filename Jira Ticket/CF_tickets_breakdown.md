@@ -1,11 +1,31 @@
 # 📋 Cash Forecast Feature — Full Ticket Breakdown
 
 > **Epic:** [`KS-950`](https://gendvn.atlassian.net/browse/KS-950) — Cash Forecasting Model
-> **Total Tickets:** 13 active stories *(CF-13 Liquidity Dashboard **removed from scope** per Kathleen Bui on `KS-939`, 2026-04-07)*
+> **Total Tickets:** 13 active stories *(CF-13 ([`KS-971`](https://gendvn.atlassian.net/browse/KS-971)) Liquidity Dashboard **removed from scope** per Kathleen Bui on `KS-939`, 2026-04-07)*
 > **Team:** 1 Frontend Developer + 1 Backend Developer
 > **Currency:** USD only · **Display format:** Whole numbers (no decimal), HALF_UP rounding *(note: decimal precision may be updated in future)*
 > **Figma:** [Cash Forecast ↗](https://www.figma.com/design/snoshiSrFZ7c0i08Mvmcrm/Cash-Forecast?node-id=0-1&m=dev&t=qfA6kQm8fndkeZIs-1)
-> **Generated:** 2026-04-13 *(reconciled with [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) through **2026-04-10** via Jira MCP; **latest comment** = Kathleen Bui — **team-confirmed** default forecast parameters: Manual, 8% / 33%, $50M, 20%)*
+> **Generated:** 2026-04-13 *(reconciled with [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) through **2026-04-10** via Jira MCP; **latest comment** = Kathleen Bui — **team-confirmed** default forecast parameters: Manual, 8% / 33%, $50M, 20%)*  
+> **CF ↔ Jira:** Each **CF-*n*** below maps to a **`KS`-958…`KS`-971** story; keys were **re-verified** via Atlassian MCP on **2026-04-15**. *(Jira key order ≠ CF number order: e.g. **CF-14** = [`KS-959`](https://gendvn.atlassian.net/browse/KS-959), **CF-13** = [`KS-971`](https://gendvn.atlassian.net/browse/KS-971).)*
+
+### CF-*n* → Jira (`KS`-958–`KS`-971)
+
+| CF | Jira | Jira summary |
+|---|---|---|
+| CF-1 | [`KS-958`](https://gendvn.atlassian.net/browse/KS-958) | Cash Forecast - Add "Cash Forecast" Tab and Sub-Navigation to Aloha Platform |
+| CF-2 | [`KS-961`](https://gendvn.atlassian.net/browse/KS-961) | Cash Forecast - Implement Forecast Parameters Configuration Panel |
+| CF-3 | [`KS-960`](https://gendvn.atlassian.net/browse/KS-960) | Cash Forecast - Implement "Fixed Income, Cash and Derivatives" Dashboard Summary Card |
+| CF-4 | [`KS-962`](https://gendvn.atlassian.net/browse/KS-962) | Cash Forecast - Implement Projected Cash Balance Chart from Compute Server |
+| CF-5 | [`KS-963`](https://gendvn.atlassian.net/browse/KS-963) | Cash Forecast - Implement Hypothetical Flows (Save, Share, Team Flows) |
+| CF-6 | [`KS-964`](https://gendvn.atlassian.net/browse/KS-964) | Cash Forecast - Implement "Calculate Impact" Button and Compute Server Integration |
+| CF-7 | [`KS-965`](https://gendvn.atlassian.net/browse/KS-965) | Cash Forecast - Implement Projected Cash Flow Month/Day/Transaction Drill-Down |
+| CF-8 | [`KS-966`](https://gendvn.atlassian.net/browse/KS-966) | Cash Forecast - Implement Historical As-Of-Date View for Cash Balance and Beta Projection |
+| CF-9 | [`KS-967`](https://gendvn.atlassian.net/browse/KS-967) | Cash Forecast - Implement Net Cash Flow Graph on Historical Tab |
+| CF-10 | [`KS-968`](https://gendvn.atlassian.net/browse/KS-968) | Cash Forecast - Implement Capital Calls and Distributions Chart on Historical Tab |
+| CF-11 | [`KS-969`](https://gendvn.atlassian.net/browse/KS-969) | Cash Forecast - Implement Capital Calls and Distributions % of NAV Summary Table |
+| CF-12 | [`KS-970`](https://gendvn.atlassian.net/browse/KS-970) | Cash Forecast - Implement Future Transactions Table with Filters and Excel Export on Details Tab |
+| CF-13 | [`KS-971`](https://gendvn.atlassian.net/browse/KS-971) | Cash Forecast - [REMOVED] Liquidity Dashboard Tab - Out of Scope |
+| CF-14 | [`KS-959`](https://gendvn.atlassian.net/browse/KS-959) | Cash Forecast - Auto-Fetch Live fad_beta Value from Aloha Homepage |
 
 ---
 
@@ -13,33 +33,33 @@
 
 ```
 Sprint 1 (Foundation — no dependencies):
-  CF-1  Navigation Shell
-  CF-14 fad_beta Integration
-  CF-3  Summary Table
+  CF-1 ([`KS-958`](https://gendvn.atlassian.net/browse/KS-958))  Navigation Shell
+  CF-14 ([`KS-959`](https://gendvn.atlassian.net/browse/KS-959)) fad_beta Integration
+  CF-3 ([`KS-960`](https://gendvn.atlassian.net/browse/KS-960))  Summary Table
 
-Sprint 2 (Dashboard core — depends on CF-1, CF-14):
-  CF-2  Forecast Parameters Panel
-  CF-4  Projected Balance Chart
-  CF-5  Hypothetical Flows Management
+Sprint 2 (Dashboard core — depends on CF-1 ([`KS-958`](https://gendvn.atlassian.net/browse/KS-958)), CF-14 ([`KS-959`](https://gendvn.atlassian.net/browse/KS-959))):
+  CF-2 ([`KS-961`](https://gendvn.atlassian.net/browse/KS-961))  Forecast Parameters Panel
+  CF-4 ([`KS-962`](https://gendvn.atlassian.net/browse/KS-962))  Projected Balance Chart
+  CF-5 ([`KS-963`](https://gendvn.atlassian.net/browse/KS-963))  Hypothetical Flows Management
 
-Sprint 3 (Dashboard advanced — depends on CF-4, CF-5):
-  CF-6  Calculate Impact Integration
-  CF-7  Projected Cash Flow Drill-Down
-  CF-8  Historical As-Of-Date Lookup
+Sprint 3 (Dashboard advanced — depends on CF-4 ([`KS-962`](https://gendvn.atlassian.net/browse/KS-962)), CF-5 ([`KS-963`](https://gendvn.atlassian.net/browse/KS-963))):
+  CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964))  Calculate Impact Integration
+  CF-7 ([`KS-965`](https://gendvn.atlassian.net/browse/KS-965))  Projected Cash Flow Drill-Down
+  CF-8 ([`KS-966`](https://gendvn.atlassian.net/browse/KS-966))  Historical As-Of-Date Lookup
 
-Sprint 4 (Historical Tab — depends on CF-1):
-  CF-9  Net Cash Flow Graph
-  CF-10 Capital Calls & Distributions Chart
-  CF-11 Asset Class Filter + % of NAV Table
+Sprint 4 (Historical Tab — depends on CF-1 ([`KS-958`](https://gendvn.atlassian.net/browse/KS-958))):
+  CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967))  Net Cash Flow Graph
+  CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)) Capital Calls & Distributions Chart
+  CF-11 ([`KS-969`](https://gendvn.atlassian.net/browse/KS-969)) Asset Class Filter + % of NAV Table
 
 Sprint 5 (Details Tab):
-  CF-12 Transactions Table with Filters & Export
+  CF-12 ([`KS-970`](https://gendvn.atlassian.net/browse/KS-970)) Transactions Table with Filters & Export
 ```
 
 ---
 ---
 
-## CF-1 — Cash Forecast Navigation Shell
+## CF-1 ([`KS-958`](https://gendvn.atlassian.net/browse/KS-958)) — Cash Forecast Navigation Shell
 
 **Ticket Title:** `Cash Forecast - Add "Cash Forecast" Tab and Sub-Navigation to Aloha Platform`
 
@@ -113,7 +133,7 @@ stateDiagram-v2
 ---
 ---
 
-## CF-2 — Dashboard Tab: Forecast Parameters Panel
+## CF-2 ([`KS-961`](https://gendvn.atlassian.net/browse/KS-961)) — Dashboard Tab: Forecast Parameters Panel
 
 **Ticket Title:** `Cash Forecast - Implement Forecast Parameters Configuration Panel`
 
@@ -123,7 +143,7 @@ stateDiagram-v2
 > As a **Portfolio Manager**, I want to configure forecast parameters through a panel before running the cash forecast model so that the model reflects the correct pacing method and buffer thresholds for my scenario.
 
 **Overview:**
-This ticket implements the "Forecast Parameters" button and its associated modal/sidebar panel on the Dashboard sub-tab. The panel allows users to configure the Illiquid Pacing Method and Buffer Parameters that are passed as inputs to the compute server when "Calculate Impact" is triggered (CF-6). These parameters drive the shape of the projected cash forecast output.
+This ticket implements the "Forecast Parameters" button and its associated modal/sidebar panel on the Dashboard sub-tab. The panel allows users to configure the Illiquid Pacing Method and Buffer Parameters that are passed as inputs to the compute server when "Calculate Impact" is triggered (CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964))). These parameters drive the shape of the projected cash forecast output.
 
 **Detailed Requirements:**
 - A **"Forecast Parameters"** button must be visible on the Dashboard sub-tab, opening a modal or sidebar panel when clicked.
@@ -160,7 +180,7 @@ This ticket implements the "Forecast Parameters" button and its associated modal
 **Forecast Parameters panel — default rows on open:** *(Kathleen Bui, `KS-939` 2026-04-09)*  
 - The table of values in the panel must default to **real as-of data from the database** (datalake / authoritative sources). Values are always DB-backed for this panel — **do not** blend in hypothetical flows in this table.
 
-- A **"Apply"** or **"Save"** button must confirm and close the panel, storing the selected parameters in state for use when CF-6 "Calculate Impact" is triggered.
+- A **"Apply"** or **"Save"** button must confirm and close the panel, storing the selected parameters in state for use when CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964)) "Calculate Impact" is triggered.
 - A **"Cancel"** button must discard changes and close the panel.
 - Parameters must persist in the session until the user explicitly changes them or navigates away.
 - *(Note: User role restrictions on this panel are TBD — currently any logged-in user may configure parameters. This may be updated in a future ticket.)*
@@ -173,7 +193,7 @@ This ticket implements the "Forecast Parameters" button and its associated modal
   - `Open (Auto/Historical)` — panel shows pacing radio + buffer fields only.
   - `Open (Manual)` — panel expands to show Distribution % + Contribution % inputs with live $ calculation.
   - `Validation Error` — inline error messages under invalid fields (e.g., "Required", "Must be between 0 and 100").
-  - `Applied` — panel closes; parameters held in state; "Calculate Impact" (CF-6) becomes enabled.
+  - `Applied` — panel closes; parameters held in state; "Calculate Impact" (CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964))) becomes enabled.
 - **Accessibility:** Modal must trap focus when open. All inputs must have `<label>` elements. Percentage fields must have `aria-describedby` pointing to their calculated dollar amount display.
 
 ```mermaid
@@ -219,7 +239,7 @@ stateDiagram-v2
 ---
 ---
 
-## CF-3 — Dashboard Tab: Summary Table (Fixed Income & Cash)
+## CF-3 ([`KS-960`](https://gendvn.atlassian.net/browse/KS-960)) — Dashboard Tab: Summary Table (Fixed Income & Cash)
 
 **Ticket Title:** `Cash Forecast - Implement Fixed Income and Cash Summary Table on Dashboard`
 
@@ -278,7 +298,7 @@ This ticket implements the summary table on the Dashboard sub-tab that presents 
 
 ---
 
-## CF-4 — Dashboard Tab: Projected Balance Chart
+## CF-4 ([`KS-962`](https://gendvn.atlassian.net/browse/KS-962)) — Dashboard Tab: Projected Balance Chart
 
 **Ticket Title:** `Cash Forecast - Implement Projected Cash Balance Chart from Compute Server`
 
@@ -288,9 +308,9 @@ This ticket implements the summary table on the Dashboard sub-tab that presents 
 > As a **Portfolio Manager**, I want to see a projected cash balance chart on the Dashboard that pre-loads with the morning compute server run so that I have an up-to-date forecast view as soon as I open the page, without needing to manually trigger a calculation.
 
 **Overview:**
-This ticket implements the combined bar and line chart on the Cash Forecast Dashboard that visualises the projected cash balance, closing risk, and buffer thresholds. On initial page load, the chart is pre-populated with the most recent morning compute server run result. The chart updates when the user clicks "Calculate Impact" (CF-6). It also displays the `deriv_notional_value` as a key metric above or alongside the chart.
+This ticket implements the combined bar and line chart on the Cash Forecast Dashboard that visualises the projected cash balance, closing risk, and buffer thresholds. On initial page load, the chart is pre-populated with the most recent morning compute server run result. The chart updates when the user clicks "Calculate Impact" (CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964))). It also displays the `deriv_notional_value` as a key metric above or alongside the chart.
 
-*(Scheduled daily run inputs — tuan tran, `KS-939` 2026-04-09: **`hypothetical_trades`** for the automated job should use the **fund future transactions** table; user-authored hypothetical rows from CF-5 apply on **Calculate Impact**.)*
+*(Scheduled daily run inputs — tuan tran, `KS-939` 2026-04-09: **`hypothetical_trades`** for the automated job should use the **fund future transactions** table; user-authored hypothetical rows from CF-5 ([`KS-963`](https://gendvn.atlassian.net/browse/KS-963)) apply on **Calculate Impact**.)*
 
 **Detailed Requirements:**
 - On Dashboard initial load, fetch the latest compute server morning-run output from `body['base']['cash_flow_table']` via the compute server API.
@@ -304,7 +324,7 @@ This ticket implements the combined bar and line chart on the Cash Forecast Dash
 | `Buffer` | Line (reference) | Grey dashed |
 
 - Display **`deriv_notional_value`** (from `body['base']['deriv_notional_value']`) as a prominent summary metric card above or adjacent to the chart. Value displayed in USD, whole number, HALF_UP. *(Note: decimal precision may change in a future iteration.)*
-- The chart must reflect the **default morning-run parameters** (no user-configured parameters applied until CF-6 "Calculate Impact" is triggered).
+- The chart must reflect the **default morning-run parameters** (no user-configured parameters applied until CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964)) "Calculate Impact" is triggered).
 - The chart must show a "Last updated: [timestamp]" label indicating when the morning run data was generated.
 - If no morning run data is available (e.g., weekend, holiday, first deploy), display an empty state with the message: `"No forecast data available for today. Data refreshes each business day morning."`.
 
@@ -316,7 +336,7 @@ This ticket implements the combined bar and line chart on the Cash Forecast Dash
   - `Success` — chart renders with all three series; metric card shows `deriv_notional_value`.
   - `Error` — inline banner: `"Unable to load forecast data. Please try again."` Chart area shows error state, not blank.
   - `Empty State` — message: `"No forecast data available for today."` shown when API returns no data.
-  - `Updated` — chart re-renders with new data after CF-6 "Calculate Impact" is triggered (handled by CF-6 ticket).
+  - `Updated` — chart re-renders with new data after CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964)) "Calculate Impact" is triggered (handled by CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964)) ticket).
 - **Accessibility:** Chart must include an `aria-label` describing the chart type and date. Tooltip values must be keyboard-accessible via focus states.
 
 ```mermaid
@@ -325,7 +345,7 @@ stateDiagram-v2
     Loading --> Success : API returns morning-run data
     Loading --> Error : API returns 4xx/5xx or timeout
     Loading --> Empty : API returns no data
-    Success --> Updated : CF-6 "Calculate Impact" completes
+    Success --> Updated : KS-964 Calculate Impact completes
     Updated --> Success : Display label updated
     Error --> Loading : User retries
     Empty --> Loading : User retries
@@ -358,7 +378,7 @@ stateDiagram-v2
 ---
 ---
 
-## CF-5 — Dashboard Tab: Hypothetical Flows Management
+## CF-5 ([`KS-963`](https://gendvn.atlassian.net/browse/KS-963)) — Dashboard Tab: Hypothetical Flows Management
 
 **Ticket Title:** `Cash Forecast - Implement Hypothetical Flows Entry, Save/Share, and Team Flows`
 
@@ -392,7 +412,7 @@ This ticket implements the Hypothetical Flows section on the Dashboard per **`KS
 - **"My Saved Flows"** dropdown in the controls bar: lists the current user's saved sets, **most recently saved first**. Selecting a set loads it into the table. If the user has **unsaved edits** and selects a different set, **confirm** before replacing current inputs.
 - **"Team Flows"** dropdown: lists flow sets **shared by any user** (read-only for non-owners). At product launch, **no team flows exist until someone shares** — Kathleen Bui (2026-04-08).
 - **Owner controls** (only for sets the current user created; mockups approved Kathleen 2026-04-09): **Share / Unshare**, **Rename** (inline, name updates everywhere), **Delete** (confirm; if shared, note that it will be removed from Team Flows). **No other user** may modify, share, or delete a set they did not create.
-- All persisted data must be **server-side per user account** (not browser-session only). Flows are passed to the compute server when **"Calculate Impact"** (CF-6) is triggered.
+- All persisted data must be **server-side per user account** (not browser-session only). Flows are passed to the compute server when **"Calculate Impact"** (CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964))) is triggered.
 
 **UI/UX & Front-End Considerations:**
 - **Layout:** Section below Forecast Parameters; rows with toggle, fund, dates, amount, type; header with Save Flows + dual dropdowns (My Saved Flows / Team Flows). Align with Figma / approved mockups attached to `KS-939`.
@@ -442,7 +462,7 @@ stateDiagram-v2
 ---
 ---
 
-## CF-6 — Dashboard Tab: "Calculate Impact" Compute Server Integration
+## CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964)) — Dashboard Tab: "Calculate Impact" Compute Server Integration
 
 **Ticket Title:** `Cash Forecast - Implement "Calculate Impact" Button and Compute Server Integration`
 
@@ -452,17 +472,17 @@ stateDiagram-v2
 > As a **Portfolio Manager**, I want to click "Calculate Impact" after configuring my parameters and hypothetical flows so that the forecast charts update immediately to reflect my scenario inputs.
 
 **Overview:**
-This ticket implements the "Calculate Impact" button on the Cash Forecast Dashboard and its full integration with the compute server. When clicked, the button assembles the current forecast parameters (from CF-2), the active hypothetical flows (from CF-5), and the live `fad_beta` value (from CF-14), sends them to the compute server endpoint, and updates the Projected Balance Chart (CF-4) and related outputs with the new result.
+This ticket implements the "Calculate Impact" button on the Cash Forecast Dashboard and its full integration with the compute server. When clicked, the button assembles the current forecast parameters (from CF-2 ([`KS-961`](https://gendvn.atlassian.net/browse/KS-961))), the active hypothetical flows (from CF-5 ([`KS-963`](https://gendvn.atlassian.net/browse/KS-963))), and the live `fad_beta` value (from CF-14 ([`KS-959`](https://gendvn.atlassian.net/browse/KS-959))), sends them to the compute server endpoint, and updates the Projected Balance Chart (CF-4 ([`KS-962`](https://gendvn.atlassian.net/browse/KS-962))) and related outputs with the new result.
 
 **Detailed Requirements:**
-- A **"Calculate Impact"** button must be visible and enabled on the Dashboard sub-tab at all times (after CF-1 is deployed).
+- A **"Calculate Impact"** button must be visible and enabled on the Dashboard sub-tab at all times (after CF-1 ([`KS-958`](https://gendvn.atlassian.net/browse/KS-958)) is deployed).
 - On click, the button assembles the following payload and sends it to:
   `POST http://0.0.0.0:5001/managers/cash_forecast_model`
-  - Forecast parameters from CF-2 (Illiquid Pacing Method, Buffer Parameters)
-  - Active hypothetical flows from CF-5 (only those with include toggle = ON)
-  - `fad_beta` — live real-time beta value auto-fetched from Aloha homepage (CF-14)
+  - Forecast parameters from CF-2 ([`KS-961`](https://gendvn.atlassian.net/browse/KS-961)) (Illiquid Pacing Method, Buffer Parameters)
+  - Active hypothetical flows from CF-5 ([`KS-963`](https://gendvn.atlassian.net/browse/KS-963)) (only those with include toggle = ON)
+  - `fad_beta` — live real-time beta value auto-fetched from Aloha homepage (CF-14 ([`KS-959`](https://gendvn.atlassian.net/browse/KS-959)))
 - The button must display a **loading state** ("Calculating...") while the API call is in flight. The button must be disabled during the call to prevent double-submission.
-- On **success**: update the Projected Balance Chart (CF-4), `deriv_notional_value` metric card, and Projected Cash Flow Drill-Down (CF-7) with the new compute server response. Update the "Last updated" timestamp.
+- On **success**: update the Projected Balance Chart (CF-4 ([`KS-962`](https://gendvn.atlassian.net/browse/KS-962))), `deriv_notional_value` metric card, and Projected Cash Flow Drill-Down (CF-7 ([`KS-965`](https://gendvn.atlassian.net/browse/KS-965))) with the new compute server response. Update the "Last updated" timestamp.
 - On **error**: display a toast notification: `"Calculation failed. Please check your inputs and try again."` Charts revert to the last successful state (morning run or previous calculation).
 - The API response follows the contract defined in `KS-949` (`cash_forecast_response.json`).
 - Response timeout: if the API does not respond within **60 seconds**, treat as an error and show the timeout message: `"Calculation timed out. Please try again."`.
@@ -517,7 +537,7 @@ stateDiagram-v2
 ---
 ---
 
-## CF-7 — Dashboard Tab: Projected Cash Flow Drill-Down
+## CF-7 ([`KS-965`](https://gendvn.atlassian.net/browse/KS-965)) — Dashboard Tab: Projected Cash Flow Drill-Down
 
 **Ticket Title:** `Cash Forecast - Implement Projected Cash Flow Month/Day/Transaction Drill-Down`
 
@@ -535,7 +555,7 @@ This ticket implements the layered drill-down section below the Projected Balanc
 - Expanding a month row reveals **daily aggregated cash movement rows** for that month.
 - Clicking a **daily row value** opens a **modal** displaying all underlying individual transactions for that day.
 - Transaction detail modal must show: Transaction ID, Fund, Transaction Type, Amount (USD, whole number, HALF_UP), Cash Date, Effective Date, and beta-related columns if available from the compute server output.
-- Data source: compute server response (`body['base']['cash_flow_table']` and transactions table). On initial load, uses the morning run. Updates when CF-6 "Calculate Impact" completes.
+- Data source: compute server response (`body['base']['cash_flow_table']` and transactions table). On initial load, uses the morning run. Updates when CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964)) "Calculate Impact" completes.
 - Monthly and daily amounts displayed in USD, whole number, HALF_UP. *(Note: decimal precision may change.)*
 - The section must handle up to 12 months of forward-looking data.
 
@@ -590,7 +610,7 @@ stateDiagram-v2
 ---
 ---
 
-## CF-8 — Dashboard Tab: Historical As-Of-Date Lookup
+## CF-8 ([`KS-966`](https://gendvn.atlassian.net/browse/KS-966)) — Dashboard Tab: Historical As-Of-Date Lookup
 
 **Ticket Title:** `Cash Forecast - Implement Historical As-Of-Date View for Cash Balance and Beta Projection`
 
@@ -652,7 +672,7 @@ This ticket implements the as-of-date lookup feature on the Dashboard sub-tab. U
 ---
 ---
 
-## CF-9 — Historical Tab: Net Cash Flow Graph
+## CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967)) — Historical Tab: Net Cash Flow Graph
 
 **Ticket Title:** `Cash Forecast - Implement Net Cash Flow Graph on Historical Tab`
 
@@ -662,13 +682,13 @@ This ticket implements the as-of-date lookup feature on the Dashboard sub-tab. U
 > As a **Portfolio Manager**, I want to view a historical net cash flow graph filtered by date range and asset class so that I can analyse aggregated cash flow trends across drawdown funds over time.
 
 **Overview:**
-This ticket implements the Net Cash Flow graph on the Historical sub-tab. The chart shows aggregated net cash flows (Distributions minus Capital Calls) per asset class, with a shared date range selector that also drives the Capital Calls & Distributions chart (CF-10). The interval logic automatically switches between monthly and quarterly based on the selected period.
+This ticket implements the Net Cash Flow graph on the Historical sub-tab. The chart shows aggregated net cash flows (Distributions minus Capital Calls) per asset class, with a shared date range selector that also drives the Capital Calls & Distributions chart (CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968))). The interval logic automatically switches between monthly and quarterly based on the selected period.
 
 **Detailed Requirements:**
 - Display a **date range selector** at the top of the Historical tab with two date pickers: **Start Date** and **End Date**.
   - Start Date: restricted to **month-end dates only**.
   - End Date: restricted to **month-end dates** OR **today's date**.
-- **Interval logic** (applies to both CF-9 and CF-10):
+- **Interval logic** (applies to both CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967)) and CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968))):
   - Selected period **< 1.5 years** → display **monthly intervals**.
   - Selected period **≥ 1.5 years** → display **quarterly intervals**. Sum monthly values that make up each quarter.
 - Display a **stacked bar chart** of Net Cash Flow per asset class for the selected date range. Net Cash Flow = Distributions − Capital Calls.
@@ -680,10 +700,10 @@ This ticket implements the Net Cash Flow graph on the Historical sub-tab. The ch
   - Example: `"AR Net Cash Flow: -60.1 | AR Capital Calls: 63.6 | AR Distributions: 3.5"`
 - Data source: Datalake — Historical Capital Calls/Distributions by Asset Class (`KS-934`).
 - All amounts in USD, whole number, HALF_UP. *(Note: decimal precision may change.)*
-- **Traceability (`KS-939`, 2026-04-07):** The **30-calendar-day** as-of restriction applies **only** to the **Dashboard** as-of-date picker (**CF-8**). It does **not** constrain this Historical tab **shared date range** (month-end start/end rules above).
+- **Traceability (`KS-939`, 2026-04-07):** The **30-calendar-day** as-of restriction applies **only** to the **Dashboard** as-of-date picker (**CF-8 ([`KS-966`](https://gendvn.atlassian.net/browse/KS-966))**). It does **not** constrain this Historical tab **shared date range** (month-end start/end rules above).
 
 **UI/UX & Front-End Considerations:**
-- **Layout:** Date range selector at top of Historical tab (shared with CF-10). Net Cash Flow graph below the selector.
+- **Layout:** Date range selector at top of Historical tab (shared with CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968))). Net Cash Flow graph below the selector.
 - **Interactive Elements:** Two date pickers (month-end restricted), hover tooltips on chart bars.
 - **State Changes:**
   - `Default` — chart loads with a sensible default date range (e.g., last 12 months to today).
@@ -720,7 +740,7 @@ This ticket implements the Net Cash Flow graph on the Historical sub-tab. The ch
 ---
 ---
 
-## CF-10 — Historical Tab: Capital Calls & Distributions Stacked Bar Chart
+## CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)) — Historical Tab: Capital Calls & Distributions Stacked Bar Chart
 
 **Ticket Title:** `Cash Forecast - Implement Capital Calls and Distributions Chart on Historical Tab`
 
@@ -730,11 +750,11 @@ This ticket implements the Net Cash Flow graph on the Historical sub-tab. The ch
 > As a **Portfolio Manager**, I want to view historical capital calls and distributions by asset class in a stacked bar chart so that I can understand funding activity trends across investment categories over a selected period.
 
 **Overview:**
-This ticket implements the Capital Calls and Distributions stacked bar chart on the Historical sub-tab. Capital calls and distributions are displayed as **separate bars** (not netted) per asset class. The chart uses the same date range selector as CF-9 and the same interval logic. Users can filter displayed asset classes via a dropdown.
+This ticket implements the Capital Calls and Distributions stacked bar chart on the Historical sub-tab. Capital calls and distributions are displayed as **separate bars** (not netted) per asset class. The chart uses the same date range selector as CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967)) and the same interval logic. Users can filter displayed asset classes via a dropdown.
 
 **Detailed Requirements:**
-- Uses the **same date range selector** implemented in CF-9 (Start Date = month-end, End Date = month-end or today). Changes to the date range update both CF-9 and CF-10 simultaneously.
-- Uses the **same interval logic** as CF-9 (monthly < 1.5 years, quarterly ≥ 1.5 years; sum monthly values for quarterly display).
+- Uses the **same date range selector** implemented in CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967)) (Start Date = month-end, End Date = month-end or today). Changes to the date range update both CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967)) and CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)) simultaneously.
+- Uses the **same interval logic** as CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967)) (monthly < 1.5 years, quarterly ≥ 1.5 years; sum monthly values for quarterly display).
 - Capital calls and distributions are shown **as separate bars** (not aggregated or netted). Each period will have two bar groups: one for capital calls, one for distributions.
 - An **asset class dropdown filter** allows users to show/hide specific asset classes. All asset classes shown by default. Multi-select supported.
 - Default asset class list:
@@ -748,10 +768,10 @@ This ticket implements the Capital Calls and Distributions stacked bar chart on 
   - All Other
 - Data source: Datalake — Historical Capital Calls/Distributions by Asset Class (`KS-934`).
 - All amounts in USD, whole number, HALF_UP. *(Note: decimal precision may change.)*
-- **Traceability (`KS-939`, 2026-04-07):** Same as **CF-9** — the **30-day** Dashboard as-of rule (**CF-8**) does **not** apply to the Historical tab shared date range used with **CF-9**.
+- **Traceability (`KS-939`, 2026-04-07):** Same as **CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967))** — the **30-day** Dashboard as-of rule (**CF-8 ([`KS-966`](https://gendvn.atlassian.net/browse/KS-966))**) does **not** apply to the Historical tab shared date range used with **CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967))**.
 
 **UI/UX & Front-End Considerations:**
-- **Layout:** Below the Net Cash Flow graph (CF-9) on the Historical tab, sharing the date range selector. Asset class dropdown positioned above the chart.
+- **Layout:** Below the Net Cash Flow graph (CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967))) on the Historical tab, sharing the date range selector. Asset class dropdown positioned above the chart.
 - **Interactive Elements:** Asset class multi-select dropdown, hover tooltips per bar segment showing asset class and amount.
 - **State Changes:**
   - `Default` — all asset classes selected; chart shows full dataset for the selected period.
@@ -788,7 +808,7 @@ This ticket implements the Capital Calls and Distributions stacked bar chart on 
 ---
 ---
 
-## CF-11 — Historical Tab: Asset Class Filter + % of NAV Table
+## CF-11 ([`KS-969`](https://gendvn.atlassian.net/browse/KS-969)) — Historical Tab: Asset Class Filter + % of NAV Table
 
 **Ticket Title:** `Cash Forecast - Implement Capital Calls and Distributions % of NAV Summary Table`
 
@@ -798,22 +818,22 @@ This ticket implements the Capital Calls and Distributions stacked bar chart on 
 > As a **Portfolio Manager**, I want to see a summary table of capital calls and distributions expressed as percentages of NAV so that I can evaluate funding activity relative to portfolio size across selected time intervals.
 
 **Overview:**
-This ticket implements the summary data table on the Historical sub-tab that displays capital calls and distributions as percentages of NAV and as a percentage of distribution, aligned to the same intervals shown in the CF-10 chart. The table is driven by the same date range and asset class filter selections.
+This ticket implements the summary data table on the Historical sub-tab that displays capital calls and distributions as percentages of NAV and as a percentage of distribution, aligned to the same intervals shown in the CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)) chart. The table is driven by the same date range and asset class filter selections.
 
 **Detailed Requirements:**
-- Display a table below the Capital Calls & Distributions chart (CF-10) on the Historical tab.
-- Table rows represent asset classes; columns represent the selected time intervals (monthly or quarterly, same logic as CF-9/CF-10).
+- Display a table below the Capital Calls & Distributions chart (CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968))) on the Historical tab.
+- Table rows represent asset classes; columns represent the selected time intervals (monthly or quarterly, same logic as CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967))/CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968))).
 - Each cell shows capital calls and distributions for that asset class/period as:
   - **% of NAV** — `(Capital Call or Distribution Amount / NAV for that period) × 100`, displayed as percentage to 2 decimal places (e.g., `2.35%`). *(Note: NAV decimal precision is 2dp at this stage; may change.)*
   - **% of Distribution** — proportional share of total distributions for that period per asset class.
-- The table must respond to the **same asset class filter** as CF-10 — deselecting an asset class removes its row from the table.
-- The table must respond to the **same date range** as CF-9/CF-10.
+- The table must respond to the **same asset class filter** as CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)) — deselecting an asset class removes its row from the table.
+- The table must respond to the **same date range** as CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967))/CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)).
 - Data source: Datalake — Historical Capital Calls/Distributions by Asset Class + Unfunded & NAV by Asset Class (`KS-934`).
-- **Traceability (`KS-939`, 2026-04-07):** Same as **CF-9** / **CF-10** — **CF-8**’s **30-day** Dashboard as-of rule does **not** apply to the Historical tab date range driving this table.
+- **Traceability (`KS-939`, 2026-04-07):** Same as **CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967))** / **CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968))** — **CF-8 ([`KS-966`](https://gendvn.atlassian.net/browse/KS-966))**’s **30-day** Dashboard as-of rule does **not** apply to the Historical tab date range driving this table.
 
 **UI/UX & Front-End Considerations:**
-- **Layout:** Tabular grid below the CF-10 chart. Scrollable horizontally if many time intervals. Sticky first column for asset class names.
-- **Interactive Elements:** Responds reactively to date range and asset class filter changes from CF-9/CF-10. No additional interactive elements on the table itself.
+- **Layout:** Tabular grid below the CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)) chart. Scrollable horizontally if many time intervals. Sticky first column for asset class names.
+- **Interactive Elements:** Responds reactively to date range and asset class filter changes from CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967))/CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)). No additional interactive elements on the table itself.
 - **State Changes:**
   - `Default` — table displays all asset classes and current interval data.
   - `Filtered` — table rows update when asset class filter changes.
@@ -832,7 +852,7 @@ This ticket implements the summary data table on the Historical sub-tab that dis
 *Scenario 2 — Error Path: NAV data unavailable from datalake*
 - **Given** a user is viewing the Historical tab
 - **When** the datalake NAV API call returns a 404
-- **Then** an inline error `"Unable to load NAV data. Please try again."` is shown below the CF-10 chart and the table does not render blank cells
+- **Then** an inline error `"Unable to load NAV data. Please try again."` is shown below the CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)) chart and the table does not render blank cells
 
 *Scenario 3 — Edge Case: Asset class with zero NAV for a period*
 - **Given** an asset class has a NAV value of zero for a given period
@@ -849,7 +869,7 @@ This ticket implements the summary data table on the Historical sub-tab that dis
 ---
 ---
 
-## CF-12 — Details Tab: Future Transactions Table with Filters & Export
+## CF-12 ([`KS-970`](https://gendvn.atlassian.net/browse/KS-970)) — Details Tab: Future Transactions Table with Filters & Export
 
 **Ticket Title:** `Cash Forecast - Implement Future Transactions Table with Filters and Excel Export on Details Tab`
 
@@ -859,17 +879,17 @@ This ticket implements the summary data table on the Historical sub-tab that dis
 > As a **Portfolio Manager**, I want to view, filter, and export the full list of future transactions underlying the cash forecast — including beta metrics — so that I can perform detailed analysis and share the data with stakeholders.
 
 **Overview:**
-This ticket implements the Details sub-tab content: a filterable, exportable table of all future transactions that comprise the cash forecast. Data is sourced from the compute server response (same call as CF-6), which includes the daily-loaded transaction data enriched with `beta`, `beta_contribution`, and `beta_impact` columns. Hypothetical trades are also included.
+This ticket implements the Details sub-tab content: a filterable, exportable table of all future transactions that comprise the cash forecast. Data is sourced from the compute server response (same call as CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964))), which includes the daily-loaded transaction data enriched with `beta`, `beta_contribution`, and `beta_impact` columns. Hypothetical trades are also included.
 
 **Detailed Requirements:**
 - Display a transactions table on the Details sub-tab.
-- On initial load, use the latest morning compute server run data. After CF-6 "Calculate Impact" is triggered, the table updates with the new response.
+- On initial load, use the latest morning compute server run data. After CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964)) "Calculate Impact" is triggered, the table updates with the new response.
 - **Table columns** (from compute server `cash_forecast_response.json`):
   - Transaction ID, Fund, Transaction Type, Amount (USD, whole number, HALF_UP), Cash Date, Effective Date, Asset Class, `beta`, `beta_contribution`, `beta_impact`.
   - *(Note: decimal precision for monetary amounts may change in a future iteration.)*
-- **Hypothetical trades** (added via CF-5) must be visually distinguishable from real transactions (e.g., a badge or row highlight).
+- **Hypothetical trades** (added via CF-5 ([`KS-963`](https://gendvn.atlassian.net/browse/KS-963))) must be visually distinguishable from real transactions (e.g., a badge or row highlight).
 - **Filters available:**
-  - Asset Class — multi-select dropdown (same class list as CF-10)
+  - Asset Class — multi-select dropdown (same class list as CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968)))
   - Date range — Cash Date between Start and End date (free date selection, no month-end restriction)
   - Transaction Type — multi-select dropdown
 - All filters apply simultaneously (AND logic).
@@ -901,7 +921,7 @@ This ticket implements the Details sub-tab content: a filterable, exportable tab
 - **Then** an inline error `"Unable to load transaction data. Please try again."` is shown with a retry button and no blank table is displayed
 
 *Scenario 3 — Edge Case: Hypothetical trade is visible in the table*
-- **Given** a user has added 1 hypothetical trade via CF-5 and clicked "Calculate Impact" via CF-6
+- **Given** a user has added 1 hypothetical trade via CF-5 ([`KS-963`](https://gendvn.atlassian.net/browse/KS-963)) and clicked "Calculate Impact" via CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964))
 - **When** they navigate to the Details sub-tab
 - **Then** the hypothetical trade appears in the transactions table with a visual badge (e.g., "Hypothetical") distinguishing it from real transactions, and it is included in the Excel export
 
@@ -915,18 +935,18 @@ This ticket implements the Details sub-tab content: a filterable, exportable tab
 ---
 ---
 
-## CF-13 — Liquidity Dashboard *(removed from scope)*
+## CF-13 ([`KS-971`](https://gendvn.atlassian.net/browse/KS-971)) — Liquidity Dashboard *(removed from scope)*
 
 **Status:** **Cancelled / out of scope** — do not implement.
 
 **Authority:** Kathleen Bui on [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) (2026-04-07): remove the Liquidity Dashboard tab for now; required API data to populate the graph is not available; a future workaround may be considered outside this epic.
 
-**Implication for CF-1:** Navigation and routing must **not** expose a Liquidity sub-tab. Any prior placeholder work should be backed out or redirected.
+**Implication for CF-1 ([`KS-958`](https://gendvn.atlassian.net/browse/KS-958)):** Navigation and routing must **not** expose a Liquidity sub-tab. Any prior placeholder work should be backed out or redirected.
 
 ---
 ---
 
-## CF-14 — Frontend Integration: Auto-fetch fad_beta from Aloha Homepage
+## CF-14 ([`KS-959`](https://gendvn.atlassian.net/browse/KS-959)) — Frontend Integration: Auto-fetch fad_beta from Aloha Homepage
 
 **Ticket Title:** `Cash Forecast - Auto-Fetch Live fad_beta Value from Aloha Homepage`
 
@@ -936,10 +956,10 @@ This ticket implements the Details sub-tab content: a filterable, exportable tab
 > As a **Portfolio Manager**, I want the `fad_beta` value to be automatically read from the Aloha platform's live homepage beta display so that the cash forecast model always uses the most current beta without requiring manual input.
 
 **Overview:**
-This ticket implements the mechanism to read the live `fad_beta` value from the Aloha homepage and pass it as a field in the compute server JSON input payload. This value is never user-editable on the Cash Forecast UI — it is always auto-populated at the time "Calculate Impact" is triggered. This is a cross-cutting integration used by CF-6 and must be completed before CF-6 can be fully tested.
+This ticket implements the mechanism to read the live `fad_beta` value from the Aloha homepage and pass it as a field in the compute server JSON input payload. This value is never user-editable on the Cash Forecast UI — it is always auto-populated at the time "Calculate Impact" is triggered. This is a cross-cutting integration used by CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964)) and must be completed before CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964)) can be fully tested.
 
 **Detailed Requirements:**
-- On the Cash Forecast Dashboard, when a user triggers "Calculate Impact" (CF-6), the system must **read the current live beta value** displayed on the Aloha homepage (the same `fad_beta` field shown there).
+- On the Cash Forecast Dashboard, when a user triggers "Calculate Impact" (CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964))), the system must **read the current live beta value** displayed on the Aloha homepage (the same `fad_beta` field shown there).
 - The fetched value must be included in the compute server request payload as `fad_beta` (numeric, 4 decimal places).
 - `fad_beta` must **not** be displayed as a user-editable input field anywhere in the Cash Forecast UI.
 - `fad_beta` **may** be displayed as a read-only information label on the Dashboard (e.g., `"Beta: 1.0234"`) so the user knows what value is being used — exact placement to follow Figma.
@@ -1004,11 +1024,11 @@ The following decisions were confirmed as **current defaults** with potential fu
 | Decimal precision (monetary / NAV in summary) | **Whole numbers (no decimals), HALF_UP** — Kathleen Bui, `KS-939` 2026-04-07 | Decimal places may be added later |
 | Liquidity Dashboard tab | **Removed from scope** | Future workaround if API data becomes available |
 | Hypothetical flows | **Save / Share model**; private by default; Team Flows; owner-only edit; **no CIO/Ops presets** | Caps: 10 saved scenarios (PO); confirm max rows per scenario |
-| Historical lookback window (CF-8) | **30 calendar days**; **Dashboard main tab only** | May become configurable |
+| Historical lookback window (CF-8 ([`KS-966`](https://gendvn.atlassian.net/browse/KS-966))) | **30 calendar days**; **Dashboard main tab only** | May become configurable |
 | Daily automated forecast defaults | Manual pacing, **8%** / **33%**, **$50M** min buffer, **20%** notional buffer — Kathleen 2026-04-10 | Adjust if team changes policy |
 | Derivative buffer / compute implementation | Use **`non_alpha_accounts`** for derivative accounts **and** include **Oasis fund × 0.55** in buffer — Kathleen + Jerry Luo, `KS-939` 2026-04-09 | Jerry: load pacing placeholders from datalake when Solovis data is available |
 | Manual pacing $ preview | Formulas per Kathleen 2026-04-09; **FE vs compute server TBD** | Lock in `KS-949` |
 
 ---
 
-*Generated: 2026-04-13 · Source: [`KS-950`](https://gendvn.atlassian.net/browse/KS-950), [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) (31 comments, MCP), Cash Forecast UI Documentation.docx · **13 active stories** + CF-13 marked cancelled*
+*Generated: 2026-04-13 · CF ↔ `KS`-958…`KS`-971 mapping reverified via Atlassian MCP: **2026-04-15** · Source: [`KS-950`](https://gendvn.atlassian.net/browse/KS-950), [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) (31 comments, MCP), Cash Forecast UI Documentation.docx · **13 active stories** + CF-13 ([`KS-971`](https://gendvn.atlassian.net/browse/KS-971)) marked cancelled*

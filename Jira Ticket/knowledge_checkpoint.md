@@ -2,7 +2,7 @@
 
 > **Session / refresh date:** 2026-04-13  
 > **Prepared by:** AI BA Session (Cursor)  
-> **Status:** **Active — updated from Jira** [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) **(31 comments; last chronological comment 2026-04-10 — Kathleen Bui, team-confirmed default parameters)** — reverified via Atlassian MCP on 2026-04-13  
+> **Status:** **Active — updated from Jira** [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) **(31 comments; last chronological comment 2026-04-10 — Kathleen Bui, team-confirmed default parameters)** — reverified via Atlassian MCP on 2026-04-13; **CF-1…CF-14 ↔ `KS`-958…`KS`-971** reverified on **2026-04-15**  
 > **Project:** Kamehameha Schools (`KS`) · Jira: [gendvn.atlassian.net](https://gendvn.atlassian.net)
 
 ---
@@ -92,7 +92,7 @@
 | File | Purpose |
 |---|---|
 | `summary_for_cf.md` | Epic + child ticket health summary |
-| `CF_tickets_breakdown.md` | CF-1…CF-14 BA-style breakdown *(CF-13 liquidity marked cancelled)* |
+| `CF_tickets_breakdown.md` | CF-1…CF-14 BA-style breakdown *(CF-13 liquidity marked cancelled)* — each **CF-*n*** cross-linked to Jira **`KS`-958…`KS`-971** *(semantic map; not sequential by key)* |
 | `knowledge_checkpoint.md` | This checkpoint |
 
 *(Deep reference: `KS-939_cash_forecast_ui_specs.md` — comment index **refreshed 2026-04-13** to include Apr 2026 thread through the latest 2026-04-10 note.)*
@@ -101,30 +101,32 @@
 
 ### 5. Proposed Ticket Breakdown (CF-*) — Status vs Jira
 
-The **14-ticket** structure is now **13 implementable stories**; **Liquidity Dashboard (CF-13)** is **out of scope** per Kathleen on `KS-939`. Navigation (**CF-1**) must show **three** sub-tabs only (Dashboard, Historical, Details).
+The **14-ticket** structure is now **13 implementable stories**; **Liquidity Dashboard (CF-13 ([`KS-971`](https://gendvn.atlassian.net/browse/KS-971)))** is **out of scope** per Kathleen on `KS-939`. Navigation (**CF-1 ([`KS-958`](https://gendvn.atlassian.net/browse/KS-958))**) must show **three** sub-tabs only (Dashboard, Historical, Details).
+
+**Jira keys for CF-1…CF-14** (`KS`-958–`KS`-971, verified MCP **2026-04-15**): Jira **numeric order** does not match CF order — e.g. **CF-14** = [`KS-959`](https://gendvn.atlassian.net/browse/KS-959) (fad_beta), **CF-2** = [`KS-961`](https://gendvn.atlassian.net/browse/KS-961) (Forecast Parameters), **CF-3** = [`KS-960`](https://gendvn.atlassian.net/browse/KS-960) (summary card). Full matrix: [`CF_tickets_breakdown.md`](./CF_tickets_breakdown.md) (table under epic metadata).
 
 ```
 KS-950  Cash Forecasting Model (Epic)
   │
-  ├── CF-1   Navigation Shell (3 sub-tabs — no Liquidity)
+  ├── CF-1 ([`KS-958`](https://gendvn.atlassian.net/browse/KS-958))   Navigation Shell (3 sub-tabs — no Liquidity)
   │
-  ├── CF-2   Dashboard — Forecast Parameters (+ daily defaults)
-  ├── CF-3   Dashboard — Summary Table
-  ├── CF-4   Dashboard — Projected Balance Chart
-  ├── CF-5   Dashboard — Hypothetical Flows (Save / Team / owner controls)
-  ├── CF-6   Dashboard — "Calculate Impact"
-  ├── CF-7   Dashboard — Projected Cash Flow Drill-Down
-  ├── CF-8   Dashboard — As-of lookup (30-day window, Dashboard only)
+  ├── CF-2 ([`KS-961`](https://gendvn.atlassian.net/browse/KS-961))   Dashboard — Forecast Parameters (+ daily defaults)
+  ├── CF-3 ([`KS-960`](https://gendvn.atlassian.net/browse/KS-960))   Dashboard — Summary Table
+  ├── CF-4 ([`KS-962`](https://gendvn.atlassian.net/browse/KS-962))   Dashboard — Projected Balance Chart
+  ├── CF-5 ([`KS-963`](https://gendvn.atlassian.net/browse/KS-963))   Dashboard — Hypothetical Flows (Save / Team / owner controls)
+  ├── CF-6 ([`KS-964`](https://gendvn.atlassian.net/browse/KS-964))   Dashboard — "Calculate Impact"
+  ├── CF-7 ([`KS-965`](https://gendvn.atlassian.net/browse/KS-965))   Dashboard — Projected Cash Flow Drill-Down
+  ├── CF-8 ([`KS-966`](https://gendvn.atlassian.net/browse/KS-966))   Dashboard — As-of lookup (30-day window, Dashboard only)
   │
-  ├── CF-9   Historical — Net Cash Flow Graph
-  ├── CF-10  Historical — Capital Calls & Distributions Chart
-  ├── CF-11  Historical — Asset Class Filter + % of NAV Table
+  ├── CF-9 ([`KS-967`](https://gendvn.atlassian.net/browse/KS-967))   Historical — Net Cash Flow Graph
+  ├── CF-10 ([`KS-968`](https://gendvn.atlassian.net/browse/KS-968))  Historical — Capital Calls & Distributions Chart
+  ├── CF-11 ([`KS-969`](https://gendvn.atlassian.net/browse/KS-969))  Historical — Asset Class Filter + % of NAV Table
   │
-  ├── CF-12  Details — Future Transactions Table + Export
+  ├── CF-12 ([`KS-970`](https://gendvn.atlassian.net/browse/KS-970))  Details — Future Transactions Table + Export
   │
-  ├── CF-13  ~~Liquidity Dashboard~~ → **CANCELLED / out of scope**
+  ├── CF-13 ([`KS-971`](https://gendvn.atlassian.net/browse/KS-971))  ~~Liquidity Dashboard~~ → **CANCELLED / out of scope**
   │
-  └── CF-14  fad_beta auto-fetch from Aloha Homepage
+  └── CF-14 ([`KS-959`](https://gendvn.atlassian.net/browse/KS-959))  fad_beta auto-fetch from Aloha Homepage
 ```
 
 ---
@@ -155,4 +157,4 @@ KS-950  Cash Forecasting Model (Epic)
 
 ---
 
-*Checkpoint saved: 2026-04-13 · Next action: resolve remaining `KS-939` / `KS-949` engineering threads and PO clarifications above*
+*Checkpoint saved: 2026-04-13 · CF ↔ `KS`-958…`KS`-971 map added 2026-04-15 (Atlassian MCP) · Next action: resolve remaining `KS-939` / `KS-949` engineering threads and PO clarifications above*
