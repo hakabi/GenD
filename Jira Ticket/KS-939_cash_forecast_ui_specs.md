@@ -3,8 +3,8 @@
 > **Ticket:** [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) — Cash Forecast UI Specs
 > **Epic:** [`KS-950`](https://gendvn.atlassian.net/browse/KS-950) — Cash Forecasting Model
 > **Type:** Task · **Priority:** 🟡 Medium · **Status:** 🟡 `In Progress`
-> **Assignee:** tuan tran · **Reporter:** Kathleen Bui · **Label:** `sandbox`
-> **Created:** 2026-01-07 · **Last Updated:** 2026-04-02
+> **Assignee:** **Bình Hà Khoa** *(per Jira as of 2026-04-10)* · **Reporter:** Kathleen Bui · **Label:** `sandbox`
+> **Created:** 2026-01-07 · **Last Updated (local mirror):** 2026-04-13 *(Jira thread reverified via MCP; latest comment 2026-04-10)*
 
 ---
 
@@ -15,13 +15,40 @@ Implement the Cash Forecast front-end dashboard based on Figma designs and the a
 **Figma Design Link:**
 [Cash Forecast Figma ↗](https://www.figma.com/design/snoshiSrFZ7c0i08Mvmcrm/Cash-Forecast?node-id=0-1&m=dev&t=qfA6kQm8fndkeZIs-1)
 
-> ⚠️ *Reporter noted uncertainty about Figma access. Developers should confirm access before starting UI implementation. See also: request from Bình Hà Khoa (2026-04-02) for Figma access.*
+> ✅ **Figma access:** Kathleen Bui **approved** access for Bình Hà Khoa on **`KS-939`** (2026-04-02). *(Reporter had noted uncertainty when the ticket was first created — resolved in-thread.)*
 
 **Reference Docs (attached in Jira):**
 - `Cash Forecast UI Documentation.docx`
 - `input.json` *(compute server input contract)*
 - `cash_forecast_output.json` *(compute server output contract — original)*
 - `cash_forecast_response.json` *(compute server output contract — updated with transactions table, added 2026-03-25)*
+
+---
+
+## ✅ Latest Jira comment (chronological, `KS-939` thread)
+
+As of **2026-04-13** (MCP `getJiraIssue`), the **most recent** public comment is **Kathleen Bui, 2026-04-10** (reply to @tuan tran): she **confirmed with the team** the **default forecast parameters** for the automated daily run:
+
+| Parameter | Team default |
+|---|---|
+| Illiquid pacing | **Manual** |
+| Annual distribution % | **8%** |
+| Annual contribution % | **33%** |
+| Min buffer ($) | **$50,000,000** ($50M) |
+| Min notional buffer (%) | **20%** |
+
+Immediately **before** that (same day), **tuan tran** asked **Jerry Luo** technical follow-ups (table filter `asset_name = 'All'`, `capital_calls - distributions`, interval, and updated code from Thuyen including **beta impact**) — those items remain **open** after Kathleen’s confirmation.
+
+---
+
+## 📌 Key product decisions (Apr 2026 comments, summary)
+
+- **Liquidity Dashboard tab:** remove from current scope (no API for graph yet) — Kathleen, 2026-04-07.
+- **Summary / NAV style:** whole dollars, no decimals — Kathleen, 2026-04-07.
+- **Dashboard “as of” lookback:** **30 calendar days**, **Dashboard main tab only** (not Historical tab date pickers) — Kathleen, 2026-04-07.
+- **Hypothetical flows:** Save / My Saved / Team / owner controls; **max 10 saved scenarios** per user; remove CIO/Ops presets — Kathleen / Bình, 2026-04-07–09. Bình proposed **max 10 flow rows per saved scenario** — treat as **engineering/PO alignment** if not duplicated in PO text.
+- **Forecast Parameters grid:** defaults = **real DB as-of** values; **no hypothetical rows** in that table — Kathleen, 2026-04-09 (mockups approved same thread).
+- **Scheduled daily run:** `hypothetical_trades` from **fund future transactions**; pacing placeholders → datalake per Jerry — **tuan / Jerry**, 2026-04-09.
 
 ---
 
@@ -180,7 +207,19 @@ The dashboard consumes data from **two sources**:
 | 16 | 2026-03-30 | Jerry Luo | ✅ Same base data from loader + additional columns (`beta`, `beta_contribution`, `beta_impact`) calculated by compute server. Also includes hypothetical trades |
 | 17 | 2026-03-31 | tuan tran | ❓ What data is shown on initial dashboard load before "Calculating Impact" is triggered? When can he access compute server to build/verify? |
 | 18 | 2026-04-01 | Kathleen Bui | Left panel fund NAV table → load from datalake by as-of-date. Remaining charts → compute server. Refresh each morning. Asked Jerry to give ETA for compute server access. |
-| 19 | 2026-04-02 | **Bình Hà Khoa** | 🆕 Just rejoined team — requesting Figma mockup access to review feature details |
+| 19 | 2026-04-02 | **Bình Hà Khoa** | Rejoined team; requested Figma mockup access |
+| 20 | 2026-04-02 | Kathleen Bui | ✅ **Approved Figma access** for Bình (“just approved it”) |
+| 21 | 2026-04-03 | Bình Hà Khoa | BA breakdown questions: Liquidity tab?, summary decimals?, historical date range (1 month vs 30 days / which tabs)?, hypothetical CIO/Ops vs user save model? |
+| 22 | 2026-04-07 | Kathleen Bui | **Scope:** remove Liquidity tab; NAV **whole dollars**; **30-day** as-of **Dashboard only**; long spec for **Save / Team hypothetical flows** |
+| 23 | 2026-04-08 | Bình Hà Khoa | Follow-up questions on Kathleen’s 2026-04-07 spec (incl. attachments) |
+| 24 | 2026-04-08 | Kathleen Bui | **Max 10 saved scenarios** (delete to add more); **remove Ops/CIO flows**; clarify “Team Flows” empty until someone shares |
+| 25 | 2026-04-09 | Bình Hà Khoa | Confirms cap interpretation; proposes **≤10 hypothetical rows per saved scenario**; OK with zero saved scenarios at init |
+| 26 | 2026-04-09 | tuan tran | Daily run saves results; `hypothetical_trades` ← **fund future transactions**; asks **default forecast parameters**; flags hardcoded pacing + derivative buffer code questions |
+| 27 | 2026-04-09 | Kathleen Bui | Answers Bình **Part A:** manual % → $ from **Historical Unfunded & NAV**; Forecast Parameters table **DB-only** (no hypotheticals); **approved mockups** |
+| 28 | 2026-04-09 | Kathleen Bui | To tuan/Jerry: checking with team on **defaults** (→ see row 31); derivative accts → `non_alpha_accounts` + **Oasis × 55%** — ask Jerry to confirm |
+| 29 | 2026-04-09 | Jerry Luo | Will load pacing values from **datalake** after Solovis ingest; confirms **Oasis × 0.55** in derivative buffer path |
+| 30 | 2026-04-10 | tuan tran | To Jerry: `asset_name = 'All'` + `capital_calls - distributions`? interval?; requests **updated Thuyen code** with transaction + **beta impact** |
+| 31 | 2026-04-10 | Kathleen Bui | **Latest:** **Team-confirmed defaults** — Manual pacing; **8% / 33%**; **$50M** min buffer; **20%** min notional buffer |
 
 ---
 
@@ -188,9 +227,12 @@ The dashboard consumes data from **two sources**:
 
 | # | Item | Raised By | Date | Status |
 |---|---|---|---|---|
-| 1 | **Compute server access ETA for tuan tran** — needed to build and verify locally | tuan tran | 2026-03-31 | 🔴 Awaiting response from Jerry Luo |
+| 1 | **Compute server access ETA for tuan tran** — needed to build and verify locally | tuan tran | 2026-03-31 | 🟡 Follow up with Jerry / team *(still relevant for integration work)* |
 | 2 | **Initial dashboard load state** — what data shows before "Calculating Impact" triggers? | tuan tran | 2026-03-31 | 🟡 Partially answered (fund NAV from datalake; charts from compute server) — verify full initial state |
-| 3 | **Figma access for Bình Hà Khoa** | Bình Hà Khoa | 2026-04-02 | 🔴 Awaiting access grant from Kathleen Bui / tuan tran |
+| 3 | **~~Figma access for Bình Hà Khoa~~** | Bình / Kathleen | 2026-04-02 | ✅ **Resolved** — Kathleen approved access (`KS-939` 2026-04-02) |
+| 4 | **tuan → Jerry:** table/logic for pacing (`asset_name = 'All'`, `capital_calls - distributions`), interval, **updated code** with **beta impact** | tuan tran | 2026-04-10 | 🔴 **Open** — posted after team default-parameter confirmation |
+| 5 | **Manual pacing $ display:** compute API vs front-end calculation | Kathleen / eng | 2026-04-09 | 🟡 **Open** — contract decision |
+| 6 | **Dual caps:** max **10 saved scenarios** (PO) vs max **10 rows per scenario** (Bình proposal) | Kathleen / Bình | 2026-04-08–09 | 🟡 **Align** explicitly in AC if both apply |
 
 ---
 
@@ -210,9 +252,9 @@ The dashboard consumes data from **two sources**:
 |---|---|
 | Kathleen Bui | Product Owner / Business Analyst — spec owner |
 | Jerry Luo | Backend / Compute Server Engineer — JSON contract owner |
-| tuan tran | Front-end / Full-stack Developer — implementer |
-| Bình Hà Khoa | Developer — recently rejoined, requested Figma access |
+| tuan tran | Developer — data + integration; datalake / daily job threads on `KS-939` |
+| Bình Hà Khoa | **`KS-939` assignee** (UI); Figma access approved 2026-04-02 |
 
 ---
 
-*Source: [Jira KS-939](https://gendvn.atlassian.net/browse/KS-939) · Exported: 2026-04-02 · Project: Kamehameha Schools (`KS`)*
+*Source: [Jira KS-939](https://gendvn.atlassian.net/browse/KS-939) · Local mirror updated: 2026-04-13 (31 comments; latest 2026-04-10) · Project: Kamehameha Schools (`KS`)*

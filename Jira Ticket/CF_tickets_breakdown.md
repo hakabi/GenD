@@ -1,11 +1,11 @@
 # 📋 Cash Forecast Feature — Full Ticket Breakdown
 
 > **Epic:** [`KS-950`](https://gendvn.atlassian.net/browse/KS-950) — Cash Forecasting Model
-> **Total Tickets:** 14 stories (story level, full-stack collaboration per ticket)
+> **Total Tickets:** 13 active stories *(CF-13 Liquidity Dashboard **removed from scope** per Kathleen Bui on `KS-939`, 2026-04-07)*
 > **Team:** 1 Frontend Developer + 1 Backend Developer
 > **Currency:** USD only · **Display format:** Whole numbers (no decimal), HALF_UP rounding *(note: decimal precision may be updated in future)*
 > **Figma:** [Cash Forecast ↗](https://www.figma.com/design/snoshiSrFZ7c0i08Mvmcrm/Cash-Forecast?node-id=0-1&m=dev&t=qfA6kQm8fndkeZIs-1)
-> **Generated:** 2026-04-02
+> **Generated:** 2026-04-13 *(reconciled with [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) through **2026-04-10** via Jira MCP; **latest comment** = Kathleen Bui — **team-confirmed** default forecast parameters: Manual, 8% / 33%, $50M, 20%)*
 
 ---
 
@@ -32,9 +32,8 @@ Sprint 4 (Historical Tab — depends on CF-1):
   CF-10 Capital Calls & Distributions Chart
   CF-11 Asset Class Filter + % of NAV Table
 
-Sprint 5 (Details Tab + Placeholder):
+Sprint 5 (Details Tab):
   CF-12 Transactions Table with Filters & Export
-  CF-13 Liquidity Dashboard (Placeholder/Spike)
 ```
 
 ---
@@ -50,17 +49,17 @@ Sprint 5 (Details Tab + Placeholder):
 > As a **Portfolio Manager**, I want a dedicated "Cash Forecast" tab in the Aloha main navigation so that I can access all cash forecasting tools from a single, consistent entry point without leaving the platform.
 
 **Overview:**
-This ticket implements the top-level "Cash Forecast" navigation tab in Aloha, positioned immediately after the "Overview" tab. It establishes the routing shell and four sub-tabs — Dashboard, Historical, Details, and Liquidity Dashboard — that all subsequent Cash Forecast feature tickets will populate. This is the foundational ticket that must be completed before any other Cash Forecast UI work begins.
+This ticket implements the top-level "Cash Forecast" navigation tab in Aloha, positioned immediately after the "Overview" tab. It establishes the routing shell and **three** sub-tabs — Dashboard, Historical, and Details — that all subsequent Cash Forecast feature tickets will populate. *(The Liquidity Dashboard sub-tab was removed from scope: no API data to populate it yet; possible future workaround — Kathleen Bui, `KS-939` 2026-04-07.)* This is the foundational ticket that must be completed before any other Cash Forecast UI work begins.
 
 **Detailed Requirements:**
 - Add a new tab labeled **"Cash Forecast"** to the Aloha main navigation bar, positioned immediately after the "Overview" tab.
-- The tab must render four sub-tabs in this exact order: **Dashboard** (default), **Historical**, **Details**, **Liquidity Dashboard**.
+- The tab must render **three** sub-tabs in this exact order: **Dashboard** (default), **Historical**, **Details**.
 - Navigating to `/cash-forecast` must automatically redirect to `/cash-forecast/dashboard`.
 - Each sub-tab must have its own distinct URL route:
   - `/cash-forecast/dashboard`
   - `/cash-forecast/historical`
   - `/cash-forecast/details`
-  - `/cash-forecast/liquidity`
+- If any legacy URL `/cash-forecast/liquidity` exists from earlier builds, redirect to `/cash-forecast/dashboard` or show a short deprecation message (product choice).
 - The active sub-tab must be visually highlighted using the existing Aloha active-tab style.
 - Sub-tab state must persist correctly on browser back/forward navigation.
 - Browser `<title>` must update per sub-tab (e.g., `"Cash Forecast — Dashboard | Aloha"`).
@@ -83,10 +82,8 @@ stateDiagram-v2
     CashForecast --> Dashboard : Default redirect
     Dashboard --> Historical : User clicks "Historical"
     Dashboard --> Details : User clicks "Details"
-    Dashboard --> LiquidityDashboard : User clicks "Liquidity Dashboard"
     Historical --> Dashboard : User clicks "Dashboard"
     Details --> Dashboard : User clicks "Dashboard"
-    LiquidityDashboard --> Dashboard : User clicks "Dashboard"
 ```
 
 **Acceptance Criteria (BDD Format):**
@@ -147,6 +144,21 @@ This ticket implements the "Forecast Parameters" button and its associated modal
 **Buffer Parameters** — two numeric input fields:
   - **Minimum Buffer** — dollar amount input (USD, whole number)
   - **Minimum Notional Buffer (%)** — percentage input (0.00–100.00, 2 decimal places)
+
+**System defaults for the automated daily run** *(Kathleen Bui, `KS-939` **2026-04-10** — stated she **confirmed with the team** before publishing; these are the defaults when the compute job runs each morning and for the baseline dashboard view):*
+- **Illiquid Pacing Method:** **Manual**
+- **Annual Estimated Distribution (%):** **8%**
+- **Annual Estimated Contribution (%):** **33%**
+- **Minimum Buffer ($):** **$50,000,000** ($50M)
+- **Minimum Notional Buffer (%):** **20%**
+
+**Displayed forecast amounts (Manual pacing — “calculated $” next to % fields):** *(Kathleen Bui, `KS-939` 2026-04-09 — implementation layer TBD)*  
+- **Forecasted amount for Distributions** = (Annual Distribution Rate %) × (**Illiquid NAV** as of the dashboard as-of date). **Illiquid NAV** = sum of NAV across all asset classes from the **Historical Unfunded and NAV** datalake table (`KS-934`), as of the current/as-of date.  
+- **Forecast amount for Unfunded** = (Annual Estimated Contribution %) × (**Total Unfunded Amount**), where total unfunded = sum of unfunded amounts across asset classes from that same historical table, as of the current/as-of date.  
+- Kathleen asked whether these dollar amounts should be returned by the **compute server** or **calculated in the front end** — **confirm with PO/engineering** before locking the contract.
+
+**Forecast Parameters panel — default rows on open:** *(Kathleen Bui, `KS-939` 2026-04-09)*  
+- The table of values in the panel must default to **real as-of data from the database** (datalake / authoritative sources). Values are always DB-backed for this panel — **do not** blend in hypothetical flows in this table.
 
 - A **"Apply"** or **"Save"** button must confirm and close the panel, storing the selected parameters in state for use when CF-6 "Calculate Impact" is triggered.
 - A **"Cancel"** button must discard changes and close the panel.
@@ -278,6 +290,8 @@ This ticket implements the summary table on the Dashboard sub-tab that presents 
 **Overview:**
 This ticket implements the combined bar and line chart on the Cash Forecast Dashboard that visualises the projected cash balance, closing risk, and buffer thresholds. On initial page load, the chart is pre-populated with the most recent morning compute server run result. The chart updates when the user clicks "Calculate Impact" (CF-6). It also displays the `deriv_notional_value` as a key metric above or alongside the chart.
 
+*(Scheduled daily run inputs — tuan tran, `KS-939` 2026-04-09: **`hypothetical_trades`** for the automated job should use the **fund future transactions** table; user-authored hypothetical rows from CF-5 apply on **Calculate Impact**.)*
+
 **Detailed Requirements:**
 - On Dashboard initial load, fetch the latest compute server morning-run output from `body['base']['cash_flow_table']` via the compute server API.
 - The morning compute server run is triggered automatically via a scheduled job (not by the user). The frontend must only read the latest stored result.
@@ -346,77 +360,77 @@ stateDiagram-v2
 
 ## CF-5 — Dashboard Tab: Hypothetical Flows Management
 
-**Ticket Title:** `Cash Forecast - Implement Hypothetical Flows Entry and Workspace Management`
+**Ticket Title:** `Cash Forecast - Implement Hypothetical Flows Entry, Save/Share, and Team Flows`
 
 **Epic:** Cash Forecasting Model (KS-950)
 
 **User Story:**
-> As a **Portfolio Manager**, I want to add simulated future cash flows and load pre-saved flow scenarios so that I can model hypothetical investment activity and see its impact on the projected cash balance before triggering a recalculation.
+> As a **Portfolio Manager**, I want to add simulated future cash flows, save named scenarios, optionally share them with the team, and load shared scenarios so that I can collaborate safely without overwriting other users' work.
 
 **Overview:**
-This ticket implements the Hypothetical Flows section on the Dashboard sub-tab. Users can add individual simulated cash flow entries, toggle them on/off, and load from three predefined flow workspaces: CIO Flows, Operations Flows, and their own personal workspace (auto-saved per user account). The flows are passed to the compute server when "Calculate Impact" (CF-6) is triggered.
+This ticket implements the Hypothetical Flows section on the Dashboard per **`KS-939` (2026-04-07 through 2026-04-09)**. The legacy **CIO Flows / Operations Flows** preset workspaces are **removed** — Kathleen Bui: if saved flows are used, Ops/CIO flows are not needed. Users instead **save named snapshots** of the hypothetical flow grid; saves are **private by default** with an optional **Share with Team** flag. **Team Flows** lists sets others have shared. **Ownership:** only the creator can manage, share, or delete their saved sets.
+
+**Limits:** *(from `KS-939` thread — align in build if PO clarifies)*  
+- **Saved scenarios:** Kathleen Bui (2026-04-08): cap of **10 saved complete scenarios** per user; user must delete a scenario to save an additional one.  
+- **Rows per scenario:** Bình Hà Khoa (2026-04-09): proposed cap of **10 hypothetical flow rows** per saved scenario — **confirm with PO** whether this matches business intent alongside the 10-scenario cap.
 
 **Detailed Requirements:**
-- Display a **Hypothetical Flows** panel or section on the Dashboard sub-tab.
-- Users can **add a new hypothetical flow entry** with the following required fields:
+- Display a **Hypothetical Flows** panel on the Dashboard sub-tab.
+- Users can **add a new hypothetical flow entry** (row) with the following required fields:
   - **Fund** — dropdown of all Solovis funds. Selecting a current fund auto-populates its beta value.
   - **Effective Date** — date picker (calendar date, no restriction)
   - **Cash Date** — date picker (calendar date, no restriction)
-  - **Amount** — numeric input, USD, whole number, HALF_UP. *(Note: decimal precision may change.)*
-  - **Transaction Type** — dropdown (values to be sourced from existing Solovis transaction types)
+  - **Amount** — numeric input, USD, whole number, HALF_UP.
+  - **Transaction Type** — dropdown (values from existing Solovis transaction types)
 - If user selects **"New Fund"** (not in the Solovis dropdown), show additional fields: **Beta** (numeric, 4 decimal places) and any other fund details required by the compute server input contract (`KS-949`).
 - Each flow entry must have an **include/exclude toggle** — excluded flows are greyed out and not sent to the compute server on "Calculate Impact".
-- **Three flow workspaces** are available via a load/switch control:
-  1. **CIO Flows** — pre-saved scenario set (Tim's workspace). Any user can load and view. *(Note: write/edit restrictions may be added in a future iteration.)*
-  2. **Operations Flows** — pre-saved scenario set (Euan's workspace). Any user can load and view. *(Note: write/edit restrictions may be added in a future iteration.)*
-  3. **My Flows** (personal workspace) — the user's own flow entries. Auto-saved to the user's account on every change (no explicit "Save" button). Auto-loaded on page refresh for that user. *(Note: explicit save/delete/rename controls may be added in a future iteration.)*
-- Personal workspace ("My Flows") must persist server-side per user account — not lost on session end or browser close.
-- When a pre-saved workspace (CIO or Operations) is loaded, its flows are displayed read-only. The user may switch back to "My Flows" to edit.
+- **"Save Flows"** button in the Hypothetical Flows section header opens a **modal** with:
+  - **Name** — required, max **60** characters  
+  - **Description** — optional short note  
+  - **Share with Team** — toggle, **off by default**  
+- Saving creates a **snapshot** of all current flow rows, their include/exclude toggles, and amounts. If a saved set with the **same name** already exists, prompt: **save as new** or **overwrite**.
+- **"My Saved Flows"** dropdown in the controls bar: lists the current user's saved sets, **most recently saved first**. Selecting a set loads it into the table. If the user has **unsaved edits** and selects a different set, **confirm** before replacing current inputs.
+- **"Team Flows"** dropdown: lists flow sets **shared by any user** (read-only for non-owners). At product launch, **no team flows exist until someone shares** — Kathleen Bui (2026-04-08).
+- **Owner controls** (only for sets the current user created; mockups approved Kathleen 2026-04-09): **Share / Unshare**, **Rename** (inline, name updates everywhere), **Delete** (confirm; if shared, note that it will be removed from Team Flows). **No other user** may modify, share, or delete a set they did not create.
+- All persisted data must be **server-side per user account** (not browser-session only). Flows are passed to the compute server when **"Calculate Impact"** (CF-6) is triggered.
 
 **UI/UX & Front-End Considerations:**
-- **Layout:** Collapsible panel or section below the Forecast Parameters button on the Dashboard. Flow entries listed as rows with toggle, fund name, date, amount, transaction type.
-- **Interactive Elements:** Workspace switcher (tabs or dropdown: CIO Flows / Operations Flows / My Flows), "Add Flow" button, per-row include/exclude toggle, fund dropdown with auto-beta population, new fund conditional fields.
+- **Layout:** Section below Forecast Parameters; rows with toggle, fund, dates, amount, type; header with Save Flows + dual dropdowns (My Saved Flows / Team Flows). Align with Figma / approved mockups attached to `KS-939`.
+- **Interactive Elements:** Add Flow, Save Flows modal, dropdowns, owner kebab/menu for Share/Unshare/Rename/Delete.
 - **State Changes:**
-  - `Default` — "My Flows" workspace loaded with user's persisted flows (or empty if first visit).
-  - `CIO / Operations loaded` — flows displayed read-only; "Add Flow" button hidden or disabled.
-  - `Adding flow` — inline form row appears at the bottom of the list.
-  - `Saving` — auto-save indicator (e.g., subtle "Saving..." text) when a My Flows entry changes.
-  - `Saved` — indicator updates to "Saved" briefly.
-  - `Error (save failed)` — toast notification: `"Your changes could not be saved. Please try again."`
-  - `Empty State` — `"No hypothetical flows added. Click 'Add Flow' to begin."` shown when workspace is empty.
-- **Accessibility:** Toggle must use `role="switch"` with `aria-checked`. Fund dropdown must be keyboard-navigable. Date pickers must support keyboard entry.
+  - `Editing` — user is changing rows (unsaved dirty state vs last loaded snapshot).
+  - `Save modal open` — user enters name/description/share toggle.
+  - `Loading list` — dropdowns fetch saved metadata from API.
+  - `Error` — toast on save/load/delete failure.
+  - `Empty` — no rows until user adds flows; empty saved list handled with helper text.
+- **Accessibility:** Toggles `role="switch"`; modal focus trap; keyboard-navigable dropdowns.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> MyFlows : Default on Dashboard load
-    MyFlows --> AddingFlow : User clicks "Add Flow"
-    AddingFlow --> MyFlows : User submits valid flow entry
-    AddingFlow --> MyFlows : User cancels
-    MyFlows --> AutoSaving : User toggles include/exclude or adds flow
-    AutoSaving --> Saved : Server confirms save
-    AutoSaving --> SaveError : Server returns error
-    MyFlows --> CIOFlows : User selects "CIO Flows"
-    MyFlows --> OpsFlows : User selects "Operations Flows"
-    CIOFlows --> MyFlows : User switches back to "My Flows"
-    OpsFlows --> MyFlows : User switches back to "My Flows"
+    [*] --> Editing : Dashboard load / load saved set
+    Editing --> SaveModal : User clicks Save Flows
+    SaveModal --> Editing : Cancel
+    SaveModal --> Editing : Save success
+    Editing --> ConfirmLoad : User picks different saved set with dirty state
+    ConfirmLoad --> Editing : User confirms discard
 ```
 
 **Acceptance Criteria (BDD Format):**
 
-*Scenario 1 — Happy Path: User adds a hypothetical flow to My Flows*
-- **Given** a user is on the Cash Forecast Dashboard with "My Flows" workspace active
-- **When** they click "Add Flow", select a fund from the Solovis dropdown, fill in Effective Date, Cash Date, Amount ($500,000), and Transaction Type, and submit
-- **Then** the new flow entry appears in the list, the include toggle is ON by default, the entry is auto-saved to the user's account, and a brief "Saved" indicator is shown
+*Scenario 1 — Happy Path: User saves a private scenario and reloads it*
+- **Given** a user has entered 2 hypothetical flow rows with toggles on
+- **When** they click "Save Flows", enter name `"Q2 stress"`, leave Share off, and confirm
+- **Then** the scenario appears under "My Saved Flows", remains private, and reloading it restores both rows and toggles
 
-*Scenario 2 — Error Path: Auto-save fails*
-- **Given** a user adds a hypothetical flow entry in My Flows
-- **When** the server-side save call returns a 500 error
-- **Then** a toast notification displays `"Your changes could not be saved. Please try again."` and the entry remains visible locally with a visual indicator that it is unsaved
+*Scenario 2 — Error Path: Save API fails*
+- **Given** a user completes the Save Flows modal
+- **When** the save API returns 500
+- **Then** a toast shows a save failure message and the modal closes or stays open per UX pattern without losing unsaved row edits
 
-*Scenario 3 — Edge Case: User loads CIO Flows then returns to My Flows*
-- **Given** a user has existing flows in their My Flows workspace
-- **When** they switch to "CIO Flows" (flows displayed read-only) and then switch back to "My Flows"
-- **Then** their own My Flows entries are restored exactly as they were before the switch, with all toggles in their previous state
+*Scenario 3 — Edge Case: Share then delete*
+- **Given** a user owns a shared scenario visible in Team Flows
+- **When** they choose Delete and confirm
+- **Then** the scenario is removed from My Saved Flows and Team Flows for all users
 
 **Definition of Done (DoD):**
 - [ ] Code compiles and builds without errors.
@@ -586,14 +600,14 @@ stateDiagram-v2
 > As a **Portfolio Manager**, I want to view the Cash Balance and Beta Projection as they appeared on any previous business day so that I can compare past forecast states and validate historical model accuracy.
 
 **Overview:**
-This ticket implements the as-of-date lookup feature on the Dashboard sub-tab. Users can select a past date to view the Cash Balance and Beta Projection as they were on that day. The default lookback window is **1 calendar month** (soft default — may be changed via configuration in a future iteration). This lookup applies to the Dashboard only and does not affect the Historical Tab.
+This ticket implements the as-of-date lookup feature on the Dashboard sub-tab. Users can select a past date to view the Cash Balance and Beta Projection as they were on that day. The lookback window is **any date within the last 30 calendar days** (rolling window), **Dashboard main tab only** — Kathleen Bui, `KS-939` 2026-04-07 *(supersedes earlier “one month” wording from the docx)*.
 
 **Detailed Requirements:**
 - Add an **"As Of Date"** date picker control to the Dashboard sub-tab.
 - **Default state:** date picker shows today's date; charts show the current morning run (no change from default Dashboard behaviour).
 - When a past date is selected, the Dashboard charts and summary must update to reflect the **stored forecast output** for that date.
-- **Soft default lookback restriction:** The date picker must not allow selection of dates more than **1 calendar month** before today. Dates outside this range must be disabled in the picker.
-  - *(Note: This is a soft default — the lookback window may be made configurable in a future iteration. Implement as a configurable value read from a system config/feature flag rather than a hardcoded constant.)*
+- **Lookback restriction:** The date picker must not allow selection of dates more than **30 calendar days** before today. Dates outside this range must be disabled in the picker.
+  - *(Note: Implement as a configurable value read from a system config/feature flag where practical.)*
 - The restriction applies to this Dashboard as-of-date view **only** — it does not apply to the Historical Tab date selectors.
 - Past forecast data is sourced from stored compute server morning-run results (all generated forecasts are saved automatically per the docx spec).
 - If no stored forecast exists for the selected date (e.g., weekend, holiday), display: `"No forecast data available for [selected date]."`.
@@ -601,7 +615,7 @@ This ticket implements the as-of-date lookup feature on the Dashboard sub-tab. U
 
 **UI/UX & Front-End Considerations:**
 - **Layout:** As-of-date picker positioned near the top of the Dashboard sub-tab, visually distinct from the Forecast Parameters button.
-- **Interactive Elements:** Date picker with disabled dates outside the 1-month window; "Return to Today" button.
+- **Interactive Elements:** Date picker with disabled dates outside the 30-day window; "Return to Today" button.
 - **State Changes:**
   - `Default` — date picker shows today; current charts displayed.
   - `Date Selected` — charts and summary update to historical state; a banner or badge shows `"Viewing as of [date]"`.
@@ -623,9 +637,9 @@ This ticket implements the as-of-date lookup feature on the Dashboard sub-tab. U
 - **When** the API returns no stored forecast for that date
 - **Then** the dashboard displays `"No forecast data available for [selected date]."` and the charts remain in their current state
 
-*Scenario 3 — Edge Case: User attempts to select a date beyond the 1-month window*
+*Scenario 3 — Edge Case: User attempts to select a date beyond the 30-day window*
 - **Given** a user opens the as-of-date date picker
-- **When** they attempt to select a date more than 1 calendar month before today
+- **When** they attempt to select a date more than 30 calendar days before today
 - **Then** that date is disabled and unselectable in the picker, and no API call is made
 
 **Definition of Done (DoD):**
@@ -666,6 +680,7 @@ This ticket implements the Net Cash Flow graph on the Historical sub-tab. The ch
   - Example: `"AR Net Cash Flow: -60.1 | AR Capital Calls: 63.6 | AR Distributions: 3.5"`
 - Data source: Datalake — Historical Capital Calls/Distributions by Asset Class (`KS-934`).
 - All amounts in USD, whole number, HALF_UP. *(Note: decimal precision may change.)*
+- **Traceability (`KS-939`, 2026-04-07):** The **30-calendar-day** as-of restriction applies **only** to the **Dashboard** as-of-date picker (**CF-8**). It does **not** constrain this Historical tab **shared date range** (month-end start/end rules above).
 
 **UI/UX & Front-End Considerations:**
 - **Layout:** Date range selector at top of Historical tab (shared with CF-10). Net Cash Flow graph below the selector.
@@ -733,6 +748,7 @@ This ticket implements the Capital Calls and Distributions stacked bar chart on 
   - All Other
 - Data source: Datalake — Historical Capital Calls/Distributions by Asset Class (`KS-934`).
 - All amounts in USD, whole number, HALF_UP. *(Note: decimal precision may change.)*
+- **Traceability (`KS-939`, 2026-04-07):** Same as **CF-9** — the **30-day** Dashboard as-of rule (**CF-8**) does **not** apply to the Historical tab shared date range used with **CF-9**.
 
 **UI/UX & Front-End Considerations:**
 - **Layout:** Below the Net Cash Flow graph (CF-9) on the Historical tab, sharing the date range selector. Asset class dropdown positioned above the chart.
@@ -793,6 +809,7 @@ This ticket implements the summary data table on the Historical sub-tab that dis
 - The table must respond to the **same asset class filter** as CF-10 — deselecting an asset class removes its row from the table.
 - The table must respond to the **same date range** as CF-9/CF-10.
 - Data source: Datalake — Historical Capital Calls/Distributions by Asset Class + Unfunded & NAV by Asset Class (`KS-934`).
+- **Traceability (`KS-939`, 2026-04-07):** Same as **CF-9** / **CF-10** — **CF-8**’s **30-day** Dashboard as-of rule does **not** apply to the Historical tab date range driving this table.
 
 **UI/UX & Front-End Considerations:**
 - **Layout:** Tabular grid below the CF-10 chart. Scrollable horizontally if many time intervals. Sticky first column for asset class names.
@@ -898,53 +915,13 @@ This ticket implements the Details sub-tab content: a filterable, exportable tab
 ---
 ---
 
-## CF-13 — Liquidity Dashboard Tab (Placeholder / Spike)
+## CF-13 — Liquidity Dashboard *(removed from scope)*
 
-**Ticket Title:** `Cash Forecast - Liquidity Dashboard Tab Placeholder and Spike`
+**Status:** **Cancelled / out of scope** — do not implement.
 
-**Epic:** Cash Forecasting Model (KS-950)
+**Authority:** Kathleen Bui on [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) (2026-04-07): remove the Liquidity Dashboard tab for now; required API data to populate the graph is not available; a future workaround may be considered outside this epic.
 
-**User Story:**
-> As a **Portfolio Manager**, I want the Liquidity Dashboard tab to be visible in the navigation so that the overall Cash Forecast structure is complete, even while the full specification is being developed.
-
-**Overview:**
-This is a placeholder and spike ticket for the Liquidity Dashboard sub-tab. The full specification, Figma designs, and data sources for this tab are not yet defined. This ticket creates the tab shell and placeholder content, and tasks the team with scoping the full feature once requirements are available. No functional implementation is expected in this ticket beyond the routing shell already created in CF-1.
-
-**Detailed Requirements:**
-- The Liquidity Dashboard sub-tab must be **visible and navigable** in the Cash Forecast sub-navigation (already wired in CF-1).
-- The tab content area must display a **placeholder message**: `"Liquidity Dashboard — Coming Soon. Full specifications are in progress."`.
-- *(Note: The full UI, data sources, charts, and interactions for this tab will be specified in a future ticket once requirements are confirmed with the product owner.)*
-- **Spike task:** Assign a developer to meet with the product owner and document the initial requirements for the Liquidity Dashboard. Output should be a requirements brief attached to this ticket before it is broken down into implementation stories.
-
-**UI/UX & Front-End Considerations:**
-- **Layout:** Simple centred placeholder text within the tab content area. Use a neutral in-progress illustration or icon if available in the Aloha design system.
-- **State Changes:**
-  - `Default` — placeholder message displayed.
-- **Accessibility:** Placeholder text must meet colour contrast standards.
-
-**Acceptance Criteria (BDD Format):**
-
-*Scenario 1 — Happy Path: Tab is visible and shows placeholder*
-- **Given** a user navigates to the Cash Forecast section
-- **When** they click the "Liquidity Dashboard" sub-tab
-- **Then** the tab is active, and the content area displays `"Liquidity Dashboard — Coming Soon. Full specifications are in progress."`
-
-*Scenario 2 — Spike Output*
-- **Given** this ticket is in progress
-- **When** the spike is complete
-- **Then** a requirements brief is attached to this Jira ticket describing the intended functionality, data sources, and user flows for the Liquidity Dashboard
-
-*Scenario 3 — Edge Case: Direct URL navigation to Liquidity tab*
-- **Given** a user navigates directly to `/cash-forecast/liquidity`
-- **When** the page loads
-- **Then** the tab renders correctly with the placeholder message and no broken layout or 404
-
-**Definition of Done (DoD):**
-- [ ] Code compiles and builds without errors.
-- [ ] Unit tests written and passing (minimum 80% coverage).
-- [ ] Feature tested in staging environment.
-- [ ] Code reviewed and approved by at least one peer.
-- [ ] UI/UX matches approved structural mockups across supported browsers.
+**Implication for CF-1:** Navigation and routing must **not** expose a Liquidity sub-tab. Any prior placeholder work should be backed out or redirected.
 
 ---
 ---
@@ -1024,12 +1001,14 @@ The following decisions were confirmed as **current defaults** with potential fu
 | Decision | Current State | Future Note |
 |---|---|---|
 | Currency | USD only | Multi-currency may be added later |
-| Decimal precision (monetary) | Whole numbers (no decimal), HALF_UP | Decimal places may be added in future |
-| User role restrictions | No role restrictions — any user can load any flow set | Role-based access may be added later |
-| Hypothetical flows — user workspace | Auto-save last state (session restore); no explicit Save button | Explicit save, delete, rename may be added |
-| Historical lookback window (CF-8) | Soft default: 1 calendar month; Dashboard only | Window may become configurable |
-| Hypothetical flow named sets | 3 fixed: CIO Flows, Operations Flows, My Flows | User-created named sets may be added |
+| Decimal precision (monetary / NAV in summary) | **Whole numbers (no decimals), HALF_UP** — Kathleen Bui, `KS-939` 2026-04-07 | Decimal places may be added later |
+| Liquidity Dashboard tab | **Removed from scope** | Future workaround if API data becomes available |
+| Hypothetical flows | **Save / Share model**; private by default; Team Flows; owner-only edit; **no CIO/Ops presets** | Caps: 10 saved scenarios (PO); confirm max rows per scenario |
+| Historical lookback window (CF-8) | **30 calendar days**; **Dashboard main tab only** | May become configurable |
+| Daily automated forecast defaults | Manual pacing, **8%** / **33%**, **$50M** min buffer, **20%** notional buffer — Kathleen 2026-04-10 | Adjust if team changes policy |
+| Derivative buffer / compute implementation | Use **`non_alpha_accounts`** for derivative accounts **and** include **Oasis fund × 0.55** in buffer — Kathleen + Jerry Luo, `KS-939` 2026-04-09 | Jerry: load pacing placeholders from datalake when Solovis data is available |
+| Manual pacing $ preview | Formulas per Kathleen 2026-04-09; **FE vs compute server TBD** | Lock in `KS-949` |
 
 ---
 
-*Generated: 2026-04-02 · Source: KS-950 Epic, KS-939 UI Specs, Cash Forecast UI Documentation.docx · Total: 14 tickets*
+*Generated: 2026-04-13 · Source: [`KS-950`](https://gendvn.atlassian.net/browse/KS-950), [`KS-939`](https://gendvn.atlassian.net/browse/KS-939) (31 comments, MCP), Cash Forecast UI Documentation.docx · **13 active stories** + CF-13 marked cancelled*
