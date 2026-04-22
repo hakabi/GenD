@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "conceptia-dynamo": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.conceptia.com/dynamo/sse"
+      ]
+    }
+  }
+}
