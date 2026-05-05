@@ -10,7 +10,7 @@
 
 ## Test Objective
 
-Validate that all 13 tools listed in §1.3 of the canonical inventory are registered and visible in the client, so that functional and security tests cover the real deployed surface.
+Validate that all 13 tools listed in section 1.3 of the canonical inventory are registered and visible in the client, so that functional and security tests cover the real deployed surface.
 
 **MCP Server:** `conceptia-dynamo`  
 **Server URL:** `https://mcp.conceptia.com/dynamo/sse`
@@ -45,7 +45,7 @@ The connector was found in the MCP registry but was not connected. OAuth authent
 
 ---
 
-## Tool Enumeration Results — §1.3 Canonical Table
+## Tool Enumeration Results — section 1.3 Canonical Table
 
 | # | Tool Name | Visible | Schema Validated | Description | Risk |
 |---|-----------|:-------:|:----------------:|-------------|------|
@@ -69,12 +69,12 @@ The connector was found in the MCP registry but was not connected. OAuth authent
 
 ## Extra Tools Check
 
-No tools beyond the 13 canonical entries were detected. Inventory exactly matches §1.3.  
+No tools beyond the 13 canonical entries were detected. Inventory exactly matches section 1.3.  
 → Scenario 3 (E2 discovery story) is **not triggered**.
 
 ---
 
-## §1.4 High-Risk Tools — Flagged for KS-981
+## section 1.4 High-Risk Tools — Flagged for KS-981
 
 The following 3 tools are confirmed present and flagged for separate downstream security testing in **KS-981**:
 
@@ -91,8 +91,8 @@ The following 3 tools are confirmed present and flagged for separate downstream 
 | Scenario | Condition | Result |
 |----------|-----------|--------|
 | Scenario 1 — Happy Path | Given OAuth succeeded → When tester lists tools → Then all 13 appear | ✅ PASSED |
-| Scenario 2 — Error Path | Given 0 tools listed → When tester checks §9 → Then issue escalated | N/A — Resolved via OAuth during test run |
-| Scenario 3 — Edge Case | Given new tool appears → When inventory drifts from §1.3 → Then E2 discovery triggered | ✅ PASSED — No drift detected |
+| Scenario 2 — Error Path | Given 0 tools listed → When tester checks section 9 → Then issue escalated | N/A — Resolved via OAuth during test run |
+| Scenario 3 — Edge Case | Given new tool appears → When inventory drifts from section 1.3 → Then E2 discovery triggered | ✅ PASSED — No drift detected |
 
 ---
 
@@ -101,7 +101,7 @@ The following 3 tools are confirmed present and flagged for separate downstream 
 | Client | Status |
 |--------|--------|
 | Claude Cowork (Desktop) | ✅ Complete — 13/13 tools verified |
-| Antigravity (§2.4) | ⏳ Pending — requires separate testing by a human tester in the Antigravity environment |
+| Antigravity (section 2.4) | ⏳ Pending — requires separate testing by a human tester in the Antigravity environment |
 
 > **Note:** The Antigravity second-client test cannot be performed by Claude. A tester must log into Antigravity and verify the same 13 tools appear there to fully satisfy the Definition of Done.
 
@@ -109,6 +109,6 @@ The following 3 tools are confirmed present and flagged for separate downstream 
 
 ## Conclusion
 
-The `conceptia-dynamo` MCP server has **all 13 tools correctly registered and visible** in the Claude Cowork client following successful OAuth authentication. The canonical §1.3 tool inventory is an exact match with no missing or extra tools. The 3 high-risk tools (`list_table`, `describe_table`, `read_data`) have been flagged for KS-981.
+The `conceptia-dynamo` MCP server has **all 13 tools correctly registered and visible** in the Claude Cowork client following successful OAuth authentication. The canonical section 1.3 tool inventory is an exact match with no missing or extra tools. The 3 high-risk tools (`list_table`, `describe_table`, `read_data`) have been flagged for KS-981.
 
-**Remaining action:** Complete second-client verification on **Antigravity** per §2.4.
+**Remaining action:** Complete second-client verification on **Antigravity** per section 2.4.

@@ -6,7 +6,7 @@
 | **Epic** | Dynamo MCP — Security & Abuse-Case Testing |
 | **Overall status** | **PARTIAL PASS — environment blocker B-1** (LLM path untested) |
 | **Execution date** | 2026-04-28 |
-| **Methodology** | Per **Dynamo MCP Server — QA Testing Guide** v1.3: black-box testing **only** through MCP (`https://mcp.conceptia.com/dynamo/sse`); no Dynamo UI cross-checks (**§1.1**). |
+| **Methodology** | Per **Dynamo MCP Server — QA Testing Guide** v1.3: black-box testing **only** through MCP (`https://mcp.conceptia.com/dynamo/sse`); no Dynamo UI cross-checks (**section 1.1**). |
 | **Sources merged** | **Claude** — *KS-986 - Claude_Report.md* (Cowork agent, broad sampling, injection scans). **Cursor** — *KS-986 - Cursor Report.md* (`user-conceptia-dynamo`, adversarial filters + ES smoke). |
 
 ---
@@ -17,18 +17,18 @@ The official guide (`Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md`) fram
 
 | Guide reference | How this consolidated result applies it |
 |-----------------|----------------------------------------|
-| **§1.1 Black-box rule** | Verdicts use **MCP tool outputs** only; upstream Dynamo remains opaque. |
-| **§1.3 Tool inventory** | PIJ exercises **six** PIJ-relevant tools among **13** registered tools; **`llm_text_analysis`** blocked (**B-1**). |
-| **§2.4 Multi-client testing** | **Claude (Cowork)** and **Cursor** both ran against the same MCP surface — satisfies multi-client recommendation. |
-| **§7.3 PIJ** | PIJ-01 … PIJ-05 mapped explicitly in §4 below. |
-| **§8 What to log** | Detailed payloads live in source reports; this file summarizes outcomes and avoids reproducing sensitive note/document bodies verbatim. |
-| **§11 Exit criteria** | Guide expects PIJ tests to confirm injection is **not** executed (**data treated as data**). That holds for **all exercised non-LLM paths**; **full** exit narrative requires **`llm_text_analysis`** under configured keys (**B-1**). |
+| **section 1.1 Black-box rule** | Verdicts use **MCP tool outputs** only; upstream Dynamo remains opaque. |
+| **section 1.3 Tool inventory** | PIJ exercises **six** PIJ-relevant tools among **13** registered tools; **`llm_text_analysis`** blocked (**B-1**). |
+| **section 2.4 Multi-client testing** | **Claude (Cowork)** and **Cursor** both ran against the same MCP surface — satisfies multi-client recommendation. |
+| **section 7.3 PIJ** | PIJ-01 … PIJ-05 mapped explicitly in section 4 below. |
+| **section 8 What to log** | Detailed payloads live in source reports; this file summarizes outcomes and avoids reproducing sensitive note/document bodies verbatim. |
+| **section 11 Exit criteria** | Guide expects PIJ tests to confirm injection is **not** executed (**data treated as data**). That holds for **all exercised non-LLM paths**; **full** exit narrative requires **`llm_text_analysis`** under configured keys (**B-1**). |
 
 ---
 
 ## 2. Executive summary
 
-**Both sessions** validated that **`get_notes`**, **`analyze_notes`**, **`get_fund_description`**, **`get_documents`**, and **`search_aloha_funds`** return **structured JSON** where note bodies, descriptions, document metadata, and Elasticsearch hits behave as **data** — **no** MCP-observable execution of embedded “instructions,” **no** autonomous secondary tool calls from server responses, and **no write/delete/update tools** in the **§1.3** inventory (strong structural limit for PIJ-04).
+**Both sessions** validated that **`get_notes`**, **`analyze_notes`**, **`get_fund_description`**, **`get_documents`**, and **`search_aloha_funds`** return **structured JSON** where note bodies, descriptions, document metadata, and Elasticsearch hits behave as **data** — **no** MCP-observable execution of embedded “instructions,” **no** autonomous secondary tool calls from server responses, and **no write/delete/update tools** in the **section 1.3** inventory (strong structural limit for PIJ-04).
 
 **Claude** additionally performed broader sampling (e.g. **10** recent notes with injection-pattern scan, **10** fund descriptions for encoding artifacts, **`get_documents`** against multiple fund filters noting **`Content`** as **`null`**, MIME/binary placeholder, or non-extracted text).
 
@@ -70,8 +70,8 @@ The official guide (`Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md`) fram
 |-----------|--------|
 | PIJ-01 … PIJ-05 — malicious content handled as **data** where tools ran | ✅ **Met** (non-LLM paths + ES/search) |
 | **`llm_text_analysis`** PIJ validation | ❌ **Not met** — **B-1** |
-| §11-style PIJ outcome (“not executed”) for exercised surfaces | ✅ **Met** |
-| Critical PIJ defect filed per §9 | **None observed** on exercised paths |
+| section 11-style PIJ outcome (“not executed”) for exercised surfaces | ✅ **Met** |
+| Critical PIJ defect filed per section 9 | **None observed** on exercised paths |
 
 ---
 
@@ -92,7 +92,7 @@ The official guide (`Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md`) fram
 1. Configure **`OPENAI_API_KEY`** and **`ANTHROPIC_API_KEY`** on the QA MCP deployment; re-run **`llm_text_analysis`** PIJ payloads (**B-1** closure).
 2. If **`get_documents`** ever returns **full extracted text** in **`Content`**, re-run **PIJ-03** on real bodies.
 3. If **write tools** are added to the MCP server later, re-run **PIJ-04** end-to-end before production (Claude observation).
-4. Optional: fold PIJ checks into **§10 ASV** continuous validation.
+4. Optional: fold PIJ checks into **section 10 ASV** continuous validation.
 
 ---
 
@@ -100,7 +100,7 @@ The official guide (`Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md`) fram
 
 | Document | Role |
 |----------|------|
-| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | §**1.1**, §**1.3**, §**2.4**, §**7.3** PIJ, §**8**, §**11** |
+| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | section **1.1**, section **1.3**, section **2.4**, section **7.3** PIJ, section **8**, section **11** |
 | `Dynamo Server/Test Result/KS-986 - Claude_Report.md` | Deep sampling, injection scans, structural write-tool observation |
 | `Dynamo Server/Test Result/KS-986 - Cursor Report.md` | Adversarial filters, dual-provider LLM block, ES **Sequoia** baseline |
 

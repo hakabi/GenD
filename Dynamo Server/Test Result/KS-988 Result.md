@@ -6,18 +6,18 @@
 | **Epic** | Dynamo MCP — Security & Abuse-Case Testing |
 | **Overall status** | **PARTIAL PASS** — transport and error hygiene largely strong; **CORS**, **rate limiting**, and **full TLS cipher proof** carry open items / observations |
 | **Execution date** | 2026-04-28 |
-| **Methodology** | Per **Dynamo MCP Server — QA Testing Guide** v1.3 (**§7.5 Transport Security (TLS)**): black-box validation through MCP and, where noted, raw HTTP (**§1.1**). |
+| **Methodology** | Per **Dynamo MCP Server — QA Testing Guide** v1.3 (**section 7.5 Transport Security (TLS)**): black-box validation through MCP and, where noted, raw HTTP (**section 1.1**). |
 | **Sources merged** | **Claude** — *KS-988 - Claude_Report.md* (Cowork sandbox; OAuth expiry lifecycle; **50×** MCP **`get_funds`** burst; **`describe_table`** / **`read_data`** error probes). **Cursor** — *KS-988 - Cursor Report.md* (**Windows `curl`**, **OPTIONS**/CORS, **55×** HTTPS GET burst, **10×** MCP burst). |
 
 ---
 
 ## 1. Alignment with the testing guide
 
-Guide reference: `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` — **§7.5** (TLS enforcement, CORS, OAuth, rate limiting, error hygiene).
+Guide reference: `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` — **section 7.5** (TLS enforcement, CORS, OAuth, rate limiting, error hygiene).
 
 | Guide theme | Consolidated application |
 |-------------|--------------------------|
-| **HTTPS / TLS** | Cursor **`curl`** confirms redirect off HTTP and TLS without cert errors; Claude confirms MCP sessions run over **`https://mcp.conceptia.com/dynamo/sse`** without downgrade indicators. Full cipher/TLS-version enumeration best confirmed externally (**§7.5** bullets). |
+| **HTTPS / TLS** | Cursor **`curl`** confirms redirect off HTTP and TLS without cert errors; Claude confirms MCP sessions run over **`https://mcp.conceptia.com/dynamo/sse`** without downgrade indicators. Full cipher/TLS-version enumeration best confirmed externally (**section 7.5** bullets). |
 | **CORS** | Cursor-only direct **`OPTIONS`** evidence (**OBS-1**). Claude could not reach origin from sandbox (**B-2** there). |
 | **OAuth** | Claude observed **expired token → re-auth → success** (**PASS**). Cursor did not run lifecycle drills independently (**gap** superseded by Claude where applicable). |
 | **Rate limiting** | Both sessions: **no 429** at tested volumes → merged **TLS-F01 / observation**. |
@@ -80,7 +80,7 @@ Cross-suite references (**KS-987** FINDING-03 / FINDING-04) noted in Claude TLS-
 1. Run **`openssl s_client`** / **`nmap --script ssl-enum-ciphers`** from approved infrastructure against **`mcp.conceptia.com:443`** (closes TLS-02 proof gap).
 2. Decide on **CORS** policy vs **`Allow-Origin: *`** (**OBS-1**) — architecture sign-off or ticket text update.
 3. Evaluate **rate limiting** (**TLS-F01**) — per-session limits + **429**/**Retry-After** if risk accepted.
-4. Optional: formal **token revocation** test script for auditors (Cursor §5).
+4. Optional: formal **token revocation** test script for auditors (Cursor section 5).
 5. Keep **KS-988** bundle with **KS-987** remediation tracking where TLS-F01 interacts with **`read_data`** scope.
 
 ---
@@ -89,7 +89,7 @@ Cross-suite references (**KS-987** FINDING-03 / FINDING-04) noted in Claude TLS-
 
 | Document | Role |
 |----------|------|
-| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | **§7.5** TLS, CORS, OAuth, rate limits, errors |
+| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | **section 7.5** TLS, CORS, OAuth, rate limits, errors |
 | `Dynamo Server/Test Result/KS-988 - Claude_Report.md` | OAuth PASS, **50×** MCP burst, TLS-F01, sandbox limits, MCP error probes |
 | `Dynamo Server/Test Result/KS-988 - Cursor Report.md` | **`curl`** TLS/CORS/rate evidence, **OBS-1**, dual-provider LLM error samples |
 

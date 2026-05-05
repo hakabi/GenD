@@ -1,11 +1,11 @@
-# KS-984 — Test Result: AUTH Suite (§7.1) — **Claude**
+# KS-984 — Test Result: AUTH Suite (section 7.1) — **Claude**
 
 | Field | Value |
 |---|---|
 | **Jira** | [KS-984](https://gendvn.atlassian.net/browse/KS-984) |
 | **Summary** | Dynamo MCP Security QA — **AUTH-01–AUTH-05** (unauthenticated access, token rejection, role scope, tenant isolation, parameter tampering) |
 | **Epic** | [KS-1000](https://gendvn.atlassian.net/browse/KS-1000) — Dynamo MCP — Security & Abuse-Case Testing |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§7.1** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 7.1** |
 | **MCP** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **Tester / agent** | **Claude** (Sonnet 4.6) — Claude Code VSCode extension |
 | **Report date** | 2026-04-24 |
@@ -30,7 +30,7 @@
 | No rate limiting on unauthenticated requests | **Low–Medium** | 20 rapid requests → all `401`, no `429` |
 | `X-Powered-By: Express` | **Info** | Server framework disclosed in response headers |
 | PKCE `plain` method supported | **Low** | OAuth auth server advertises both `S256` and `plain`; S256-only is best practice |
-| Elasticsearch error leaks internal index/node metadata | **Medium** | See §4.5 |
+| Elasticsearch error leaks internal index/node metadata | **Medium** | See section 4.5 |
 
 **Overall verdict: PASS with observations.** All executable AUTH tests passed. AUTH-03 not exercised. Two medium-severity findings raised (wildcard CORS, Elasticsearch info disclosure). No critical or blocker issues found.
 
@@ -95,7 +95,7 @@ Body length: 0
 - A second Azure AD principal with a documented lower-privilege role, or
 - A known admin-only MCP tool or parameter not accessible to the standard tester account
 
-Neither was available in this session. No `403` was triggered on any tool call with the current identity. Follow-up required — see §7.
+Neither was available in this session. No `403` was triggered on any tool call with the current identity. Follow-up required — see section 7.
 
 ---
 
@@ -126,7 +126,7 @@ Total record count is **stable at 977** across two independent calls — no reco
 ```
 All 30 results carry `"source": "solovis"` — consistent single-tenant scoping. No cross-tenant `source` values observed.
 
-**Verdict: PASS (behavioral, single-tenant U)** — data is internally consistent and scoped to this tenant's records. A definitive cross-tenant negative proof requires a second test account; that gap is documented in §7.
+**Verdict: PASS (behavioral, single-tenant U)** — data is internally consistent and scoped to this tenant's records. A definitive cross-tenant negative proof requires a second test account; that gap is documented in section 7.
 
 ---
 
@@ -142,7 +142,7 @@ All 30 results carry `"source": "solovis"` — consistent single-tenant scoping.
 | `SELECT 1 UNION SELECT password FROM sys.sql_logins` | `QUERY_EXECUTION_FAILED` | **PASS** |
 | `SELECT * FROM ../../etc/passwd` (path traversal style) | `QUERY_EXECUTION_FAILED` | **PASS** |
 
-**sys.tables observation:** The DB principal used by the MCP server has catalog-read access to `sys.tables`. This is not a cross-tenant row leak, but it confirms the MCP service account can enumerate database object names. Flag for review against the §1.4 high-risk tool policy.
+**sys.tables observation:** The DB principal used by the MCP server has catalog-read access to `sys.tables`. This is not a cross-tenant row leak, but it confirms the MCP service account can enumerate database object names. Flag for review against the section 1.4 high-risk tool policy.
 
 #### 4.5.2 `get_funds` — Oversized limit
 
@@ -183,7 +183,7 @@ This is an **information disclosure** issue. An attacker who can induce query pa
 
 ---
 
-## 5. HTTP-Layer Security Findings (Beyond §7.1 Scope)
+## 5. HTTP-Layer Security Findings (Beyond section 7.1 Scope)
 
 These were collected during AUTH-01/AUTH-02 probes and are reported here for completeness.
 
@@ -219,7 +219,7 @@ Direct probes confirm TLS 1.2 and TLS 1.3 both accepted; HTTPS enforced (plain H
 
 ---
 
-## 6. Test Matrix (§7.1)
+## 6. Test Matrix (section 7.1)
 
 | ID | Test | Happy Path | Invalid Input | Unauthorized User | Network Drop | Large Dataset |
 |---|---|:---:|:---:|:---:|:---:|:---:|
@@ -231,7 +231,7 @@ Direct probes confirm TLS 1.2 and TLS 1.3 both accepted; HTTPS enforced (plain H
 
 \* Proxy test only (synthetic token); real expired token replay deferred  
 † Single-tenant behavioral; two-tenant negative proof not available  
-⚠️ Passed with observations — see §4.5
+⚠️ Passed with observations — see section 4.5
 
 ---
 
@@ -241,7 +241,7 @@ Direct probes confirm TLS 1.2 and TLS 1.3 both accepted; HTTPS enforced (plain H
 |---|---|:---:|---|
 | **KS-984-CLA-SEC-01** | `search_aloha_funds` forwards raw Elasticsearch error to client, leaking internal index name, UUID, and node ID | **Medium** | MCP backend — wrap ES errors before returning to client |
 | **KS-984-CLA-SEC-02** | `Access-Control-Allow-Origin: *` on authenticated SSE endpoint | **Medium** | MCP / infra — restrict ACAO to known client origins |
-| **KS-984-CLA-OBS-01** | `read_data` DB principal can read `sys.tables` catalog | **Low / Policy** | Review against §1.4 high-risk tool hardening posture |
+| **KS-984-CLA-OBS-01** | `read_data` DB principal can read `sys.tables` catalog | **Low / Policy** | Review against section 1.4 high-risk tool hardening posture |
 | **KS-984-CLA-OBS-02** | No rate limiting on unauthenticated endpoint probes | **Low–Medium** | MCP / infra — add rate limiting / IP-based throttle |
 | **KS-984-CLA-OBS-03** | PKCE `plain` method advertised in OAuth server metadata | **Low** | MCP OAuth config — remove `plain`, keep `S256` only |
 | **KS-984-CLA-OBS-04** | `X-Powered-By: Express` disclosed in all responses | **Informational** | MCP backend — `app.disable('x-powered-by')` |
@@ -272,7 +272,7 @@ Direct probes confirm TLS 1.2 and TLS 1.3 both accepted; HTTPS enforced (plain H
 
 ## 9. Conclusion
 
-**KS-984** §7.1 is **PASS with observations** from this Claude run. All directly executable AUTH tests (AUTH-01, AUTH-02, AUTH-04, AUTH-05) passed their acceptance criteria. AUTH-03 remains not executed pending a second test identity. Two **medium-severity** findings were raised that were not identified in the Cursor run: **wildcard CORS** on the SSE endpoint and **raw Elasticsearch error forwarding** in `search_aloha_funds` that leaks internal index and node metadata. These are recommended for remediation before production deployment.
+**KS-984** section 7.1 is **PASS with observations** from this Claude run. All directly executable AUTH tests (AUTH-01, AUTH-02, AUTH-04, AUTH-05) passed their acceptance criteria. AUTH-03 remains not executed pending a second test identity. Two **medium-severity** findings were raised that were not identified in the Cursor run: **wildcard CORS** on the SSE endpoint and **raw Elasticsearch error forwarding** in `search_aloha_funds` that leaks internal index and node metadata. These are recommended for remediation before production deployment.
 
 **Next steps:**
 1. Fix **KS-984-CLA-SEC-01** (ES error wrapping) and **KS-984-CLA-SEC-02** (CORS restriction)

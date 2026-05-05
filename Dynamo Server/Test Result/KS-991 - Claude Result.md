@@ -7,7 +7,7 @@
 | **Ticket title** | Dynamo MCP QA — Enumerate server endpoints, OAuth, and per-tool schemas |
 | **MCP server** | `conceptia-dynamo` |
 | **Endpoint** | `https://mcp.conceptia.com/dynamo/sse` |
-| **Guide reference** | §4.1–§4.2 |
+| **Guide reference** | section 4.1–section 4.2 |
 | **Report date** | 2026-04-24 |
 | **Tester** | Bình Hà Khoa |
 | **Client** | Claude Cowork (Desktop — Cowork mode) |
@@ -16,13 +16,13 @@
 
 ## 1. Executive Summary
 
-**Objective:** Document the server URL, transport, auth method, and each of the 13 tools' input schemas, output structure, inferred purpose from live sample responses, and read/write classification. Flag §1.4 high-risk tools.
+**Objective:** Document the server URL, transport, auth method, and each of the 13 tools' input schemas, output structure, inferred purpose from live sample responses, and read/write classification. Flag section 1.4 high-risk tools.
 
 **Outcome: ✅ PASS** — All 13 tools enumerated with full schemas. 12/13 tools smoke-tested with live calls. Key behavioral finding on `get_activity` (mandatory filter). All tools confirmed **read-only**. `llm_text_analysis` noted as data-egress risk.
 
 ---
 
-## 2. Server & Transport Profile (§4.1)
+## 2. Server & Transport Profile (section 4.1)
 
 | Property | Value |
 |----------|-------|
@@ -39,10 +39,10 @@
 
 ---
 
-## 3. Tool Enumeration & Schema Catalogue (§4.2)
+## 3. Tool Enumeration & Schema Catalogue (section 4.2)
 
 ### Classification Legend
-- **R** = Read-only | **W** = Write | **⚠️** = §1.4 High-risk | **🤖** = External LLM call
+- **R** = Read-only | **W** = Write | **⚠️** = section 1.4 High-risk | **🤖** = External LLM call
 
 ---
 
@@ -63,7 +63,7 @@
 
 **Sample output structure:** AI-generated markdown analysis with sections: Summary, Key Highlights, YoY Comparison (Strategy / Macro / Risk / Performance).
 
-**Behavioral notes:** Zero-param call is valid. Passes retrieved notes to an LLM — data egress risk (see §5 F-01).
+**Behavioral notes:** Zero-param call is valid. Passes retrieved notes to an LLM — data egress risk (see section 5 F-01).
 
 ---
 
@@ -71,7 +71,7 @@
 | Property | Detail |
 |----------|--------|
 | **Classification** | R ⚠️ |
-| **§1.4 flag** | HIGH RISK — exposes full column/type schema of any MSSQL table |
+| **section 1.4 flag** | HIGH RISK — exposes full column/type schema of any MSSQL table |
 | **Purpose** | Returns an array of `{name, type}` objects describing all columns of a specified table |
 
 **Input Schema:**
@@ -272,7 +272,7 @@
 | Property | Detail |
 |----------|--------|
 | **Classification** | R ⚠️ |
-| **§1.4 flag** | HIGH RISK — exposes full list of MSSQL database tables |
+| **section 1.4 flag** | HIGH RISK — exposes full list of MSSQL database tables |
 | **Purpose** | Lists all tables in the MSSQL database, optionally filtered by schema |
 
 **Input Schema:**
@@ -310,7 +310,7 @@
 
 *Either `texts` or `companyNames` must be provided to trigger analysis.
 
-**Behavioral notes:** ⚠️ Sends data to an **external LLM provider** (OpenAI or Anthropic). This constitutes data egress — internal fund notes and activity data may leave the Dynamo/MCP boundary. See §5 F-01.
+**Behavioral notes:** ⚠️ Sends data to an **external LLM provider** (OpenAI or Anthropic). This constitutes data egress — internal fund notes and activity data may leave the Dynamo/MCP boundary. See section 5 F-01.
 
 ---
 
@@ -318,7 +318,7 @@
 | Property | Detail |
 |----------|--------|
 | **Classification** | R ⚠️ |
-| **§1.4 flag** | HIGH RISK — direct SQL execution on production MSSQL |
+| **section 1.4 flag** | HIGH RISK — direct SQL execution on production MSSQL |
 | **Purpose** | Executes a SELECT-only SQL query against the MSSQL database. Destructive operations (INSERT, UPDATE, DELETE, DROP, etc.) are blocked at the schema level |
 
 **Input Schema:**
@@ -366,7 +366,7 @@
 
 ## 4. Read/Write Classification Summary
 
-| # | Tool | Classification | §1.4 | External call |
+| # | Tool | Classification | section 1.4 | External call |
 |---|------|:--------------:|:----:|:-------------:|
 | 1 | `analyze_notes` | Read-only | — | 🤖 LLM |
 | 2 | `describe_table` | Read-only | ⚠️ HIGH | — |
@@ -426,7 +426,7 @@
 
 ---
 
-## 6. §1.4 High-Risk Tool Summary (for KS-981)
+## 6. section 1.4 High-Risk Tool Summary (for KS-981)
 
 | Tool | Risk | Evidence from this run |
 |------|------|----------------------|
@@ -442,7 +442,7 @@
 |----------|-----------|--------|----------|
 | **1 — Happy path** | Connection works → schema enumeration → each of 13 tools has parameters and return behavior described | ✅ PASS | All 13 tools enumerated with full input schemas; 12 smoke-tested with live calls |
 | **2 — Error path** | Tool returns schema errors with minimal valid input | ✅ PASS (observed on `get_activity`)  | Zero-param call returned structured error: at least one filter required. Logged as F-02 |
-| **3 — Edge case** | Vendor version bump → re-run enumeration → diff recorded | N/A (no version bump in this cycle) | Baseline established; this report serves as the §1.3 diff baseline for future re-runs |
+| **3 — Edge case** | Vendor version bump → re-run enumeration → diff recorded | N/A (no version bump in this cycle) | Baseline established; this report serves as the section 1.3 diff baseline for future re-runs |
 
 ---
 
@@ -455,12 +455,12 @@
 | All 13 tool schemas captured (required vs optional, types) | ✅ |
 | Read/write classification per tool | ✅ (all read-only) |
 | Sample responses recorded for inferred purpose | ✅ (12/13 live; `llm_text_analysis` schema-only) |
-| §1.4 high-risk tools flagged | ✅ (`describe_table`, `list_table`, `read_data`) |
+| section 1.4 high-risk tools flagged | ✅ (`describe_table`, `list_table`, `read_data`) |
 | Findings documented | ✅ (4 findings) |
 
 ---
 
-## 9. Data Baseline for Future Diff (§4.2 / Scenario 3)
+## 9. Data Baseline for Future Diff (section 4.2 / Scenario 3)
 
 | Metric | Value (2026-04-24) |
 |--------|-------------------|
@@ -481,4 +481,4 @@
 | This report | `Dynamo Server/Test Result/KS-991 - Claude Result.md` |
 | Tool inventory (KS-976) | `Dynamo Server/Test Result/KS-976 - Claude Result.md` |
 | Connectivity (KS-990) | `Dynamo Server/Test Result/KS-990 - Claude Result.md` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (§4.1–§4.2) |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 4.1–section 4.2) |

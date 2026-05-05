@@ -1,0 +1,12 @@
+{
+  "ticket": "KS-994",
+  "mirror_of": "~/dynamo-mcp-tests/logs/2026-04-30/E5-01_5.1_get-funds_2026-04-30T131000Z_evidence-redacted.json",
+  "captured_utc": "2026-04-30T13:10:00Z",
+  "test_id": "5.1",
+  "tool": "get_funds",
+  "arguments": { "limit": 3, "offset": 0 },
+  "success": true,
+  "totalRecords": 981,
+  "recordCount": 3,
+  "fund_names_sample": ["2026 Fund", "36 South", "59 North Partners, LP"]
+}

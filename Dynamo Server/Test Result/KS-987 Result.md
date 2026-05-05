@@ -6,7 +6,7 @@
 | **Epic** | Dynamo MCP — Security & Abuse-Case Testing |
 | **Overall status** | **FAIL / OPEN — 2 security findings + 1 environment blocker** (not ready for Done until remediated and re-tested) |
 | **Execution date** | 2026-04-28 |
-| **Methodology** | Per **Dynamo MCP Server — QA Testing Guide** v1.3 (**§7.4 CHAIN**, **§1.4** high-risk tools, **§11** exit criteria): black-box testing **only** through MCP (`https://mcp.conceptia.com/dynamo/sse`); no Dynamo UI cross-checks (**§1.1**). |
+| **Methodology** | Per **Dynamo MCP Server — QA Testing Guide** v1.3 (**section 7.4 CHAIN**, **section 1.4** high-risk tools, **section 11** exit criteria): black-box testing **only** through MCP (`https://mcp.conceptia.com/dynamo/sse`); no Dynamo UI cross-checks (**section 1.1**). |
 | **Sources merged** | **Claude** — *KS-987 - Claude_Report.md* (Cowork agent; deep CHAIN-02/04 probing including **`User`** table reads; OTP scan in notes). **Cursor** — *KS-987 - Cursor Report.md* (`user-conceptia-dynamo`; benign chains; dual missing LLM keys). |
 
 ---
@@ -15,11 +15,11 @@
 
 | Guide reference | How this consolidated result applies it |
 |-----------------|----------------------------------------|
-| **§1.1 Black-box rule** | Verdicts use **MCP tool outputs** only; upstream Dynamo remains opaque. |
-| **§1.3 Tool inventory** | CHAIN exercises **`get_funds`**, **`llm_text_analysis`**, **`get_notes`**, **`get_documents`**, **`list_table`**, **`describe_table`**, **`read_data`**, **`get_fund_description`** (happy path). |
-| **§1.4 High-risk tools** | **`list_table`**, **`describe_table`**, **`read_data`** — central to CHAIN-04; Claude validated **`User`** exposure (**FINDING-04**). |
-| **§7.4 CHAIN** | CHAIN-01 … CHAIN-04 mapped in §4; §11 **CHAIN-01** (no exfiltration path) partially evidenced (**B-1** blocks LLM arm). |
-| **§8 What to log** | Detailed payloads and sensitive evidence remain in source reports; this file avoids reproducing secrets, hashes, or full PII (**redaction policy**). |
+| **section 1.1 Black-box rule** | Verdicts use **MCP tool outputs** only; upstream Dynamo remains opaque. |
+| **section 1.3 Tool inventory** | CHAIN exercises **`get_funds`**, **`llm_text_analysis`**, **`get_notes`**, **`get_documents`**, **`list_table`**, **`describe_table`**, **`read_data`**, **`get_fund_description`** (happy path). |
+| **section 1.4 High-risk tools** | **`list_table`**, **`describe_table`**, **`read_data`** — central to CHAIN-04; Claude validated **`User`** exposure (**FINDING-04**). |
+| **section 7.4 CHAIN** | CHAIN-01 … CHAIN-04 mapped in section 4; section 11 **CHAIN-01** (no exfiltration path) partially evidenced (**B-1** blocks LLM arm). |
+| **section 8 What to log** | Detailed payloads and sensitive evidence remain in source reports; this file avoids reproducing secrets, hashes, or full PII (**redaction policy**). |
 
 ---
 
@@ -31,13 +31,13 @@
 
 **Reconciliation:** Cursor **did not contradict** Claude; it **did not replicate** the **`User`** queries or focused OTP evidence. **Authoritative security posture for KS-987** follows **Claude’s findings** plus **Cursor’s** LLM-key and harness observations.
 
-**CHAIN-01 (`llm_text_analysis`):** Both agents — tool **blocked** (**B-1**); **no** outbound LLM processing observed; §11 CHAIN-01 **not fully proven** for a **live** LLM until keys exist.
+**CHAIN-01 (`llm_text_analysis`):** Both agents — tool **blocked** (**B-1**); **no** outbound LLM processing observed; section 11 CHAIN-01 **not fully proven** for a **live** LLM until keys exist.
 
 ---
 
 ## 3. CHAIN coverage matrix (merged)
 
-| ID | Expected (§7.4 / ticket) | Claude — outcome | Cursor — outcome | Consolidated verdict |
+| ID | Expected (section 7.4 / ticket) | Claude — outcome | Cursor — outcome | Consolidated verdict |
 |----|--------------------------|-------------------|------------------|----------------------|
 | **CHAIN-01** | Read → forward via **`llm_text_analysis`** — **no** outbound leak | **`get_funds`** ✅; **`llm_text_analysis`** blocked (**B-1**); notes structural observation on LLM providers | Same — **`llm_text_analysis`** fails fast on missing keys | ✅ **PASS** for exercised failure mode · ⚠️ **Partial** — LLM behavior **unvalidated** (**B-1**) |
 | **CHAIN-02** | Credentials **not** harvestable / reusable from outputs | **`FINDING-03`** — OTP/Matrix codes **in note bodies** (expired samples); **`get_documents`** metadata ✅ | Sampled notes/docs — **no** structured DB secrets; **PASS** at sampled depth | ⚠️ **FINDING-03** (Claude) · Cursor = **subset PASS** |
@@ -78,7 +78,7 @@ External portal emails (e.g. Allvue/Okta OTP, Morgan Stanley Matrix activation) 
 | Credentials / OTP exposure (**CHAIN-02**) | ❌ **FINDING-03** |
 | Write poisoning via MCP (**CHAIN-03**) | ✅ Met (no write tools) |
 | Multi-step reads respect authorization (**CHAIN-04**) | ❌ **FINDING-04** |
-| §11-style “no exfiltration” / chain safety | ❌ **Open** until findings + **B-1** closed |
+| section 11-style “no exfiltration” / chain safety | ❌ **Open** until findings + **B-1** closed |
 
 ---
 
@@ -96,7 +96,7 @@ External portal emails (e.g. Allvue/Okta OTP, Morgan Stanley Matrix activation) 
 
 | Document | Role |
 |----------|------|
-| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | §**1.4**, §**7.4**, §**11** |
+| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | section **1.4**, section **7.4**, section **11** |
 | `Dynamo Server/Test Result/KS-987 - Claude_Report.md` | Deep CHAIN execution, **FINDING-03**, **FINDING-04**, cumulative KS register |
 | `Dynamo Server/Test Result/KS-987 - Cursor Report.md` | Cursor MCP harness, **B-1**, benign **`Fund`** **`read_data`** chain |
 

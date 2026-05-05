@@ -4,7 +4,7 @@
 | --- | --- |
 | **Jira** | [KS-991](https://gendvn.atlassian.net/browse/KS-991) |
 | **Epic** | Dynamo MCP — Discovery & Scope Enumeration |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` §4.1–§4.2 (§4.3 labels where noted) |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` section 4.1–section 4.2 (section 4.3 labels where noted) |
 | **MCP** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **Sources merged** | `KS-991 - Claude Result.md` (2026-04-24, tester Bình Hà Khoa, **Claude Cowork**) · `KS-991 - Cursor Result.md` (**Cursor Agent**) |
 | **Consolidation date** | 2026-04-24 |
@@ -13,20 +13,20 @@
 
 ## 1. Executive summary
 
-**Ticket:** Document server URL, transport, auth, and **all 13** tools’ inputs/outputs, inferred purpose, read/write behavior **as exposed by MCP**; flag **§1.4** tools.
+**Ticket:** Document server URL, transport, auth, and **all 13** tools’ inputs/outputs, inferred purpose, read/write behavior **as exposed by MCP**; flag **section 1.4** tools.
 
 | Source | Role | Outcome |
 | --- | --- | --- |
 | **Claude Cowork** | Primary deep enumeration: live samples, ratings chain, documents, `list_table` size, `read_data` + `INFORMATION_SCHEMA`, narrative per tool | **PASS** — 13/13 schemas + **12/13** live smokes; **`llm_text_analysis`** documented from schema + egress notes (not full LLM call required for closure per Claude DoD) |
 | **Cursor** | Cross-check via MCP tool JSON + independent smokes; env note on **`ANTHROPIC_API_KEY`** | **PASS with caveat** — same schema set; **`llm_text_analysis`** smoke **failed** in agent session (**missing API key**); **`get_rating_details`** not invoked in Cursor leg |
 
-**Merged verdict:** **PASS** for **KS-991** enumeration and classification. **Residual:** run **`llm_text_analysis`** with valid provider keys when proving end-to-end LLM egress controls; obtain **vendor version/deploy date** outside MCP (**§4.1**).
+**Merged verdict:** **PASS** for **KS-991** enumeration and classification. **Residual:** run **`llm_text_analysis`** with valid provider keys when proving end-to-end LLM egress controls; obtain **vendor version/deploy date** outside MCP (**section 4.1**).
 
 **All 13 tools are read-only** at the MCP boundary (no write/update/delete exposed).
 
 ---
 
-## 2. §4.1 Server & transport (merged)
+## 2. section 4.1 Server & transport (merged)
 
 | Property | Value | Source |
 | --- | --- | --- |
@@ -43,11 +43,11 @@
 
 ---
 
-## 3. §4.2 Tool catalogue — classification & §1.4
+## 3. section 4.2 Tool catalogue — classification & section 1.4
 
-**Legend:** **R** = read-only · **⚠️** = guide §1.4 high-risk · **🤖** = external LLM / egress path
+**Legend:** **R** = read-only · **⚠️** = guide section 1.4 high-risk · **🤖** = external LLM / egress path
 
-| # | Tool | Class | §1.4 | External |
+| # | Tool | Class | section 1.4 | External |
 | ---: | --- | --- | :---: | :---: |
 | 1 | `analyze_notes` | R 🤖 | — | LLM |
 | 2 | `describe_table` | R | ⚠️ | — |
@@ -63,9 +63,9 @@
 | 12 | `read_data` | R | ⚠️ | — |
 | 13 | `search_aloha_funds` | R | — | Elasticsearch |
 
-**Detailed narrative, full input field tables, and rich sample payloads** (e.g. 59 North documents, rating summary JSON, `search_aloha_funds` hits, `describe_table(Fund)` column count): see **`KS-991 - Claude Result.md` §3.**
+**Detailed narrative, full input field tables, and rich sample payloads** (e.g. 59 North documents, rating summary JSON, `search_aloha_funds` hits, `describe_table(Fund)` column count): see **`KS-991 - Claude Result.md` section 3.**
 
-**Compact parameter summary + Cursor-only smoke matrix:** see **`KS-991 - Cursor Result.md` §2–§3.**
+**Compact parameter summary + Cursor-only smoke matrix:** see **`KS-991 - Cursor Result.md` section 2–section 3.**
 
 ---
 
@@ -90,7 +90,7 @@
 
 | ID | Severity | Topic | Detail |
 | --- | --- | --- | --- |
-| **KS-991-F-01** | Medium | **LLM data egress** | `analyze_notes` and `llm_text_analysis` send internal text to **external LLM** providers. Policy / DLP / KS-981 review. *(Claude §5 F-01)* |
+| **KS-991-F-01** | Medium | **LLM data egress** | `analyze_notes` and `llm_text_analysis` send internal text to **external LLM** providers. Policy / DLP / KS-981 review. *(Claude section 5 F-01)* |
 | **KS-991-F-02** | Low | **`get_activity` schema vs runtime** | MCP JSON lists filters as optional; server requires **≥1** of: `startDate`, `endDate`, `activityCategories`, `companyNames`, `authorNames`, `subjectSearch`, `fundNames`. *(Claude F-02 = Cursor G03)* |
 | **KS-991-F-03** | Low | **`read_data` + `INFORMATION_SCHEMA`** | Third path for schema discovery besides `list_table` / `describe_table`. *(Claude F-03)* |
 | **KS-991-F-04** | Low | **`list_table` size** | Full DB table list very large; use schema filters / expect file offload. *(Claude F-04)* |
@@ -99,7 +99,7 @@
 
 ---
 
-## 6. §1.4 — Security tracking (KS-981)
+## 6. section 1.4 — Security tracking (KS-981)
 
 | Tool | Risk | Evidence snapshot |
 | --- | --- | --- |
@@ -115,7 +115,7 @@
 | --- | --- | --- |
 | **1 — Happy path** | **PASS** | All **13** tools described; **≥12** heavy live smokes across two clients; **`llm_text_analysis`** fully described; Cursor env may block **one** live LLM call (**F-05**). |
 | **2 — Error path** | **PASS** | `get_activity` zero-param → structured validation (documented **F-02**). `llm_text_analysis` key failure logged (**F-05**). |
-| **3 — Edge case** | **N/A** | No vendor version bump in cycle; **§9 baseline** supports future diff. |
+| **3 — Edge case** | **N/A** | No vendor version bump in cycle; **section 9 baseline** supports future diff. |
 
 ---
 
@@ -143,7 +143,7 @@
 | 13 tool schemas (required/optional/types) | Yes |
 | Read/write per tool (**all read-only**) | Yes |
 | Sample / inferred return behavior | Yes |
-| §1.4 tools flagged | Yes |
+| section 1.4 tools flagged | Yes |
 | Findings logged | Yes |
 | `llm_text_analysis` **live** with keys in **all** environments | Partial — confirm Cursor/MCP env keys (**F-05**) |
 
@@ -151,7 +151,7 @@
 
 ## 10. Paste-ready Jira comment
 
-*KS-991 closed from **merged** QA: **Claude Cowork** + **Cursor** enumerated `conceptia-dynamo` per §4.1–§4.2. **13/13** tools documented; **all read-only** at MCP. **§1.4** flagged: `list_table`, `describe_table`, `read_data`. **Findings:** LLM egress on `analyze_notes` / `llm_text_analysis` (KS-981); `get_activity` mandatory filter not in JSON schema (vendor doc fix); `INFORMATION_SCHEMA` via `read_data`; huge `list_table` payload; vendor version TBD. **Cursor:** `llm_text_analysis` smoke blocked without **ANTHROPIC_API_KEY**. **Baseline metrics** captured for future schema drift. Evidence: `KS-991 Result.md` + `KS-991 - Claude Result.md` + `KS-991 - Cursor Result.md`.*
+*KS-991 closed from **merged** QA: **Claude Cowork** + **Cursor** enumerated `conceptia-dynamo` per section 4.1–section 4.2. **13/13** tools documented; **all read-only** at MCP. **section 1.4** flagged: `list_table`, `describe_table`, `read_data`. **Findings:** LLM egress on `analyze_notes` / `llm_text_analysis` (KS-981); `get_activity` mandatory filter not in JSON schema (vendor doc fix); `INFORMATION_SCHEMA` via `read_data`; huge `list_table` payload; vendor version TBD. **Cursor:** `llm_text_analysis` smoke blocked without **ANTHROPIC_API_KEY**. **Baseline metrics** captured for future schema drift. Evidence: `KS-991 Result.md` + `KS-991 - Claude Result.md` + `KS-991 - Cursor Result.md`.*
 
 ---
 
@@ -162,4 +162,4 @@
 | **This merged result** | `Dynamo Server/Test Result/KS-991 Result.md` |
 | Claude detail (full tool narratives & samples) | `Dynamo Server/Test Result/KS-991 - Claude Result.md` |
 | Cursor detail (compact schema + smoke log) | `Dynamo Server/Test Result/KS-991 - Cursor Result.md` |
-| Related | `KS-976 Result.md`, `KS-990 Result.md`, `dynamo-mcp-testing-guide.md` §4 |
+| Related | `KS-976 Result.md`, `KS-990 Result.md`, `dynamo-mcp-testing-guide.md` section 4 |

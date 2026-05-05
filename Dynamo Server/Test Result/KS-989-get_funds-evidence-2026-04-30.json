@@ -1,0 +1,64 @@
+{
+  "ticket": "KS-989",
+  "source": "Conceptia Dynamo MCP — get_funds (Cursor harness, user-conceptia-dynamo)",
+  "mcp_endpoint": "https://mcp.conceptia.com/dynamo/sse",
+  "captured_utc": "2026-04-30T11:32:31.669Z",
+  "request": {
+    "tool": "get_funds",
+    "limit": 5,
+    "offset": 0
+  },
+  "response": {
+    "success": true,
+    "message": "Query executed successfully. Retrieved 5 of 981 total fund(s). Response size: 0.00 MB",
+    "recordCount": 5,
+    "totalRecords": 981,
+    "offset": 0,
+    "limit": 5,
+    "hasMore": true,
+    "numeric_fund_id_in_payload": false,
+    "note": "Fund identity in this API shape is carried by Name (and related attributes); no separate numeric id field observed."
+  },
+  "first_page_sample": [
+    {
+      "name": "2026 Fund",
+      "vintage": null,
+      "pipeline": "1 - Pre-One Pager",
+      "asset_class": "Private Equity / Buyout and Growth Equity / Non-US Developed Buyout",
+      "manager": "Phoenix Equity"
+    },
+    {
+      "name": "36 South",
+      "vintage": null,
+      "pipeline": "X - Exited",
+      "asset_class": "Absolute Return / Relative Value",
+      "manager": "36 South Capital Advisors"
+    },
+    {
+      "name": "59 North Partners, LP",
+      "vintage": "2019",
+      "pipeline": "P - Portfolio",
+      "asset_class": "Absolute Return / Equity Hedge",
+      "manager": "59 North Capital Management"
+    },
+    {
+      "name": "5AM Ventures IV, LP",
+      "vintage": null,
+      "pipeline": "X - Exited",
+      "asset_class": "Private Equity / Venture Capital / US Venture Capital",
+      "manager": "5AM Ventures"
+    },
+    {
+      "name": "5AM Ventures V, L.P.",
+      "vintage": null,
+      "pipeline": "X - Exited",
+      "asset_class": "Private Equity / Venture Capital / US Venture Capital",
+      "manager": null
+    }
+  ],
+  "baseline_roles_crosswalk": {
+    "PRIMARY": "59 North Partners, LP",
+    "SECONDARY": "2026 Fund",
+    "EDGE": "5AM Ventures IV, LP"
+  }
+}

@@ -8,13 +8,13 @@
 | **Execution date** | 2026-04-28 |
 | **Tester / client** | Cursor agent — `curl.exe` (Windows) + Conceptia Dynamo MCP (`user-conceptia-dynamo`) |
 | **MCP endpoint** | `https://mcp.conceptia.com/dynamo/sse` |
-| **Guide mapping** | [Dynamo MCP Server — QA Testing Guide](../Test%20Guide/dynamo-mcp-testing-guide.md) v1.3 — **§7.5 Transport Security (TLS)** |
+| **Guide mapping** | [Dynamo MCP Server — QA Testing Guide](../Test%20Guide/dynamo-mcp-testing-guide.md) v1.3 — **section 7.5 Transport Security (TLS)** |
 
 ---
 
 ## 1. Executive summary
 
-Tests below exercise **§7.5** and the **KS-988** BDD scenarios using (1) **raw HTTPS/HTTP** probes with `curl`, and (2) **authenticated MCP** tool calls for burst and error sampling.
+Tests below exercise **section 7.5** and the **KS-988** BDD scenarios using (1) **raw HTTPS/HTTP** probes with `curl`, and (2) **authenticated MCP** tool calls for burst and error sampling.
 
 **TLS / HTTPS:** Cleartext **HTTP** on port 80 **redirects** to **HTTPS** (no downgrade to an HTTP API for the probe used). **HTTPS** to the SSE path negotiates TLS successfully under **Windows Schannel** (no certificate errors in `curl` output); unauthenticated **`HEAD`/`GET`** return **401** with JSON body — **no** transport failure.
 
@@ -36,11 +36,11 @@ Tests below exercise **§7.5** and the **KS-988** BDD scenarios using (1) **raw 
 
 | Requirement | Evidence section |
 |-------------|------------------|
-| TLS **1.2+**, valid cert, HTTPS-only story | §3.1 |
-| CORS — unauthorized origins rejected | §3.2 (**OBS-1**) |
-| OAuth expiry / revocation | §3.3 (**B-1**) |
-| **50+** rapid calls — throttle **or** graceful behavior | §3.4 |
-| Errors without stacks / paths / secrets | §3.5 |
+| TLS **1.2+**, valid cert, HTTPS-only story | section 3.1 |
+| CORS — unauthorized origins rejected | section 3.2 (**OBS-1**) |
+| OAuth expiry / revocation | section 3.3 (**B-1**) |
+| **50+** rapid calls — throttle **or** graceful behavior | section 3.4 |
+| Errors without stacks / paths / secrets | section 3.5 |
 
 ---
 
@@ -54,7 +54,7 @@ Tests below exercise **§7.5** and the **KS-988** BDD scenarios using (1) **raw 
 | B | `curl.exe --max-time 15 -sI "https://mcp.conceptia.com/dynamo/sse"` | **`HTTP/1.1 401 Unauthorized`** · **`Content-Type: application/json`** · **`Www-Authenticate: Bearer`** … OAuth PR metadata URI present |
 | C | `curl.exe --max-time 15 -vk "https://mcp.conceptia.com/dynamo/sse" -o NUL` | TLS established via **schannel**; logs showed **SSL/TLS connection** / renegotiation — **no** user-visible cert error in snippet |
 
-**Assessment:** **PASS** for **HTTPS-only usage** when clients follow redirects; TLS stack operates without verification errors on this host (**guide §7.5**).
+**Assessment:** **PASS** for **HTTPS-only usage** when clients follow redirects; TLS stack operates without verification errors on this host (**guide section 7.5**).
 
 ---
 
@@ -87,7 +87,7 @@ Tests below exercise **§7.5** and the **KS-988** BDD scenarios using (1) **raw 
 | **HTTP burst** | **55** sequential **`curl`** **GET**s to **`https://mcp.conceptia.com/dynamo/sse`** (~**33 s** wall time in measured run) | **55 × HTTP 401** · **`NO_429_IN_BURST`** · **no** curl hard failures logged |
 | **MCP burst** | **10** consecutive **`get_funds`** (`limit` **1**, `offset` **0–9**) in quick succession | **All `success: true`** |
 
-**Assessment:** Service remained responsive — **PASS** for **graceful handling** at tested intensity (**guide §7.5** — “not crash”). **429** may appear only above higher thresholds or on authenticated routes — document **coverage gap** if policies must be proven empirically.
+**Assessment:** Service remained responsive — **PASS** for **graceful handling** at tested intensity (**guide section 7.5** — “not crash”). **429** may appear only above higher thresholds or on authenticated routes — document **coverage gap** if policies must be proven empirically.
 
 ---
 
@@ -125,7 +125,7 @@ Tests below exercise **§7.5** and the **KS-988** BDD scenarios using (1) **raw 
 ## 6. References
 
 - **Jira:** [KS-988](https://gendvn.atlassian.net/browse/KS-988)
-- **Guide:** `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` — **§7.5**
+- **Guide:** `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` — **section 7.5**
 
 ---
 

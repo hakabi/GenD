@@ -7,7 +7,7 @@
 | **Ticket title** | Dynamo MCP QA — Verify all 13 MCP tools are registered and visible |
 | **MCP server** | `conceptia-dynamo` |
 | **Endpoint** | `https://mcp.conceptia.com/dynamo/sse` (HTTP/SSE via `mcp-remote` per testing guide) |
-| **Canonical inventory** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` §1.3 (April 2026) |
+| **Canonical inventory** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` section 1.3 (April 2026) |
 | **Report date** | 2026-04-23 |
 | **Sources merged** | `KS-976-cursor-agent-tool-enumeration-2026-04-23.md`, `KS-976 - Claude Result.md` |
 
@@ -15,20 +15,20 @@
 
 ## 1. Executive summary
 
-**Requirement (KS-976):** As an internal QA tester, ensure every tool in guide **§1.3** appears in the MCP client so functional and security work targets the real deployed surface.
+**Requirement (KS-976):** As an internal QA tester, ensure every tool in guide **section 1.3** appears in the MCP client so functional and security work targets the real deployed surface.
 
 **Outcome:** **PASS** for **two independent MCP clients** tested in this cycle:
 
-| Client | Role in this result | Tools visible | Enumeration vs §1.3 | Runtime confirmation |
+| Client | Role in this result | Tools visible | Enumeration vs section 1.3 | Runtime confirmation |
 | --- | --- | --- | --- | --- |
 | **Cursor** (Agent / Composer, workspace `GenD`) | Primary agent-side verification | **13 / 13** | Exact match; no extras | `get_funds`, `list_table` invoked successfully |
 | **Claude Cowork** (Desktop — Cowork mode) | Full tool/schema review | **13 / 13** | Exact match; no extras | All 13 tools visible; per-tool **schema validated** in client |
 
-**Inventory drift:** None. **Scenario 3** (new tool → refresh §1.3 / discovery) **not** triggered.
+**Inventory drift:** None. **Scenario 3** (new tool → refresh section 1.3 / discovery) **not** triggered.
 
-**§1.4 high-risk tools:** `list_table`, `describe_table`, `read_data` are **present** and flagged for downstream work (**KS-981** and security suites), not blocked by KS-976.
+**section 1.4 high-risk tools:** `list_table`, `describe_table`, `read_data` are **present** and flagged for downstream work (**KS-981** and security suites), not blocked by KS-976.
 
-**Guide §2.4 note:** Internal QA may still require **Antigravity** (or other in-house standard clients) in a broader matrix. That leg was **not** executed in the two source reports; status is **pending** if your program mandates it explicitly.
+**Guide section 2.4 note:** Internal QA may still require **Antigravity** (or other in-house standard clients) in a broader matrix. That leg was **not** executed in the two source reports; status is **pending** if your program mandates it explicitly.
 
 ---
 
@@ -36,20 +36,20 @@
 
 | KS-976 theme | How this result addresses it |
 | --- | --- |
-| Compare visible tool list to §1.3 | Both clients show **exactly 13** tools matching the table; **no missing, no extra**. |
+| Compare visible tool list to section 1.3 | Both clients show **exactly 13** tools matching the table; **no missing, no extra**. |
 | Verify all 13 named tools | Confirmed in Cursor (filesystem cache + smoke calls) and Claude (visibility + schema). |
 | Optional prompt: list every tool | Satisfied by explicit enumeration in both runs. |
-| Flag §1.4 tools for separate tracking | All three high-risk tools **listed**; Claude run documented risk rationale; Cursor smoke-used `list_table`. |
-| Repeat on a second client | **Cursor** + **Claude Cowork** satisfy a **two-client** check. **Antigravity** remains open if required by internal policy (see §7). |
+| Flag section 1.4 tools for separate tracking | All three high-risk tools **listed**; Claude run documented risk rationale; Cursor smoke-used `list_table`. |
+| Repeat on a second client | **Cursor** + **Claude Cowork** satisfy a **two-client** check. **Antigravity** remains open if required by internal policy (see section 7). |
 | Claude Desktop / Connectors; Claude Code `/mcp` | **Claude Cowork (Desktop)** used instead of classic Connectors wording; behavior aligns with “list tools + OAuth” intent. **Claude Code `/mcp`** was not a separate artifact in source reports. |
 
 ---
 
-## 3. Consolidated tool inventory (§1.3)
+## 3. Consolidated tool inventory (section 1.3)
 
 Legend: **Cursor** = descriptor in MCP cache + smoke where noted; **Claude** = visible + schema validated per Claude report.
 
-| # | Tool | §1.4 | Cursor | Claude (schema) | Purpose (from Claude validation summary) |
+| # | Tool | section 1.4 | Cursor | Claude (schema) | Purpose (from Claude validation summary) |
 | ---: | --- | --- | :---: | :---: | --- |
 | 1 | `analyze_notes` | — | Descriptor + cache | Yes | Notes retrieval and structured analysis (summary, highlights, YoY-style themes). |
 | 2 | `describe_table` | **HIGH** | Descriptor | Yes | MSSQL table schema (columns/types). |
@@ -69,7 +69,7 @@ Legend: **Cursor** = descriptor in MCP cache + smoke where noted; **Claude** = v
 
 ---
 
-## 4. §1.4 High-risk tool checklist (for KS-981)
+## 4. section 1.4 High-risk tool checklist (for KS-981)
 
 | Tool | Present | Notes |
 | --- | :---: | --- |
@@ -84,8 +84,8 @@ Legend: **Cursor** = descriptor in MCP cache + smoke where noted; **Claude** = v
 | Scenario | Given / When / Then (ticket) | Result | Evidence |
 | --- | --- | --- | --- |
 | **1 — Happy path** | OAuth OK → list tools → all 13 appear | **PASS** | Claude: Run 2 after OAuth, 13/13. Cursor: OAuth stable post-fix; 13 descriptors + successful tool calls. |
-| **2 — Error path** | 0 tools → follow guide §9 / escalate | **Observed then resolved** | Claude Run 1: 0/13 until OAuth. Cursor: earlier blocked session (server error / port **EADDRINUSE**); remediated; re-test PASS. |
-| **3 — Edge case** | New tool → inventory drifts from §1.3 → trigger discovery | **PASS (no drift)** | No 14th tool; inventory matches §1.3 exactly. |
+| **2 — Error path** | 0 tools → follow guide section 9 / escalate | **Observed then resolved** | Claude Run 1: 0/13 until OAuth. Cursor: earlier blocked session (server error / port **EADDRINUSE**); remediated; re-test PASS. |
+| **3 — Edge case** | New tool → inventory drifts from section 1.3 → trigger discovery | **PASS (no drift)** | No 14th tool; inventory matches section 1.3 exactly. |
 
 ---
 
@@ -104,7 +104,7 @@ Legend: **Cursor** = descriptor in MCP cache + smoke where noted; **Claude** = v
 
 ---
 
-## 7. Multi-client matrix vs guide §2.4
+## 7. Multi-client matrix vs guide section 2.4
 
 | Client | KS-976 coverage in this package | Status |
 | --- | --- | --- |
@@ -121,19 +121,19 @@ Legend: **Cursor** = descriptor in MCP cache + smoke where noted; **Claude** = v
 
 | Criterion | Status |
 | --- | :---: |
-| All §1.3 tools visible in tested clients | **Yes** (13/13 × 2 clients) |
+| All section 1.3 tools visible in tested clients | **Yes** (13/13 × 2 clients) |
 | No unexplained missing/extra tools | **Yes** |
-| §1.4 tools identified for downstream security stories | **Yes** |
+| section 1.4 tools identified for downstream security stories | **Yes** |
 | Second client / matrix | **Partially complete** — **Cursor + Claude Cowork** done; **Antigravity** (and optionally **Claude Code** log) **open** if mandatory |
 
 ---
 
 ## 9. Conclusion
 
-The **Conceptia Dynamo** MCP server exposes **exactly the 13 tools** defined in testing guide **§1.3**, with **no inventory drift**, in both **Cursor** and **Claude Cowork** after successful authentication. Representative **runtime** use in Cursor and **schema-level** confirmation in Claude support that the **deployed MCP surface** matches documentation. High-risk discovery/read tools are **present** and **tracked** for **KS-981**.
+The **Conceptia Dynamo** MCP server exposes **exactly the 13 tools** defined in testing guide **section 1.3**, with **no inventory drift**, in both **Cursor** and **Claude Cowork** after successful authentication. Representative **runtime** use in Cursor and **schema-level** confirmation in Claude support that the **deployed MCP surface** matches documentation. High-risk discovery/read tools are **present** and **tracked** for **KS-981**.
 
 **Recommended Jira comment (paste-ready):**  
-*KS-976 closed for tool registration/visibility: 13/13 tools confirmed in Cursor (cache + smoke: `get_funds`, `list_table`) and Claude Cowork (13/13 + schema validation). No extra/missing tools. §1.4 tools flagged for KS-981. Antigravity (§2.4) still pending if required by internal client matrix.*
+*KS-976 closed for tool registration/visibility: 13/13 tools confirmed in Cursor (cache + smoke: `get_funds`, `list_table`) and Claude Cowork (13/13 + schema validation). No extra/missing tools. section 1.4 tools flagged for KS-981. Antigravity (section 2.4) still pending if required by internal client matrix.*
 
 ---
 
@@ -144,4 +144,4 @@ The **Conceptia Dynamo** MCP server exposes **exactly the 13 tools** defined in 
 | This consolidated result | `Dynamo Server/Test Result/KS-976 Result.md` |
 | Cursor detail | `Dynamo Server/Test Result/KS-976-cursor-agent-tool-enumeration-2026-04-23.md` |
 | Claude Cowork detail | `Dynamo Server/Test Result/KS-976 - Claude Result.md` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (§1.3, §1.4, §2.4, §3.3, §9) |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 1.3, section 1.4, section 2.4, section 3.3, section 9) |

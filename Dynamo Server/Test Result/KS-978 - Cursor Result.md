@@ -1,10 +1,10 @@
-# KS-978 — Test Result: Validate fund description and ratings (§5.2) — **Cursor**
+# KS-978 — Test Result: Validate fund description and ratings (section 5.2) — **Cursor**
 
 | Field | Value |
 | --- | --- |
 | **Jira** | [KS-978](https://gendvn.atlassian.net/browse/KS-978) |
 | **Epic** | [KS-999](https://gendvn.atlassian.net/browse/KS-999) — Dynamo MCP — **Functional E2E Validation** |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§5.2** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 5.2** |
 | **MCP** | `conceptia-dynamo` |
 | **Tester / agent** | **Cursor Agent** (live tool invocation) |
 | **MCP default user (per program)** | `binh.ha@conceptia.com` — used as `user` on `get_rating_details` where the tool requires it (equivalent to server **`MCP_DEFAULT_USER_EMAIL`**) |
@@ -22,8 +22,8 @@
 | **Tool chain & baseline** | **PASS** | Baseline: **`59 North Partners, LP`**. Rating **id** from **`search_aloha_funds`** (`search_text: "59 North"`) — **solovis** **`fund_id` = `28582`**. |
 | **Name / manager / description vs `get_funds`** | **PASS** | **Name** and **`FundManagerName`** match across `get_funds` and `get_fund_description`. **`get_rating_summary.rating_name`** matches **fund** **Name**. |
 | **`get_rating_details`** | **PASS (contract)** | With **`user: binh.ha@conceptia.com`**: **`success: true`**, **`message`**: “Rating details retrieved.” **`data`**: **`[]`** (no detail rows for this user/fund in FAD — **not** a tool error; no fabricated rows). |
-| **§5.2 — Scenario 2** | **PASS** | Bad name / bad id → empty **`data`**, no cross-tenant payload in probes. |
-| **§5.2 — Scenario 3** | **PASS (sampled)** | **`null`** on nullable `get_funds` fields; empty arrays where applicable. |
+| **section 5.2 — Scenario 2** | **PASS** | Bad name / bad id → empty **`data`**, no cross-tenant payload in probes. |
+| **section 5.2 — Scenario 3** | **PASS (sampled)** | **`null`** on nullable `get_funds` fields; empty arrays where applicable. |
 
 **Overall (Cursor):** **PASS** for **tool contract** and **non-contradiction** between description, summary, and `get_funds`. **Details** call **succeeds** with program user email; **row count is zero** — if QA expects **non-empty** detail lines for this fund, treat as a **data / fixture** check outside MCP behavior.
 
@@ -35,9 +35,9 @@
 
 | Theme | Evidence |
 | --- | --- |
-| §5.2 prompt (full details) | `get_fund_description` + `get_rating_summary` + `get_rating_details` with shared **`id`** / **`source`** / **`type`**. |
+| section 5.2 prompt (full details) | `get_fund_description` + `get_rating_summary` + `get_rating_details` with shared **`id`** / **`source`** / **`type`**. |
 | Consistency | Summary scores present; **details** list empty — **no** conflicting detail rows. |
-| “FUND_ID” | **`get_funds`** has no single public **`FUND_ID`**; use **ES `fund_id`** + **name** (see **§5**). |
+| “FUND_ID” | **`get_funds`** has no single public **`FUND_ID`**; use **ES `fund_id`** + **name** (see **section 5**). |
 | `user` for details | Per program: **`binh.ha@conceptia.com`**. |
 
 ---
@@ -53,7 +53,7 @@
 
 ---
 
-## 4. Scenario 1 — Happy path (§5.2)
+## 4. Scenario 1 — Happy path (section 5.2)
 
 ### 4.1 `get_funds` (context)
 
@@ -134,7 +134,7 @@
 
 ## 9. Paste-ready Jira comment (Cursor)
 
-*KS-978 **§5.2 (Cursor)**: **PASS** on **`get_funds`**, **`search_aloha_funds`**, **`get_fund_description`**, **`get_rating_summary`** for **59 North** / **`28582` (solovis)**. **`get_rating_details`** with **`user=binh.ha@conceptia.com`**: **success, empty** `data`. Scenarios 2–3 **PASS** on samples. **Merged:** `KS-978 Result.md`.*
+*KS-978 **section 5.2 (Cursor)**: **PASS** on **`get_funds`**, **`search_aloha_funds`**, **`get_fund_description`**, **`get_rating_summary`** for **59 North** / **`28582` (solovis)**. **`get_rating_details`** with **`user=binh.ha@conceptia.com`**: **success, empty** `data`. Scenarios 2–3 **PASS** on samples. **Merged:** `KS-978 Result.md`.*
 
 ---
 
@@ -143,7 +143,7 @@
 | Document | Path |
 | --- | --- |
 | This Cursor run | `Dynamo Server/Test Result/KS-978 - Cursor Result.md` |
-| QA guide §5.2 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
+| QA guide section 5.2 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
 | Merged result | `Dynamo Server/Test Result/KS-978 Result.md` |
 
 ---

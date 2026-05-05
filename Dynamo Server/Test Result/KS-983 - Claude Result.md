@@ -1,10 +1,10 @@
-# KS-983 — Test Result: Validate `llm_text_analysis` on Fund Description (§5.7)
+# KS-983 — Test Result: Validate `llm_text_analysis` on Fund Description (section 5.7)
 
 | Field | Value |
 |---|---|
 | **Jira** | [KS-983](https://gendvn.atlassian.net/browse/KS-983) |
 | **Epic** | KS-999 — Dynamo MCP — Functional E2E Validation |
-| **Guide** | `dynamo-mcp-testing-guide.md` §5.7 (Text Analysis) |
+| **Guide** | `dynamo-mcp-testing-guide.md` section 5.7 (Text Analysis) |
 | **MCP Server** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **Tester** | Claude (Sonnet 4.6) — claude.ai |
 | **Test Date** | 2026-04-24 (UTC) |
@@ -133,7 +133,7 @@ All three test scenarios for `llm_text_analysis` **FAILED** with the same root c
 
 ---
 
-## 7. Test Matrix (§5.7)
+## 7. Test Matrix (section 5.7)
 
 | Test | Happy Path | Invalid Input | Large Dataset |
 |---|:---:|:---:|:---:|
@@ -145,7 +145,7 @@ All three test scenarios for `llm_text_analysis` **FAILED** with the same root c
 
 | Field | Detail |
 |---|---|
-| **Severity** | **High** — entire §5.7 scope is blocked; `llm_text_analysis` non-functional |
+| **Severity** | **High** — entire section 5.7 scope is blocked; `llm_text_analysis` non-functional |
 | **Defect summary** | `llm_text_analysis` fails on all inputs: `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` missing from MCP server environment |
 | **Reproduction** | Call `llm_text_analysis` with any `texts` value and any `provider` (`openai` or `anthropic`) → `"Failed to run LLM text analysis: Error: Missing [PROVIDER]_API_KEY"` |
 | **Expected** | Tool executes LLM analysis and returns structured output (themes, risk factors, sentiment) |
@@ -167,7 +167,7 @@ Despite the blocking defect, the following was confirmed working during pre-test
 
 ## 10. Conclusion
 
-KS-983 §5.7 is **BLOCKED / FAIL**. The `llm_text_analysis` tool cannot execute because neither `ANTHROPIC_API_KEY` nor `OPENAI_API_KEY` is set on the MCP server. All three BDD scenarios (happy path, error path, edge case) are blocked by the same root cause. Re-testing is required after the MCP server environment is corrected.
+KS-983 section 5.7 is **BLOCKED / FAIL**. The `llm_text_analysis` tool cannot execute because neither `ANTHROPIC_API_KEY` nor `OPENAI_API_KEY` is set on the MCP server. All three BDD scenarios (happy path, error path, edge case) are blocked by the same root cause. Re-testing is required after the MCP server environment is corrected.
 
 **Next step:** MCP server admin to configure at least one valid LLM provider API key and redeploy. Re-run KS-983 tests after fix.
 

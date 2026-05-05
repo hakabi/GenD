@@ -10,15 +10,15 @@
 | **Report date** | 2026-04-24 |
 | **Tester** | Binh Ha Khoa |
 | **Client** | Claude Cowork (Desktop — Cowork mode) |
-| **Guide reference** | §5.5 |
+| **Guide reference** | section 5.5 |
 | **Tools under test** | `list_table`, `describe_table`, `read_data` |
-| **Risk classification** | HIGH (§1.4) — schema and tabular data exposure |
+| **Risk classification** | HIGH (section 1.4) — schema and tabular data exposure |
 
 ---
 
 ## 1. Executive Summary
 
-**Objective:** Validate that `list_table` enumerates available MSSQL tables, `describe_table` returns a schema matching actual data shape, and `read_data` executes SELECT queries with consistent results — while explicitly tracking HIGH-risk tool behavior per guide §1.4.
+**Objective:** Validate that `list_table` enumerates available MSSQL tables, `describe_table` returns a schema matching actual data shape, and `read_data` executes SELECT queries with consistent results — while explicitly tracking HIGH-risk tool behavior per guide section 1.4.
 
 **Outcome: PASS** for all three scenarios. Five findings logged, including two HIGH-risk production recommendations.
 
@@ -34,7 +34,7 @@
 
 ---
 
-## 2. High-Risk Tool Checklist (§1.4)
+## 2. High-Risk Tool Checklist (section 1.4)
 
 | Tool | Risk Level | Executed? | Result | Production Recommendation |
 |------|-----------|-----------|--------|--------------------------|
@@ -271,9 +271,9 @@ totalRecords: 10
 
 | Scenario | Condition | Result | Evidence |
 |----------|-----------|--------|----------|
-| **1 — Happy path** | list_table includes Fund table; describe_table returns column schema; read_data rows conform to schema types | PASS | §4 — 2,171 tables listed; 338 cols described; 6-col SELECT matches schema; 59 North GUID matches KS-978 |
-| **2 — Error path** | Invalid table → schema validation or clear error; no unrelated table dump | PASS (with F-03) | §5 — `success: true, columns: []` for invalid name; no foreign table data leaked |
-| **3 — Edge case** | Table with many rows / wide rows → only 10 (or documented default) rows returned | PASS | §6 — `SELECT TOP 10 *` → exactly 10 rows; 385 cols/row; 145K chars; row cap is query-controlled |
+| **1 — Happy path** | list_table includes Fund table; describe_table returns column schema; read_data rows conform to schema types | PASS | section 4 — 2,171 tables listed; 338 cols described; 6-col SELECT matches schema; 59 North GUID matches KS-978 |
+| **2 — Error path** | Invalid table → schema validation or clear error; no unrelated table dump | PASS (with F-03) | section 5 — `success: true, columns: []` for invalid name; no foreign table data leaked |
+| **3 — Edge case** | Table with many rows / wide rows → only 10 (or documented default) rows returned | PASS | section 6 — `SELECT TOP 10 *` → exactly 10 rows; 385 cols/row; 145K chars; row cap is query-controlled |
 
 ---
 
@@ -287,7 +287,7 @@ totalRecords: 10
 | Column type conformance (describe vs read) verified | Yes |
 | Invalid table name tested | Yes |
 | Wide-row / row-cap behavior documented | Yes |
-| §1.4 High-risk tool checklist completed | Yes |
+| section 1.4 High-risk tool checklist completed | Yes |
 | No credential leakage in transcript | Yes |
 | Findings logged | Yes (3 Low/Info + 2 HIGH) |
 
@@ -295,9 +295,9 @@ totalRecords: 10
 
 ## 11. Paste-ready Jira Comment
 
-KS-981 Claude Cowork -- §5.5 list_table / describe_table / read_data: PASS all 3 scenarios.
+KS-981 Claude Cowork -- section 5.5 list_table / describe_table / read_data: PASS all 3 scenarios.
 
-HIGH-RISK TOOL CHECKLIST (§1.4): All three tools are functional but carry significant production risk.
+HIGH-RISK TOOL CHECKLIST (section 1.4): All three tools are functional but carry significant production risk.
 - list_table: PASS -- returns 2,171 tables (full schema). F-02: production gate recommended (allow-list or removal).
 - describe_table: PASS -- 338 columns returned for Fund table (no dbo. prefix). F-01: schema prefix sensitivity. F-03: invalid table returns success:true + empty columns, no error.
 - read_data: PASS -- SELECT TOP 10 honored; types match describe_table schema; 59 North GUID matches KS-978 baseline. F-04: no server-enforced row cap -- production gate recommended.
@@ -315,8 +315,8 @@ Findings: F-01 schema prefix; F-02 full schema exposure (HIGH); F-03 no error on
 | This report | `Dynamo Server/Test Result/KS-981 - Claude Result.md` |
 | KS-978 result (59 North GUID baseline) | `Dynamo Server/Test Result/KS-978 - Claude Result.md` |
 | KS-977 result (get_funds field alignment) | `Dynamo Server/Test Result/KS-977 - Claude Result.md` |
-| KS-992 result (domain object map; §1.4 high-risk tool classification) | `Dynamo Server/Test Result/KS-992 - Claude Result.md` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (§5.5, §1.4) |
+| KS-992 result (domain object map; section 1.4 high-risk tool classification) | `Dynamo Server/Test Result/KS-992 - Claude Result.md` |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 5.5, section 1.4) |
 
 ---
 

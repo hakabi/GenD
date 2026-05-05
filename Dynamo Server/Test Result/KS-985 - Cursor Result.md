@@ -23,7 +23,7 @@ These items prevent treating KS-985 as **fully closed** until rerun:
 ---
 
 ## Scope and constraints
-- **Black-box MCP surface only** — aligned with the Dynamo MCP QA guide [§1–7]: behavior judged from tool responses and errors, not Dynamo UI.
+- **Black-box MCP surface only** — aligned with the Dynamo MCP QA guide [section 1–7]: behavior judged from tool responses and errors, not Dynamo UI.
 - **High-risk tools** (`list_table`, `describe_table`, `read_data`) were exercised where relevant and listed separately below.
 
 ---
@@ -97,7 +97,7 @@ A **~25k** character JSON file was generated (`oversized_search.json`) for stagi
 
 ---
 
-## High-risk tool checklist (Conceptia §1.4)
+## High-risk tool checklist (Conceptia section 1.4)
 
 | Tool | INJ-related check this run | Outcome |
 |------|----------------------------|---------|

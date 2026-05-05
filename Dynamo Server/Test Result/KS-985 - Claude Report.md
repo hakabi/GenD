@@ -184,7 +184,7 @@ Traversal strings treated as literal DB lookups. No filesystem access occurred.
 
 ---
 
-## 11. High-Risk Tool Checklist (§1.4)
+## 11. High-Risk Tool Checklist (section 1.4)
 
 | Tool | Outcome |
 |---|---|

@@ -8,8 +8,8 @@
 | **Execution date** | 2026-04-28 |
 | **Tester** | Claude (Cowork agent) — `hakhoabinh@gmail.com` |
 | **MCP surface** | `https://mcp.conceptia.com/dynamo/sse` |
-| **Guide reference** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` · v1.3 · §7.4 CHAIN |
-| **Methodology** | **Black-box** testing through the MCP surface only; all verdicts from tool outputs. No Dynamo UI cross-checks (guide §1, §1.1). |
+| **Guide reference** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` · v1.3 · section 7.4 CHAIN |
+| **Methodology** | **Black-box** testing through the MCP surface only; all verdicts from tool outputs. No Dynamo UI cross-checks (guide section 1, section 1.1). |
 
 ---
 
@@ -17,11 +17,11 @@
 
 | Guide reference | How this report applies it |
 |-----------------|----------------------------|
-| **§1.1 Black-box rule** | All verdicts are from MCP tool responses; upstream Dynamo treated as opaque. |
-| **§1.3 Tool inventory** | CHAIN-relevant tools exercised: `get_funds`, `llm_text_analysis`, `get_notes`, `get_documents`, `list_table`, `describe_table`, `read_data`. |
-| **§1.4 High-risk tools** | `list_table`, `describe_table`, `read_data` — all three exercised in CHAIN-04; FINDING-04 originates from this chain. |
-| **§7.4 CHAIN** | CHAIN-01 … CHAIN-04 executed as defined. |
-| **§11 Exit criteria** | CHAIN-01 explicit exit criterion (no exfiltration path) — ✅ Met for exercised paths; LLM-mediated path blocked by B-1. **FINDING-03** and **FINDING-04** must be remediated and CHAIN-02/CHAIN-04 re-run before ticket can be marked Done. |
+| **section 1.1 Black-box rule** | All verdicts are from MCP tool responses; upstream Dynamo treated as opaque. |
+| **section 1.3 Tool inventory** | CHAIN-relevant tools exercised: `get_funds`, `llm_text_analysis`, `get_notes`, `get_documents`, `list_table`, `describe_table`, `read_data`. |
+| **section 1.4 High-risk tools** | `list_table`, `describe_table`, `read_data` — all three exercised in CHAIN-04; FINDING-04 originates from this chain. |
+| **section 7.4 CHAIN** | CHAIN-01 … CHAIN-04 executed as defined. |
+| **section 11 Exit criteria** | CHAIN-01 explicit exit criterion (no exfiltration path) — ✅ Met for exercised paths; LLM-mediated path blocked by B-1. **FINDING-03** and **FINDING-04** must be remediated and CHAIN-02/CHAIN-04 re-run before ticket can be marked Done. |
 
 ---
 
@@ -287,7 +287,7 @@ The presence of `support-kamehameha@dynamosoftware.internal` as a full-admin acc
 
 | Document | Role |
 |----------|------|
-| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | Official scope, §7.4 CHAIN definitions, §11 exit criteria |
+| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | Official scope, section 7.4 CHAIN definitions, section 11 exit criteria |
 | `Dynamo Server/Test Result/KS-985 - Claude_Report.md` | INJ suite — FINDING-01 (catalog reads), FINDING-02 (SQLi) |
 | `Dynamo Server/Test Result/KS-986 - Claude_Report.md` | PIJ suite — all pass, B-1 noted |
 

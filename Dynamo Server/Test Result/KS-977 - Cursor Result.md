@@ -1,10 +1,10 @@
-# KS-977 — Test Result: Validate OAuth and fund list via `get_funds` (§5.1)
+# KS-977 — Test Result: Validate OAuth and fund list via `get_funds` (section 5.1)
 
 | Field | Value |
 | --- | --- |
 | **Jira** | [KS-977](https://gendvn.atlassian.net/browse/KS-977) |
 | **Epic** | [KS-999](https://gendvn.atlassian.net/browse/KS-999) — Dynamo MCP — **Functional E2E Validation** |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§5.1** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 5.1** |
 | **MCP** | `conceptia-dynamo` |
 | **Tester / agent** | Cursor Agent (live tool invocation) |
 | **Report date** | 2026-04-24 |
@@ -22,7 +22,7 @@
 | **PASS (Scenario 2)** | With **Dynamo MCP disabled** in Cursor, a follow-up request to list five funds produced a **clear tool-layer failure** (“MCP server does not exist” / connector unavailable). The agent **did not** return a silent empty success or **invent** fund rows. |
 | **BLOCKED (Scenario 3)** | No **Dynamo / Entra test identity** available with **zero** funds or **fewer than five** funds in scope; edge case **cannot be executed honestly** until such a user is provisioned. |
 
-**Caveat vs acceptance wording (“fund ID”):** The returned objects include **`Name`**, **`AssetClassName`**, and rich metadata, but **no explicit `FundId` / GUID field** in this payload shape. For repeatability, **`Name` + `DateCreated` + `LastModified`** (and manager fields) act as a stable black-box fingerprint for the sampled rows. See **§5**.
+**Caveat vs acceptance wording (“fund ID”):** The returned objects include **`Name`**, **`AssetClassName`**, and rich metadata, but **no explicit `FundId` / GUID field** in this payload shape. For repeatability, **`Name` + `DateCreated` + `LastModified`** (and manager fields) act as a stable black-box fingerprint for the sampled rows. See **section 5**.
 
 **Optional follow-up:** Scenario 2 **expired-OAuth / 401** path not exercised separately (disconnect leg covered).
 
@@ -32,7 +32,7 @@
 
 | Theme | Evidence |
 | --- | --- |
-| Prompt intent §5.1 | *“List the first 5 funds I have access to (via MCP).”* → `get_funds` with `limit: 5`. |
+| Prompt intent section 5.1 | *“List the first 5 funds I have access to (via MCP).”* → `get_funds` with `limit: 5`. |
 | Expected fields | **Name**, **AssetClassName** (and sub-asset / pipeline / manager fields) on each row. |
 | Black-box validation | **Two** calls same session; first-five **names and asset classes** unchanged. |
 | Security | Output inspected for credential material — **none** observed. |
@@ -69,7 +69,7 @@
 | 4 | 5AM Ventures IV, LP | Private Equity |
 | 5 | 5AM Ventures V, L.P. | Private Equity |
 
-*Full JSON retained in session logs; avoid publishing raw manager/contact fields externally per guide **§8**.*
+*Full JSON retained in session logs; avoid publishing raw manager/contact fields externally per guide **section 8**.*
 
 ---
 
@@ -104,7 +104,7 @@
 
 | ID | Severity | Description |
 | --- | --- | --- |
-| **KS-977-F-01** | **Low / doc–payload** | Ticket and §5.1 text ask for **“fund ID”**; observed `get_funds` rows **omit an explicit ID/GUID** field. **Mitigation for QA:** use **Name** (+ **DateCreated**) for black-box stability until ID is exposed or AC is revised to “identifier or equivalent.” |
+| **KS-977-F-01** | **Low / doc–payload** | Ticket and section 5.1 text ask for **“fund ID”**; observed `get_funds` rows **omit an explicit ID/GUID** field. **Mitigation for QA:** use **Name** (+ **DateCreated**) for black-box stability until ID is exposed or AC is revised to “identifier or equivalent.” |
 
 ---
 
@@ -112,7 +112,7 @@
 
 | Criterion | Status |
 | --- | :---: |
-| §5.1 happy path with `get_funds` | ✅ |
+| section 5.1 happy path with `get_funds` | ✅ |
 | Repeat call consistency | ✅ |
 | No credential leakage in output | ✅ |
 | BDD Scenario 1 | ✅ |
@@ -124,7 +124,7 @@
 
 ## 7. Paste-ready Jira comment
 
-*KS-977 §5.1: **Scenario 1 PASS** — `get_funds` `limit: 5` ×2: `success: true`, 5/977 rows, **identical** first-five **Name** + **AssetClassName**; no tokens in output. **Scenario 2 PASS** — Dynamo MCP **disabled**: clear failure, **no** invented funds. **Scenario 3 BLOCKED** — no Dynamo user with **0** or **&lt;5** funds to test. **KS-977-F-01:** no explicit **fund ID** in payload. Evidence: `Dynamo Server/Test Result/KS-977 Result.md`.*
+*KS-977 section 5.1: **Scenario 1 PASS** — `get_funds` `limit: 5` ×2: `success: true`, 5/977 rows, **identical** first-five **Name** + **AssetClassName**; no tokens in output. **Scenario 2 PASS** — Dynamo MCP **disabled**: clear failure, **no** invented funds. **Scenario 3 BLOCKED** — no Dynamo user with **0** or **&lt;5** funds to test. **KS-977-F-01:** no explicit **fund ID** in payload. Evidence: `Dynamo Server/Test Result/KS-977 Result.md`.*
 
 ---
 
@@ -132,5 +132,5 @@
 
 | Document | Path |
 | --- | --- |
-| Testing guide §5.1 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
+| Testing guide section 5.1 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
 | Story source | `Jira Ticket/dynamo_mcp_testing_stories.md` (US-E3-01) |

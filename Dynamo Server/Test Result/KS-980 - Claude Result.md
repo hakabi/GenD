@@ -10,7 +10,7 @@
 | **Report date** | 2026-04-24 |
 | **Tester** | Binh Ha Khoa |
 | **Client** | Claude Cowork (Desktop — Cowork mode) |
-| **Guide reference** | §5.4 |
+| **Guide reference** | section 5.4 |
 | **Tools under test** | `get_activity`, `get_notes`, `analyze_notes` |
 
 ---
@@ -181,7 +181,7 @@ The tool identified the most recent note (July 2025 Gregg + KAY) as the `latest`
 
 **Result: PASS** — 19 notes analyzed; highlights grounded in actual note content; comparison structure references real prior notes by subject and date; `data` array contains all 19 note bodies confirming the analysis corpus matches `get_notes` output.
 
-**Performance note (Finding F-03):** The raw tool response is approximately 192,000 characters. For a fund with 19 long-body notes, the full payload exceeds typical display limits and must be processed programmatically. This is consistent with the §5.4 ticket requirement to observe "truncation and latency" for large dataset matrix columns.
+**Performance note (Finding F-03):** The raw tool response is approximately 192,000 characters. For a fund with 19 long-body notes, the full payload exceeds typical display limits and must be processed programmatically. This is consistent with the section 5.4 ticket requirement to observe "truncation and latency" for large dataset matrix columns.
 
 ---
 
@@ -273,7 +273,7 @@ The tool identified the most recent note (July 2025 Gregg + KAY) as the `latest`
 
 `analyze_notes` was **not called** for Phoenix Equity because the note body is `null`. Calling `analyze_notes` on a record with no body content would produce an LLM analysis on empty input, which is outside the intent of this scenario's acceptance criterion ("analysis states insufficient note data without inventing content").
 
-**Assessment:** The body-null state is the expected edge case per §5.4 AC Scenario 3. A fund with `Body_Plaintext: null` provides no text corpus for analysis. The MCP tool correctly returns the note record with explicit null rather than fabricating content — this is the PASS condition for "empty note set is explicit."
+**Assessment:** The body-null state is the expected edge case per section 5.4 AC Scenario 3. A fund with `Body_Plaintext: null` provides no text corpus for analysis. The MCP tool correctly returns the note record with explicit null rather than fabricating content — this is the PASS condition for "empty note set is explicit."
 
 **Scenario 3 overall: PASS** — 2026 Fund has 1 activity (confirmed) and 1 note with null body (explicit null, no invented content). The edge case is satisfied: notes dataset exists structurally but has no analyzable content.
 
@@ -302,9 +302,9 @@ The tool identified the most recent note (July 2025 Gregg + KAY) as the `latest`
 
 | Scenario | Condition | Result | Evidence |
 |----------|-----------|--------|----------|
-| **1 — Happy path** | Fund with both activity and notes; activity chronological; notes text aligns with analysis; `analyze_notes` grounded in actual content | PASS | §3 — 40 activities (Date DESC confirmed); 19 notes; all 7 highlight keywords traceable to specific note body phrases |
-| **2 — Error path** | Invalid fund ID → error or empty authorized result; no cross-tenant leak | PASS | §4 — `ZZZNONEXISTENTFUND99999` returns `data: []`, `recordCount: 0`; no foreign fund data |
-| **3 — Edge case** | Fund with activity but no note body → empty note set explicit; analysis not invented | PASS | §5 — 2026 Fund: 1 activity confirmed; 1 note with `Body_Plaintext: null` (explicit null, no fabrication) |
+| **1 — Happy path** | Fund with both activity and notes; activity chronological; notes text aligns with analysis; `analyze_notes` grounded in actual content | PASS | section 3 — 40 activities (Date DESC confirmed); 19 notes; all 7 highlight keywords traceable to specific note body phrases |
+| **2 — Error path** | Invalid fund ID → error or empty authorized result; no cross-tenant leak | PASS | section 4 — `ZZZNONEXISTENTFUND99999` returns `data: []`, `recordCount: 0`; no foreign fund data |
+| **3 — Edge case** | Fund with activity but no note body → empty note set explicit; analysis not invented | PASS | section 5 — 2026 Fund: 1 activity confirmed; 1 note with `Body_Plaintext: null` (explicit null, no fabrication) |
 
 ---
 
@@ -333,7 +333,7 @@ The tool identified the most recent note (July 2025 Gregg + KAY) as the `latest`
 | KS-978 result (soft-empty pattern F-01, ID multiplicity F-02) | `Dynamo Server/Test Result/KS-978 - Claude Result.md` |
 | KS-979 result (get_documents baseline) | `Dynamo Server/Test Result/KS-979 - Claude Result.md` |
 | KS-992 result (domain object map; analyze_notes LLM outbound path) | `Dynamo Server/Test Result/KS-992 - Claude Result.md` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (§5.4) |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 5.4) |
 
 ---
 

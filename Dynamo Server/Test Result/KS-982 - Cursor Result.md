@@ -5,7 +5,7 @@
 | **Jira** | [KS-982](https://gendvn.atlassian.net/browse/KS-982) |
 | **Summary** | Dynamo MCP QA — Validate `search_aloha_funds` keyword search and tenant scope |
 | **Epic** | Dynamo MCP — **Functional E2E Validation** |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§5.6**, **§4.3**, **§9** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 5.6**, **section 4.3**, **section 9** |
 | **MCP** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **MCP server id (Cursor)** | `project-0-GenD-conceptia-dynamo` |
 | **Tester / agent** | **Cursor Agent** (live tool invocation) |
@@ -18,12 +18,12 @@
 | Area | Result | Notes |
 | --- | :---: | --- |
 | **MCP connectivity** | **PASS** | `get_funds` and `search_aloha_funds` invoked successfully (OAuth session active). |
-| **§5.6 — Scenario 1 (happy path)** | **PASS** | Keyword **`83North`** with **`is_owned_by_ks: true`**: **8** ES (solovis) rows; **`get_funds`** (`fundName: "83North"`) returned **8** rows — **same fund names** (cross-check by **Name** / **`fund_name`**). |
-| **§5.6 — Scenario 2 (no match)** | **PASS** | Nonsense term → **`recordCount: 0`**, **`data: []`**, **`success: true`**, no unrelated funds. |
-| **§5.6 — Scenario 3 (scope / leakage)** | **PASS** | **`is_owned_by_ks: false`**: **19** rows (**11** `source: ALB`, **`fund_type: public`** + **8** solovis **`fund_private`**). Solovis set **unchanged** vs Scenario 1; ALB rows **labeled** as public index — **no** indication of cross-tenant **private** leakage. |
-| **Cross-tenant critical stop (§9)** | **N/A** | No trigger; testing **not** halted. |
+| **section 5.6 — Scenario 1 (happy path)** | **PASS** | Keyword **`83North`** with **`is_owned_by_ks: true`**: **8** ES (solovis) rows; **`get_funds`** (`fundName: "83North"`) returned **8** rows — **same fund names** (cross-check by **Name** / **`fund_name`**). |
+| **section 5.6 — Scenario 2 (no match)** | **PASS** | Nonsense term → **`recordCount: 0`**, **`data: []`**, **`success: true`**, no unrelated funds. |
+| **section 5.6 — Scenario 3 (scope / leakage)** | **PASS** | **`is_owned_by_ks: false`**: **19** rows (**11** `source: ALB`, **`fund_type: public`** + **8** solovis **`fund_private`**). Solovis set **unchanged** vs Scenario 1; ALB rows **labeled** as public index — **no** indication of cross-tenant **private** leakage. |
+| **Cross-tenant critical stop (section 9)** | **N/A** | No trigger; testing **not** halted. |
 
-**Overall (Cursor, live):** **PASS** for KS-982 §5.6 BDD **S1–S3**.
+**Overall (Cursor, live):** **PASS** for KS-982 section 5.6 BDD **S1–S3**.
 
 ---
 
@@ -94,9 +94,9 @@
 **Result:** **19** records:
 
 - **11 × `source: "ALB"`**, `fund_type: "public"` (Albourne-style public listings).
-- **8 × `source: "solovis"`** — same names and `fund_id` set as **§3.1** (no extra solovis rows vs `is_owned_by_ks: true`).
+- **8 × `source: "solovis"`** — same names and `fund_id` set as **section 3.1** (no extra solovis rows vs `is_owned_by_ks: true`).
 
-**Assessment:** Public ALB rows are **explicitly typed** (`public`) and **sourced**; private solovis rows **match** the KS-owned filtered search. **No** evidence of **cross-tenant private** exposure per **§9** stop rule.
+**Assessment:** Public ALB rows are **explicitly typed** (`public`) and **sourced**; private solovis rows **match** the KS-owned filtered search. **No** evidence of **cross-tenant private** exposure per **section 9** stop rule.
 
 **Verdict:** **PASS** — **Scenario 3** for this run.
 
@@ -108,7 +108,7 @@ With **`is_owned_by_ks: false`**, **ALB** fund names (e.g. industry listings) **
 
 ---
 
-## 5. Test matrix (§5.6)
+## 5. Test matrix (section 5.6)
 
 | Test | Happy path | No match | Scope / attribution |
 | --- | --- | --- | --- |
@@ -134,7 +134,7 @@ None opened from this run.
 
 ## 8. Conclusion
 
-**KS-982** §5.6 was re-run with **live Cursor** **`conceptia-dynamo`** tools. **Scenario 1–3** **PASS**. Results align with **`KS-982 - Claude Result.md`** (same **`83North`** pattern: **8** solovis / **8** `get_funds`, **0** on nonsense term, **19** multi-index with **11** ALB + **8** solovis).
+**KS-982** section 5.6 was re-run with **live Cursor** **`conceptia-dynamo`** tools. **Scenario 1–3** **PASS**. Results align with **`KS-982 - Claude Result.md`** (same **`83North`** pattern: **8** solovis / **8** `get_funds`, **0** on nonsense term, **19** multi-index with **11** ALB + **8** solovis).
 
 ---
 

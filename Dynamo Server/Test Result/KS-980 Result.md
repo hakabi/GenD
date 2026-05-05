@@ -128,9 +128,9 @@
 
 | Scenario | Merged result | Evidence |
 | --- | :---: | --- |
-| **1 — Happy path** | **PASS** | §4; both clients; 40 activities; **19** notes analyzed; grounding |
-| **2 — Error path** | **PASS** (invalid) + **F-06** (no second user) | §5; §8 |
-| **3 — Edge case** | **PASS** | §6 — null-body leg (**Claude**), zero-note **`analyze_notes`** (**Cursor**), fund vs company illustration (**Cursor**) |
+| **1 — Happy path** | **PASS** | section 4; both clients; 40 activities; **19** notes analyzed; grounding |
+| **2 — Error path** | **PASS** (invalid) + **F-06** (no second user) | section 5; section 8 |
+| **3 — Edge case** | **PASS** | section 6 — null-body leg (**Claude**), zero-note **`analyze_notes`** (**Cursor**), fund vs company illustration (**Cursor**) |
 
 ---
 

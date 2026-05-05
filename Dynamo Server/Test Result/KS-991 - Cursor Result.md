@@ -4,7 +4,7 @@
 | --- | --- |
 | **Jira** | [KS-991](https://gendvn.atlassian.net/browse/KS-991) |
 | **Epic** | Dynamo MCP — Discovery & Scope Enumeration |
-| **Guide** | `dynamo-mcp-testing-guide.md` §4.1–§4.2 |
+| **Guide** | `dynamo-mcp-testing-guide.md` section 4.1–section 4.2 |
 | **Client** | Cursor (Agent); MCP server `user-conceptia-dynamo` |
 | **Execution** | Current session |
 
@@ -15,29 +15,29 @@
 | ID | Item | Severity | Detail |
 | --- | --- | --- | --- |
 | **KS-991-G01** | **`llm_text_analysis` smoke** | **Medium (environment)** | Call with `provider: anthropic` failed: **`Missing ANTHROPIC_API_KEY`**. Tool schema is valid; execution requires provider API keys in the MCP/runtime environment. **Not** logged as MCP schema defect. |
-| **KS-991-G02** | **Server version / last deployment** | **Low** | §4.1 asks vendor for version/deployment date — **not exposed** via tools in this run. Obtain from Conceptia separately. |
+| **KS-991-G02** | **Server version / last deployment** | **Low** | section 4.1 asks vendor for version/deployment date — **not exposed** via tools in this run. Obtain from Conceptia separately. |
 | **KS-991-G03** | **`get_activity` vs JSON schema** | **Low (doc drift)** | Published schema has **no** `required` fields, but server returns error if **no** filter dimension is provided (`startDate`, `endDate`, `activityCategories`, `companyNames`, `authorNames`, `subjectSearch`, or `fundNames`). Minimal call must include **at least one** of those. |
 
 **No MCP connection blocker** for this run (`get_funds` and other tools succeeded).
 
 ---
 
-## 1. §4.1 MCP server enumeration
+## 1. section 4.1 MCP server enumeration
 
 | Item | Value | Evidence |
 | --- | --- | --- |
 | **Host / path** | `https://mcp.conceptia.com/dynamo/sse` | Ticket + guide; Cursor uses `mcp-remote` to this URL |
-| **Transport** | HTTP **SSE** (streamable HTTP) | Guide §1.2 / §4.1 |
+| **Transport** | HTTP **SSE** (streamable HTTP) | Guide section 1.2 / section 4.1 |
 | **Authentication** | **Microsoft OAuth (Azure AD)** — browser flow; session/token managed by client (no JWT in workspace `mcp.json`) | Observed working session (successful tool calls) |
 | **Vendor version / deploy date** | **Not captured** | **KS-991-G02** |
 
 ---
 
-## 2. §4.2 Per-tool enumeration (13 tools)
+## 2. section 4.2 Per-tool enumeration (13 tools)
 
-**Legend:** **RW** = read/write as exposed by MCP contract (all tools below are **read** or **read + external LLM**; none advertise writes to Dynamo). **§1.4** = high-risk discovery/tabular per guide.
+**Legend:** **RW** = read/write as exposed by MCP contract (all tools below are **read** or **read + external LLM**; none advertise writes to Dynamo). **section 1.4** = high-risk discovery/tabular per guide.
 
-| # | Tool | §1.4 | Required params | Optional params (summary) | Returns (inferred) | RW |
+| # | Tool | section 1.4 | Required params | Optional params (summary) | Returns (inferred) | RW |
 | ---: | --- | --- | --- | --- | --- | --- |
 | 1 | `analyze_notes` | — | — | `companyNames[]`, `startDate`, `endDate`, `limit` | Structured analysis: summary, highlights, comparison vs prior 2y notes | Read + LLM |
 | 2 | `describe_table` | **Y** | `tableName` (string) | — | Column names + SQL types for one MSSQL table | Read |
@@ -53,7 +53,7 @@
 | 12 | `read_data` | **Y** | `query` (SELECT-only) | — | Query result set as JSON | Read |
 | 13 | `search_aloha_funds` | — | `search_text` | `is_owned_by_ks`, `fund_source` | ES hits: `fund_id`, `source`, names, etc. | Read |
 
-**§1.4 security tracking:** `list_table`, `describe_table`, `read_data` — **flagged** in this enumeration for **KS-981** / security suites.
+**section 1.4 security tracking:** `list_table`, `describe_table`, `read_data` — **flagged** in this enumeration for **KS-981** / security suites.
 
 ---
 
@@ -83,13 +83,13 @@
 
 | Scenario | Result | Notes |
 | --- | --- | --- |
-| **1 — Happy path** | **PASS (with caveat)** | Connection works; all **13** tools have parameters/returns described in **§2**; **12/13** smokes OK; **`llm_text_analysis`** blocked by **missing provider key** (G01). |
+| **1 — Happy path** | **PASS (with caveat)** | Connection works; all **13** tools have parameters/returns described in **section 2**; **12/13** smokes OK; **`llm_text_analysis`** blocked by **missing provider key** (G01). |
 | **2 — Error path** | **PASS / N/A** | No MCP “schema error” on minimal valid payloads; `get_activity` validation message is **business rule**, not JSON-schema failure. **`llm_text_analysis`** failure documented (G01). |
 | **3 — Edge case** | **N/A** | Vendor version bump / re-diff — **not** triggered in this run. |
 
 ---
 
-## 5. Inferred domain mapping (§4.3, labels only)
+## 5. Inferred domain mapping (section 4.3, labels only)
 
 | Tools | Domain touch |
 | --- | --- |
@@ -104,7 +104,7 @@
 
 | Scope | Verdict |
 | --- | --- |
-| **Schema + enumeration (KS-991)** | **PASS with open items** — Full **§4.2** table captured from MCP tool JSON + representative smokes; **§1.4** flagged; **G01–G03** tracked. |
+| **Schema + enumeration (KS-991)** | **PASS with open items** — Full **section 4.2** table captured from MCP tool JSON + representative smokes; **section 1.4** flagged; **G01–G03** tracked. |
 | **Strict “all 13 tools executed”** | **PARTIAL** until **`llm_text_analysis`** is run with valid **OpenAI** or **Anthropic** credentials in the MCP environment. |
 
 ---
@@ -115,10 +115,10 @@
 | --- | --- |
 | This report | `Dynamo Server/Test Result/KS-991 - Cursor Result.md` |
 | Tool descriptors | Cursor: `mcps/user-conceptia-dynamo/tools/*.json` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` §4 |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` section 4 |
 
 ---
 
 ## 8. Suggested Jira comment (paste-ready)
 
-*KS-991 Cursor enumeration: §4.1 endpoint/OAuth documented; §4.2 all 13 tools captured (inputs/outputs/RW + §1.4 flags). Smokes PASS for 12 tools; **`llm_text_analysis` blocked — ANTHROPIC_API_KEY missing** in runtime (not an MCP schema bug). Note: `get_activity` requires ≥1 filter though JSON lists all optional — minor doc drift. Vendor version/deploy date not from MCP — follow with Conceptia. Report: `KS-991 - Cursor Result.md`.*
+*KS-991 Cursor enumeration: section 4.1 endpoint/OAuth documented; section 4.2 all 13 tools captured (inputs/outputs/RW + section 1.4 flags). Smokes PASS for 12 tools; **`llm_text_analysis` blocked — ANTHROPIC_API_KEY missing** in runtime (not an MCP schema bug). Note: `get_activity` requires ≥1 filter though JSON lists all optional — minor doc drift. Vendor version/deploy date not from MCP — follow with Conceptia. Report: `KS-991 - Cursor Result.md`.*

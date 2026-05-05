@@ -1,10 +1,10 @@
-# KS-983 — Final Result: Validate `llm_text_analysis` on fund description (§5.7)
+# KS-983 — Final Result: Validate `llm_text_analysis` on fund description (section 5.7)
 
 | Field | Value |
 | --- | --- |
 | **Jira** | [KS-983](https://gendvn.atlassian.net/browse/KS-983) |
 | **Epic** | KS-999 — Dynamo MCP — **Functional E2E Validation** |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§5.7** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 5.7** |
 | **MCP** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **Sources merged** | `KS-983 - Claude Result.md` (**Claude** · claude.ai) · `KS-983 - Cursor Result.md` (**Cursor Agent**) |
 | **Consolidation date** | 2026-04-24 |
@@ -15,7 +15,7 @@
 
 **Ticket:** **`llm_text_analysis`** on fund description — **grounded** risk/themes, **structured** output, **no** fabrication on **empty** / **short** text (**BDD S1–S3**).
 
-**Shared root cause (both clients):** **`llm_text_analysis`** fails at runtime with **`Missing ANTHROPIC_API_KEY`** (default) and **`Missing OPENAI_API_KEY`** when **`provider: openai`** is set. **§5.7 LLM acceptance cannot be fully evaluated** until at least one provider key is configured on the **MCP server**.
+**Shared root cause (both clients):** **`llm_text_analysis`** fails at runtime with **`Missing ANTHROPIC_API_KEY`** (default) and **`Missing OPENAI_API_KEY`** when **`provider: openai`** is set. **section 5.7 LLM acceptance cannot be fully evaluated** until at least one provider key is configured on the **MCP server**.
 
 | Area | Claude | Cursor | Merged |
 | --- | :---: | :---: | --- |
@@ -23,7 +23,7 @@
 | **S1 — Happy path (LLM grounding / shape)** | ❌ FAIL (blocked) | BLOCKED | **BLOCKED** — **not evaluable** |
 | **S2 — Error / insufficient text (ticket AC)** | ❌ FAIL (blocked) | ✅ PASS (partial) | **BLOCKED** for **LLM** branch; **PASS** for **Cursor-only** checks: **no fund** → **`data: []`**; **`texts: ""`** → validation error (**no** fabricated risk list) |
 | **S3 — Short / ambiguous (e.g. TBD)** | ❌ FAIL (blocked) | BLOCKED | **BLOCKED** — **not evaluable** |
-| **Overall §5.7 sign-off** | ❌ **BLOCKED / FAIL** | **PARTIAL / BLOCKED** | **BLOCKED / FAIL** — same **server config** defect; **partial** positive evidence on **`get_fund_description`** + **empty-input** handling (**Cursor**) |
+| **Overall section 5.7 sign-off** | ❌ **BLOCKED / FAIL** | **PARTIAL / BLOCKED** | **BLOCKED / FAIL** — same **server config** defect; **partial** positive evidence on **`get_fund_description`** + **empty-input** handling (**Cursor**) |
 
 **Conclusion:** **KS-983** is **not complete** for production QA until **`OPENAI_API_KEY`** and/or **`ANTHROPIC_API_KEY`** is set on the **Conceptia Dynamo MCP** host and **`llm_text_analysis`** is **re-run**.
 
@@ -96,7 +96,7 @@ Both support **“fund with substantive description”** for **S1** once LLM wor
 
 ---
 
-## 7. Test matrix (§5.7)
+## 7. Test matrix (section 5.7)
 
 | Test | Happy path | Invalid / insufficient input | Short / edge |
 | --- | :---: | :---: | :---: |
@@ -110,8 +110,8 @@ Both support **“fund with substantive description”** for **S1** once LLM wor
 
 | ID / label | Summary | Severity | Owner |
 | --- | --- | --- | --- |
-| **Claude §8** | **`llm_text_analysis`** non-functional without **`ANTHROPIC_API_KEY`** / **`OPENAI_API_KEY`** | **High** | MCP / Conceptia |
-| **KS-983-CUR-BLK-01** | Same **key** gap (**Cursor** ticket id) | **Blocker** for §5.7 | MCP / Conceptia |
+| **Claude section 8** | **`llm_text_analysis`** non-functional without **`ANTHROPIC_API_KEY`** / **`OPENAI_API_KEY`** | **High** | MCP / Conceptia |
+| **KS-983-CUR-BLK-01** | Same **key** gap (**Cursor** ticket id) | **Blocker** for section 5.7 | MCP / Conceptia |
 
 **Action:** Configure **≥1** provider key on MCP server, redeploy, **re-run KS-983** (S1–S3) and optionally **`analyze_notes`** regression.
 

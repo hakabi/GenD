@@ -10,14 +10,14 @@
 | **Report date** | 2026-04-24 |
 | **Tester** | Bình Hà Khoa |
 | **Client** | Claude Cowork (Desktop — Cowork mode) |
-| **Guide reference** | §5.1 |
+| **Guide reference** | section 5.1 |
 | **Tool under test** | `get_funds` |
 
 ---
 
 ## 1. Executive Summary
 
-**Objective:** Validate end-to-end OAuth (Microsoft/Azure AD) through the MCP bridge and confirm `get_funds` returns consistent, plausible fund data without any credential leakage — per §5.1 black-box rules.
+**Objective:** Validate end-to-end OAuth (Microsoft/Azure AD) through the MCP bridge and confirm `get_funds` returns consistent, plausible fund data without any credential leakage — per section 5.1 black-box rules.
 
 **Outcome: PASS**
 
@@ -218,4 +218,4 @@ Scanned both tool call responses and this entire transcript for:
 | This report | `Dynamo Server/Test Result/KS-977 - Claude Result.md` |
 | KS-976 result (tool inventory) | `Dynamo Server/Test Result/KS-976 - Claude Result.md` |
 | KS-991 result (schema / fund count baseline) | `Dynamo Server/Test Result/KS-991 - Claude Result.md` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (§5.1) |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 5.1) |

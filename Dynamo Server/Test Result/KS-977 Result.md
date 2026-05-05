@@ -1,10 +1,10 @@
-# KS-977 — Final Result: Validate OAuth and fund list via `get_funds` (§5.1)
+# KS-977 — Final Result: Validate OAuth and fund list via `get_funds` (section 5.1)
 
 | Field | Value |
 | --- | --- |
 | **Jira** | [KS-977](https://gendvn.atlassian.net/browse/KS-977) |
 | **Epic** | [KS-999](https://gendvn.atlassian.net/browse/KS-999) — Dynamo MCP — **Functional E2E Validation** |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§5.1** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 5.1** |
 | **MCP** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **Sources merged** | `KS-977 - Claude Result.md` (**Claude Cowork**) · `KS-977 - Cursor Result.md` (**Cursor Agent**) |
 | **Consolidation date** | 2026-04-25 |
@@ -22,7 +22,7 @@
 | Scenario 3 — 0 or &lt;5 funds | *Reported “not triggered” with 977 funds* | **BLOCKED** (no low-scope test user) | **BLOCKED** |
 | Security scan (tokens in output) | ✅ PASS | ✅ PASS | **PASS** |
 
-**Overall:** **PASS** for §5.1 functional and security expectations on **Scenario 1–2**. **Scenario 3** is **BLOCKED** until a Dynamo/Entra identity with **zero** or **&lt;5** funds is provisioned; the merged program treats “not triggered” as **not** equivalent to an executed edge-case **PASS**.
+**Overall:** **PASS** for section 5.1 functional and security expectations on **Scenario 1–2**. **Scenario 3** is **BLOCKED** until a Dynamo/Entra identity with **zero** or **&lt;5** funds is provisioned; the merged program treats “not triggered” as **not** equivalent to an executed edge-case **PASS**.
 
 ---
 
@@ -72,11 +72,11 @@
 | 4 | 5AM Ventures IV, LP | Private Equity | Venture Capital | X - Exited | 5AM Ventures |
 | 5 | 5AM Ventures V, L.P. | Private Equity | Venture Capital | X - Exited | *(null — see finding)* |
 
-*Claude: full consistency matrix vs Call 2 — see source file §4 T2.*
+*Claude: full consistency matrix vs Call 2 — see source file section 4 T2.*
 
 ### 4.4 Sample record — 59 North Partners, LP (Call 1)
 
-Full JSON is inlined in **§13.2** below (matches KS-991 / KS-992 baseline per Claude).
+Full JSON is inlined in **section 13.2** below (matches KS-991 / KS-992 baseline per Claude).
 
 ---
 
@@ -115,7 +115,7 @@ Scanned tool output / transcripts (per Claude checklist):
 
 | ID | Topic | Severity | Source |
 | --- | --- | --- | --- |
-| **KS-977-F-01** | Ticket / §5.1 ask for **“fund ID”**; **`get_funds` payload has no explicit FundId / GUID** — use **Name** + **DateCreated** (etc.) for black-box identity until schema or AC updated | Low / doc–payload | Cursor |
+| **KS-977-F-01** | Ticket / section 5.1 ask for **“fund ID”**; **`get_funds` payload has no explicit FundId / GUID** — use **Name** + **DateCreated** (etc.) for black-box identity until schema or AC updated | Low / doc–payload | Cursor |
 | **KS-977-F-02** | **5AM Ventures V** — null **`FundManagerName`** / **`FundManagerPrimaryContactName`** (source data gap, not tool defect) | Info | Claude |
 | **KS-977-F-03** | OAuth **session expiry** between sessions → re-authentication required (connector behavior) | Info / by design | Claude |
 
@@ -127,9 +127,9 @@ Scanned tool output / transcripts (per Claude checklist):
 
 | Scenario | Result | Evidence |
 | --- | :---: | --- |
-| **1 — Happy path** | **PASS** | §4; two clients |
-| **2 — Error path** | **PASS** | §5 |
-| **3 — Edge case** | **BLOCKED** | §6 |
+| **1 — Happy path** | **PASS** | section 4; two clients |
+| **2 — Error path** | **PASS** | section 5 |
+| **3 — Edge case** | **BLOCKED** | section 6 |
 
 ---
 
@@ -137,7 +137,7 @@ Scanned tool output / transcripts (per Claude checklist):
 
 | Criterion | Status |
 | --- | :---: |
-| OAuth + `get_funds` §5.1 happy path | ✅ |
+| OAuth + `get_funds` section 5.1 happy path | ✅ |
 | Repeat-call consistency | ✅ |
 | No credential leakage | ✅ |
 | Scenario 2 disconnect / failure behavior | ✅ |
@@ -149,7 +149,7 @@ Scanned tool output / transcripts (per Claude checklist):
 
 ## 11. Paste-ready Jira comment
 
-*KS-977 **merged** (Claude Cowork + Cursor): §5.1 **Scenario 1 PASS** — `get_funds` `limit: 5` ×2, **977** total funds, **identical** first five; **no** tokens in output. **Scenario 2 PASS** — disconnect / MCP-off: **clear failure**, no invented funds. **Scenario 3 BLOCKED** — no test user with **0** or **&lt;5** funds. **Findings:** **F-01** missing explicit fund ID in payload vs AC wording; **F-02** null manager on fund 5 (data); **F-03** OAuth re-auth between sessions. Evidence: **`KS-977 Result.md`** + `KS-977 - Claude Result.md` + `KS-977 - Cursor Result.md`.*
+*KS-977 **merged** (Claude Cowork + Cursor): section 5.1 **Scenario 1 PASS** — `get_funds` `limit: 5` ×2, **977** total funds, **identical** first five; **no** tokens in output. **Scenario 2 PASS** — disconnect / MCP-off: **clear failure**, no invented funds. **Scenario 3 BLOCKED** — no test user with **0** or **&lt;5** funds. **Findings:** **F-01** missing explicit fund ID in payload vs AC wording; **F-02** null manager on fund 5 (data); **F-03** OAuth re-auth between sessions. Evidence: **`KS-977 Result.md`** + `KS-977 - Claude Result.md` + `KS-977 - Cursor Result.md`.*
 
 ---
 
@@ -160,14 +160,14 @@ Scanned tool output / transcripts (per Claude checklist):
 | **This consolidated result** | `Dynamo Server/Test Result/KS-977 Result.md` |
 | Claude (extended tables, security scan, JSON sample) | `Dynamo Server/Test Result/KS-977 - Claude Result.md` |
 | Cursor (Scenario 2–3 detail, F-01 doc/payload) | `Dynamo Server/Test Result/KS-977 - Cursor Result.md` |
-| QA guide §5.1 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
+| QA guide section 5.1 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
 | Story | `Jira Ticket/dynamo_mcp_testing_stories.md` (US-E3-01) |
 
 ---
 
 ## 13. Appendix — Claude Cowork: Call 2 & consistency (verbatim)
 
-*Sourced from `KS-977 - Claude Result.md` §4 T2 and §7.*
+*Sourced from `KS-977 - Claude Result.md` section 4 T2 and section 7.*
 
 ### 13.1 `get_funds` Call 2 — raw response summary
 

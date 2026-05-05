@@ -1,10 +1,10 @@
-# KS-979 — Final Result: List fund documents via `get_documents` (§5.3)
+# KS-979 — Final Result: List fund documents via `get_documents` (section 5.3)
 
 | Field | Value |
 | --- | --- |
 | **Jira** | [KS-979](https://gendvn.atlassian.net/browse/KS-979) |
 | **Epic** | [KS-999](https://gendvn.atlassian.net/browse/KS-999) — Dynamo MCP — **Functional E2E Validation** |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§5.3** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 5.3** |
 | **MCP** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **Sources merged** | `KS-979 - Claude Result.md` (**Claude Cowork**) · `KS-979 - Cursor Result.md` (**Cursor Agent**) |
 | **Consolidation date** | 2026-04-25 |
@@ -25,7 +25,7 @@
 | **Scenario 3 — Zero-document fund** | **PASS** (2026 Fund) | **PASS** (2026 Fund) | **PASS** |
 | **Credential scan** (tool output) | **PASS** (no tokens) | *(same session class)* | **PASS** |
 
-**Overall:** **PASS** for all executed §5.3 BDD rows. **F-06** remains **OPEN** (policy-only); all other open items in the findings register are **low / info** (API shape and integration guidance), not functional failures.
+**Overall:** **PASS** for all executed section 5.3 BDD rows. **F-06** remains **OPEN** (policy-only); all other open items in the findings register are **low / info** (API shape and integration guidance), not functional failures.
 
 ---
 
@@ -90,7 +90,7 @@
 
 **Merged verdict:** **PASS** — empty authorized set; no documents from other funds observed.
 
-**Not executed:** A **separate** signed-in user **denied** access to a fund that still **exists** (true **authorization** negative). Tracked as **KS-979-F-06** (OPEN, documented) — see §8.
+**Not executed:** A **separate** signed-in user **denied** access to a fund that still **exists** (true **authorization** negative). Tracked as **KS-979-F-06** (OPEN, documented) — see section 8.
 
 ---
 
@@ -134,9 +134,9 @@
 
 | Scenario | Merged result | Evidence |
 | --- | :---: | --- |
-| **1 — Happy path** (≥1 doc; two calls; stable names/types/dates) | **PASS** | §4; both clients; first 5 `ID`s align |
-| **2 — Error path** (invalid / no auth to fund) | **PASS** (invalid name) + **F-06** (no second user) | §5; §8 |
-| **3 — Edge case** (zero documents) | **PASS** | §6 |
+| **1 — Happy path** (≥1 doc; two calls; stable names/types/dates) | **PASS** | section 4; both clients; first 5 `ID`s align |
+| **2 — Error path** (invalid / no auth to fund) | **PASS** (invalid name) + **F-06** (no second user) | section 5; section 8 |
+| **3 — Edge case** (zero documents) | **PASS** | section 6 |
 
 ---
 
@@ -156,7 +156,7 @@
 
 ## 11. Paste-ready Jira comment
 
-*KS-979 **merged** (Claude Cowork + Cursor) — §5.3 **`get_documents`**: **Scenario 1 PASS** — **59 North Partners, LP**; `totalRecords` **148**; repeat calls **identical** document **IDs** (Claude 5×2 byte match; Cursor 10×2, first five match Claude). **Scenario 2 PASS** — bad fund names → **empty** `data`, **no** cross-fund rows. **Scenario 3 PASS** — **2026 Fund** → **0** docs, no placeholders. **Security:** no tokens in output (Claude). **OPEN** — **F-06** second Entra user not run (documented). **Findings:** **F-01** `FUND_ID` vs **fund name**; **F-02** `success`+empty; **F-03**–**F-05** API shape. Evidence: **`KS-979 Result.md`**, `KS-979 - Claude Result.md`, `KS-979 - Cursor Result.md`.*
+*KS-979 **merged** (Claude Cowork + Cursor) — section 5.3 **`get_documents`**: **Scenario 1 PASS** — **59 North Partners, LP**; `totalRecords` **148**; repeat calls **identical** document **IDs** (Claude 5×2 byte match; Cursor 10×2, first five match Claude). **Scenario 2 PASS** — bad fund names → **empty** `data`, **no** cross-fund rows. **Scenario 3 PASS** — **2026 Fund** → **0** docs, no placeholders. **Security:** no tokens in output (Claude). **OPEN** — **F-06** second Entra user not run (documented). **Findings:** **F-01** `FUND_ID` vs **fund name**; **F-02** `success`+empty; **F-03**–**F-05** API shape. Evidence: **`KS-979 Result.md`**, `KS-979 - Claude Result.md`, `KS-979 - Cursor Result.md`.*
 
 ---
 
@@ -167,14 +167,14 @@
 | **This consolidated result** | `Dynamo Server/Test Result/KS-979 Result.md` |
 | Claude (tables, byte match, field notes, JSON sample) | `Dynamo Server/Test Result/KS-979 - Claude Result.md` |
 | Cursor (10-doc window, second-user OPEN) | `Dynamo Server/Test Result/KS-979 - Cursor Result.md` |
-| QA guide §5.3 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
+| QA guide section 5.3 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
 | Story | `Jira Ticket/dynamo_mcp_testing_stories.md` (US-E3-03) |
 
 ---
 
 ## 13. Appendix — Claude: sample document row (Call 1, record 1)
 
-*Abridged from `KS-979 - Claude Result.md` §3.*
+*Abridged from `KS-979 - Claude Result.md` section 3.*
 
 ```json
 {

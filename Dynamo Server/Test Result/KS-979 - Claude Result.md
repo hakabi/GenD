@@ -10,7 +10,7 @@
 | **Report date** | 2026-04-24 |
 | **Tester** | Bình Hà Khoa |
 | **Client** | Claude Cowork (Desktop — Cowork mode) |
-| **Guide reference** | §5.3 |
+| **Guide reference** | section 5.3 |
 | **Tool under test** | `get_documents` |
 
 ---
@@ -223,9 +223,9 @@ totalPages: 30
 
 | Scenario | Condition | Result | Evidence |
 |----------|-----------|--------|----------|
-| **1 — Happy path** | Fund with ≥1 doc → `get_documents` ×2 → filenames/types/dates consistent between calls | ✅ PASS | §3 — 148 total docs; 5-record sample identical across both calls; all GUIDs, titles, categories, dates byte-for-byte identical |
-| **2 — Error path** | Invalid fund → error or empty authorized list; no cross-tenant docs | ✅ PASS | §4 — `ZZZNONEXISTENTFUND99999` returns empty `data`, `recordCount=0`, no foreign documents |
-| **3 — Edge case** | Zero-document fund → empty list with no placeholder entries | ✅ PASS | §5 — "2026 Fund" returns `data=[]`, `totalRecords=0`; no invented filenames |
+| **1 — Happy path** | Fund with ≥1 doc → `get_documents` ×2 → filenames/types/dates consistent between calls | ✅ PASS | section 3 — 148 total docs; 5-record sample identical across both calls; all GUIDs, titles, categories, dates byte-for-byte identical |
+| **2 — Error path** | Invalid fund → error or empty authorized list; no cross-tenant docs | ✅ PASS | section 4 — `ZZZNONEXISTENTFUND99999` returns empty `data`, `recordCount=0`, no foreign documents |
+| **3 — Edge case** | Zero-document fund → empty list with no placeholder entries | ✅ PASS | section 5 — "2026 Fund" returns `data=[]`, `totalRecords=0`; no invented filenames |
 
 ---
 
@@ -252,4 +252,4 @@ totalPages: 30
 | KS-977 result (`get_funds` baseline) | `Dynamo Server/Test Result/KS-977 - Claude Result.md` |
 | KS-978 result (`get_fund_description` / ratings) | `Dynamo Server/Test Result/KS-978 - Claude Result.md` |
 | KS-991 result (schema / document count baseline) | `Dynamo Server/Test Result/KS-991 - Claude Result.md` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (§5.3) |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 5.3) |

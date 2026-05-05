@@ -10,14 +10,14 @@
 | **Report date** | 2026-04-24 |
 | **Tester** | Bình Hà Khoa |
 | **Client** | Claude Cowork (Desktop — Cowork mode) |
-| **Guide reference** | §4.3 |
+| **Guide reference** | section 4.3 |
 | **Method** | Black-box inference from live MCP tool responses and tool schemas only — no Dynamo UI or internal documentation |
 
 ---
 
 ## 1. Executive Summary
 
-**Objective:** Map every domain object touched by each of the 13 MCP tools, identify outbound / LLM-mediated data exfiltration paths, and validate tool scoping behaviour — all inferred from live tool invocations against `conceptia-dynamo` (black-box method per §4.3).
+**Objective:** Map every domain object touched by each of the 13 MCP tools, identify outbound / LLM-mediated data exfiltration paths, and validate tool scoping behaviour — all inferred from live tool invocations against `conceptia-dynamo` (black-box method per section 4.3).
 
 **Outcome:** **PASS** — All 13 tools successfully mapped to domain objects with live evidence. Two outbound data paths confirmed. Four MSSQL core tables confirmed. Two distinct backend systems identified (MSSQL and Elasticsearch). One fad_compute_server (ratings) service confirmed. User-scoped access control on rating details verified.
 
@@ -29,7 +29,7 @@
 | fad_compute_server (ratings) | ✅ PASS |
 | Outbound LLM data paths identified | ✅ PASS — 2 paths (OpenAI + Anthropic) |
 | User-scoped access control on ratings | ✅ PASS — `get_rating_details` returns empty for tester |
-| §1.4 high-risk tools flagged | ✅ PASS — `list_table`, `describe_table`, `read_data` |
+| section 1.4 high-risk tools flagged | ✅ PASS — `list_table`, `describe_table`, `read_data` |
 | INFORMATION_SCHEMA accessible via `read_data` | ✅ CONFIRMED — Finding F-01 |
 | Mermaid entity-relationship diagram | ✅ Included |
 
@@ -45,7 +45,7 @@
 | Baseline manager | 59 North Capital Management |
 | Test date | 2026-04-24 |
 | Prior run reference | KS-991 — Claude Result (schema enumeration, 2026-04-23) |
-| Method | §4.3 black-box domain inference — tool names, schemas, live responses |
+| Method | section 4.3 black-box domain inference — tool names, schemas, live responses |
 
 ---
 
@@ -475,7 +475,7 @@ These two tools surface funds from entirely different backends and should not be
 
 ---
 
-## 11. §1.4 High-Risk Tools — Domain Object Scope Confirmed
+## 11. section 1.4 High-Risk Tools — Domain Object Scope Confirmed
 
 | Tool | Domain Objects Accessible | Risk |
 |------|--------------------------|------|
@@ -505,9 +505,9 @@ These two tools surface funds from entirely different backends and should not be
 
 | Scenario | Condition | Result | Evidence |
 |----------|-----------|--------|----------|
-| **1 — Happy path** | All 13 tools mapped to domain objects from live responses | ✅ PASS | §7 tool map — all 13 tools enumerated with fields, backends, access types |
-| **2 — Outbound paths** | `llm_text_analysis` and `analyze_notes` identified as outbound data paths | ✅ PASS | §8 — two paths documented; OpenAI and Anthropic as confirmed external destinations |
-| **3 — Edge case** | `search_aloha_funds` vs `get_funds` scoping difference documented | ✅ PASS | §10 — different backends, ID types, and fund coverage documented |
+| **1 — Happy path** | All 13 tools mapped to domain objects from live responses | ✅ PASS | section 7 tool map — all 13 tools enumerated with fields, backends, access types |
+| **2 — Outbound paths** | `llm_text_analysis` and `analyze_notes` identified as outbound data paths | ✅ PASS | section 8 — two paths documented; OpenAI and Anthropic as confirmed external destinations |
+| **3 — Edge case** | `search_aloha_funds` vs `get_funds` scoping difference documented | ✅ PASS | section 10 — different backends, ID types, and fund coverage documented |
 
 ---
 
@@ -518,7 +518,7 @@ These two tools surface funds from entirely different backends and should not be
 | All 13 tools mapped to domain objects | ✅ |
 | Black-box method only (no Dynamo UI) | ✅ |
 | Outbound / LLM-mediated data paths identified | ✅ |
-| §1.4 high-risk tools included with domain scope | ✅ |
+| section 1.4 high-risk tools included with domain scope | ✅ |
 | Entity relationship diagram (Mermaid) | ✅ |
 | `search_aloha_funds` scoping validated | ✅ |
 | Live evidence for all claims | ✅ |
@@ -534,4 +534,4 @@ These two tools surface funds from entirely different backends and should not be
 | KS-991 result (schema enumeration) | `Dynamo Server/Test Result/KS-991 - Claude Result.md` |
 | KS-976 result (tool inventory) | `Dynamo Server/Test Result/KS-976 - Claude Result.md` |
 | KS-990 result (network/TLS) | `Dynamo Server/Test Result/KS-990 - Claude Result.md` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (§4.3) |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 4.3) |

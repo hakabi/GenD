@@ -1,10 +1,10 @@
-# KS-978 — Final Result: Validate fund description and ratings for a known fund (§5.2)
+# KS-978 — Final Result: Validate fund description and ratings for a known fund (section 5.2)
 
 | Field | Value |
 | --- | --- |
 | **Jira** | [KS-978](https://gendvn.atlassian.net/browse/KS-978) |
 | **Epic** | [KS-999](https://gendvn.atlassian.net/browse/KS-999) — Dynamo MCP — **Functional E2E Validation** |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§5.2** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 5.2** |
 | **MCP** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **Sources merged** | `KS-978 - Claude Result.md` (**Claude Cowork**) · `KS-978 - Cursor Result.md` (**Cursor Agent**) |
 | **Consolidation date** | 2026-04-25 |
@@ -23,7 +23,7 @@
 | **`get_rating_details`** (user-scoped) | ✅ PASS (empty for **`hakhoabinh@gmail.com`** — by design) | ✅ PASS (empty for **`binh.ha@conceptia.com`**) | **PASS** (contract; **no** populated detail rows in either run) |
 | **Security** (no creds in tool output) | ✅ PASS | ✅ PASS | **PASS** |
 
-**Overall:** **PASS** for §5.2 **Scenarios 1–3** on **two independent clients**. **Rating detail rows** are **empty** for both test UPNs used — consistent with **user-scoped** FAD behavior (Claude documents **non-KS** AAD; Cursor uses program **@conceptia.com**). **No** contradiction between **summary** scores and **empty** details; **not** a tool failure. For **non-empty** detail line QA, use a **KS AAD UPN** with known FAD data (per Claude runbook note).
+**Overall:** **PASS** for section 5.2 **Scenarios 1–3** on **two independent clients**. **Rating detail rows** are **empty** for both test UPNs used — consistent with **user-scoped** FAD behavior (Claude documents **non-KS** AAD; Cursor uses program **@conceptia.com**). **No** contradiction between **summary** scores and **empty** details; **not** a tool failure. For **non-empty** detail line QA, use a **KS AAD UPN** with known FAD data (per Claude runbook note).
 
 **Baseline fund:** **59 North Partners, LP** · MSSQL **GUID** `D7879DB7-E230-4191-8849-DE4B7B64626C` · Solovis **`fund_id`**: **`28582`**.
 
@@ -57,15 +57,15 @@
 
 | Step | Evidence |
 | --- | --- |
-| **`get_fund_description`** | **GUID** + text description + manager — **Claude T1-A** / **Cursor §4.3** |
-| **`search_aloha_funds`** | **`28582`**, **solovis**, name match — **T1-B** / **Cursor §4.2** |
-| **`get_rating_summary`** | `rating_name` **59 North Partners, LP** · scores **6/6/6/6** · **avg conviction 5** — **T1-C** / **Cursor §4.4** |
-| **`get_rating_details`** | **`success: true`**, **`data: []`** for both UPNs — no fabricated rows — **T1-D** / **Cursor §4.5** |
+| **`get_fund_description`** | **GUID** + text description + manager — **Claude T1-A** / **Cursor section 4.3** |
+| **`search_aloha_funds`** | **`28582`**, **solovis**, name match — **T1-B** / **Cursor section 4.2** |
+| **`get_rating_summary`** | `rating_name` **59 North Partners, LP** · scores **6/6/6/6** · **avg conviction 5** — **T1-C** / **Cursor section 4.4** |
+| **`get_rating_details`** | **`success: true`**, **`data: []`** for both UPNs — no fabricated rows — **T1-D** / **Cursor section 4.5** |
 | **`get_funds`** | Manager, pipeline, asset class, **UTC** dates — **T1-E** (Claude) / **Cursor** context row |
 
-**Cross-tool consistency** (abridged): see **Claude** §4 **T1-F** for the full attribute matrix.
+**Cross-tool consistency** (abridged): see **Claude** section 4 **T1-F** for the full attribute matrix.
 
-**Dates:** **Claude** §4 **T1-G** — **`get_funds`** datetimes are **ISO 8601 UTC** (`Z`); description/summary tools carry **no** date fields in this test.
+**Dates:** **Claude** section 4 **T1-G** — **`get_funds`** datetimes are **ISO 8601 UTC** (`Z`); description/summary tools carry **no** date fields in this test.
 
 ---
 
@@ -84,7 +84,7 @@
 
 | Source | Evidence |
 | --- | --- |
-| **Claude** | **2026 Fund** — `get_fund_description` returns **`"Description": null`** as JSON `null` (no placeholder string). **§6 T3-A** |
+| **Claude** | **2026 Fund** — `get_fund_description` returns **`"Description": null`** as JSON `null` (no placeholder string). **section 6 T3-A** |
 | **Cursor** | Nullable fields on **59 North** in **`get_funds`** (e.g. **`AuditorName: null`**) — explicit in payload |
 
 **Merged verdict:** **PASS** — null/missing values are **not** silently omitted as if absent from schema; no invented placeholder ratings or description text (Claude edge case is the **stronger** sign-off for **AC Scenario 3**).
@@ -116,9 +116,9 @@
 
 | Scenario | Result | Evidence |
 | --- | :---: | --- |
-| **1 — Happy path** | **PASS** | **§4**; both clients |
-| **2 — Error path** | **PASS** | **§5** |
-| **3 — Edge (nulls explicit)** | **PASS** | **§6** (Claude **2026 Fund**; Cursor nullables) |
+| **1 — Happy path** | **PASS** | **section 4**; both clients |
+| **2 — Error path** | **PASS** | **section 5** |
+| **3 — Edge (nulls explicit)** | **PASS** | **section 6** (Claude **2026 Fund**; Cursor nullables) |
 
 ---
 
@@ -139,7 +139,7 @@
 
 ## 11. Paste-ready Jira comment
 
-*KS-978 **merged** (Claude Cowork + Cursor) **§5.2: PASS** — **59 North** / **`28582` (solovis)**: description, rating summary, `get_funds` **aligned**; **`get_rating_details`** **success** with **empty** `data` for both UPNs (**user-scoped**, no fab rows). **Scenarios 2–3 PASS** (Claude: **2026 Fund** `Description: null`). **F-01** soft-empty API shape; **F-02** Guid vs ES id vs `get_funds`; **F-03** empty details / KS UPN for rows; **F-04** dates on `get_funds` only. **No** tokens in output. **Evidence:** **`KS-978 Result.md`** + `KS-978 - Claude Result.md` + `KS-978 - Cursor Result.md`.*
+*KS-978 **merged** (Claude Cowork + Cursor) **section 5.2: PASS** — **59 North** / **`28582` (solovis)**: description, rating summary, `get_funds` **aligned**; **`get_rating_details`** **success** with **empty** `data` for both UPNs (**user-scoped**, no fab rows). **Scenarios 2–3 PASS** (Claude: **2026 Fund** `Description: null`). **F-01** soft-empty API shape; **F-02** Guid vs ES id vs `get_funds`; **F-03** empty details / KS UPN for rows; **F-04** dates on `get_funds` only. **No** tokens in output. **Evidence:** **`KS-978 Result.md`** + `KS-978 - Claude Result.md` + `KS-978 - Cursor Result.md`.*
 
 ---
 
@@ -150,14 +150,14 @@
 | **This consolidated result** | `Dynamo Server/Test Result/KS-978 Result.md` |
 | Claude (matrices, UTC table, 2026 Fund null) | `Dynamo Server/Test Result/KS-978 - Claude Result.md` |
 | Cursor (numeric invalid id, `binh.ha@` details) | `Dynamo Server/Test Result/KS-978 - Cursor Result.md` |
-| QA guide §5.2 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
+| QA guide section 5.2 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
 | Related (fund list / id) | `Dynamo Server/Test Result/KS-977 Result.md` |
 
 ---
 
 ## 13. Appendix — Claude: 2026 Fund null description (Scenario 3)
 
-*From `KS-978 - Claude Result.md` §6.*
+*From `KS-978 - Claude Result.md` section 6.*
 
 ```json
 {

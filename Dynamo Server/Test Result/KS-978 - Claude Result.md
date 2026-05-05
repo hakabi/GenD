@@ -10,7 +10,7 @@
 | **Report date** | 2026-04-24 |
 | **Tester** | Bình Hà Khoa |
 | **Client** | Claude Cowork (Desktop — Cowork mode) |
-| **Guide reference** | §5.2 |
+| **Guide reference** | section 5.2 |
 | **Tools under test** | `get_fund_description`, `get_rating_summary`, `get_rating_details`, `search_aloha_funds`, `get_funds` |
 
 ---
@@ -303,9 +303,9 @@ All datetime fields in `get_funds` are returned in **UTC ISO 8601** format with 
 
 | Scenario | Condition | Result | Evidence |
 |----------|-----------|--------|----------|
-| **1 — Happy path** | Valid fund → description + rating summary + rating details non-contradictory; aligned with `get_funds` | ✅ PASS | §4 T1-A through T1-G — all names, manager, fund identity consistent; no contradictions |
-| **2 — Error path** | Non-existent fund → controlled error or empty authorized result; no cross-tenant leak | ✅ PASS | §5 T2-A/B — empty data, success=true, recordCount=0; no foreign fund data |
-| **3 — Edge case** | Null description/rating field → stated explicitly as null, not fabricated | ✅ PASS | §6 T3-A — 2026 Fund Description=null explicit JSON null; no placeholder invented |
+| **1 — Happy path** | Valid fund → description + rating summary + rating details non-contradictory; aligned with `get_funds` | ✅ PASS | section 4 T1-A through T1-G — all names, manager, fund identity consistent; no contradictions |
+| **2 — Error path** | Non-existent fund → controlled error or empty authorized result; no cross-tenant leak | ✅ PASS | section 5 T2-A/B — empty data, success=true, recordCount=0; no foreign fund data |
+| **3 — Edge case** | Null description/rating field → stated explicitly as null, not fabricated | ✅ PASS | section 6 T3-A — 2026 Fund Description=null explicit JSON null; no placeholder invented |
 
 ---
 
@@ -335,4 +335,4 @@ All datetime fields in `get_funds` are returned in **UTC ISO 8601** format with 
 | KS-977 result (`get_funds` baseline) | `Dynamo Server/Test Result/KS-977 - Claude Result.md` |
 | KS-991 result (schema / baseline counts) | `Dynamo Server/Test Result/KS-991 - Claude Result.md` |
 | KS-992 result (domain object map) | `Dynamo Server/Test Result/KS-992 - Claude Result.md` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (§5.2) |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 5.2) |

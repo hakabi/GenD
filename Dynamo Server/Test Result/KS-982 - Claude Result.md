@@ -7,7 +7,7 @@
 |---|---|
 | **Jira Ticket** | KS-982 |
 | **Epic** | KS-999 — Dynamo MCP — Functional E2E Validation |
-| **Test Section** | §5.6 — Search Test |
+| **Test Section** | section 5.6 — Search Test |
 | **Tester** | Claude (Sonnet 4.6) — AI Agent |
 | **MCP Client** | Claude.ai (claude.ai web interface) |
 | **MCP Server** | `https://mcp.conceptia.com/dynamo/sse` (conceptia-dynamo) |
@@ -180,7 +180,7 @@ Every response from `search_aloha_funds` consistently returned these fields:
 
 ---
 
-## 5. Test Matrix (§5.6 only — per KS-982 scope)
+## 5. Test Matrix (section 5.6 only — per KS-982 scope)
 
 | Test | Happy Path | Invalid Input | Cross-Tenant Check |
 |---|---|---|---|
@@ -209,7 +209,7 @@ None. No defects were raised as a result of this test run.
 
 ## 8. Conclusion
 
-KS-982 §5.6 `search_aloha_funds` testing is **complete and passed** across all three defined BDD scenarios:
+KS-982 section 5.6 `search_aloha_funds` testing is **complete and passed** across all three defined BDD scenarios:
 
 - **Scenario 1 (Happy Path):** Keyword `83North` returned 8 relevant Solovis funds, all cross-validated against `get_funds`. ✅
 - **Scenario 2 (Error Path):** No-match keyword returned a clean empty result set. ✅

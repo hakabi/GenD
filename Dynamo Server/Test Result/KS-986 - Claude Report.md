@@ -8,8 +8,8 @@
 | **Execution date** | 2026-04-28 |
 | **Tester** | Claude (Cowork agent) — `hakhoabinh@gmail.com` |
 | **MCP surface** | `https://mcp.conceptia.com/dynamo/sse` |
-| **Guide reference** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` · v1.3 · §7.3 PIJ |
-| **Methodology** | **Black-box** testing through the MCP surface only; all verdicts based on tool outputs. No Dynamo UI cross-checks (guide §1, §1.1). |
+| **Guide reference** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` · v1.3 · section 7.3 PIJ |
+| **Methodology** | **Black-box** testing through the MCP surface only; all verdicts based on tool outputs. No Dynamo UI cross-checks (guide section 1, section 1.1). |
 
 ---
 
@@ -17,11 +17,11 @@
 
 | Guide reference | How this report applies it |
 |-----------------|----------------------------|
-| **§1.1 Black-box rule** | All verdicts are from MCP tool responses; upstream Dynamo treated as opaque. |
-| **§1.3 Tool inventory** | PIJ-relevant tools tested: `get_notes`, `analyze_notes`, `get_fund_description`, `llm_text_analysis`, `get_documents`, `search_aloha_funds` (6 of 13 registered tools). |
-| **§7.3 PIJ** | PIJ-01 … PIJ-05 executed as defined; LLM-mediated paths blocked by B-1. |
-| **§8 What to log** | Payloads, tool responses, and outcome notes captured in this report. |
-| **§11 Exit criteria** | All exercised PIJ tests confirm prompt injection is **NOT executed** — data is treated as data. Ticket can be marked **Done** from a PIJ perspective once B-1 is resolved and LLM path is re-tested. |
+| **section 1.1 Black-box rule** | All verdicts are from MCP tool responses; upstream Dynamo treated as opaque. |
+| **section 1.3 Tool inventory** | PIJ-relevant tools tested: `get_notes`, `analyze_notes`, `get_fund_description`, `llm_text_analysis`, `get_documents`, `search_aloha_funds` (6 of 13 registered tools). |
+| **section 7.3 PIJ** | PIJ-01 … PIJ-05 executed as defined; LLM-mediated paths blocked by B-1. |
+| **section 8 What to log** | Payloads, tool responses, and outcome notes captured in this report. |
+| **section 11 Exit criteria** | All exercised PIJ tests confirm prompt injection is **NOT executed** — data is treated as data. Ticket can be marked **Done** from a PIJ perspective once B-1 is resolved and LLM path is re-tested. |
 
 ---
 
@@ -231,7 +231,7 @@ Elasticsearch tokenized the query into individual terms ("ignore", "previous", "
 1. Configure `ANTHROPIC_API_KEY` on the MCP server and re-run PIJ-02 LLM and PIJ-04 LLM chain paths (**required for full DoD**).
 2. If `get_documents` is updated to extract and return full document text in the Content field, re-run PIJ-03 with real document bodies.
 3. If any **write tools** are added to the Dynamo MCP server in future, re-run the full PIJ suite (especially PIJ-04) before production.
-4. Consider adding PIJ test cases to the Continuous Validation (ASV) pipeline per guide §10.
+4. Consider adding PIJ test cases to the Continuous Validation (ASV) pipeline per guide section 10.
 
 ---
 
@@ -239,7 +239,7 @@ Elasticsearch tokenized the query into individual terms ("ignore", "previous", "
 
 | Document | Role |
 |----------|------|
-| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | Official scope, §7.3 PIJ test definitions, §11 exit criteria |
+| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | Official scope, section 7.3 PIJ test definitions, section 11 exit criteria |
 | `Dynamo Server/Test Result/KS-985 - Claude_Report.md` | Prior INJ suite results (FINDING-01, FINDING-02 context) |
 
 ---

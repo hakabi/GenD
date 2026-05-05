@@ -10,13 +10,13 @@
 | **Report date** | 2026-04-23 |
 | **Tester** | Bình Hà Khoa |
 | **Client** | Claude Cowork (Desktop — Cowork mode) + manual PowerShell network checks |
-| **Guide reference** | §2.4, §3.1–§3.2 |
+| **Guide reference** | section 2.4, section 3.1–section 3.2 |
 
 ---
 
 ## 1. Executive Summary
 
-**Objective:** Configure MCP clients to connect to the Conceptia Dynamo SSE endpoint via OAuth, verify network/TLS posture, and confirm at least two distinct clients are operational per guide §2.4.
+**Objective:** Configure MCP clients to connect to the Conceptia Dynamo SSE endpoint via OAuth, verify network/TLS posture, and confirm at least two distinct clients are operational per guide section 2.4.
 
 **Outcome:** **PARTIAL PASS** — All network/TLS/auth checks passed (8/8). Claude Cowork confirmed connected (Client 1). Antigravity (Client 2) is covered in a separate report and will be merged.
 
@@ -326,4 +326,4 @@ curl.exe -si https://mcp.conceptia.com/dynamo/sse --max-time 10 | Select-String 
 | This report | `Dynamo Server/Test Result/KS-990 - Claude Result.md` |
 | KS-976 result (tool enumeration) | `Dynamo Server/Test Result/KS-976 - Claude Result.md` |
 | Cursor agent prior run | `Dynamo Server/Test Result/KS-990-cursor-agent-*` |
-| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (§2.4, §3.1–§3.2, §9) |
+| QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 2.4, section 3.1–section 3.2, section 9) |

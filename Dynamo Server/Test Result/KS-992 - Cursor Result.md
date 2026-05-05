@@ -4,7 +4,7 @@
 | --- | --- |
 | **Jira** | [KS-992](https://gendvn.atlassian.net/browse/KS-992) |
 | **Epic** | Dynamo MCP — Discovery & Scope Enumeration |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` §4.3 |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` section 4.3 |
 | **MCP** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **Client** | Cursor (Agent / Composer) |
 | **Method** | Black-box only — tool names, schemas, **live** MCP responses (no Dynamo UI / internal schema docs) |
@@ -15,15 +15,15 @@
 
 ## 1. Executive summary
 
-**Ticket ask:** Map **domain objects** per tool, **outbound / LLM-mediated** exfiltration paths, and **§1.4** high-risk flows; **behaviorally** probe `search_aloha_funds` vs tenant-scoped data (e.g. `get_funds`).
+**Ticket ask:** Map **domain objects** per tool, **outbound / LLM-mediated** exfiltration paths, and **section 1.4** high-risk flows; **behaviorally** probe `search_aloha_funds` vs tenant-scoped data (e.g. `get_funds`).
 
 | Area | Result | Evidence (this run) |
 | --- | --- | --- |
-| Tool → domain mapping (13 tools) | **PASS** | §3 table + alignment with `KS-991` |
-| Backend surfaces (MSSQL / ES / ratings) | **PASS** | §2; live `get_funds`, `search_aloha_funds`, `get_rating_summary` |
-| Outbound LLM paths | **PASS** | §4 — `analyze_notes`, `llm_text_analysis` |
-| §1.4 high-risk tools | **PASS** | §5 |
-| `search_aloha_funds` vs `get_funds` behavior | **PASS with finding** | §6 — **ALB ES hit not found** in MSSQL `get_funds` for same manager family; **Solovis** hit **matches** `get_funds` and **chains** to ratings |
+| Tool → domain mapping (13 tools) | **PASS** | section 3 table + alignment with `KS-991` |
+| Backend surfaces (MSSQL / ES / ratings) | **PASS** | section 2; live `get_funds`, `search_aloha_funds`, `get_rating_summary` |
+| Outbound LLM paths | **PASS** | section 4 — `analyze_notes`, `llm_text_analysis` |
+| section 1.4 high-risk tools | **PASS** | section 5 |
+| `search_aloha_funds` vs `get_funds` behavior | **PASS with finding** | section 6 — **ALB ES hit not found** in MSSQL `get_funds` for same manager family; **Solovis** hit **matches** `get_funds` and **chains** to ratings |
 
 **Overall:** **PASS** for KS-992 Cursor leg, with **KS-992-CUR-F-01** documenting ES vs MSSQL **scope difference** (assumption pending vendor — maps to BDD Scenario 2).
 
@@ -63,15 +63,15 @@
 
 | Path | Tools | Risk lens |
 | --- | --- | --- |
-| **External LLM** | `analyze_notes`, `llm_text_analysis` | Notes / fund text may leave tenant boundary; CHAIN / PIJ / data-classification tests (**KS-981**, guide §7) |
+| **External LLM** | `analyze_notes`, `llm_text_analysis` | Notes / fund text may leave tenant boundary; CHAIN / PIJ / data-classification tests (**KS-981**, guide section 7) |
 | **External HTTP API** | `get_rating_summary`, `get_rating_details` | Ratings service; details require **`user`** or **`MCP_DEFAULT_USER_EMAIL`** (this run: details call **failed** without `user` — expected guard) |
-| **Elasticsearch** | `search_aloha_funds` | Broader **marketplace / Albourne** style index vs MSSQL portfolio — see §6 |
+| **Elasticsearch** | `search_aloha_funds` | Broader **marketplace / Albourne** style index vs MSSQL portfolio — see section 6 |
 
-**§1.4 discovery / tabular (no LLM):** `list_table`, `describe_table`, `read_data` — schema / SQL exfiltration surface (**KS-981**).
+**section 1.4 discovery / tabular (no LLM):** `list_table`, `describe_table`, `read_data` — schema / SQL exfiltration surface (**KS-981**).
 
 ---
 
-## 5. §1.4 high-risk tool summary
+## 5. section 1.4 high-risk tool summary
 
 | Tool | Maps to |
 | --- | --- |
@@ -81,7 +81,7 @@
 
 ---
 
-## 6. Behavioral check: `search_aloha_funds` vs `get_funds` (§4.3)
+## 6. Behavioral check: `search_aloha_funds` vs `get_funds` (section 4.3)
 
 **Hypothesis:** ES may return funds **not** present in MSSQL `get_funds` for the same authenticated user (different product scope: **market search** vs **tenant CRM**).
 
@@ -165,16 +165,16 @@ flowchart LR
 | --- | :---: |
 | Domain mapping from names/responses | Yes |
 | Outbound / LLM tools listed | Yes |
-| §1.4 tools called out | Yes |
-| `search_aloha_funds` MCP-only behavioral notes | Yes (**§6**) |
-| Mermaid diagram (3+ entities) | Yes (**§7**) |
+| section 1.4 tools called out | Yes |
+| `search_aloha_funds` MCP-only behavioral notes | Yes (**section 6**) |
+| Mermaid diagram (3+ entities) | Yes (**section 7**) |
 | Risks / assumptions documented | Yes (**F-01**) |
 
 ---
 
 ## 10. Paste-ready Jira comment
 
-*KS-992 Cursor (§4.3): **PASS** — 13 tools mapped to domain objects; MSSQL / ES / fad / LLM paths documented; §1.4 flagged. **Behavioral check:** Solovis **59 North** aligns with `get_funds` and chains to `get_rating_summary`; **ALB** **59 North Master Fund LP** returned by `search_aloha_funds` but **not** in `get_funds` for tested queries — logged as **KS-992-CUR-F-01** (assumption pending vendor / scope by design). `get_rating_details` requires `user`. Evidence: `KS-992 - Cursor Result.md`. Deep parallel: `KS-992 - Claude Result.md`.*
+*KS-992 Cursor (section 4.3): **PASS** — 13 tools mapped to domain objects; MSSQL / ES / fad / LLM paths documented; section 1.4 flagged. **Behavioral check:** Solovis **59 North** aligns with `get_funds` and chains to `get_rating_summary`; **ALB** **59 North Master Fund LP** returned by `search_aloha_funds` but **not** in `get_funds` for tested queries — logged as **KS-992-CUR-F-01** (assumption pending vendor / scope by design). `get_rating_details` requires `user`. Evidence: `KS-992 - Cursor Result.md`. Deep parallel: `KS-992 - Claude Result.md`.*
 
 ---
 
@@ -185,4 +185,4 @@ flowchart LR
 | This report | `Dynamo Server/Test Result/KS-992 - Cursor Result.md` |
 | Claude parallel | `Dynamo Server/Test Result/KS-992 - Claude Result.md` |
 | Schema baseline | `Dynamo Server/Test Result/KS-991 Result.md` |
-| QA guide §4.3 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
+| QA guide section 4.3 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |

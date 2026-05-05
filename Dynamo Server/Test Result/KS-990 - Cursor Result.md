@@ -5,8 +5,8 @@
 | **Jira** | [KS-990](https://gendvn.atlassian.net/browse/KS-990) |
 | **Epic** | Dynamo MCP — Environment, Access & Connectivity |
 | **Story** | Dynamo MCP QA — Configure MCP client and connect to SSE endpoint |
-| **Guide mapping** | §2.2 (Node), §2.4 (clients), §3.1–§3.2 (install/connect), §3.3 (verify), §9 (troubleshooting) |
-| **Initial run** | 2026-04-23 — **BLOCKED** (MCP not connected; see §8 history) |
+| **Guide mapping** | section 2.2 (Node), section 2.4 (clients), section 3.1–section 3.2 (install/connect), section 3.3 (verify), section 9 (troubleshooting) |
+| **Initial run** | 2026-04-23 — **BLOCKED** (MCP not connected; see section 8 history) |
 | **Re-test run** | **Current session** — **PASS (Cursor leg)** after successful Dynamo MCP reconnect |
 | **Client under test** | **Cursor** (Agent / Composer; workspace `GenD`) |
 | **Tester (automated leg)** | Cursor Agent (Composer) |
@@ -23,15 +23,15 @@
 
 ## 1. Ticket objective (KS-990)
 
-**User story:** As an **Internal QA Tester**, I want to **configure MCP clients—including Antigravity and other in-house clients—to use `mcp-remote` or equivalent against the SSE URL** so that **the agent can reach the Conceptia Dynamo MCP server with full internal coverage (guide §2.4)**.
+**User story:** As an **Internal QA Tester**, I want to **configure MCP clients—including Antigravity and other in-house clients—to use `mcp-remote` or equivalent against the SSE URL** so that **the agent can reach the Conceptia Dynamo MCP server with full internal coverage (guide section 2.4)**.
 
-**Scope of this file:** **Cursor only.** Full ticket **Definition of Done** may still require a **second distinct client** (e.g. Antigravity) per §2.4 — see §4.
+**Scope of this file:** **Cursor only.** Full ticket **Definition of Done** may still require a **second distinct client** (e.g. Antigravity) per section 2.4 — see section 4.
 
 ---
 
 ## 2. Test results (Cursor) — re-test
 
-### 2.1 Prerequisites — §2.2 Software (Node.js / `npx`)
+### 2.1 Prerequisites — section 2.2 Software (Node.js / `npx`)
 
 | ID | Requirement | Result | Evidence |
 | --- | --- | --- | --- |
@@ -58,7 +58,7 @@
 | --- | --- | --- | --- |
 | T7 | Connector **connected**; OAuth via browser (no manual JWT paste in artifacts) | **PASS** | Agent bridge returned successful MCP payload (implies OAuth/session valid for `user-conceptia-dynamo`) |
 | T8 | Invoke at least one tool (connectivity proof) | **PASS** | `get_funds` with `limit: 1` → **`success: true`**, 1 fund row returned (977 funds total in pagination metadata) |
-| T9 | Tool surface visible to client | **PASS** | **13** tool JSON descriptors under `mcps/user-conceptia-dynamo/tools/` (aligns with guide §1.3 / **KS-976**) |
+| T9 | Tool surface visible to client | **PASS** | **13** tool JSON descriptors under `mcps/user-conceptia-dynamo/tools/` (aligns with guide section 1.3 / **KS-976**) |
 
 **Smoke response (abbreviated):** first fund **`Name`:** `2026 Fund`; query **`success: true`**.
 
@@ -75,12 +75,12 @@
 | Scenario | Ticket wording | Result | Notes |
 | --- | --- | --- | --- |
 | **1 — Happy path** | Given supported MCP client → When add URL + complete OAuth → Then connected **without** plaintext tokens in config | **PASS** | Live **`get_funds`** success; workspace config has **no** JWT |
-| **2 — Error path** | Given firewall blocks SSE → When connect → Then document per §9 | **NOT EXECUTED** | No firewall failure simulated |
+| **2 — Error path** | Given firewall blocks SSE → When connect → Then document per section 9 | **NOT EXECUTED** | No firewall failure simulated |
 | **3 — Edge case** | CLI `claude mcp add` → `/mcp` → `conceptia-dynamo` listed | **N/A (Cursor)** | Claude Code–specific; use Claude matrix |
 
 ---
 
-## 4. Guide §2.4 — two clients + Antigravity
+## 4. Guide section 2.4 — two clients + Antigravity
 
 | Item | Status |
 | --- | --- |
@@ -112,11 +112,11 @@
 | Document | Path |
 | --- | --- |
 | This report | `Dynamo Server/Test Result/KS-990 - Cursor Result.md` |
-| Testing guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` §2–§3, §9 |
+| Testing guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` section 2–section 3, section 9 |
 | Workspace MCP file (snapshot) | `D:\source\GenD\.cursor\mcp.json` |
 
 ---
 
 ## 8. History (initial blocked run — 2026-04-23)
 
-Symptoms: `STATUS.md` *server errored*, `get_funds` → `Not connected`; separate incidents included **OAuth callback `EADDRINUSE` on `127.0.0.1:37189`** (stale `node.exe`). Resolved by user reconnect + port hygiene; superseded by **§2** re-test above.
+Symptoms: `STATUS.md` *server errored*, `get_funds` → `Not connected`; separate incidents included **OAuth callback `EADDRINUSE` on `127.0.0.1:37189`** (stale `node.exe`). Resolved by user reconnect + port hygiene; superseded by **section 2** re-test above.

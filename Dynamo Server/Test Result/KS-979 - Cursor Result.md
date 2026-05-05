@@ -1,10 +1,10 @@
-# KS-979 — Test Result: List fund documents via `get_documents` (§5.3)
+# KS-979 — Test Result: List fund documents via `get_documents` (section 5.3)
 
 | Field | Value |
 | --- | --- |
 | **Jira** | [KS-979](https://gendvn.atlassian.net/browse/KS-979) |
 | **Epic** | [KS-999](https://gendvn.atlassian.net/browse/KS-999) — Dynamo MCP — **Functional E2E Validation** |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§5.3** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 5.3** |
 | **MCP** | `conceptia-dynamo` |
 | **Tester / agent** | Cursor Agent (live tool invocation) |
 | **Report date** | 2026-04-25 |
@@ -21,7 +21,7 @@
 | **Scenario 2 — Error path** | **PASS** (invalid) | Non-existent fund name → **empty** list, `success: true` — **no** cross-fund rows |
 | **Scenario 2 — “Unauthorized user”** | **OPEN** (documented) | **Not run:** second Entra identity without access to a real fund. Recorded as **OPEN**; **no further test action** unless program policy explicitly requires a restricted user. |
 | **Scenario 3 — Zero documents** | **PASS** | **2026 Fund** — `data: []`, `recordCount: 0` |
-| **Tool vs story wording** | **Noted** | Story uses `<FUND_ID>`; tool uses **`filterValue`** = **fund name** (see §5) |
+| **Tool vs story wording** | **Noted** | Story uses `<FUND_ID>`; tool uses **`filterValue`** = **fund name** (see section 5) |
 
 ---
 
@@ -29,9 +29,9 @@
 
 | Theme | Evidence |
 | --- | --- |
-| Prompt intent §5.3 | *“List all documents associated with fund `<FUND_ID>`.”* → `get_documents` with `filterType: fund`, `filterValue: "<fund name>"` |
+| Prompt intent section 5.3 | *“List all documents associated with fund `<FUND_ID>`.”* → `get_documents` with `filterType: fund`, `filterValue: "<fund name>"` |
 | Metadata | `Title`, `FileName`, `Documentcategories`, `Documentdate` / `DateCreated` / `LastModified` on rows |
-| Repeatability | **Call A** vs **Call B** — same 10 `ID`s in order (§4) |
+| Repeatability | **Call A** vs **Call B** — same 10 `ID`s in order (section 4) |
 | Invalid input | Unknown name → empty `data` (acceptable per AC) |
 | Portal / SQL | **Not** used (per ticket) |
 
@@ -136,7 +136,7 @@
 
 | Criterion | Status |
 | --- | :---: |
-| §5.3 happy path + repeatability | ✅ |
+| section 5.3 happy path + repeatability | ✅ |
 | Metadata fields visible | ✅ |
 | Invalid fund → no leakage | ✅ |
 | Zero-document fund | ✅ |
@@ -147,7 +147,7 @@
 
 ## 10. Paste-ready Jira comment (Cursor only)
 
-*KS-979 **Cursor** (§5.3): **`get_documents`** — **59 North Partners, LP** ×2: same 10 **`ID`**s, **`totalRecords` 148**; invalid fund name → **0** rows; **2026 Fund** → **0** rows. **KS-979-F-01:** param is **fund name**, not numeric fund id. **F-06 (merged):** no second user for true “unauthorized” — **OPEN**, **documented**; no further action unless policy requires. **Merged report:** `Dynamo Server/Test Result/KS-979 Result.md` (+ Claude sub-report).*
+*KS-979 **Cursor** (section 5.3): **`get_documents`** — **59 North Partners, LP** ×2: same 10 **`ID`**s, **`totalRecords` 148**; invalid fund name → **0** rows; **2026 Fund** → **0** rows. **KS-979-F-01:** param is **fund name**, not numeric fund id. **F-06 (merged):** no second user for true “unauthorized” — **OPEN**, **documented**; no further action unless policy requires. **Merged report:** `Dynamo Server/Test Result/KS-979 Result.md` (+ Claude sub-report).*
 
 ---
 
@@ -155,6 +155,6 @@
 
 | Document | Path |
 | --- | --- |
-| Testing guide §5.3 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
+| Testing guide section 5.3 | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` |
 | Story | `Jira Ticket/dynamo_mcp_testing_stories.md` (US-E3-03) |
 | Merged result (Claude + Cursor) | `Dynamo Server/Test Result/KS-979 Result.md` |

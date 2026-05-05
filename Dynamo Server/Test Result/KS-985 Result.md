@@ -7,7 +7,7 @@
 | **Overall status** | **PARTIAL PASS — 2 security findings, 1 environment blocker** |
 | **Execution date** | 2026-04-28 (Claude full re-run + Cursor MCP session) |
 | **MCP surface** | `https://mcp.conceptia.com/dynamo/sse` (per `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` · v1.3) |
-| **Methodology** | **Black-box** testing **only** through the MCP surface; behavior judged from **tool outputs** and OAuth success — **no Dynamo UI** cross-checks (guide §1, §1.1). |
+| **Methodology** | **Black-box** testing **only** through the MCP surface; behavior judged from **tool outputs** and OAuth success — **no Dynamo UI** cross-checks (guide section 1, section 1.1). |
 | **Sources merged** | **Claude** — *KS-985 - Claude_Report.md* (full INJ suite, 12/13 tools, FINDING-01/02, coverage matrix). **Cursor** — *KS-985 - Cursor Result.md* (`user-conceptia-dynamo`, supplementary vectors, artifact references). |
 
 ---
@@ -18,13 +18,13 @@ This consolidated result is structured against **Dynamo MCP Server — QA Testin
 
 | Guide reference | How this report applies it |
 |-----------------|----------------------------|
-| **§1.1 Black-box rule** | All verdicts are from MCP tool responses; upstream Dynamo is treated as opaque. |
-| **§1.3 Tool inventory** | All **13** registered tools are named; execution covered **12** of 13 (`llm_text_analysis` blocked — see B-1). |
-| **§1.4 High-risk tools** | `list_table`, `describe_table`, and `read_data` are tracked separately; `read_data` ties to **FINDING-01**. |
-| **§2.4 Multi-client testing** | **Claude** and **Cursor** were used — meets the guide’s recommendation to test on more than one MCP client. |
-| **§7.2 INJ** | INJ-01 … INJ-06 map to the guide’s injection/validation categories; LLM-mediated paths remain partially untested while B-1 applies. |
-| **§8 What to log** | Detailed payloads and outcomes are retained in source reports; this file summarizes pass/fail and findings. |
-| **§11 Exit criteria** | Ticket **cannot** be signed off as fully passed until open security findings are remediated and documented (guide: failures need **documented ticket + severity**). |
+| **section 1.1 Black-box rule** | All verdicts are from MCP tool responses; upstream Dynamo is treated as opaque. |
+| **section 1.3 Tool inventory** | All **13** registered tools are named; execution covered **12** of 13 (`llm_text_analysis` blocked — see B-1). |
+| **section 1.4 High-risk tools** | `list_table`, `describe_table`, and `read_data` are tracked separately; `read_data` ties to **FINDING-01**. |
+| **section 2.4 Multi-client testing** | **Claude** and **Cursor** were used — meets the guide’s recommendation to test on more than one MCP client. |
+| **section 7.2 INJ** | INJ-01 … INJ-06 map to the guide’s injection/validation categories; LLM-mediated paths remain partially untested while B-1 applies. |
+| **section 8 What to log** | Detailed payloads and outcomes are retained in source reports; this file summarizes pass/fail and findings. |
+| **section 11 Exit criteria** | Ticket **cannot** be signed off as fully passed until open security findings are remediated and documented (guide: failures need **documented ticket + severity**). |
 
 ---
 
@@ -125,7 +125,7 @@ The matrix below follows the **full** Claude re-run and adds **Cursor** notes wh
 
 ---
 
-## 7. High-risk tool checklist (guide §1.4)
+## 7. High-risk tool checklist (guide section 1.4)
 
 | Tool | Consolidated outcome |
 |------|------------------------|
@@ -224,7 +224,7 @@ The matrix below follows the **full** Claude re-run and adds **Cursor** notes wh
 
 | Document | Role |
 |----------|------|
-| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | Official scope, §1.3 inventory, §1.4 high-risk tools, §7.2 INJ, multi-client guidance |
+| `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` | Official scope, section 1.3 inventory, section 1.4 high-risk tools, section 7.2 INJ, multi-client guidance |
 | `Dynamo Server/Test Result/KS-985 - Claude_Report.md` | Full re-run matrices, payloads, FINDING-01/02 detail, reproduction steps |
 | `Dynamo Server/Test Result/KS-985 - Cursor Result.md` | Cursor-only vectors, ES 400 behavior, validation edge cases, artifact paths |
 

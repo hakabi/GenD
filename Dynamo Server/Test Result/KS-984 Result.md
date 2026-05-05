@@ -1,4 +1,4 @@
-# KS-984 — Consolidated test result: AUTH suite (§7.1)
+# KS-984 — Consolidated test result: AUTH suite (section 7.1)
 
 **Sources:** [KS-984 — Claude Result](./KS-984%20-%20Claude%20Result.md) · [KS-984 — Cursor Result](./KS-984%20-%20Cursor%20Result.md)  
 **Project KS** · **Jira:** [KS-984](https://gendvn.atlassian.net/browse/KS-984)
@@ -7,7 +7,7 @@
 | --- | --- |
 | **Summary** | Dynamo MCP Security QA — **AUTH-01–AUTH-05** (unauthenticated access, token rejection, role scope, tenant isolation, parameter tampering) |
 | **Epic** | [KS-1000](https://gendvn.atlassian.net/browse/KS-1000) — Dynamo MCP — **Security & Abuse-Case Testing** |
-| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **§7.1** |
+| **Guide** | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` **section 7.1** |
 | **MCP** | `conceptia-dynamo` · `https://mcp.conceptia.com/dynamo/sse` |
 | **Agents** | **Claude** (Sonnet 4.6, Claude Code VSCode extension, `mcp-remote`) · **Cursor Agent** (`project-0-GenD-conceptia-dynamo`) |
 | **Consolidated report date** | 2026-04-24 |
@@ -22,7 +22,7 @@
 | **AUTH-02** | Invalid / replayed bearer | PASS (proxy) | PASS (proxy) | **PASS (proxy)** | Synthetic invalid bearer **rejected**; **no** literal replay of a **real expired JWT** in either run (credential-handling gap). |
 | **AUTH-03** | Out-of-scope role → **403** | N/E | N/E | **N/E** | No second principal / documented admin-only action; **no 403** on routine calls. |
 | **AUTH-04** | Tenant isolation (`get_funds`, `search_aloha_funds`) | PASS (behavioral) | PASS (behavioral) | **PASS (behavioral)** | **`totalRecords: 977`** for **U**; **`search_aloha_funds`** (**`"pe"`**, **`is_owned_by_ks: true`**) → **30** hits, all **`source: solovis`**. Claude added a **second** `get_funds` call to confirm count stability. **Not** a two-tenant negative proof. |
-| **AUTH-05** | Parameter tampering / escalation | PASS ⚠️ | PASS | **PASS** ⚠️ | Both: **non-SELECT** blocked; **invalid** `fund_source` rejected; **`sys.tables`** catalog readable (**policy** flag). Claude added: **oversized** `limit`, **ES parse-error** path (**info disclosure** — see §6), extra **`read_data`** probes (union / path-style). |
+| **AUTH-05** | Parameter tampering / escalation | PASS ⚠️ | PASS | **PASS** ⚠️ | Both: **non-SELECT** blocked; **invalid** `fund_source` rejected; **`sys.tables`** catalog readable (**policy** flag). Claude added: **oversized** `limit`, **ES parse-error** path (**info disclosure** — see section 6), extra **`read_data`** probes (union / path-style). |
 
 **Additional HTTP-layer findings** (Claude only in this consolidation; not duplicated by Cursor):
 
@@ -34,7 +34,7 @@
 | PKCE **`plain`** advertised alongside **S256** in OAuth metadata | Low |
 | Raw **Elasticsearch** error forwarded from `search_aloha_funds` (index / UUID / node leakage) | Medium |
 
-**Overall consolidated verdict:** **PASS with observations and documented gaps.** Executable AUTH checks align across agents. **AUTH-03** not exercised. **AUTH-02** / **AUTH-04** full negative proofs remain **open** (see §9). Claude surfaced **two medium** items worth tracking: **wildcard CORS** and **ES error verbosity**.
+**Overall consolidated verdict:** **PASS with observations and documented gaps.** Executable AUTH checks align across agents. **AUTH-03** not exercised. **AUTH-02** / **AUTH-04** full negative proofs remain **open** (see section 9). Claude surfaced **two medium** items worth tracking: **wildcard CORS** and **ES error verbosity**.
 
 ---
 
@@ -130,7 +130,7 @@
 
 ---
 
-## 7. Test matrix (§7.1)
+## 7. Test matrix (section 7.1)
 
 | ID | Happy path | Invalid input | Unauthorized | Network drop | Large dataset |
 | --- | :---: | :---: | :---: | :---: | :---: |
@@ -165,7 +165,7 @@
 1. Remediate **KS-984-SEC-01** (wrap **ES** errors) and **KS-984-SEC-02** (restrict CORS).
 2. Provision **second** test account / tenant for **AUTH-03** and **AUTH-04** negative tests.
 3. Run **AUTH-02** with captured expired token in a **controlled** environment.
-4. Align **`read_data`** / catalog visibility with **§1.4** posture.
+4. Align **`read_data`** / catalog visibility with **section 1.4** posture.
 
 ---
 
@@ -184,7 +184,7 @@
 
 ## 10. Conclusion
 
-**KS-984** §7.1 is **PASS with observations** across **Claude** and **Cursor**: core AUTH behaviors match (**401** without session, synthetic bad token rejected, tenant-consistent reads for **U**, parameter tampering largely blocked). **AUTH-03** remains unrun; **AUTH-02** and **AUTH-04** lack full strength-of-proof without extra identities. The consolidated record adds **Claude-only** **medium** findings (**CORS** `*`, **Elasticsearch** error forwarding) and **low**/info items (**rate limit**, **PKCE plain**, **`X-Powered-By`**) for product/security tracking.
+**KS-984** section 7.1 is **PASS with observations** across **Claude** and **Cursor**: core AUTH behaviors match (**401** without session, synthetic bad token rejected, tenant-consistent reads for **U**, parameter tampering largely blocked). **AUTH-03** remains unrun; **AUTH-02** and **AUTH-04** lack full strength-of-proof without extra identities. The consolidated record adds **Claude-only** **medium** findings (**CORS** `*`, **Elasticsearch** error forwarding) and **low**/info items (**rate limit**, **PKCE plain**, **`X-Powered-By`**) for product/security tracking.
 
 ---
 
