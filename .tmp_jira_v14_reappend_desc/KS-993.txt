@@ -1,0 +1,78 @@
+*Ticket Title:* {{Dynamo MCP QA - Execute Section 6 matrix for Sections 5.1–5.7 across scenarios}}
+
+*Jira:* [KS-993|https://gendvn.atlassian.net/browse/KS-993] | *Epic:* Dynamo MCP — Functional E2E Validation
+
+*User Story:*
+
+{quote}As an *Internal QA Tester*, I want to *run the section 6 matrix (happy path, invalid input, unauthorized user, network drop, large dataset where applicable)* for each section 5 test *per AI agent under test* so that *resilience and role isolation are evidenced*.{quote}
+
+*Overview:*
+
+Applies section 6 to section 5.1–5.7; cells marked P (pass), F (fail), or S (skipped) with rationale; repeat per MCP client (section 2.4 recommends at least two agents).
+
+*Detailed Requirements:*
+
+* Build a matrix whose *rows* are tests 5.1–5.7 and *columns* are: Happy path, Invalid input, Unauthorized user, Network drop, Large dataset (use "n/a" where the guide specifies).
+* Execute each applicable cell at least once *per AI agent under test* (e.g. Claude Desktop + *Antigravity*, or mix per section 2.4 — internal coverage is *not* satisfied by Claude/Cursor/VS Code alone if the team also uses Antigravity).
+* For *invalid input*, use tool-appropriate bad types, out-of-range IDs, and malformed strings.
+* For *unauthorized user*, expect denial or empty authorized scope, never partial leaks.
+* For *network drop*, interrupt connectivity mid-tool-call; capture whether client retries, errors, or hangs.
+* For *large dataset*, stress lists/tables/notes; document latency and truncation behavior.
+* If failure is *client-specific*, log both transcripts and open a vendor ticket.
+
+*UI/UX & Front-End Considerations:*
+
+* *Matrix container:* Spreadsheet (Excel/Sheets) or test-management tool (Xray/Zephyr); attach link or export in Jira.
+* *Layout:* Rows = 5.1–5.7; columns = section 6 headers; add columns for Agent name, Build/version, Tester, Date (UTC).
+* *State:* Empty → In progress (some cells P/F/S) → Complete (all non–n/a cells filled).
+* *Color / legend:* P = green, F = red, S = amber with reason.
+
+*Acceptance Criteria (BDD):*
+
+_Scenario 1 — Happy path (matrix completeness)_
+
+* *Given* baseline funds and a configured MCP client for agent A
+* *When* the tester executes the *Happy path* column for rows 5.1 through 5.7
+* *Then* every cell that is not "n/a" per section 6 is marked *P* or *S* with a written justification, and logs contain prompt + transcript per section 8
+
+_Scenario 2 — Error path (invalid input & unauthorized)_
+
+* *Given* the same matrix for agent A
+* *When* the tester runs *Invalid input* and *Unauthorized user* columns
+* *Then* outcomes are *P* only if the system rejects or scopes correctly with no crash and no data leak; any *F* is logged with defect ID
+
+_Scenario 3 — Edge case (network drop, large dataset, second agent)_
+
+* *Given* agent B (second MCP client) and optional large-data fixtures
+* *When* *Network drop* and *Large dataset* cells are executed and the full matrix repeated for agent B
+* *Then* cross-agent differences are noted and the matrix summary shows per-agent coverage
+
+*Definition of Done:* _(verbatim block above)_
+
+----
+
+----
+
+## Updated requirements — guide v1.4 (8-tool MCP inventory)
+
+**Effective May 2026 (customer confirmation).** Aligns this ticket with `Dynamo Server/Test Guide/dynamo-mcp-testing-guide_v1.4.md` and `Dynamo Server/Test Result/dynamo_mcp_testing_stories_v1.2.md`. **Does not replace** earlier text in this description.
+
+**8-tool customer-confirmed surface**
+
+| # | Tool | Availability (May 2026) |
+| --- | --- | --- |
+| 1 | `analyze_notes` | Available |
+| 2 | `get_activity` | Available |
+| 3 | `get_documents` | Available |
+| 4 | `get_fund_description` | Available |
+| 5 | `get_funds` | Available |
+| 6 | `get_notes` | Available |
+| 7 | `llm_text_analysis` | Available |
+| 8 | `read_data` | **Planned** — add to regression when registered in the client |
+
+**Out of scope for v1.4:** `describe_table`, `get_rating_details`, `get_rating_summary`, `list_table`, `search_aloha_funds`.
+
+**section 1.4 (guide v1.4):** only `read_data` is HIGH risk. Mark `read_data` scenarios **S (skipped)** until the tool is registered.
+
+**Ticket-specific expectations (stories v1.2):**
+Matrix rows: **5.5** `read_data` = **S*** until registered; **5.6** search = **S** (out of scope v1.4).

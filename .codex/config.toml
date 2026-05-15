@@ -1,0 +1,15 @@
+[mcp_servers.atlassian-rovo]
+args = [
+    "-y",
+    "mcp-remote",
+    "https://mcp.atlassian.com/v1/mcp",
+]
+command = "npx"
+
+[mcp_servers.conceptia-dynamo]
+args = [
+    "-y",
+    "mcp-remote",
+    "https://mcp.conceptia.com/dynamo/sse",
+]
+command = "npx"

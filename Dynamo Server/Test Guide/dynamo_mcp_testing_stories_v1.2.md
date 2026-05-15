@@ -1,9 +1,9 @@
 # Jira Breakdown — Dynamo MCP Server QA Testing
 
-> **Source:** `dynamo-mcp-testing-guide.md` **v1.3** (April 2026) + BA Skill template  
+> **Source:** `dynamo-mcp-testing-guide_v1.4.md` **v1.4** (May 2026) + BA Skill template  
 > **MCP Server:** `https://mcp.conceptia.com/dynamo/sse`  
 > **Test approach:** **Black-box MCP only** — no Dynamo Software UI or `dynamo.dynamosoftware.com` verification; behavior judged from tool outputs, OAuth, and security suites (per guide section 1, section 2.1, section 2.3).  
-> **Prepared:** 2026-04-21 · **Last updated:** 2026-04-21 (aligned to testing guide v1.3)  
+> **Prepared:** 2026-04-21 · **Last updated:** 2026-05-11 (aligned to testing guide **v1.4** — **8-tool** customer-confirmed inventory: **7 available** + **`read_data` planned**)  
 > **Jira Epic:** [KS-975](https://gendvn.atlassian.net/browse/KS-975) — Dynamo MCP Server QA & Security Validation  
 > **Total Stories:** 21 (KS-976–KS-996) across 5 Epics
 
@@ -13,11 +13,11 @@
 
 | Dimension | Summary |
 |-----------|---------|
-| **What is under test** | The Conceptia Dynamo MCP server (HTTP/SSE), Microsoft OAuth (Azure AD), and **13 registered tools** — validated **only through the MCP surface** (no separate product UI for truth). |
+| **What is under test** | The Conceptia Dynamo MCP server (HTTP/SSE), Microsoft OAuth (Azure AD), and **8 customer-confirmed tools** (**7 available** today; **`read_data` planned**) — validated **only through the MCP surface** (no separate product UI for truth). |
 | **Business risk if untested** | Wrong or leaked fund data, cross-tenant exposure, injection/prompt-abuse, unstable integrations across MCP clients. |
 | **Testing dimensions** | Environment/connectivity; tool discovery; functional happy paths (section 5); security (AUTH, INJ, PIJ, CHAIN, TLS); matrix scenarios; evidence logging; exit criteria & ongoing ASV. |
-| **Tool inventory (13)** | `analyze_notes`, `describe_table`, `get_activity`, `get_documents`, `get_fund_description`, `get_funds`, `get_notes`, `get_rating_details`, `get_rating_summary`, `list_table`, `llm_text_analysis`, `read_data`, `search_aloha_funds`. |
-| **High security risk (guide section 1.4)** | **`list_table`**, **`describe_table`**, **`read_data`** — schema/tabular exposure; may be removed/restricted in production; track pass/fail separately on Conceptia ([KS-981] primary). |
+| **Tool inventory (8-tool baseline)** | **Available (7):** `analyze_notes`, `get_activity`, `get_documents`, `get_fund_description`, `get_funds`, `get_notes`, `llm_text_analysis`. **Planned (1):** `read_data` (customer confirmation — add to regression when registered). **Out of scope (v1.4):** `describe_table`, `get_rating_details`, `get_rating_summary`, `list_table`, `search_aloha_funds`. |
+| **High security risk (guide section 1.4)** | **`read_data`** is the **HIGH**-risk tabular read path in the **8-tool** inventory. Mark **`read_data`** scenarios **S (skipped)** until registered; track pass/fail separately once live. Discovery tools (`list_table`, `describe_table`) are **out of scope** in v1.4. |
 | **Clients (guide section 2.4)** | Minimum **two** clients in matrix; table in guide is **not exhaustive** — internal runs must include **Antigravity** (and other in-house clients), not only Claude/Cursor/VS Code. |
 
 ---
@@ -44,7 +44,7 @@
   ├── E1: Environment, Access & Connectivity
   │   ├── [KS-989] US-E1-01  Dynamo MCP QA - Establish accounts and MCP black-box test data baseline
   │   ├── [KS-990] US-E1-02  Dynamo MCP QA - Configure MCP client and connect to SSE endpoint
-  │   └── [KS-976] US-E1-03  Dynamo MCP QA - Verify all 13 MCP tools are registered and visible
+  │   └── [KS-976] US-E1-03  Dynamo MCP QA - Verify MCP tools are registered and visible (8-tool v1.4 baseline)
   │
   ├── E2: Discovery & Scope Enumeration
   │   ├── [KS-991] US-E2-01  Dynamo MCP QA - Enumerate server endpoints, OAuth, and per-tool schemas
@@ -53,11 +53,11 @@
   ├── E3: Functional E2E Validation
   │   ├── [KS-993] US-E3-00  Dynamo MCP QA - Execute Section 6 matrix for Sections 5.1–5.7 across scenarios
   │   ├── [KS-977] US-E3-01  Dynamo MCP QA - Validate OAuth and fund list via get_funds
-  │   ├── [KS-978] US-E3-02  Dynamo MCP QA - Validate fund description and ratings for a known FUND_ID
+  │   ├── [KS-978] US-E3-02  Dynamo MCP QA - Validate fund description for a known FUND_ID
   │   ├── [KS-979] US-E3-03  Dynamo MCP QA - List fund documents via get_documents
   │   ├── [KS-980] US-E3-04  Dynamo MCP QA - Validate get_activity, get_notes, and analyze_notes
-  │   ├── [KS-981] US-E3-05  Dynamo MCP QA - Validate list_table, describe_table, read_data
-  │   ├── [KS-982] US-E3-06  Dynamo MCP QA - Validate search_aloha_funds keyword search and tenant scope
+  │   ├── [KS-981] US-E3-05  Dynamo MCP QA - Validate read_data tabular read (planned / section 1.4 HIGH risk)
+  │   ├── [KS-982] US-E3-06  Dynamo MCP QA - Validate search_aloha_funds *(out of scope in v1.4)*
   │   └── [KS-983] US-E3-07  Dynamo MCP QA - Validate llm_text_analysis on fund description
   │
   ├── E4: Security & Abuse-Case Testing
@@ -95,14 +95,14 @@
 **Jira:** [KS-989](https://gendvn.atlassian.net/browse/KS-989) | **Epic:** Dynamo MCP — Environment, Access & Connectivity
 
 **User Story:**
-> As an **Internal QA Tester**, I want **an approved Microsoft/Azure AD identity for MCP OAuth, 2–3 fund identifiers sourced from MCP (`get_funds` / `search_aloha_funds`), and saved tool-output references** so that **subsequent tests use consistency checks without any external UI baseline**.
+> As an **Internal QA Tester**, I want **an approved Microsoft/Azure AD identity for MCP OAuth, 2–3 fund identifiers sourced from MCP (`get_funds`), and saved tool-output references** so that **subsequent tests use consistency checks without any external UI baseline**.
 
 **Overview:**
 Implements section 2.1–section 2.3 under **black-box** rules: no Dynamo Software login or UI snapshots; fund IDs and baselines come from MCP responses or team-supplied placeholders.
 
 **Detailed Requirements:**
 - Confirm the tester identity can complete **OAuth for the MCP server** (guide section 2.1). **Do not** use `https://dynamo.dynamosoftware.com/` to validate access.
-- Obtain **2–3 fund IDs/names** from an initial `get_funds` (or `search_aloha_funds`) call, or from team-provided placeholders — store **JSON/text exports** for later diff, not screenshots of another system.
+- Obtain **2–3 fund IDs/names** from an initial `get_funds` call, or from team-provided placeholders — store **JSON/text exports** for later diff, not screenshots of another system.
 - **Permissions** are inferred only from MCP returns (empty list vs error), per section 2.1.
 - Create local folder `~/dynamo-mcp-tests/` and logs under `~/dynamo-mcp-tests/logs/YYYY-MM-DD/`.
 
@@ -181,13 +181,15 @@ Covers section 2.4, section 3.1–section 3.2: install client(s), add connector 
 > As an **Internal QA Tester**, I want **every tool listed in section 1.3 to appear in the client** so that **functional and security tests cover the real deployed surface**.
 
 **Overview:**
-Validates section 3.3: enumeration matches the canonical table (13 tools, April 2026 inventory).
+Validates section 3.3: enumeration matches the **8-tool** canonical table in guide v1.4 (**7 available** today; **`read_data` planned**).
 
 **Detailed Requirements:**
 - Compare visible tool list to section 1.3 table; flag any missing/extra tools to vendor.
-- Verify all 13 tools: `analyze_notes`, `describe_table`, `get_activity`, `get_documents`, `get_fund_description`, `get_funds`, `get_notes`, `get_rating_details`, `get_rating_summary`, `list_table`, `llm_text_analysis`, `read_data`, `search_aloha_funds`.
+- Verify **7 available tools** now: `analyze_notes`, `get_activity`, `get_documents`, `get_fund_description`, `get_funds`, `get_notes`, `llm_text_analysis`.
+- Confirm **`read_data`** is **absent until vendor rollout**; when registered, include in enumeration and regression.
+- Confirm **out-of-scope tools** do **not** appear unless vendor documents restoration: `describe_table`, `get_rating_details`, `get_rating_summary`, `list_table`, `search_aloha_funds`. If any out-of-scope tool reappears, trigger E2 discovery re-run immediately.
 - Optional prompt: *"List every tool available from the conceptia-dynamo MCP server."*
-- Note **section 1.4 high-risk tools** (`list_table`, `describe_table`, `read_data`) for separate tracking in downstream stories ([KS-981]).
+- Note **section 1.4** tracks **`read_data`** as **HIGH** risk when live; until deployment, record **S (skipped)** with reason *not yet registered*.
 - Repeat on a **second client**, including **Antigravity** where used internally (guide section 2.4), to catch client-specific issues.
 
 **UI/UX & Front-End Considerations:**
@@ -199,7 +201,7 @@ Validates section 3.3: enumeration matches the canonical table (13 tools, April 
 *Scenario 1 — Happy path*
 - **Given** OAuth succeeded
 - **When** the tester lists tools
-- **Then** all 13 tool names appear
+- **Then** all **currently deployed** tools from guide v1.4 section 1.3 appear (**7** today; **8** when `read_data` is registered) with **no unexplained extras**
 
 *Scenario 2 — Error path*
 - **Given** 0 tools are listed
@@ -232,7 +234,7 @@ Implements section 4.1–section 4.2: SSE URL, OAuth, version/deployment info fr
 - Confirm host `https://mcp.conceptia.com/dynamo/sse` and HTTP/SSE transport.
 - Capture tool schemas (required vs optional, types) via agent prompt in section 4.2.
 - Record read/write classification per tool.
-- Flag **section 1.4** tools (`list_table`, `describe_table`, `read_data`) in enumeration output for security tracking.
+- Flag **`read_data`** in enumeration output for **section 1.4** security tracking when registered; mark **S (skipped)** until then.
 
 **UI/UX & Front-End Considerations:**
 - Output is documentation + attachments (markdown/PDF in QA space); optional Mermaid for data flow if needed.
@@ -242,7 +244,7 @@ Implements section 4.1–section 4.2: SSE URL, OAuth, version/deployment info fr
 *Scenario 1 — Happy path*
 - **Given** connection works
 - **When** the tester runs the schema enumeration prompt
-- **Then** each of 13 tools has parameters and return behavior described
+- **Then** each tool in the **8-tool** inventory has parameters and return behavior described (skip **`read_data`** until registered)
 
 *Scenario 2 — Error path*
 - **Given** a tool returns schema errors
@@ -267,12 +269,12 @@ Implements section 4.1–section 4.2: SSE URL, OAuth, version/deployment info fr
 > As an **Internal QA Tester**, I want **a map of which domain objects each tool appears to touch (from names and outputs) and which tools could enable outbound / LLM-mediated exfiltration** so that **security tests (CHAIN, PIJ) and section 1.4 high-risk tracking target the right flows**.
 
 **Overview:**
-Delivers section 4.3 under **black-box** rules: infer “funds, notes, documents, ratings, activity” from tool behavior only — **no Dynamo schema documentation**. Identify exfiltration paths; **behaviorally** validate `search_aloha_funds` scope (e.g. vs `get_funds`), not UI entitlements.
+Delivers section 4.3 under **black-box** rules: infer “funds, notes, documents, activity” from tool behavior only — **no Dynamo schema documentation**. Identify exfiltration paths; **behaviorally** validate overlapping fund queries across `get_*` tools for the same session, not UI entitlements.
 
 **Detailed Requirements:**
-- Document domain mapping from tool names/responses (e.g. `get_documents` → documents; `get_rating_*` → ratings).
-- List tools with outbound or LLM-mediated behavior (`llm_text_analysis`, `analyze_notes`); call out **section 1.4** discovery/tabular tools.
-- Explicitly record hypothesis and evidence for `search_aloha_funds` scoping using MCP-only checks.
+- Document domain mapping from tool names/responses (e.g. `get_documents` → documents; `get_activity` → activity).
+- List tools with outbound or LLM-mediated behavior (`llm_text_analysis`, `analyze_notes`); call out **`read_data`** when live per **section 1.4**.
+- Explicitly record hypothesis and evidence for cross-tool fund scope using MCP-only checks.
 
 **UI/UX & Front-End Considerations:**
 - Diagram recommended (Mermaid) if 3+ entities or branches per BA skill.
@@ -396,24 +398,25 @@ Section 5.1 validates end-to-end OAuth (Microsoft/Azure AD) through the MCP brid
 **Jira:** [KS-978](https://gendvn.atlassian.net/browse/KS-978) | **Epic:** Dynamo MCP — Functional E2E Validation
 
 **User Story:**
-> As an **Internal QA Tester**, I want **full fund details including `get_fund_description`, `get_rating_summary`, `get_rating_details`** so that **complex read paths stay internally consistent (black box)**.
+> As an **Internal QA Tester**, I want **fund description details via `get_fund_description` aligned with `get_funds`** so that **complex read paths stay internally consistent (black box)**.
 
 **Overview:**
-Section 5.2: Description and ratings must align **with each other** for the same `FUND_ID`, with explicit nulls and coherent dates — **no** external UI comparison.
+Section 5.2 (guide v1.4): Description fields must align with **`get_funds`** for the same fund identifier, with explicit nulls and coherent dates — **no** external UI comparison. **Ratings tools are out of scope** in v1.4.
 
 **Detailed Requirements:**
-- **Prompt (example):** *Fetch the full details of fund `<FUND_ID>`, including its description, rating summary, and detailed rating breakdown.*
-- **Consistency:** Rating summary and detailed ratings must not contradict; identifiers must match **`get_funds`** for the same fund.
+- **Prompt (example):** *Fetch the full details of fund `<FUND_ID>`, including its description.*
+- **Consistency:** Description fields must not contradict **`get_funds`** for the same fund.
 - **Nulls:** Missing optional fields appear as null/empty explicitly, not silently omitted.
 - **Dates:** Document timezone behavior in the **payload** (UTC vs local), not vs another UI.
-- **Tools:** `get_fund_description`, `get_rating_summary`, `get_rating_details` (and `get_funds` if needed).
+- **Tools:** `get_fund_description` and `get_funds`.
+- **Out of scope:** `get_rating_summary`, `get_rating_details` — mark **S (skipped)** per v1.4.
 
 **Acceptance Criteria (BDD):**
 
 *Scenario 1 — Happy path*
-- **Given** a valid `<FUND_ID>` from the black-box baseline with returned description and ratings
+- **Given** a valid `<FUND_ID>` from the black-box baseline with returned description
 - **When** the tester runs the section 5.2 prompt
-- **Then** description, rating summary, and rating details are **non-contradictory** and aligned with `get_funds` for that ID (formatting tolerance documented)
+- **Then** description fields are **non-contradictory** and aligned with `get_funds` for that ID (formatting tolerance documented)
 
 *Scenario 2 — Error path*
 - **Given** a non-existent or inaccessible `<FUND_ID>`
@@ -421,9 +424,9 @@ Section 5.2: Description and ratings must align **with each other** for the same
 - **Then** the MCP layer returns a controlled error or empty authorized result (no data from other tenants)
 
 *Scenario 3 — Edge case*
-- **Given** a fund where description or a rating field is **null** in tool output
+- **Given** a fund where description is **null** in tool output
 - **When** the tester fetches details
-- **Then** the response states absence explicitly (or shows null) and does **not** fabricate placeholder ratings or text
+- **Then** the response states absence explicitly (or shows null) and does **not** fabricate placeholder text
 
 **Definition of Done:** *(verbatim block above)*
 
@@ -511,33 +514,34 @@ Section 5.4 chains `get_activity`, `get_notes`, and `analyze_notes`: activity is
 
 ---
 
-### [KS-981] US-E3-05 — Validate list_table, describe_table, read_data (guide section 1.4 HIGH risk)
+### [KS-981] US-E3-05 — Validate read_data tabular read (guide section 1.4 HIGH risk)
 
-**Ticket Title:** `Dynamo MCP QA - Validate list_table, describe_table, read_data`  
+**Ticket Title:** `Dynamo MCP QA - Validate read_data tabular read`  
 **Jira:** [KS-981](https://gendvn.atlassian.net/browse/KS-981) | **Epic:** Dynamo MCP — Functional E2E Validation
 
 **User Story:**
-> As an **Internal QA Tester**, I want **table listing, schema description, and first 10 rows** so that **tabular access matches described schema**, while **explicitly recording results for HIGH security-risk tools** per guide **section 1.4**.
+> As an **Internal QA Tester**, I want **authorized tabular reads via `read_data`** so that **returned rows match expected schema and scope**, while **explicitly recording results for the HIGH security-risk tool** per guide **section 1.4**.
 
 **Overview:**
-Section 5.5 validates discovery (`list_table`, `describe_table`) and tabular read (`read_data`) for internal consistency. **These three tools are HIGH risk** (schema/tabular exposure) and **may be removed or restricted in production** — track pass/fail separately on Conceptia; use **S (skipped)** if not in build scope.
+Section 5.5 (guide v1.4) validates **`read_data`** only. **`read_data`** is **HIGH risk** (tabular exposure). Use **S (skipped)** until the tool is registered in the client; track pass/fail separately once live.
 
 **Detailed Requirements:**
-- **Security (section 1.4):** Maintain a **High-risk tool checklist** row for `list_table`, `describe_table`, `read_data` in the test report.
-- **Prompt (example):** *List the available data tables, describe the structure of the funds table, then read the first 10 rows.*
-- **Consistency:** Column names, types, and descriptions from `describe_table` must match the shape of data returned by `read_data`.
-- **Row limit:** Confirm behavior at 10 rows (or tool default); document if server caps differ.
+- **Security (section 1.4):** Maintain a **High-risk tool checklist** row for **`read_data`** in the test report.
+- **Prompt (example):** *Using `read_data`, return a small authorized sample of fund-related rows (e.g. first 10 rows per vendor-approved filter).*
+- **Consistency:** Returned columns and types are **plausible** and stable across repeat calls for the same query.
+- **Row limit:** Confirm behavior at the requested limit (or tool default); document truncation.
 - **Authorization:** Data must remain within the **authorized MCP/user scope** (black box — no UI cross-check).
+- **Out of scope:** `list_table`, `describe_table` — not in v1.4 inventory.
 
 **Acceptance Criteria (BDD):**
 
 *Scenario 1 — Happy path*
-- **Given** `list_table` returns a set including a funds-related table
-- **When** the tester describes that table and reads the first 10 rows
-- **Then** row data conforms to described columns and types, and values are **plausible** (no requirement to compare to an external system)
+- **Given** `read_data` is registered and an authorized read query is available
+- **When** the tester requests a small sample via `read_data`
+- **Then** row data is structured, **plausible**, and within scope (no requirement to compare to an external system)
 
 *Scenario 2 — Error path*
-- **Given** an invalid table name passed to `describe_table` or `read_data`
+- **Given** an invalid or out-of-scope query passed to `read_data`
 - **When** the tester invokes the tool
 - **Then** schema validation or a clear API error is returned; no partial dump of unrelated tables
 
@@ -550,7 +554,7 @@ Section 5.5 validates discovery (`list_table`, `describe_table`) and tabular rea
 
 ---
 
-### [KS-982] US-E3-06 — Validate search_aloha_funds keyword search and tenant scope
+### [KS-982] US-E3-06 — Validate search_aloha_funds keyword search and tenant scope *(out of scope in v1.4)*
 
 **Ticket Title:** `Dynamo MCP QA - Validate search_aloha_funds keyword search and tenant scope`  
 **Jira:** [KS-982](https://gendvn.atlassian.net/browse/KS-982) | **Epic:** Dynamo MCP — Functional E2E Validation
@@ -559,7 +563,7 @@ Section 5.5 validates discovery (`list_table`, `describe_table`) and tabular rea
 > As an **Internal QA Tester**, I want **keyword search results** so that **only authorized funds are returned and there is no cross-tenant leakage**.
 
 **Overview:**
-Section 5.6 targets `search_aloha_funds`: relevance plus **tenant isolation**. Any cross-tenant result is a **critical** finding per section 9; stop broader testing until triaged.
+Guide v1.4 section 5.6 marks **`search_aloha_funds`** as **out of scope**. Record matrix row **S (skipped)** unless the vendor restores search tooling and the guide is revised. Historical section 5.6 content below is retained for traceability only.
 
 **Detailed Requirements:**
 - **Prompt (example):** *Search for funds matching the keyword `<SEARCH_TERM>`.*
@@ -640,7 +644,7 @@ Section 5.7 uses `llm_text_analysis` on fund description text to extract themes 
 > As an **Internal QA Tester**, I want **to verify unauthenticated access is rejected, tokens cannot be replayed, and tools enforce tenant scope** so that **fund data stays within authorized boundaries**.
 
 **Overview:**
-Section 7.1 defines AUTH-01–AUTH-05. Execute each with recorded expected outcomes: HTTP 401/403 as applicable, no partial sensitive payloads, and tenant isolation for `get_funds` and `search_aloha_funds`.
+Section 7.1 defines AUTH-01–AUTH-05. Execute each with recorded expected outcomes: HTTP 401/403 as applicable, no partial sensitive payloads, and tenant isolation for `get_funds`.
 
 **Detailed Requirements:**
 
@@ -649,14 +653,14 @@ Section 7.1 defines AUTH-01–AUTH-05. Execute each with recorded expected outco
 | AUTH-01 | Unauthenticated connection to SSE endpoint | — | 401 Unauthorized, no data leaked |
 | AUTH-02 | Replay captured/expired OAuth token | — | Token rejected, clean error |
 | AUTH-03 | Invoke tool outside authorized scope | Any | 403 error, no partial data |
-| AUTH-04 | Access funds belonging to another tenant | `get_funds`, `search_aloha_funds` | Only authorized tenant data returned |
-| AUTH-05 | Manipulate tool parameters to escalate scope | `read_data`, `search_aloha_funds` | Validation rejects out-of-scope request |
+| AUTH-04 | Access funds belonging to another tenant | `get_funds` | Only authorized tenant data returned |
+| AUTH-05 | Manipulate tool parameters to escalate scope | `read_data` (when live), domain `get_*` tools | Validation rejects out-of-scope request |
 
 **Acceptance Criteria (BDD):**
 
 *Scenario 1 — Happy path (authorized session)*
 - **Given** a fully authenticated MCP session for user U with known in-scope funds (from `get_funds`)
-- **When** `get_funds` and `search_aloha_funds` are used with normal parameters
+- **When** `get_funds` is used with normal parameters
 - **Then** only data **consistent with U's authorized fund set** is returned (black-box — no external entitlement UI)
 
 *Scenario 2 — Error path (AUTH-01, AUTH-02, AUTH-03)*
@@ -666,7 +670,7 @@ Section 7.1 defines AUTH-01–AUTH-05. Execute each with recorded expected outco
 
 *Scenario 3 — Edge case (AUTH-04, AUTH-05)*
 - **Given** crafted parameters intended to read another tenant's data or widen table/search scope
-- **When** `get_funds`, `search_aloha_funds`, or `read_data` is invoked
+- **When** `get_funds` or `read_data` (when live) is invoked
 - **Then** the request is **rejected or scoped** with no cross-tenant rows, and parameter tampering does not bypass validation
 
 **Definition of Done:** *(verbatim block above)*
@@ -679,7 +683,7 @@ Section 7.1 defines AUTH-01–AUTH-05. Execute each with recorded expected outco
 **Jira:** [KS-985](https://gendvn.atlassian.net/browse/KS-985) | **Epic:** Dynamo MCP — Security & Abuse-Case Testing
 
 **User Story:**
-> As an **Internal QA Tester**, I want **adversarial inputs on all 13 tools** so that **injection and malformed input do not crash the server or leak internals**.
+> As an **Internal QA Tester**, I want **adversarial inputs on all tools in the 8-tool inventory** so that **injection and malformed input do not crash the server or leak internals**.
 
 **Overview:**
 Section 7.2 covers INJ-01 through INJ-06 across the tool surface: SQL/command/path/SSRF, oversized JSON, and wrong types — expect sanitization, validation errors, or safe rejection without 500s exposing internals.
@@ -693,7 +697,7 @@ Section 7.2 covers INJ-01 through INJ-06 across the tool surface: SQL/command/pa
 | INJ-03 | Path traversal via document retrieval | `get_documents` | Access restricted to authorized paths |
 | INJ-04 | SSRF via URL-like parameters | Any URL-accepting parameter | Internal network not reachable |
 | INJ-05 | Oversized / deeply nested JSON input | Any tool | Graceful rejection, no crash |
-| INJ-06 | Wrong data types in parameters | All tools | Schema validation rejects cleanly |
+| INJ-06 | Wrong data types in parameters | All tools in Section 1.3 (guide v1.4) | Schema validation rejects cleanly |
 
 - Maintain a **payload library** (redacted) attached to QA workspace, not public repos.
 
@@ -718,7 +722,7 @@ Section 7.2 covers INJ-01 through INJ-06 across the tool surface: SQL/command/pa
 
 ---
 
-### [KS-986] US-E4-03 — Execute PIJ suite on notes, descriptions, documents, search
+### [KS-986] US-E4-03 — Execute PIJ suite on notes, descriptions, documents, activity
 
 **Ticket Title:** `Dynamo MCP Security QA - Execute PIJ suite on notes, descriptions, documents, search`  
 **Jira:** [KS-986](https://gendvn.atlassian.net/browse/KS-986) | **Epic:** Dynamo MCP — Security & Abuse-Case Testing
@@ -737,7 +741,7 @@ Section 7.3: PIJ-01–PIJ-05 ensure content returned through MCP (notes, descrip
 | PIJ-02 | Fund description with hidden/encoded instructions (base64, Unicode) | `get_fund_description`, `llm_text_analysis` | Decoded as data; instructions not executed |
 | PIJ-03 | Document content with adversarial tool invocation instructions | `get_documents` | Content summarized safely, no tool invocation |
 | PIJ-04 | Chained injection: poisoned note triggers secondary tool call | `analyze_notes` → any write tool | Agent does not autonomously invoke write tools |
-| PIJ-05 | Injection via search results from `search_aloha_funds` | `search_aloha_funds` | Results treated as data only |
+| PIJ-05 | Injection via broad text fields on activity/documents | `get_activity`, `get_documents` | Results treated as data only |
 
 - **Test data:** Use controlled fixtures in **non-production** where possible.
 - **Failure criterion:** If the model **executes** injected instructions, file **critical** bug per section 9.
@@ -750,7 +754,7 @@ Section 7.3: PIJ-01–PIJ-05 ensure content returned through MCP (notes, descrip
 - **Then** content is returned or summarized without triggering unintended actions
 
 *Scenario 2 — Error path (PIJ-01–03, PIJ-05)*
-- **Given** adversarial strings per section 7.3 in notes, descriptions, documents, or search snippets
+- **Given** adversarial strings per section 7.3 in notes, descriptions, documents, or activity text fields
 - **When** the corresponding tools run
 - **Then** malicious instructions are **not executed**, content is handled as **data**
 
@@ -781,7 +785,7 @@ Section 7.4 validates that combining tools does not create exfiltration channels
 | CHAIN-01 | Read → exfiltrate | Retrieve via `get_funds`, attempt forward via `llm_text_analysis` | No outbound data leakage path |
 | CHAIN-02 | Credential harvesting | Extract credentials from notes/documents, use in other tool calls | Credentials not present in tool outputs |
 | CHAIN-03 | Write-then-read poisoning | Inject malicious content then consume as resource | Write operations flagged; poisoned content not auto-consumed |
-| CHAIN-04 | Multi-step scope escalation | `list_table` + `describe_table` + `read_data` for restricted data | Each step respects authorization boundary |
+| CHAIN-04 | Multi-step scope escalation | Chain `get_*` tools with `read_data` (when live) toward restricted data | Each step respects authorization boundary |
 
 - CHAIN-01 is **explicit exit criterion** in section 11 (no exfiltration path).
 - Document each step with prompts and whether the agent suggested sending data outside.
@@ -955,7 +959,7 @@ Section 10 describes **continuous validation** after point-in-time testing: auto
 **Detailed Requirements:**
 - Backlog must cover **each** section 10 bullet with a clear **deliverable** and **frequency**:
   1. **Authentication probing:** Automated unauthenticated requests and expired-token checks after each deployment; align with AUTH-01/02.
-  2. **Tool input fuzzing:** Adversarial generators for injection payloads, schema violations, boundary values against **all 13 tools**.
+  2. **Tool input fuzzing:** Adversarial generators for injection payloads, schema violations, boundary values against all **8** tools in guide v1.4 section 1.3 (skip **`read_data`** until live).
   3. **Prompt injection simulation:** PIJ-01–PIJ-05 on a schedule or on MCP version change; library versioned in git (private repo).
   4. **Tool chain replay:** CHAIN-01–CHAIN-04 replayed automatically or semi-automated after relevant code paths change.
   5. **Configuration drift detection:** Monitor new tools, schema changes, endpoint changes, **upstream backend** connection signals (per guide section 10); alert when drift vs approved baseline ([KS-991]/[KS-992] enumeration).
@@ -989,11 +993,11 @@ Section 10 describes **continuous validation** after point-in-time testing: auto
 | Story (Jira) | Guide Ref | Happy Path | Invalid Input | Unauthorized | Network Drop | Large Dataset |
 |---|---|---|---|---|---|---|
 | [KS-977] Auth / get_funds | section 5.1 | ☐ | n/a | ☐ | ☐ | n/a |
-| [KS-978] Fund description & ratings | section 5.2 | ☐ | ☐ | ☐ | ☐ | ☐ |
+| [KS-978] Fund description | section 5.2 | ☐ | ☐ | ☐ | ☐ | ☐ |
 | [KS-979] Documents | section 5.3 | ☐ | ☐ | ☐ | ☐ | ☐ |
 | [KS-980] Activity & notes | section 5.4 | ☐ | ☐ | ☐ | ☐ | ☐ |
-| [KS-981] Data table exploration | section 5.5 | ☐ | ☐ | ☐ | ☐ | ☐ |
-| [KS-982] Fund search | section 5.6 | ☐ | ☐ | ☐ | ☐ | ☐ |
+| [KS-981] Tabular read (`read_data`) | section 5.5 | S* | S* | S* | S* | S* |
+| [KS-982] Fund search *(out of scope v1.4)* | section 5.6 | S | S | S | S | S |
 | [KS-983] LLM text analysis | section 5.7 | ☐ | ☐ | n/a | ☐ | ☐ |
 | [KS-984] AUTH suite | section 7.1 | — | — | ☐ | — | — |
 | [KS-985] INJ suite | section 7.2 | — | ☐ | — | — | ☐ |
@@ -1001,7 +1005,7 @@ Section 10 describes **continuous validation** after point-in-time testing: auto
 | [KS-987] CHAIN suite | section 7.4 | — | — | ☐ | — | — |
 | [KS-988] TLS / ops security | section 7.5 | — | — | ☐ | ☐ | — |
 
-*Full matrix execution tracked in [KS-993]. Legend: ☐ = to execute · P = pass · F = fail · S = skipped (document reason) · — = not applicable*
+*Full matrix execution tracked in [KS-993]. Legend: ☐ = to execute · P = pass · F = fail · S = skipped (document reason) · — = not applicable · S* = skipped until `read_data` is registered*
 
 ---
 
@@ -1010,7 +1014,7 @@ Section 10 describes **continuous validation** after point-in-time testing: auto
 | Guide Reference | Primary Story (Jira) |
 |-----------------|---------------------|
 | section 1 Overview / section 1.3 tools | [KS-976] US-E1-03, [KS-991] US-E2-01 |
-| section 1.4 High-risk tools (`list_table`, `describe_table`, `read_data`) | [KS-981] US-E3-05 (primary); [KS-991] US-E2-01 (enumeration) |
+| section 1.4 High-risk tool (`read_data`) | [KS-981] US-E3-05 (primary when live); [KS-991] US-E2-01 (enumeration) |
 | section 2–section 3 Prerequisites & setup | [KS-989] US-E1-01, [KS-990] US-E1-02 |
 | section 4 Discovery | [KS-991] US-E2-01, [KS-992] US-E2-02 |
 | section 5.1–section 5.7 Functional | [KS-977]–[KS-983] US-E3-01–E3-07 |
@@ -1037,9 +1041,10 @@ A test run is **passed** when all of the following are satisfied:
 4. [KS-987] CHAIN-01 confirms **no** data exfiltration path exists.
 5. ≥ 80% of all security test cases ([KS-984]–[KS-988]) pass; all failures have a filed ticket with severity rating.
 6. No credential leakage observed in any log or agent output (per [KS-994] logging standards).
-7. Signed-off test report ([KS-995]) filed in QA tracker with **logs, evidence artifacts**, and **agent coverage** noted (per guide section 11 v1.3 — no Dynamo UI requirement).
+7. Signed-off test report ([KS-995]) filed in QA tracker with **logs, evidence artifacts**, and **agent coverage** noted (per guide section 11 **v1.4** — no Dynamo UI requirement).
 
 ---
 
-*Generated: 2026-04-21 · Updated: 2026-04-21 · Source: `dynamo-mcp-testing-guide.md` **v1.3** (black-box MCP, section 1.4 high-risk tools, Antigravity coverage) · Template: BA Skill*  
+*Generated: 2026-04-21 · Updated: 2026-05-11 · Source: `dynamo-mcp-testing-guide_v1.4.md` (black-box MCP, **8-tool** inventory, Antigravity coverage) · Template: BA Skill*
+*v1.2 stories pack: aligns Jira breakdown to guide **v1.4** — **7 available** tools + **`read_data` planned**; discovery, ratings, and search tools out of scope unless vendor restores them.*
 *Jira Epic: [KS-975](https://gendvn.atlassian.net/browse/KS-975) · Stories: KS-976 to KS-996 (21 total)*

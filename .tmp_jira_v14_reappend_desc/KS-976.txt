@@ -1,0 +1,142 @@
+*Ticket Title:* {{Dynamo MCP QA - Verify all 13 MCP tools are registered and visible}}
+
+*Jira:* [KS-976|https://gendvn.atlassian.net/browse/KS-976] | *Epic:* Dynamo MCP — Environment, Access & Connectivity
+
+*User Story:*
+
+{quote}As an *Internal QA Tester*, I want *every tool listed in section 1.3 to appear in the client* so that *functional and security tests cover the real deployed surface*.{quote}
+
+*Overview:*
+
+Validates section 3.3: enumeration matches the canonical table (13 tools, April 2026 inventory).
+
+*Detailed Requirements:*
+
+* Compare visible tool list to section 1.3 table; flag any missing/extra tools to vendor.
+* Verify all 13 tools: {{analyze_notes}}, {{describe_table}}, {{get_activity}}, {{get_documents}}, {{get_fund_description}}, {{get_funds}}, {{get_notes}}, {{get_rating_details}}, {{get_rating_summary}}, {{list_table}}, {{llm_text_analysis}}, {{read_data}}, {{search_aloha_funds}}.
+* Optional prompt: _"List every tool available from the conceptia-dynamo MCP server."_
+
+  - Note **section 1.4 high-risk tools* ({{list_table}}, {{describe_table}}, {{read_data}}) for separate tracking in downstream stories (KS-981).
+
+  - Repeat on a *second client*, including **Antigravity* where used internally (guide section 2.4), to catch client-specific issues.
+
+*UI/UX & Front-End Considerations:*
+
+* Claude Desktop: Connectors → conceptia-dynamo → "Other tools" count.
+* Claude Code: {{/mcp}} output captured in test log.
+
+*Acceptance Criteria (BDD):*
+
+_Scenario 1 — Happy path_
+
+  - **Given* OAuth succeeded
+
+  - **When* the tester lists tools
+
+  - **Then* all 13 tool names appear
+
+_Scenario 2 — Error path_
+
+  - **Given* 0 tools are listed
+
+  - **When* the tester checks section 9
+
+  - **Then* issue is escalated (tool registration / protocol version) with logs
+
+_Scenario 3 — Edge case_
+
+  - **Given* a new tool appears after deployment
+
+  - **When* inventory drifts from section 1.3
+
+  - **Then* discovery story (E2) is triggered to refresh documentation
+
+*Definition of Done:* _(verbatim block above)_
+
+----
+
+h2. Updated requirements — May 2026 (7-tool production baseline)
+
+*Effective for KS-976 reassessment only.* This section adds the *current deployed* expectation for {{conceptia-dynamo}}. It does *not* replace the April 2026 *13-tool* requirements above.
+
+*Overview (updated):* Validates section 3.3 against the *current 7-tool* MCP registry. Enumeration must match this baseline with *no unexplained extras*. Six tools from the original 13-tool inventory are *removed* (intentional production hardening, confirmed 2026-05-07).
+
+*Detailed requirements (updated):*
+
+* Compare the visible tool list to the *7-tool baseline* below; flag any *missing active* tool or *unexpected extra* tool to the vendor.
+* Verify these *7 active tools* appear in the client and are callable after OAuth: {{analyze_notes}}, {{get_activity}}, {{get_documents}}, {{get_fund_description}}, {{get_funds}}, {{get_notes}}, {{llm_text_analysis}}.
+* Confirm these *6 removed tools* do *not* appear in the client registry: {{describe_table}}, {{get_rating_details}}, {{get_rating_summary}}, {{list_table}}, {{read_data}}, {{search_aloha_funds}}. If any removed tool reappears, trigger E2 discovery re-run (KS-991 / KS-992) immediately.
+* Optional prompt: _"List every tool available from the conceptia-dynamo MCP server."_
+* *section 1.4 high-risk tools* ({{list_table}}, {{describe_table}}, {{read_data}}) are *out of scope for visibility on the current server* because they are *removed*; track as removed/hardened under KS-981, not as KS-976 missing tools.
+* Repeat on a *second client*, including *Antigravity* where used internally (guide section 2.4), where required by the QA matrix.
+
+*Active tool inventory (current baseline):*
+
+||#||Tool||Category (guide section 1.3)||Expected status||
+|1|{{analyze_notes}}|Analysis|Active|
+|2|{{get_activity}}|Data fetch|Active|
+|3|{{get_documents}}|Data fetch|Active|
+|4|{{get_fund_description}}|Data fetch|Active|
+|5|{{get_funds}}|Data fetch|Active|
+|6|{{get_notes}}|Data fetch|Active|
+|7|{{llm_text_analysis}}|Analysis|Active|
+
+*Acceptance criteria (BDD) — updated:*
+
+_Scenario 1 — Happy path_
+
+  - *Given* OAuth succeeded
+
+  - *When* the tester lists tools
+
+  - *Then* exactly the *7 active* tool names above appear and representative runtime invocation succeeds (minimum smoke: {{get_funds}})
+
+_Scenario 2 — Error path_
+
+  - *Given* 0 tools are listed
+
+  - *When* the tester checks section 9
+
+  - *Then* issue is escalated (tool registration / protocol version) with logs
+
+_Scenario 3 — Edge case_
+
+  - *Given* inventory *drifts* from the *7-tool baseline* (removed tool reappears, new tool added, or active tool missing without documented removal)
+
+  - *When* deployment or reconnect occurs
+
+  - *Then* discovery story (E2) is triggered and KS-976 expectations are re-reviewed
+
+*Definition of Done (updated interpretation for KS-976):*
+
+* All *7 active* tools visible in tested clients; *0 unexplained extras*.
+* *6 removed* tools absent unless the vendor documents restoration.
+* Second-client coverage per guide section 2.4 where mandated by the QA matrix.
+
+*Latest Cursor retest (2026-05-11):* Connected; *7/7* active tools cached; *6/6* removed tools not found; {{get_funds}} smoke *PASS* ({{totalRecords: 978}}).
+
+----
+
+## Updated requirements — guide v1.4 (8-tool MCP inventory)
+
+**Effective May 2026 (customer confirmation).** Aligns this ticket with `Dynamo Server/Test Guide/dynamo-mcp-testing-guide_v1.4.md` and `Dynamo Server/Test Result/dynamo_mcp_testing_stories_v1.2.md`. **Does not replace** earlier text in this description.
+
+**8-tool customer-confirmed surface**
+
+| # | Tool | Availability (May 2026) |
+| --- | --- | --- |
+| 1 | `analyze_notes` | Available |
+| 2 | `get_activity` | Available |
+| 3 | `get_documents` | Available |
+| 4 | `get_fund_description` | Available |
+| 5 | `get_funds` | Available |
+| 6 | `get_notes` | Available |
+| 7 | `llm_text_analysis` | Available |
+| 8 | `read_data` | **Planned** — add to regression when registered in the client |
+
+**Out of scope for v1.4:** `describe_table`, `get_rating_details`, `get_rating_summary`, `list_table`, `search_aloha_funds`.
+
+**section 1.4 (guide v1.4):** only `read_data` is HIGH risk. Mark `read_data` scenarios **S (skipped)** until the tool is registered.
+
+**Ticket-specific expectations (stories v1.2):**
+Enumeration target: **7 available** tools now, **no unexplained extras**; confirm **`read_data` absent until rollout**; confirm **out-of-scope** tools stay absent. Minimum smoke: `get_funds`.

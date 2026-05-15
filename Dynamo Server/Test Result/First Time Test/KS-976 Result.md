@@ -145,3 +145,48 @@ The **Conceptia Dynamo** MCP server exposes **exactly the 13 tools** defined in 
 | Cursor detail | `Dynamo Server/Test Result/KS-976-cursor-agent-tool-enumeration-2026-04-23.md` |
 | Claude Cowork detail | `Dynamo Server/Test Result/KS-976 - Claude Result.md` |
 | QA guide | `Dynamo Server/Test Guide/dynamo-mcp-testing-guide.md` (section 1.3, section 1.4, section 2.4, section 3.3, section 9) |
+
+---
+
+## 11. Updated requirements — May 2026 (7-tool production baseline)
+
+**Effective for KS-976 reassessment only.** This section adds the **current deployed** expectation for `conceptia-dynamo`. It does **not** replace sections 1–10, which document the April 2026 **13-tool** baseline and historical results.
+
+**Overview (updated):** Validates section 3.3 against the **current 7-tool** MCP registry. Enumeration must match this baseline with **no unexplained extras**. Six tools from the original 13-tool inventory are **removed** (intentional production hardening, confirmed 2026-05-07).
+
+**Detailed requirements (updated):**
+
+- Compare the visible tool list to the **7-tool baseline** below; flag any **missing active** tool or **unexpected extra** tool to the vendor.
+- Verify these **7 active tools** appear in the client and are callable after OAuth: `analyze_notes`, `get_activity`, `get_documents`, `get_fund_description`, `get_funds`, `get_notes`, `llm_text_analysis`.
+- Confirm these **6 removed tools** do **not** appear in the client registry: `describe_table`, `get_rating_details`, `get_rating_summary`, `list_table`, `read_data`, `search_aloha_funds`. If any removed tool reappears, trigger E2 discovery re-run (KS-991 / KS-992) immediately.
+- Optional prompt: *"List every tool available from the conceptia-dynamo MCP server."*
+- **section 1.4 high-risk tools** (`list_table`, `describe_table`, `read_data`) are **out of scope for visibility on the current server** because they are **removed**; track as removed/hardened under KS-981, not as KS-976 missing tools.
+- Repeat on a **second client**, including **Antigravity** where used internally (guide section 2.4), where required by the QA matrix.
+
+**Active tool inventory (current baseline):**
+
+| # | Tool | Category (guide section 1.3) | Expected status |
+| ---: | --- | --- | --- |
+| 1 | `analyze_notes` | Analysis | Active |
+| 2 | `get_activity` | Data fetch | Active |
+| 3 | `get_documents` | Data fetch | Active |
+| 4 | `get_fund_description` | Data fetch | Active |
+| 5 | `get_funds` | Data fetch | Active |
+| 6 | `get_notes` | Data fetch | Active |
+| 7 | `llm_text_analysis` | Analysis | Active |
+
+**Acceptance criteria (BDD) — updated:**
+
+| Scenario | Given / When / Then | Expected outcome |
+| --- | --- | --- |
+| **1 — Happy path** | OAuth succeeded → list tools | Exactly the **7 active** tool names above appear; representative runtime invocation succeeds (minimum smoke: `get_funds`) |
+| **2 — Error path** | 0 tools listed → check section 9 | Issue escalated (tool registration / protocol version) with logs |
+| **3 — Edge case** | Inventory **drifts** from the **7-tool baseline** (removed tool reappears, new tool added, or active tool missing without documented removal) | E2 discovery (KS-991 / KS-992) is triggered and KS-976 expectations are re-reviewed |
+
+**Definition of Done (updated interpretation for KS-976):**
+
+- All **7 active** tools visible in tested clients; **0 unexplained extras**.
+- **6 removed** tools absent unless the vendor documents restoration.
+- Second-client coverage per guide section 2.4 where mandated by the QA matrix.
+
+**Latest Cursor retest (2026-05-11):** Connected; **7/7** active tools cached; **6/6** removed tools not found; `get_funds` smoke **PASS** (`totalRecords: 978`).

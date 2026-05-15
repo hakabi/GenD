@@ -1,0 +1,70 @@
+*Ticket Title:* {{Dynamo MCP Security QA - Execute AUTH suite unauthenticated, token replay, scope, tenant isolation}}
+
+*Jira:* [KS-984|https://gendvn.atlassian.net/browse/KS-984] | *Epic:* Dynamo MCP — Security & Abuse-Case Testing
+
+*User Story:*
+
+{quote}As an *Internal QA Tester*, I want *to verify unauthenticated access is rejected, tokens cannot be replayed, and tools enforce tenant scope* so that *fund data stays within authorized boundaries*.{quote}
+
+*Overview:*
+
+section 7.1 defines AUTH-01–AUTH-05. Execute each with recorded expected outcomes: HTTP 401/403 as applicable, no partial sensitive payloads, and tenant isolation for {{get_funds}} and {{search_aloha_funds}}.
+
+*Detailed Requirements:*
+
+||*ID*||*Test*||*Tool(s)*||*Expected*||
+|AUTH-01|Unauthenticated connection to SSE endpoint|—|401 Unauthorized, no data leaked|
+|AUTH-02|Replay captured/expired OAuth token|—|Token rejected, clean error|
+|AUTH-03|Invoke tool outside authorized scope|Any|403 error, no partial data|
+|AUTH-04|Access funds belonging to another tenant|{{get_funds}}, {{search_aloha_funds}}|Only authorized tenant data returned|
+|AUTH-05|Manipulate tool parameters to escalate scope|{{read_data}}, {{search_aloha_funds}}|Validation rejects out-of-scope request|
+
+*Acceptance Criteria (BDD):*
+
+_Scenario 1 — Happy path (authorized session)_
+
+* *Given* a fully authenticated MCP session for user U with known in-scope funds (from {{get_funds}})
+* *When* {{get_funds}} and {{search_aloha_funds}} are used with normal parameters
+* *Then* only data *consistent with U's authorized fund set* is returned (black-box — no external entitlement UI)
+
+_Scenario 2 — Error path (AUTH-01, AUTH-02, AUTH-03)_
+
+* *Given* no valid session (AUTH-01), or an expired/replayed token (AUTH-02), or a tool call outside role scope (AUTH-03)
+* *When* the tester attempts SSE connection or tool invocation
+* *Then* the server returns *401* or *403* as specified, with *no* partial fund payloads or tokens in the error body
+
+_Scenario 3 — Edge case (AUTH-04, AUTH-05)_
+
+* *Given* crafted parameters intended to read another tenant's data or widen table/search scope
+* *When* {{get_funds}}, {{search_aloha_funds}}, or {{read_data}} is invoked
+* *Then* the request is *rejected or scoped* with no cross-tenant rows, and parameter tampering does not bypass validation
+
+*Definition of Done:* _(verbatim block above)_
+
+----
+
+----
+
+*Updated requirements* — guide v1.4 (8-tool MCP inventory)
+
+**Effective May 2026 (customer confirmation).** Aligns this ticket with `Dynamo Server/Test Guide/dynamo-mcp-testing-guide_v1.4.md` and `Dynamo Server/Test Result/dynamo_mcp_testing_stories_v1.2.md`.
+
+**8-tool customer-confirmed surface**
+
+| |Tool|Availability (May 2026)|
+|---|---|---|
+|1|`analyze_notes`|Available|
+|2|`get_activity`|Available|
+|3|`get_documents`|Available|
+|4|`get_fund_description`|Available|
+|5|`get_funds`|Available|
+|6|`get_notes`|Available|
+|7|`llm_text_analysis`|Available|
+|8|`read_data`|**Planned** — add to regression when registered in the client|
+
+**Out of scope for v1.4:** `describe_table`, `get_rating_details`, `get_rating_summary`, `list_table`, `search_aloha_funds`.
+
+**section 1.4 (guide v1.4):** only `read_data` is HIGH risk. Mark `read_data` scenarios **S (skipped)** until the tool is registered.
+
+**Ticket-specific expectations (stories v1.2):**
+AUTH suite applies to **8-tool** inventory; tenant isolation via `get_funds`; AUTH-05 includes `read_data` when live.

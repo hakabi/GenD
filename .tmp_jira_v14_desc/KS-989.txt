@@ -1,0 +1,46 @@
+**Ticket Title:** `Dynamo MCP QA - Establish accounts and MCP black-box test data baseline`
+
+**Jira:** [KS-989](https://gendvn.atlassian.net/browse/KS-989) | **Epic:** Dynamo MCP — Environment, Access & Connectivity
+
+**User Story:**
+
+> As an **Internal QA Tester**, I want **an approved Microsoft/Azure AD identity for MCP OAuth, 2–3 fund identifiers sourced from MCP (`get_funds` / `search_aloha_funds`), and saved tool-output references** so that **subsequent tests use consistency checks without any external UI baseline**.
+
+**Overview:**
+
+Implements section 2.1–section 2.3 under **black-box** rules: no Dynamo Software login or UI snapshots; fund IDs and baselines come from MCP responses or team-supplied placeholders.
+
+**Detailed Requirements:**
+
+  - Confirm the tester identity can complete **OAuth for the MCP server** (guide section 2.1). **Do not* use `https://dynamo.dynamosoftware.com/` to validate access.
+  - Obtain **2–3 fund IDs/names** from an initial `get_funds` (or `search_aloha_funds`) call, or from team-provided placeholders — store **JSON/text exports* for later diff, not screenshots of another system.
+  - **Permissions* are inferred only from MCP returns (empty list vs error), per section 2.1.
+- Create local folder `~/dynamo-mcp-tests/` and logs under `~/dynamo-mcp-tests/logs/YYYY-MM-DD/`.
+
+**UI/UX & Front-End Considerations:**
+
+  - Evidence is **MCP client + transcripts*; no "golden" browser baseline for Dynamo.
+
+**Acceptance Criteria (BDD):**
+
+*Scenario 1 — Happy path*
+
+  - **Given* an identity approved for Conceptia MCP testing
+  - **When* OAuth completes and `get_funds` (or equivalent) returns at least one fund
+  - **Then* the tester records fund IDs/names and stores a copy of tool output as the baseline for black-box checks
+
+*Scenario 2 — Error path*
+
+  - **Given* OAuth fails or MCP returns 401 for tool calls
+  - **When* the tester attempts to proceed
+  - **Then* testing is blocked until access is fixed; no reliance on Dynamo web login to diagnose
+
+*Scenario 3 — Edge case*
+
+  - **Given* zero funds returned for the identity
+  - **When* the team documents scope
+  - **Then** functional tests use **S (skipped)* or team-supplied IDs without inventing data
+
+**Definition of Done:** *(verbatim block above)*
+
+----

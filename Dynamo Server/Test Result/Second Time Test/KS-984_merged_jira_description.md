@@ -1,0 +1,140 @@
+### [KS-984] US-E4-01 — Execute AUTH suite: unauthenticated, token replay, scope, tenant isolation
+
+**Ticket Title:** `Dynamo MCP Security QA - Execute AUTH suite unauthenticated, token replay, scope, tenant isolation`  
+**Jira:** [KS-984](https://gendvn.atlassian.net/browse/KS-984) | **Epic:** [KS-1000](https://gendvn.atlassian.net/browse/KS-1000) — Dynamo MCP — Security & Abuse-Case Testing
+
+**User Story:**
+> As an **Internal QA Tester**, I want **to verify unauthenticated access is rejected, tokens cannot be replayed, and tools enforce tenant scope** so that **fund data stays within authorized boundaries**.
+
+**Overview:**
+Section 7.1 defines AUTH-01–AUTH-05. Execute each with recorded expected outcomes: HTTP 401/403 as applicable, no partial sensitive payloads, and tenant isolation for `get_funds`.
+
+**Detailed Requirements:**
+
+| ID | Test | Tool(s) | Expected |
+|----|------|---------|----------|
+| AUTH-01 | Unauthenticated connection to SSE endpoint | — | 401 Unauthorized, no data leaked |
+| AUTH-02 | Replay captured/expired OAuth token | — | Token rejected, clean error |
+| AUTH-03 | Invoke tool outside authorized scope | Any | 403 error, no partial data |
+| AUTH-04 | Access funds belonging to another tenant | `get_funds` | Only authorized tenant data returned |
+| AUTH-05 | Manipulate tool parameters to escalate scope | `read_data` (when live), domain `get_*` tools | Validation rejects out-of-scope request |
+
+**Acceptance Criteria (BDD):**
+
+*Scenario 1 — Happy path (authorized session)*
+- **Given** a fully authenticated MCP session for user U with known in-scope funds (from `get_funds`)
+- **When** `get_funds` is used with normal parameters
+- **Then** only data **consistent with U's authorized fund set** is returned (black-box — no external entitlement UI)
+
+*Scenario 2 — Error path (AUTH-01, AUTH-02, AUTH-03)*
+- **Given** no valid session (AUTH-01), or an expired/replayed token (AUTH-02), or a tool call outside role scope (AUTH-03)
+- **When** the tester attempts SSE connection or tool invocation
+- **Then** the server returns **401** or **403** as specified, with **no** partial fund payloads or tokens in the error body
+
+*Scenario 3 — Edge case (AUTH-04, AUTH-05)*
+- **Given** crafted parameters intended to read another tenant's data or widen table/search scope
+- **When** `get_funds` or `read_data` (when live) is invoked
+- **Then** the request is **rejected or scoped** with no cross-tenant rows, and parameter tampering does not bypass validation
+
+**Definition of Done:** *(verbatim block above)*
+
+---
+
+## Updated requirements — guide v1.4 (8-tool MCP inventory)
+
+**Effective:** May 2026 (customer confirmation)  
+**Sources:** `Dynamo Server/Test Guide/dynamo-mcp-testing-guide_v1.4.md`; `Dynamo Server/Test Guide/dynamo_mcp_testing_stories_v1.2.md`  
+**Scope note:** This section supplements the description above. It does not replace or rewrite earlier text (including legacy BDD wording).
+
+### User Story (v1.4)
+
+> As an **Internal QA Tester**, I want **Microsoft OAuth (Azure AD) and MCP session boundaries** proven through **unauthenticated transport checks**, **non-replayable tokens**, and **tenant-scoped tool responses** on the **customer-confirmed 8-tool surface** so that **guide section 7.1 (AUTH)** and the **security exit criteria in section 11** pass **without** Dynamo Software UI, **without** raw tokens in transcripts, and **without** cross-tenant or “silent success” fund payloads on auth failure.
+
+### Overview (v1.4)
+
+This story executes **guide section 7.1 — Authentication & Authorization (AUTH)** using the **v1.4 tool inventory** in **guide section 1.3**. Preconditions follow **guide section 2** (authorized Azure AD identity, black-box rule **section 1.1**). Enumeration and per-tool schemas: [**KS-991**](https://gendvn.atlassian.net/browse/KS-991) (sections 4.1–4.2). Cross-tool filter semantics (fund vs company naming, mandatory filters): [**KS-992**](https://gendvn.atlassian.net/browse/KS-992). **No** comparison to `https://dynamo.dynamosoftware.com/` or exported UI entitlement lists.
+
+**v1.4 inventory:** **7** tools available today; **`read_data`** **planned**. This ticket exercises **AUTH-01–AUTH-05** against the **registered** tools below. **Out of scope:** `describe_table`, `get_rating_details`, `get_rating_summary`, `list_table`, `search_aloha_funds` — if they appear in a client registry, treat as **inventory drift** (**guide section 9**) and refresh **KS-991**.
+
+| # | Tool | Relevance to this ticket |
+|---:|---|---|
+| 1 | `analyze_notes` | **Out of scope** for minimal AUTH pass — not used to prove AUTH-01/02/04; optional session smoke only if program requires |
+| 2 | `get_activity` | **In scope** — **AUTH-05** parameter / filter tampering; fund scoping via `fundNames` (runtime ≥1 filter per **KS-991**) |
+| 3 | `get_documents` | **In scope** — **AUTH-05**; `filterType`/`filterValue` / categories / dates; **`excludeContent: true`** preferred to respect **2MB** cap |
+| 4 | `get_fund_description` | **In scope** — **AUTH-05** string filters; optional **identity cross-check** with `get_funds` rows (**Name** / manager alignment) |
+| 5 | `get_funds` | **In scope — primary** — **AUTH-04** tenant isolation and **repeat-call** authorized fund set; baseline happy-path session |
+| 6 | `get_notes` | **In scope** — **AUTH-05**; default category behavior per schema; **`includeBody: false`** for listing passes unless case requires body |
+| 7 | `llm_text_analysis` | **Out of scope** for minimal AUTH pass — not required to close AUTH-01/04; use only if program explicitly chains (document separately) |
+| 8 | `read_data` | **Planned / S** — **AUTH-05** includes `read_data` **when live**; until registered in **KS-991**, mark **`read_data`** sub-cases **S** with enumeration proof |
+
+**section 1.4:** Only **`read_data`** is **HIGH** risk when live; not applicable to this ticket’s **`read_data`** leg until the tool registers.
+
+### Detailed requirements (v1.4)
+
+#### A. Preconditions and dependencies
+
+Complete **E1** connectivity / OAuth / enumeration stories per Epic as applicable ([**KS-989**](https://gendvn.atlassian.net/browse/KS-989), [**KS-990**](https://gendvn.atlassian.net/browse/KS-990), [**KS-976**](https://gendvn.atlassian.net/browse/KS-976), [**KS-991**](https://gendvn.atlassian.net/browse/KS-991)) before treating failures as **product** defects.
+
+Confirm **every tool invoked** for AUTH is registered and matches **KS-991** (expected **7** tools today).
+
+**Black-box rule:** infer correctness from MCP outputs only — **401/403** vs **empty authorized** vs **happy success**; repeat-call stability; plausible field sets; **no** Dynamo UI cross-check.
+
+#### B. AUTH case execution (guide section 7.1)
+
+| ID | Test | Tool(s) (v1.4) | Expected |
+|---:|---|---|---|
+| **AUTH-01** | Unauthenticated connection to SSE endpoint | — (HTTP/SSE to `https://mcp.conceptia.com/dynamo/sse`) | **401 Unauthorized**; **no** fund rows or tokens in body |
+| **AUTH-02** | Replay captured / expired OAuth token | — (same host) | Token rejected; **clean** JSON error; **no** silent fund success |
+| **AUTH-03** | Invoke tool outside authorized scope | **Any** tool in **section 1.3** (e.g. `get_funds`) after session invalidation | **403** or MCP bridge error; **no** partial tenant payloads |
+| **AUTH-04** | Access funds belonging to another tenant | **`get_funds`** (+ behavioral spot checks on overlapping **`get_*`** reads if used) | Only **authorized** tenant data; repeat identical calls — **consistent** sampled keys (`Name` + attributes, or **ID** if exposed) |
+| **AUTH-05** | Manipulate tool parameters to escalate scope | **`get_funds`**, **`get_fund_description`**, **`get_documents`**, **`get_notes`**, **`get_activity`**, **`read_data` (when live)** | Validation / **empty authorized** / explicit error — **not** widened cross-tenant rows |
+
+**Credential hygiene:** No raw **JWT**, refresh token, client secret, or password strings in chat transcripts, Jira, or shared logs — **stop**, redact, file defect per **guide sections 8–9** if leaked.
+
+**Transport vs MCP bridge:** Document separately: **HTTP 401** from gateway, **MCP `-32000` transport**, and **IDE “server does not exist”** after connector removal — all valid “failure visibility” classes for **Scenario 2** (see **KS-977** evidence patterns).
+
+#### C. Evidence pack and matrix (optional stretch)
+
+Store **redacted** transcript + saved tool/HTTP JSON under `~/dynamo-mcp-tests/logs/YYYY-MM-DD/` per **guide section 8**.
+
+**Test matrix (guide section 6):** Security suite feeds **section 11** exit gates with **AUTH**; coordinate row/column coverage with [**KS-993**](https://gendvn.atlassian.net/browse/KS-993). Capture **Unauthorized user** / **Network drop** cells where AUTH overlaps functional matrix work (**KS-977**).
+
+#### D. Explicit exclusions (this ticket)
+
+**`read_data`** (guide **section 5.5** tabular read story **KS-981**): **S** until registered — do not claim AUTH-05 `read_data` leg **P** without **KS-991** proof.
+
+**`search_aloha_funds`** (guide **section 5.6**), **ratings**, **warehouse discovery tools**: **S** — not in v1.4 customer surface.
+
+### UI/UX & front-end considerations (v1.4)
+
+Capture connector **Connected / Ready** state **without** screenshots of secrets or OAuth codes.
+
+Document client state flow: **Pre-auth → Auth in progress → Ready → Error** (e.g. **401**) with **guide section 9** first actions on failure.
+
+### Acceptance criteria (BDD, v1.4)
+
+*Scenario 1 — Happy path (authorized session)*
+
+**Given** OAuth completed successfully for an authorized tester identity and the tools under test are registered per **KS-991**  
+**When** the tester runs **AUTH-03/04** style calls (e.g. `get_funds` with normal parameters, optional overlapping `get_*` reads)  
+**Then** responses show only **in-scope** tenant data; repeat calls in the same session are **consistent** on sampled keys; **no** secrets in JSON; **no** invented rows
+
+*Scenario 2 — Error path (AUTH-01, AUTH-02, AUTH-03)*
+
+**Given** no valid session (**AUTH-01**), or replayed / forged / expired bearer (**AUTH-02**), or tools invoked after forced disconnect / revocation (**AUTH-03**)  
+**When** the tester hits the MCP host and/or invokes tools  
+**Then** the user sees a **clear failure** (**401/403**, MCP bridge error, or explicit unauthorized message) — **not** a silent “success” fund list that contradicts the failure state
+
+*Scenario 3 — Edge case (AUTH-05 + empty scope)*
+
+**Given** crafted parameters intended to widen reads or reference non-existent funds, or an identity with **zero** rows in scope  
+**When** the targeted **`get_*`** tools run  
+**Then** the response is **validation error**, **empty authorized** (`success: true` with `recordCount: 0` is acceptable **only** when documented as authorized-empty), or scoped data — **never** cross-tenant rows; the agent must **not** invent funds
+
+### Definition of Done (v1.4)
+
+Unchanged from the **Definition of Done** block in the **original** description above; for QA execution, interpret as: **section 7.1** evidence stored (redacted), **AUTH** matrix / **section 11** inputs updated, defects linked if any, and peer review where applicable.
+
+### Definition of Done
+
+*(Refer to the verbatim **Definition of Done** checklist in the original ticket body above this v1.4 appendix.)*

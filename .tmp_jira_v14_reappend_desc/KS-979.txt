@@ -1,0 +1,73 @@
+*Ticket Title:* {{Dynamo MCP QA - List fund documents via get_documents}}
+
+*Jira:* [KS-979|https://gendvn.atlassian.net/browse/KS-979] | *Epic:* Dynamo MCP — Functional E2E Validation
+
+*User Story:*
+
+{quote}As an *Internal QA Tester*, I want *document lists for `<FUND_ID>`* so that *filenames, types, and dates are coherent and repeatable (black box)*.{quote}
+
+*Overview:*
+
+section 5.3: validate {{get_documents}} metadata *via MCP only* — second call for same fund returns same identifiers; no external document portal comparison.
+
+*Detailed Requirements:*
+
+* *Prompt (example):* _List all documents associated with fund `<FUND_ID>`._
+* *Expected:* List includes filenames, document types/categories, and dates; *repeat call* yields the same set (unless backend changed).
+* *Scope:* Only documents the authenticated user may see for that fund.
+
+*UI/UX & Front-End Considerations:*
+
+* Sort order may vary — document sort rule used when comparing two calls.
+* Agent output: Prefer tabular or bullet list; if agent paraphrases, request explicit list from tool output.
+* *Empty state:* Agent must not invent filenames.
+
+*Acceptance Criteria (BDD):*
+
+_Scenario 1 — Happy path_
+
+* *Given* a fund with at least one document returned by {{get_documents}}
+* *When* the tester requests all documents for {{<FUND_ID>}} twice
+* *Then* filenames, types, and dates are *consistent* between calls (stability check)
+
+_Scenario 2 — Error path_
+
+* *Given* an invalid {{<FUND_ID>}} or a fund outside the user's authorization
+* *When* documents are requested
+* *Then* the response is an error or an empty authorized list, never documents from another fund or tenant
+
+_Scenario 3 — Edge case_
+
+* *Given* a fund with *zero* documents
+* *When* the tester lists documents
+* *Then* the agent reports an empty list with *no* placeholder entries
+
+*Definition of Done:* _(verbatim block above)_
+
+----
+
+----
+
+## Updated requirements — guide v1.4 (8-tool MCP inventory)
+
+**Effective May 2026 (customer confirmation).** Aligns this ticket with `Dynamo Server/Test Guide/dynamo-mcp-testing-guide_v1.4.md` and `Dynamo Server/Test Result/dynamo_mcp_testing_stories_v1.2.md`. **Does not replace** earlier text in this description.
+
+**8-tool customer-confirmed surface**
+
+| # | Tool | Availability (May 2026) |
+| --- | --- | --- |
+| 1 | `analyze_notes` | Available |
+| 2 | `get_activity` | Available |
+| 3 | `get_documents` | Available |
+| 4 | `get_fund_description` | Available |
+| 5 | `get_funds` | Available |
+| 6 | `get_notes` | Available |
+| 7 | `llm_text_analysis` | Available |
+| 8 | `read_data` | **Planned** — add to regression when registered in the client |
+
+**Out of scope for v1.4:** `describe_table`, `get_rating_details`, `get_rating_summary`, `list_table`, `search_aloha_funds`.
+
+**section 1.4 (guide v1.4):** only `read_data` is HIGH risk. Mark `read_data` scenarios **S (skipped)** until the tool is registered.
+
+**Ticket-specific expectations (stories v1.2):**
+In scope: `get_documents` (section 5.3).

@@ -1,0 +1,71 @@
+*Ticket Title:* {{Dynamo MCP QA - Define ASV backlog auth fuzzing, tool fuzzing, PIJ/CHAIN replay, drift detection}}
+
+*Jira:* [KS-996|https://gendvn.atlassian.net/browse/KS-996] | *Epic:* Dynamo MCP — Evidence, Reporting & Continuous Validation
+
+*User Story:*
+
+{quote}As a *QA or Platform Engineer*, I want *a roadmap for ongoing ASV* so that *each deployment does not regress security posture*.{quote}
+
+*Overview:*
+
+section 10 describes *continuous validation* after point-in-time testing: automation and scheduled jobs that repeat auth checks, fuzzing, injection chains, drift detection, and regression of fixes. This story produces a *backlog* of implementable ASV work (tools, schedules, owners).
+
+*Detailed Requirements:*
+
+* Backlog must cover *each* section 10 bullet with a clear *deliverable* and *frequency*:
+1. *Authentication probing:* Automated unauthenticated requests and expired-token checks after each deployment; align with AUTH-01/02.
+2. *Tool input fuzzing:* Adversarial generators for injection payloads, schema violations, boundary values against *all 13 tools*.
+3. *Prompt injection simulation:* PIJ-01–PIJ-05 on a schedule or on MCP version change; library versioned in git (private repo).
+4. *Tool chain replay:* CHAIN-01–CHAIN-04 replayed automatically or semi-automated after relevant code paths change.
+5. *Configuration drift detection:* Monitor new tools, schema changes, endpoint changes, *upstream backend* connection signals (per guide section 10); alert when drift vs approved baseline ([KS-991]/[KS-992] enumeration).
+6. *Remediation regression testing:* On each security fix, re-run failed cases plus smoke of related suites.
+* *Non-functional:* Define *SLA* for how soon after deploy ASV runs complete (e.g. 24h); define *failure escalation*.
+* *Ownership:* RACI or simple owner per workstream (Auth, Fuzzing, PIJ, CHAIN, Drift, Regression).
+
+*Acceptance Criteria (BDD):*
+
+_Scenario 1 — Happy path (backlog approved)_
+
+* *Given* section 10 is decomposed into epics/stories with owners and frequencies
+* *When* engineering and QA review the ASV roadmap
+* *Then* each section 10 bullet has at least one *prioritized* backlog item, a *target quarter* or sprint, and acceptance tests defined for the automation itself
+
+_Scenario 2 — Error path (no automation, manual only)_
+
+* *Given* org cannot implement CI-based ASV immediately
+* *When* the backlog is approved
+* *Then* *manual* ASV checklists with *calendar cadence* (e.g. weekly) are documented, and a *ticket* exists to replace with automation with *exit criteria*
+
+_Scenario 3 — Edge case (CI integration)_
+
+* *Given* a deployment pipeline for the MCP server or a dependent service
+* *When* ASV is wired to run post-deploy
+* *Then* a failed ASV run *blocks* or *warns* per policy, results are *retained* ≥90 days, and *remediation regression* runs automatically on security-fix merges
+
+*Definition of Done:* _(verbatim block above)_
+
+----
+
+## Updated requirements — guide v1.4 (8-tool MCP inventory)
+
+**Effective May 2026 (customer confirmation).** Aligns this ticket with `Dynamo Server/Test Guide/dynamo-mcp-testing-guide_v1.4.md` and `Dynamo Server/Test Result/dynamo_mcp_testing_stories_v1.2.md`. **Does not replace** earlier text in this description.
+
+**8-tool customer-confirmed surface**
+
+| # | Tool | Availability (May 2026) |
+| --- | --- | --- |
+| 1 | `analyze_notes` | Available |
+| 2 | `get_activity` | Available |
+| 3 | `get_documents` | Available |
+| 4 | `get_fund_description` | Available |
+| 5 | `get_funds` | Available |
+| 6 | `get_notes` | Available |
+| 7 | `llm_text_analysis` | Available |
+| 8 | `read_data` | **Planned** — add to regression when registered in the client |
+
+**Out of scope for v1.4:** `describe_table`, `get_rating_details`, `get_rating_summary`, `list_table`, `search_aloha_funds`.
+
+**section 1.4 (guide v1.4):** only `read_data` is HIGH risk. Mark `read_data` scenarios **S (skipped)** until the tool is registered.
+
+**Ticket-specific expectations (stories v1.2):**
+ASV fuzzing targets **8** tools (skip **`read_data`** until live); drift alerts on tools outside the **8-tool** list.
