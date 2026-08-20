@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness — notification area mockup</title>
+<style>
+  :root{
+    --bg:#141414; --surface:#1c1c1c; --surface-warm:#101010; --fg:#ececec; --fg-2:#f5f5f5;
+    --muted:#9b9b9b; --meta:#6e6e6e; --border:#2e2e2e; --border-soft:#262626;
+    --accent:#10a37f; --accent-on:#fff; --accent-soft:rgba(16,163,127,.22);
+    --danger:#f2555a; --warn:#f5a623; --radius-sm:12px; --radius-md:16px; --radius-pill:9999px;
+    --font-body:"Söhne","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"Söhne Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-warm);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.6;padding:26px}
+  h1{font-size:21px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:22px;max-width:900px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1000px;align-items:start}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+  .ch{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .ch .t{font-weight:600;font-size:14px}
+  .tag{font-size:11px;padding:2px 9px;border-radius:var(--radius-pill);border:1px solid var(--border);color:var(--muted)}
+  .tag.a{color:var(--accent);border-color:var(--accent-soft);background:var(--accent-soft)}
+  .body{padding:16px}
+  .qhead{font-size:12px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin:0 0 10px;display:flex;gap:8px;align-items:center}
+  .qcount{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:0 8px;font-size:11px}
+  /* notification strip */
+  .notif{display:flex;gap:8px;flex-wrap:wrap;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 10px;margin-bottom:12px}
+  .nchip{display:flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px;border-radius:var(--radius-pill);border:1px solid var(--border);color:var(--fg);cursor:pointer}
+  .nchip .dot{width:7px;height:7px;border-radius:50%}
+  .nchip.run .dot{background:var(--accent)}
+  .nchip.queue .dot{background:var(--warn)}
+  .nchip.await{border-color:var(--accent-soft);background:var(--accent-soft);color:var(--accent);font-weight:600}
+  .nchip.await .dot{background:var(--accent)}
+  .frow{display:flex;gap:8px;margin-bottom:8px}
+  .ctrl{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:6px 10px;font-size:12px;color:var(--muted)}
+  .search{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:6px 10px;font-size:12px;color:var(--meta)}
+  .qrow{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:8px;font-size:12px}
+  .qrow .id{font-family:var(--font-mono);color:var(--muted)}
+  .st{float:right;font-size:9.5px;font-weight:700;padding:1px 8px;border-radius:var(--radius-pill)}
+  .st.run{color:var(--accent);background:var(--accent-soft)}
+  .st.await{color:var(--accent);background:var(--accent-soft)}
+  .st.pend{color:var(--warn);background:rgba(245,166,35,.14)}
+  .flag{font-size:12px;color:var(--muted);margin-top:10px}
+  .flag .x{color:var(--warn);font-weight:700;margin-right:4px}
+  .ok{color:var(--accent)}
+  .idle{font-size:12px;color:var(--meta);font-style:italic;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;margin-top:14px}
+  .callout{max-width:1000px;margin:22px 0 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px}
+  .callout h3{margin:0 0 8px;font-size:14px}
+  .cl{display:flex;gap:8px;font-size:13px;color:var(--muted);margin:7px 0}
+  .cl b{color:var(--accent)}
+  .note{font-size:11px;color:var(--meta);margin-top:6px}
+</style>
+</head>
+<body>
+  <h1>Requests — queue &amp; running notification area</h1>
+  <div class="sub">A compact strip in the QUEUE header showing what's in flight — running, queued, and awaiting your review — so users know the system is working and whether <b>they</b> need to act. Each count filters the queue (reusing the existing "All statuses" control). Dark theme, real <code>tokens.css</code>. QA-raised (Ly, suggestion).</div>
+
+  <div class="grid">
+    <!-- BEFORE -->
+    <div class="card">
+      <div class="ch"><span class="t">Now</span><span class="tag">CURRENT</span></div>
+      <div class="body">
+        <div class="qhead">Queue <span class="qcount">12</span></div>
+        <div class="frow"><span class="ctrl">My requests ▾</span><span class="ctrl">All statuses ▾</span></div>
+        <div class="search">🔍 Search requests…</div>
+        <div class="qrow"><span class="id">#fd9f9256-ded</span> <span class="st pend">failed</span></div>
+        <div class="qrow"><span class="id">#97b578cc-5d1</span> <span class="st await">awaiting_review</span></div>
+        <div class="qrow"><span class="id">#028de64e-f1b</span> <span class="st pend">failed</span></div>
+        <div class="flag"><span class="x">▲</span> No way to see, at a glance, how many jobs are running, queued, or waiting for your review.</div>
+        <div class="flag"><span class="x">▲</span> Users watch a single request to guess whether the system is busy or stuck.</div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="card">
+      <div class="ch"><span class="t">Proposed</span><span class="tag a">PROPOSED</span></div>
+      <div class="body">
+        <div class="qhead">Queue <span class="qcount">12</span></div>
+        <div class="notif">
+          <span class="nchip run"><span class="dot"></span> 1 running</span>
+          <span class="nchip queue"><span class="dot"></span> 3 queued</span>
+          <span class="nchip await"><span class="dot"></span> 2 awaiting review</span>
+        </div>
+        <div class="frow"><span class="ctrl">My requests ▾</span><span class="ctrl">All statuses ▾</span></div>
+        <div class="search">🔍 Search requests…</div>
+        <div class="qrow"><span class="id">#88ec6abe-c97</span> <span class="st run">running</span></div>
+        <div class="qrow"><span class="id">#97b578cc-5d1</span> <span class="st await">awaiting_review</span></div>
+        <div class="note">Clicking a chip sets the "All statuses" filter to that state — one system, not two.</div>
+
+        <div class="idle">Idle state → "No active jobs."</div>
+        <div class="flag ok">✓ "Awaiting review" is emphasised (accent) because it's the only state that needs the user; running/queued just need time.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h3>Design notes</h3>
+    <div class="cl"><b>Placement</b> — inside the QUEUE header, above the filters, so it summarises the list it sits on.</div>
+    <div class="cl"><b>Only in-flight states</b> — running · queued · awaiting review. Finished states (successful / failed / duplicate / rejected) live in the list + filter, not here.</div>
+    <div class="cl"><b>Clickable = filter</b> — each count applies the matching status filter, reusing the existing "All statuses" control.</div>
+    <div class="cl"><b>Respects the creator filter</b> — with "My requests" on it shows your in-flight jobs; the "awaiting your review" portion stays highlighted even in "All requests".</div>
+    <div class="cl"><b>Live, not jarring</b> — counts update in place, no full-page refresh.</div>
+  </div>
+</body>
+</html>

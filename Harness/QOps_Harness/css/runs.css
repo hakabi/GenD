@@ -1,0 +1,78 @@
+/* Executed history — table + run detail split */
+
+body[data-page="runs"] .page-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body[data-page="runs"] .page-body > .content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.runs-split {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1100px) {
+  .runs-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .runs-split.is-detail-open .table-wrap {
+    max-height: min(40vh, 320px);
+  }
+
+  .runs-split .run-detail-panel {
+    min-height: min(52vh, 560px);
+  }
+}
+
+.runs-split .table-wrap {
+  min-height: 0;
+  overflow: auto;
+  border-right: 1px solid var(--border);
+}
+
+.run-detail-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+  padding: 20px 24px;
+}
+
+.run-detail-panel[hidden] {
+  display: none !important;
+}
+
+.run-detail-panel h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  flex-shrink: 0;
+}
+
+.run-detail-panel pre {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin: 0;
+}
+
+.runs-empty {
+  padding: 48px 24px;
+  text-align: center;
+}

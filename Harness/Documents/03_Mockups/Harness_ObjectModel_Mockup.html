@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness — Object-model breadcrumbs mockup</title>
+<style>
+  /* real QOps tokens (dark) from tokens.css */
+  :root{
+    --bg:#141414; --surface:#1c1c1c; --surface-warm:#101010; --fg:#ececec; --fg-2:#f5f5f5;
+    --muted:#9b9b9b; --meta:#6e6e6e; --border:#2e2e2e; --border-soft:#262626;
+    --accent:#10a37f; --accent-on:#fff; --accent-hover:#14b88f;
+    --accent-soft:rgba(16,163,127,.22); --danger:#f2555a; --warn:#f5a623;
+    --radius-sm:12px; --radius-md:16px; --radius-pill:9999px;
+    --font-body:"Söhne","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"Söhne Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-warm);color:var(--fg);font-family:var(--font-body);
+    font-size:15px;line-height:1.6;padding:26px}
+  h1{font-size:21px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:22px;max-width:860px}
+  .mono{font-family:var(--font-mono)}
+  .wrap{max-width:1040px}
+
+  /* model chain */
+  .model{display:flex;align-items:stretch;gap:0;margin:0 0 26px;flex-wrap:wrap}
+  .node{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 18px;min-width:170px}
+  .node .k{font-size:12px;color:var(--accent);font-weight:600;letter-spacing:.04em}
+  .node .n{font-size:14px;font-weight:600;color:var(--fg-2);margin-top:3px}
+  .node .d{font-size:12px;color:var(--muted);margin-top:4px}
+  .arrow{display:flex;flex-direction:column;justify-content:center;align-items:center;color:var(--muted);padding:0 14px;font-size:12px}
+  .arrow .big{font-size:20px;color:var(--accent)}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+  .ch{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .ch .t{font-weight:600;font-size:14px}
+  .tag{font-size:11px;padding:2px 9px;border-radius:var(--radius-pill);border:1px solid var(--border);color:var(--muted)}
+  .tag.a{color:var(--accent);border-color:var(--accent-soft);background:var(--accent-soft)}
+  .body{padding:16px}
+
+  .panel{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px}
+  .ptitle{font-size:14px;font-weight:600;color:var(--fg-2)}
+  .pill{font-size:11px;padding:1px 9px;border-radius:var(--radius-pill);font-weight:600}
+  .pill.fail{background:rgba(242,85,90,.14);color:#ff8a8e;border:1px solid rgba(242,85,90,.35)}
+  .row{display:flex;align-items:center;gap:9px}
+  .runid{font-family:var(--font-mono);font-size:12.5px;color:var(--muted)}
+  .flag{font-size:12px;color:var(--muted);margin-top:10px}
+  .flag .x{color:var(--warn);font-weight:700;margin-right:4px}
+
+  /* breadcrumb */
+  .crumb{display:flex;align-items:center;gap:7px;font-size:12.5px;flex-wrap:wrap;margin-bottom:8px}
+  .crumb a{color:var(--accent);font-family:var(--font-mono)}
+  .crumb .seg{color:var(--fg)}
+  .crumb .sep{color:var(--meta)}
+  .belongs{margin-top:12px;font-size:12px;color:var(--muted)}
+  .belongs .chip{display:inline-flex;gap:6px;align-items:center;background:var(--accent-soft);color:var(--accent);
+    border:1px solid var(--accent-soft);border-radius:var(--radius-pill);padding:2px 10px;font-family:var(--font-mono);font-size:11.5px}
+
+  .apply{max-width:1040px;margin:22px 0 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px 18px}
+  .apply h3{margin:0 0 8px;font-size:14px}
+  .cl{display:flex;gap:8px;font-size:13px;color:var(--muted);margin:8px 0}
+  .cl b{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Object model — make Request → Cases → Runs visible</h1>
+  <div class="sub">Harness has a three-level model, but the UI never shows it — so users can't tell which request a case or run came from (the recurring "which one is this?" confusion). The fix is a consistent breadcrumb + "belongs to" chip on every case and run. Styled with the real <code>tokens.css</code> (dark).</div>
+
+  <!-- the model -->
+  <div class="model">
+    <div class="node"><div class="k">REQUEST</div><div class="n">What you asked to test</div><div class="d">One prompt / ticket</div></div>
+    <div class="arrow"><span class="big">→</span><span>proposes</span></div>
+    <div class="node"><div class="k">CASES</div><div class="n">Proposed test cases</div><div class="d">One or many</div></div>
+    <div class="arrow"><span class="big">→</span><span>produce</span></div>
+    <div class="node"><div class="k">RUNS</div><div class="n">Playwright executions</div><div class="d">One or many per case</div></div>
+  </div>
+
+  <div class="grid">
+    <!-- BEFORE -->
+    <div class="card">
+      <div class="ch"><span class="t">Now — a run with no context</span><span class="tag">CURRENT</span></div>
+      <div class="body">
+        <div class="panel">
+          <div class="row"><span class="ptitle">Run</span><span class="runid">727d770c-9e92-441d…</span><span class="pill fail" style="margin-left:auto">failed</span></div>
+          <div class="runid" style="margin-top:8px">daily-rows-appear-when-expanding-monthly-to-weekly…</div>
+        </div>
+        <div class="flag"><span class="x">▲</span> Which <b>request</b> did this run come from? Unknown.</div>
+        <div class="flag"><span class="x">▲</span> Which <b>case</b> is it, in plain words? Only a slug.</div>
+        <div class="flag"><span class="x">▲</span> No way to jump up to the parent to see siblings.</div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="card">
+      <div class="ch"><span class="t">Proposed — breadcrumb + belongs-to</span><span class="tag a">PROPOSED</span></div>
+      <div class="body">
+        <div class="panel">
+          <div class="crumb">
+            <a href="#">REQ-1042</a><span class="sep">›</span>
+            <span class="seg">Daily rows expand monthly→weekly</span><span class="sep">›</span>
+            <span class="seg mono" style="color:var(--muted)">Run 727d770c</span>
+          </div>
+          <div class="row"><span class="ptitle">Run 727d770c</span><span class="pill fail" style="margin-left:auto">failed</span></div>
+          <div class="belongs">Belongs to <span class="chip">REQ-1042</span> · case 3 of 5</div>
+        </div>
+        <div class="flag" style="color:var(--accent)">✓ One line answers: which request, which case, and a link up to see the other 4 cases.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="apply">
+    <h3>Where the pattern applies (one consistent rule)</h3>
+    <div class="cl"><b>Executed history rows</b> — show the parent <span class="mono" style="color:var(--accent)">REQ-####</span> + plain case name, not just a run slug.</div>
+    <div class="cl"><b>Case detail</b> — breadcrumb <span class="mono">REQ-#### › Case</span>; "belongs to" chip linking to the request.</div>
+    <div class="cl"><b>Run detail / Run review</b> — full breadcrumb <span class="mono">REQ-#### › Case › Run</span> as above.</div>
+    <div class="cl"><b>Requests → Execution tab</b> — already the top of the chain; label its children as "Cases" and "Runs" consistently.</div>
+    <div class="cl">Uses the friendly <b>REQ-####</b> reference from QG-141 so the whole hierarchy reads in human terms, not UUIDs.</div>
+  </div>
+</div>
+</body>
+</html>

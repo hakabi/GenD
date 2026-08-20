@@ -1,0 +1,206 @@
+## User Story
+
+As a **Portfolio Manager**, I want to add simulated future cash flows, save them with a name, and optionally share them with my team so that I can quickly reload and collaborate on scenario analysis before triggering a recalculation.
+
+## Overview
+
+Implements the Hypothetical Flows section on the Dashboard sub-tab. Users can add simulated cash flow entries, toggle them on/off, and save/load flow sets. The save model is **explicit and named** — users click a "Save Flows" button to create a named snapshot, choose to keep it private or share it with the team. This replaces the previous pre-defined workspace model (CIO Flows / Operations Flows).
+
+> **Model Change (2026-04-07, Kathleen Bui):** The old "CIO Flows / Operations Flows / My Flows" workspace model has been replaced with a user-driven save-and-share model as specified below.
+
+![](blob:https://media.staging.atl-paas.net/?type=file&localId=f6d893e7-overview&id=f6d893e7-6fec-4c84-ae86-8cf5360cea3f&&collection=&height=426&occurrenceKey=null&width=1640&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+---
+
+## Key Requirements
+
+### 1. Adding a Hypothetical Flow Entry
+
+Required fields per entry:
+
+* **+ Add Flow** button — adds a new empty row to the current scenario set. Each row represents one hypothetical cash flow entry. This is the **sole entry point** for adding both existing Solovis fund entries and new/custom fund entries.
+* **Fund** (dropdown from Solovis): **auto-populates Beta** for current Solovis funds. Do not let the user modify this Beta value. If the user types a name **not found** in Solovis, the entry is treated as a **new/custom fund** — the **Beta field** must be entered manually (numeric, free dp) per `KS-949` contract. **The inline "+ Add New Fund" dropdown option has been removed** to avoid UX confusion — all entries are initiated through the **+ Add Flow** button only. *(BA decision, KS-963, Jun 16, 2026)*
+* **Amount ($ Millions):** (USD, HALF_UP, 3dp)
+  * **Sign convention helper text** *(Kathleen Bui, KS-939, Jun 15, 2026)* — display inline guidance so users enter amounts with the correct sign:
+    * **Adding capital to a fund** → enter a **positive** amount (e.g. `120`)
+    * **Redeeming capital from a fund** → enter a **negative** amount (e.g. `-120`)
+  * **Placement:** a short helper line directly under the **Amount ($ Millions)** column header, or an info icon (ⓘ) next to the column label with tooltip text:
+    > *Enter a positive value to add capital to a fund and a negative value to redeem capital.*
+* **Cash Settlement Date, Effective Date** (date pickers)
+* **Transaction Type** (dropdown from Solovis transaction types): includes 04 selections: Trade Offer, Capital Call, Distribution, Trust Draw
+
+Per-entry controls:
+
+* **Include/Exclude toggle** (`role="switch"`) — excluded entries are greyed out and NOT sent to the compute server
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=d24c72d8-toggle&id=d24c72d8-62b4-4a08-83b3-959ab6619641&&collection=&height=237&occurrenceKey=null&width=726&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+* **Delete action** button per row
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=48d98ca0-delete&id=48d98ca0-697f-4f6a-8d23-b8c8cd85d3d5&&collection=&height=186&occurrenceKey=null&width=413&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+* By default, leave all input fields empty and display only the names/titles. User must explicitly select from the dropdown
+* The **+ New Scenario Set** button: Click the add button to open a new scenario set with all input fields reset.
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=cd962bb6-newset&id=cd962bb6-5941-454d-a012-82267764af0d&&collection=&height=426&occurrenceKey=null&width=1640&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+* If there is a current unsaved hypothetical flow (scenario set), ask the user to confirm whether to save or not save for that flow before moving to the new flow
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=3122a099-unsaved&id=3122a099-cac8-40fb-8052-c279e40199e8&&collection=&height=879&occurrenceKey=null&width=1707&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+
+---
+
+### 2. Saving Flows with 04 sub icons:
+
+a/ Click the Save Flows button to save all current flow rows with all the input fields (Beta, Amount, Cash Settlement Date,…) their toggle states (included/excluded)
+
+![](blob:https://media.staging.atl-paas.net/?type=file&localId=2415247e-save&id=2415247e-697b-4fc9-8f83-a57a0bf2ba04&&collection=&height=640&occurrenceKey=null&width=1635&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+b/ Click the Edit icon to Edit the Scenario Set: Allow to edit Flow Name, Description, Toggle Active Flow Set/Share with Team
+
+![](blob:https://media.staging.atl-paas.net/?type=file&localId=a1d6f556-edit&id=a1d6f556-12ba-406c-8c51-5ed564ebc0f0&&collection=&height=879&occurrenceKey=null&width=1707&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+c/ Click the Delete icon to Delete the current Scenario Set
+
+![](blob:https://media.staging.atl-paas.net/?type=file&localId=7305d335-del&id=7305d335-1c37-4adb-8c9d-b8da51df9db6&&collection=&height=879&occurrenceKey=null&width=1707&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+d/ Click the icon Share to Share with Team the current Scenario Set
+
+![](blob:https://media.staging.atl-paas.net/?type=file&localId=39ee705f-share&id=39ee705f-3835-4c00-a391-3257249a5209&&collection=&height=879&occurrenceKey=null&width=1707&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+e/ Click the Clone icon to clone the current flow set. Remember to save the new clone set if necessary
+
+![](blob:https://media.staging.atl-paas.net/?type=file&localId=f3b77b0a-clone&id=f3b77b0a-41bc-4dd2-8fc9-3b48ea607f2b&&collection=&height=879&occurrenceKey=null&width=1707&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+---
+
+### 3. Create Scenario Set Modal:
+
+* Click the **+ New Scenario Set** to open the modal:
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=db0d856b-modal&id=db0d856b-38a2-4234-8e78-5026896af9cf&&collection=&height=733&occurrenceKey=null&width=1584&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+* The modal includes:
+
+    * **Flow Name** — required, max 60 characters
+    * **Description** — optional, brief note about the scenario
+    * **Active Flow Set** — toggle, when ON, this flow set will load automatically when you open the dashboard.
+    * **Share with Team** — toggle, **off by default** (private by default). When ON, this set will appear in Team Scenarios for all users
+    
+* If the current flow has been saved in the Hypothetical Flow outside of this modal, saving creates a **snapshot** of all current flow rows, their toggle states (included/excluded), and their amounts. If not, click the Save Flows button to open the new flow with empty rows as follows:
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=5e3f0d8f-empty&id=5e3f0d8f-0bd1-4160-b5a3-f2548393d40d&&collection=&height=546&occurrenceKey=null&width=1702&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+* If a saved set with the same name already exists, send the warning error to users to let them know
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=ca5ccaa1-warn&id=ca5ccaa1-2462-4476-b5fe-3e6fada9d872&&collection=&height=804&occurrenceKey=null&width=1637&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+* After saving: a confirmation indicator is shown (e.g., "Saved") and the set appears in "My Hypothetical Scenarios"
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=18129401-confirm&id=18129401-6f23-4365-8051-31635bdedfbe&&collection=&height=708&occurrenceKey=null&width=1645&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=46d390fd-saved&id=46d390fd-0a6c-4b9c-b29f-1a12a4b27afe&&collection=&height=768&occurrenceKey=null&width=1645&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+* If the saved flow has Share with Team toggled, everyone in the team can see this shared flow in "Team Scenarios"
+
+    ![](blob:https://media.staging.atl-paas.net/?type=file&localId=49c9b4ca-team&id=49c9b4ca-f77e-42f5-87ee-4583f8de3cd6&&collection=&height=772&occurrenceKey=null&width=1596&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+
+---
+
+### 4. Scenarios Dropdown
+
+> **Updated (2026-06-03):** The previous separate "My Saved Flows" and "Team Flows" dropdowns have been replaced with a **single combined dropdown**. Owner controls (Share/Unshare, Rename, Delete) previously in a standalone section are incorporated here.
+
+The Hypothetical Flows controls bar contains a **single combined dropdown** that lists both the current user's own saved scenario sets and team-shared scenario sets in one unified panel, divided into two clearly labelled sections.
+
+**Dropdown structure:**
+
+* A **"Search flows..."** search bar appears at the top of the dropdown, allowing the user to filter scenarios by name across both sections
+* A **"+ New Scenario Set"** shortcut appears below the search bar — clicking it opens the Create Scenario Set modal (same as the main button in the controls bar)
+* **MY HYPOTHETICAL SCENARIOS** — top section, lists all scenario sets saved by the current user
+
+    * Sorted by **most recently saved** (most recent at top)
+    * Each entry displays: **scenario name**
+    * Private scenarios show a 🔒 **lock icon** on the right
+    * Scenarios shared with the team show a `🔗 Shared` **badge** on the right
+    
+* **TEAM SCENARIOS** — bottom section, lists all scenario sets that any user has marked as shared ("Share with Team" = ON)
+
+    * Sorted by **most recently saved/shared** (most recent at top)
+    * Each entry displays: **scenario name**, **owner's display name**, and **date shared** (e.g., _Tuan Tran • Apr 17, 2026_)
+    
+
+**Loading a personal scenario (MY HYPOTHETICAL SCENARIOS):**
+
+* Selecting any entry loads it into the Hypothetical Flows table
+* If the user has **unsaved changes** in the current table, a confirmation prompt appears before replacing: _"_**You have unsaved changes. What would you like to do?**_"_ with 03 options to select: Save, Discard, Cancel.
+* _(Note: the last loaded set does NOT auto-restore on page refresh — user must explicitly select from the dropdown)_
+
+**Loading a team scenario (TEAM SCENARIOS):**
+
+* Selecting any entry from TEAM SCENARIOS loads it into the Hypothetical Flows table in **read-only mode**
+* An amber banner appears at the top of the Hypothetical Flows section: _"You are viewing a shared flow set. Clone it to make changes."_
+* The user must click the **Clone icon** (from the scenario set action icons in Section 2) to create their own editable copy; the cloned set is saved into **MY HYPOTHETICAL SCENARIOS**
+* The user **cannot directly edit or save changes** to a scenario set they do not own
+
+**Owner controls (own scenarios only):**
+
+* When viewing one of your own saved sets, the **4-icon toolbar (Section 2)** is fully active. For team scenarios, the toolbar is disabled — use the **Clone icon** to create your own editable copy.
+* **Share / Unshare** — toggles the set between visible in TEAM SCENARIOS (all users) and private (MY HYPOTHETICAL SCENARIOS only). Takes effect immediately.
+* No other user can edit, rename, delete, or unshare a scenario set they did not create.
+
+---
+
+### 5. Persistence
+
+* All saved scenario sets are stored **server-side, per user account** (not session-only)
+* Shared sets become visible to all users in **TEAM SCENARIOS** immediately upon sharing
+* Unsharing removes the set from TEAM SCENARIOS for all users immediately; the owner's private copy is unaffected
+
+---
+
+## Acceptance Criteria
+
+**Scenario 1 — Happy Path (Save & Share):**
+
+* Given a user has added 3 hypothetical flow entries
+* When they click "Save Flows", enter a name "Stress Test Q3", toggle "Share with Team" ON, and confirm
+* Then the set is saved to MY HYPOTHETICAL SCENARIOS with a `🔗 Shared` badge, appears in the TEAM SCENARIOS section with the user's name and today's date, and a "Saved" confirmation is shown
+
+**Scenario 2 — Error Path (Save fails):**
+
+* Given a user clicks "Save Flows" and submits
+* When the server-side save returns a 500
+* Then a toast shows `"Your flows could not be saved. Please try again."`, the modal remains open, and the local entries are unaffected
+
+**Scenario 3 — Edge Case (Load with unsaved changes):**
+
+* Given a user has unsaved changes in the table
+* When they select a different set from the dropdown
+* Then a confirmation prompt appears: `"You have unsaved changes. What would you like to do?"`; if confirmed, the new set loads; if cancelled, the table is unchanged
+
+**Scenario 4 — Edge Case (Same name overwrite):**
+
+* Given a user already has a saved set named "Base Case"
+* When they try to save another set with the same name
+* Then a prompt offers two options: "Save as New" (requires a new name) or "Overwrite" (replaces the existing set)
+
+**Scenario 5 — Team Scenario (Read-only + Clone):**
+
+* Given a user selects a scenario from TEAM SCENARIOS
+* When the flow loads into the table
+* Then an amber banner shows _"You are viewing a shared flow set. Clone it to make changes."_; all input fields are read-only until the user clicks the Clone icon to create their own editable copy
+
+**Scenario 6 — Owner Controls (Unshare):**
+
+* Given a user has a shared scenario set visible in TEAM SCENARIOS
+* When the owner selects it from MY HYPOTHETICAL SCENARIOS and clicks "Unshare"
+* Then the set is immediately removed from TEAM SCENARIOS for all users and remains in the owner's MY HYPOTHETICAL SCENARIOS as a private set (🔒 lock icon)
+
+## Notes
+
+* Sprint 2 — depends on **KS-958** (Navigation Shell)
+* Output feeds into: **KS-964** (Calculate Impact) — only **included** (toggled ON) **rows in the currently loaded grid** are sent to the compute server payload (serialized per **KS-949**)
+* _(Note: decimal display for monetary amounts may be updated in a future iteration)_
+* **Old workspace model (CIO Flows / Operations Flows / My Flows) is REPLACED** by this spec per Kathleen Bui 2026-04-07
+* **Saved scenario cap (Kathleen Bui, KS-939 2026-04-08):** maximum **10 saved named scenarios per user**; user must delete a scenario before saving an eleventh.
+* **Row cap (discussion KS-939 2026-04-09):** Bình Hà Khoa proposed capping each saved scenario at **10 hypothetical rows** — **confirm with PO** whether this applies in addition to the 10-scenario cap.
+* **Amount input (Kathleen Bui, KS-963 2026-06-01):** column header is **"Amount ($ Millions)"**; user enters scaled values (e.g., `100` = $100M, `2.5` = $2,500,000); input accepts up to **3 decimal places**.
+* **Traceability:** all behaviour above is consolidated from the **KS-939** comment thread (Apr 2026) and **KS-963** comment thread (through 2026-06-01).
+* Part of Epic: KS-950 Cash Forecasting Model
+
+
+
+**Scenario 7 — Amount sign convention helper (Kathleen Bui, KS-939, Jun 15, 2026):**
+
+* Given the Hypothetical Flows table is displayed
+* When the user views the **Amount ($ Millions)** column
+* Then a helper line or info-icon tooltip is visible stating: *"Enter a positive value to add capital to a fund and a negative value to redeem capital."*
+* And entering `120` represents adding $120M capital; entering `-120` represents redeeming $120M capital

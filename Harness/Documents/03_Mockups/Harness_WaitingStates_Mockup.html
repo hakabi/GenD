@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness — waiting states mockup</title>
+<style>
+  :root{
+    --bg:#141414; --surface:#1c1c1c; --surface-warm:#101010; --fg:#ececec; --fg-2:#f5f5f5;
+    --muted:#9b9b9b; --meta:#6e6e6e; --border:#2e2e2e; --border-soft:#262626;
+    --accent:#10a37f; --accent-on:#fff; --accent-soft:rgba(16,163,127,.22);
+    --danger:#f2555a; --warn:#f5a623; --radius-sm:12px; --radius-md:16px; --radius-pill:9999px;
+    --font-body:"Söhne","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"Söhne Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-warm);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.6;padding:26px}
+  h1{font-size:21px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:22px;max-width:900px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1100px;align-items:start}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+  .ch{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .ch .t{font-weight:600;font-size:14px}
+  .tag{font-size:11px;padding:2px 9px;border-radius:var(--radius-pill);border:1px solid var(--border);color:var(--muted)}
+  .tag.a{color:var(--accent);border-color:var(--accent-soft);background:var(--accent-soft)}
+  .body{padding:16px}
+  .mono{font-family:var(--font-mono)}
+  .rowhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+  .rowhead .ttl{font-size:13.5px;font-weight:600}
+  .chip{font-size:10.5px;padding:2px 9px;border-radius:var(--radius-pill);font-weight:700;letter-spacing:.03em}
+  .chip.await{color:var(--accent);border:1px solid var(--accent-soft);background:var(--accent-soft)}
+  .chip.pending{color:var(--warn);border:1px solid rgba(245,166,35,.35);background:rgba(245,166,35,.12)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  .col .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+  .step{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:8px;font-size:12.5px}
+  .step .s2{font-size:11px;color:var(--muted);margin-top:2px}
+  .st{float:right;font-size:10px;font-weight:700;padding:1px 8px;border-radius:var(--radius-pill)}
+  .st.pass{color:var(--accent);background:var(--accent-soft)}
+  .st.pend{color:var(--warn);background:rgba(245,166,35,.14)}
+  .out{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px;font-size:12.5px;min-height:74px}
+  .out .empty{color:var(--meta);font-style:italic}
+  .btn{display:inline-block;margin-top:8px;background:var(--accent);color:var(--accent-on);font-size:12px;font-weight:600;padding:6px 12px;border-radius:var(--radius-sm)}
+  .flag{font-size:12px;color:var(--muted);margin-top:12px}
+  .flag .x{color:var(--warn);font-weight:700;margin-right:4px}
+  .ok{color:var(--accent)}
+  .callout{max-width:1100px;margin:22px 0 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px}
+  .callout h3{margin:0 0 8px;font-size:14px}
+  .cl{display:flex;gap:8px;font-size:13px;color:var(--muted);margin:7px 0}
+  .cl b{color:var(--accent)}
+</style>
+</head>
+<body>
+  <h1>Requests — make the "waiting" states explain themselves</h1>
+  <div class="sub">Two different waits look almost identical today and neither says why: <b>Awaiting review</b> (needs a person to confirm the cases) and <b>Pending</b> (queued, waiting for a free worker). The proposal gives each a plain reason and a state-aware output message. Dark theme, real <code>tokens.css</code>. Technical step names kept as-is.</div>
+
+  <div class="grid">
+    <!-- BEFORE -->
+    <div class="card">
+      <div class="ch"><span class="t">Now</span><span class="tag">CURRENT</span></div>
+      <div class="body">
+        <div class="rowhead">
+          <span class="ttl">Project: Go to aloha.conceptia.com</span>
+          <span class="chip await">AWAITING_REVIEW</span>
+        </div>
+        <div class="cols">
+          <div class="col">
+            <div class="lbl">Progress</div>
+            <div class="step">Awaiting review <span class="st pass">PASSED</span></div>
+            <div class="step">CASE 1 · Direct test <span class="st pend">PENDING</span><div class="s2">Positive · Pending</div></div>
+          </div>
+          <div class="col">
+            <div class="lbl">Output</div>
+            <div class="out"><div class="mono" style="font-size:11px;color:var(--muted)">TEST CASE · Direct test</div>Pending · pending<div class="empty" style="margin-top:8px">No log output for this selection yet.</div></div>
+          </div>
+        </div>
+        <div class="flag"><span class="x">▲</span> "Awaiting review" and "Pending" look the same — user can't tell if <b>they</b> must act.</div>
+        <div class="flag"><span class="x">▲</span> No reason <b>why</b> it's pending.</div>
+        <div class="flag"><span class="x">▲</span> "No log output…" reads like something broke.</div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="card">
+      <div class="ch"><span class="t">Proposed</span><span class="tag a">PROPOSED</span></div>
+      <div class="body">
+        <div class="rowhead">
+          <span class="ttl">Project: Go to aloha.conceptia.com</span>
+          <span class="chip await">AWAITING REVIEW · NEEDS YOU</span>
+        </div>
+        <div class="out" style="border-left:3px solid var(--accent);margin-bottom:10px">
+          <b class="ok">Waiting for you</b> — the proposed cases need your confirmation before they run.
+          <div><span class="btn">Review cases</span></div>
+        </div>
+        <div class="cols">
+          <div class="col">
+            <div class="lbl">Progress</div>
+            <div class="step">Awaiting review <span class="st pass">PASSED</span></div>
+            <div class="step">CASE 1 · Direct test <span class="st pend">PENDING</span><div class="s2">Queued — waiting for a free worker · 2 ahead</div></div>
+          </div>
+          <div class="col">
+            <div class="lbl">Output</div>
+            <div class="out"><div class="mono" style="font-size:11px;color:var(--muted)">TEST CASE · Direct test</div><b style="color:var(--warn)">Queued</b><div style="margin-top:8px">Will start automatically when a worker frees up.</div></div>
+          </div>
+        </div>
+        <div class="flag ok">✓ Awaiting review (accent = needs you) is clearly separated from Pending (neutral = needs a worker), each with a reason.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h3>What changes</h3>
+    <div class="cl"><b>Reason on every wait</b> — Pending → "Queued, waiting for a free worker (N ahead)"; Awaiting review → "Waiting for you to review the proposed cases" + a Review button.</div>
+    <div class="cl"><b>State-aware output</b> — replace the generic "No log output yet" with "Queued — will start when a worker frees up" / "Running — waiting for first output" / "No output".</div>
+    <div class="cl"><b>Needs-you vs needs-worker</b> — the only state that requires the user (Awaiting review) is visually distinct from the states that just need time (Pending / Running).</div>
+  </div>
+</body>
+</html>

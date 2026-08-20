@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness — Workflow overview mockup</title>
+<style>
+  /* real QOps tokens (dark) from tokens.css */
+  :root{
+    --bg:#141414; --surface:#1c1c1c; --surface-warm:#101010; --fg:#ececec; --fg-2:#f5f5f5;
+    --muted:#9b9b9b; --meta:#6e6e6e; --border:#2e2e2e; --border-soft:#262626;
+    --accent:#10a37f; --accent-on:#fff; --accent-hover:#14b88f;
+    --accent-soft:rgba(16,163,127,.22); --danger:#f2555a; --warn:#f5a623;
+    --radius-sm:12px; --radius-md:16px; --radius-pill:9999px;
+    --font-body:"Söhne","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"Söhne Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-warm);color:var(--fg);font-family:var(--font-body);
+    font-size:15px;line-height:1.6;padding:40px 26px}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-size:23px;margin:0 0 6px;color:var(--fg-2)}
+  .sub{color:var(--muted);font-size:13.5px;margin:0 0 34px;max-width:760px}
+  .mono{font-family:var(--font-mono)}
+
+  /* flow */
+  .flow{display:flex;align-items:stretch;justify-content:center;gap:0;flex-wrap:wrap}
+  .node{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+    padding:20px 18px 17px;width:196px;display:flex;flex-direction:column;position:relative}
+  .node .num{font-family:var(--font-mono);font-size:11px;color:var(--meta);font-weight:600;letter-spacing:.08em}
+  .node .ttl{font-size:17px;font-weight:600;color:var(--fg-2);margin:7px 0 8px;letter-spacing:-.01em}
+  .node .txt{font-size:12.5px;color:var(--muted);line-height:1.55;flex:1}
+  .node .art{margin-top:14px;padding-top:11px;border-top:1px solid var(--border-soft);
+    font-family:var(--font-mono);font-size:11px;color:var(--accent)}
+  .node .who{position:absolute;top:18px;right:16px;display:flex;gap:4px}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .d-qa{background:var(--accent)} .d-sys{background:var(--muted)} .d-ba{background:#7aa2f7}
+
+  .arw{display:flex;align-items:center;justify-content:center;width:44px;color:var(--accent);
+    font-size:22px;flex-shrink:0}
+  @media(max-width:1120px){
+    .flow{flex-direction:column;align-items:stretch;max-width:420px;margin:0 auto}
+    .node{width:auto}
+    .arw{width:auto;height:34px;transform:rotate(90deg)}
+  }
+
+  /* return loop */
+  .loop{margin:0 auto;max-width:1180px;position:relative}
+  .loop svg{display:block;width:100%;height:74px;overflow:visible}
+  .loop .lbl{position:absolute;left:50%;transform:translateX(-50%);bottom:-4px;
+    background:var(--surface-warm);padding:0 16px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+  .loop .lbl b{color:var(--accent);font-weight:600}
+  @media(max-width:1120px){.loop{display:none}}
+
+  /* legend + note */
+  .foot{display:flex;gap:30px;flex-wrap:wrap;align-items:flex-start;margin-top:44px;
+    padding-top:22px;border-top:1px solid var(--border)}
+  .leg{display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:var(--muted)}
+  .leg .r{display:flex;align-items:center;gap:8px}
+  .leg b{color:var(--fg);font-weight:600}
+  .stat{display:flex;gap:34px;flex-wrap:wrap;margin-left:auto}
+  .stat div{text-align:right}
+  .stat .v{font-size:22px;font-weight:600;color:var(--accent);line-height:1.2}
+  .stat .k{font-size:11.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>How the test suite gets built</h1>
+  <p class="sub">A written request becomes a family of automated Aloha test cases. Results roll back up
+  into a coverage view, and the gaps decide what gets written next. It is a loop, not a line.</p>
+
+  <div class="flow">
+
+    <div class="node">
+      <div class="who"><i class="dot d-qa"></i></div>
+      <div class="num">01</div>
+      <div class="ttl">Request</div>
+      <div class="txt">QA writes a prompt describing what to check on Aloha, in plain English.</div>
+      <div class="art">1 request</div>
+    </div>
+
+    <div class="arw">→</div>
+
+    <div class="node">
+      <div class="who"><i class="dot d-sys"></i></div>
+      <div class="num">02</div>
+      <div class="ttl">Classify</div>
+      <div class="txt">Harness reads the prompt and labels it — feature area, test type, fund scope, metric.</div>
+      <div class="art">labelled request</div>
+    </div>
+
+    <div class="arw">→</div>
+
+    <div class="node">
+      <div class="who"><i class="dot d-sys"></i></div>
+      <div class="num">03</div>
+      <div class="ttl">Generate</div>
+      <div class="txt">The LLM expands it into a family of cases and builds the automation for each.</div>
+      <div class="art">4–8 test cases</div>
+    </div>
+
+    <div class="arw">→</div>
+
+    <div class="node">
+      <div class="who"><i class="dot d-qa"></i><i class="dot d-sys"></i></div>
+      <div class="num">04</div>
+      <div class="ttl">Run</div>
+      <div class="txt">QA approves, the cases execute against Aloha, and failures get triaged.</div>
+      <div class="art">runs + defects</div>
+    </div>
+
+    <div class="arw">→</div>
+
+    <div class="node">
+      <div class="who"><i class="dot d-ba"></i></div>
+      <div class="num">05</div>
+      <div class="ttl">Learn</div>
+      <div class="txt">Labels roll results up into coverage and impact views the whole team can read.</div>
+      <div class="art">coverage map</div>
+    </div>
+
+  </div>
+
+  <div class="loop">
+    <svg viewBox="0 0 1180 74" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#10a37f"/>
+        </marker>
+      </defs>
+      <path d="M1082,2 C1082,46 1082,58 1030,58 L150,58 C98,58 98,46 98,4"
+            fill="none" stroke="#10a37f" stroke-width="1.5" stroke-dasharray="5 5"
+            opacity=".75" marker-end="url(#ah)"/>
+    </svg>
+    <div class="lbl">the <b>gaps in the coverage map</b> decide the next request</div>
+  </div>
+
+  <div class="foot">
+    <div class="leg">
+      <div class="r"><i class="dot d-qa"></i><b>QA</b> — writes the request, approves and triages</div>
+      <div class="r"><i class="dot d-sys"></i><b>Harness</b> — classifies, generates, executes</div>
+      <div class="r"><i class="dot d-ba"></i><b>BA / PO</b> — owns the labels and reads the coverage</div>
+    </div>
+    <div class="stat">
+      <div><div class="v">~45</div><div class="k">case groups</div></div>
+      <div><div class="v">~300</div><div class="k">cases at full coverage</div></div>
+      <div><div class="v">1 → 8</div><div class="k">request to cases</div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

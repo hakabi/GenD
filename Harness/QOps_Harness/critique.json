@@ -1,0 +1,11 @@
+{
+  "kind": "critique-panel",
+  "score": 4,
+  "axes": {
+    "clarity": { "score": 4, "notes": "Running requests show Live chip, Now running banner, Execution tab dot; Progress/Output column labels" },
+    "hierarchy": { "score": 4, "notes": "Execution split with labeled columns; running queue rows tinted; removed dead flat-feed CSS" },
+    "typography": { "score": 4, "notes": "Uppercase column headers with tracking; loading spinner panel; page desc updated" },
+    "motion": { "score": 4, "notes": "Running pulse on status pills and exec-node rail; respects prefers-reduced-motion" },
+    "brand": { "score": 4, "notes": "OpenAI tokens only; fixed invalid --accent-teal reference; focus rings preserved" }
+  }
+}

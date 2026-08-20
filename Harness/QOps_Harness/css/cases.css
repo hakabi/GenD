@@ -1,0 +1,293 @@
+/* Test cases page — list + case workbench */
+
+body[data-page="cases"] .app-main,
+body[data-page="case-review"] .app-main {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+body[data-page="cases"] .page-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+body[data-page="cases"] .page-desc {
+  max-width: 52ch;
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.view-panel[hidden] { display: none !important; }
+
+.view-panel > .view-toolbar,
+.view-panel > .breakdown-scroll {
+  flex-shrink: 0;
+}
+
+/* Breakdown cards — horizontal scroll on narrow viewports */
+.breakdown-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.breakdown-scroll .breakdown-grid {
+  border-bottom: none;
+  min-width: min(100%, 720px);
+}
+
+.triage-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) 1fr;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1100px) {
+  .triage-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .triage-layout.is-detail-open .fail-list-panel {
+    max-height: min(36vh, 280px);
+  }
+
+  .triage-layout .cases-detail-mount {
+    min-height: min(58vh, 640px);
+  }
+}
+
+.fail-list-panel {
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.fail-list-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.fail-list-header h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.fail-list-count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--meta);
+  background: var(--surface);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.fail-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.fail-list__empty {
+  padding: 8px 0;
+  list-style: none;
+}
+
+.fail-list__empty .empty-state {
+  min-height: 160px;
+}
+
+/* Fail row — native button for keyboard + screen readers */
+.fail-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 4px;
+  padding: 12px 12px 12px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+
+.fail-item:hover {
+  background: var(--surface-warm);
+}
+
+.fail-item:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.fail-item.selected {
+  background: var(--accent-soft);
+  border-color: color-mix(in oklch, var(--accent) 35%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.fail-item-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: var(--fg);
+  line-height: 1.35;
+}
+
+.fail-item-meta {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.fail-reason {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--danger);
+  background: color-mix(in oklch, var(--danger) 8%, transparent);
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+}
+
+.triage-detail,
+.cases-detail-mount {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  align-self: stretch;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.all-split {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr minmax(420px, 520px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1100px) {
+  .all-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .all-split.is-detail-open .table-wrap {
+    max-height: min(40vh, 320px);
+  }
+
+  .all-split .cases-detail-mount {
+    min-height: min(52vh, 600px);
+  }
+}
+
+.all-split .table-wrap {
+  min-height: 0;
+  overflow: auto;
+  border-right: 1px solid var(--border);
+}
+
+#cases-table tbody tr {
+  transition: background var(--motion-fast);
+}
+
+#cases-table tbody tr:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+#cases-table tbody tr.selected td:first-child {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.case-row-title {
+  font-weight: 500;
+  color: var(--fg);
+  line-height: 1.35;
+}
+
+.case-row-meta {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  margin-top: 3px;
+  letter-spacing: 0.01em;
+}
+
+.cases-detail-mount .case-workbench,
+.cases-detail-mount .case-detail {
+  flex: 1;
+  min-height: 0;
+}
+
+.cases-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 18px;
+  background: var(--fg);
+  color: var(--accent-on);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
+  z-index: 200;
+  pointer-events: none;
+  max-width: min(90vw, 360px);
+}
+
+.cases-toast.visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cases-toast {
+    transition: opacity 0.01ms;
+    transform: none;
+  }
+}

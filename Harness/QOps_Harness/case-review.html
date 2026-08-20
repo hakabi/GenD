@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Review test cases · QOps Harness</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/shell.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/case-detail.css" />
+  <link rel="stylesheet" href="css/case-workbench.css" />
+  <link rel="stylesheet" href="css/case-review.css" />
+  <script src="js/icons.js"></script>
+  <script src="js/nl-flow.js"></script>
+  <script src="js/case-detail.js"></script>
+  <script src="js/case-workbench.js"></script>
+  <script src="js/request-flow.js"></script>
+</head>
+<body data-page="case-review">
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+  <div class="app-shell" data-od-id="case-review">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+    <div class="app-main">
+      <div class="review-wrap">
+        <div class="review-top">
+          <div class="review-banners">
+            <div class="reopen-banner" id="reopen-banner">Reopened from request queue — cases are editable before re-processing.</div>
+            <div class="propose-banner" id="propose-banner"><strong>Proposed from your request</strong> — review, edit, add, or remove cases before processing begins.</div>
+          </div>
+
+          <header class="review-header" data-od-id="review-header">
+            <div class="review-header__main">
+              <a class="review-header__back" href="index.html" data-icon="arrow-left">Requests</a>
+              <div class="review-step-eyebrow" id="step-eyebrow"><span class="step-dot" aria-hidden="true"></span> Step 2 · Review proposed cases</div>
+              <h1 class="review-header__title">Review test cases</h1>
+              <dl class="review-meta" id="request-context">
+                <div class="review-meta__item">
+                  <dt>Mode</dt>
+                  <dd id="ctx-mode">—</dd>
+                </div>
+                <div class="review-meta__item">
+                  <dt>Test request</dt>
+                  <dd id="ctx-input" title="">—</dd>
+                </div>
+                <div class="review-meta__item">
+                  <dt>Session</dt>
+                  <dd id="ctx-session">—</dd>
+                </div>
+                <div class="review-meta__item">
+                  <dt>Cases</dt>
+                  <dd id="case-count">—</dd>
+                </div>
+              </dl>
+            </div>
+            <div class="review-header__actions">
+              <span class="chip" id="run-id-chip">#q-new</span>
+              <span class="chip chip-accent" id="mode-chip">multi-case</span>
+              <a class="btn btn-secondary btn-small" href="index.html?new=1" data-icon="arrow-left">Edit request</a>
+            </div>
+          </header>
+        </div>
+
+    <div class="review-layout" id="review-layout">
+      <aside class="case-list-panel" id="list-panel" aria-label="Case list">
+        <div class="single-summary" id="single-summary">
+          <h2>Single test case</h2>
+          <p>Update the proposed case below, then confirm to start processing.</p>
+        </div>
+        <p class="case-list-panel__label" id="case-list-label">Proposed cases</p>
+        <div class="list-toolbar">
+          <label>
+            Category filter
+            <select id="category-filter" aria-label="Filter by category">
+              <option value="">All</option>
+              <option value="positive">Positive</option>
+              <option value="negative">Negative</option>
+              <option value="edge_case">Edge case</option>
+              <option value="performance">Performance</option>
+              <option value="security">Security</option>
+            </select>
+          </label>
+          <button class="btn btn-secondary btn-small" type="button" id="add-case-btn" data-icon="plus">Add case</button>
+        </div>
+        <ul class="case-list" id="case-list" aria-label="Proposed test cases"></ul>
+      </aside>
+
+      <div id="case-detail-mount" aria-label="Case workbench"></div>
+    </div>
+
+    <footer class="review-footer">
+      <div>
+        <span class="validation-msg" id="validation-msg" role="alert"></span>
+        <p class="review-footer__hint" id="footer-hint">Steps tab shows the full flow — Edit test case to change, then confirm.</p>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-secondary" type="button" id="close-btn" data-icon="x">Close</button>
+        <button class="btn btn-primary" type="button" id="confirm-btn" data-icon="check">Confirm and process</button>
+      </div>
+    </footer>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="mobile-nav-toggle btn-icon-only" id="mobile-nav-toggle" data-icon="menu" data-label="Open menu" aria-label="Open menu">Open menu</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="confirm-backdrop" id="delete-confirm" hidden>
+    <div class="confirm-dialog" role="alertdialog" aria-labelledby="delete-confirm-title" aria-describedby="delete-confirm-desc">
+      <h3 id="delete-confirm-title">Delete test case?</h3>
+      <p id="delete-confirm-desc">This removes the case from the proposed set. You need at least one case to continue.</p>
+      <div class="confirm-actions">
+        <button type="button" class="btn btn-secondary btn-small" id="delete-cancel-btn" data-icon="x">Cancel</button>
+        <button type="button" class="btn btn-danger btn-small" id="delete-confirm-btn" data-icon="trash">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "qops-new-request-params";
+    const CASES_KEY = "qops-review-cases";
+    const RUN_KEY = "qops-active-run";
+
+    const MODE_LABELS = {
+      single_case: "Single test case",
+      new_feature: "Tests for a new feature",
+      existing_feature: "Tests for an existing feature",
+      bug_ticket: "Tests for a bug ticket",
+    };
+
+    const params = new URLSearchParams(location.search);
+    const mode = params.get("mode") === "single" ? "single" : "multi";
+    const reopened = params.get("reopen") === "1";
+    const proposed = params.get("propose") === "1";
+
+    const listPanel = document.getElementById("list-panel");
+    const reviewLayout = document.getElementById("review-layout");
+    const caseList = document.getElementById("case-list");
+    const categoryFilter = document.getElementById("category-filter");
+    const addCaseBtn = document.getElementById("add-case-btn");
+    const confirmBtn = document.getElementById("confirm-btn");
+    const closeBtn = document.getElementById("close-btn");
+    const validationMsg = document.getElementById("validation-msg");
+    const toast = document.getElementById("toast");
+    const modeChip = document.getElementById("mode-chip");
+    const runIdChip = document.getElementById("run-id-chip");
+    const reopenBanner = document.getElementById("reopen-banner");
+    const proposeBanner = document.getElementById("propose-banner");
+    const ctxMode = document.getElementById("ctx-mode");
+    const ctxInput = document.getElementById("ctx-input");
+    const ctxSession = document.getElementById("ctx-session");
+    const caseCountEl = document.getElementById("case-count");
+    const deleteConfirm = document.getElementById("delete-confirm");
+    const deleteConfirmDesc = document.getElementById("delete-confirm-desc");
+    const deleteCancelBtn = document.getElementById("delete-cancel-btn");
+    const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
+
+    let cases = [];
+    let selectedId = null;
+    let nextId = 1;
+    let pendingDeleteId = null;
+    let requestContext = {};
+
+    function enrichCase(c) {
+      const now = new Date().toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+      return {
+        ...c,
+        status: c.status || "proposed",
+        createdBy: c.createdBy || "AI proposal",
+        createdAt: c.createdAt || now,
+        editHistory: c.editHistory || [],
+      };
+    }
+
+    function pushEditHistory(c, action) {
+      if (!c.editHistory) c.editHistory = [];
+      c.editHistory.unshift({
+        by: "You",
+        action,
+        at: new Date().toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }),
+      });
+    }
+
+    function buildRequestContext() {
+      const req = readRequestParams();
+      return {
+        ...req,
+        request_mode_label: MODE_LABELS[req.request_mode] || req.request_mode,
+        reopened,
+      };
+    }
+
+    const workbench = new QopsCaseWorkbench({
+      root: document.getElementById("case-detail-mount"),
+      context: "review",
+      editorMode: mode,
+      editorActions: mode === "single" ? "save" : "full",
+      showTriage: reopened,
+      defaultTab: "info",
+      requestContext: buildRequestContext(),
+      onCaseChange: () => {
+        if (mode === "multi" && selectedId) {
+          persistCases();
+          renderList();
+        }
+      },
+      onSave: (data) => {
+        const c = cases.find((x) => x.id === selectedId);
+        if (c) {
+          pushEditHistory(c, "Edited case details");
+          persistCases();
+        }
+        showToast("Case saved");
+        renderList();
+      },
+      onDelete: () => selectedId && openDeleteConfirm(selectedId),
+      onDuplicate: () => duplicateCase(),
+      onTriageSave: () => {
+        persistCases();
+        showToast("Triage saved");
+      },
+    });
+    workbench.setIdleText(
+      reopened
+        ? "Select a case — Info for failure context, Steps for the flow, History for runs."
+        : "Select a proposed case — Info for request context, Steps for the full flow (e.g. Step 1–20)."
+    );
+
+    const CATEGORY_LABELS = {
+      positive: "Positive",
+      negative: "Negative",
+      edge_case: "Edge case",
+      performance: "Performance",
+      security: "Security",
+    };
+
+    function uid() { return `case-${nextId++}`; }
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("visible");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.remove("visible"), 2400);
+    }
+
+    function setValidation(msg) { validationMsg.textContent = msg || ""; }
+
+    function readRequestParams() {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          return JSON.parse(raw);
+        } catch (_) {}
+      }
+      const reqParam = params.get("req");
+      if (reqParam) {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(reqParam));
+          try {
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+          } catch (_) {}
+          return parsed;
+        } catch (_) {}
+      }
+      return {};
+    }
+
+    function defaultCasesFromRequest() {
+      const req = readRequestParams();
+      if (window.QopsRequestFlow) {
+        return window.QopsRequestFlow.buildProposedCases(req);
+      }
+      const flow = req.user_input || "User completes the described flow successfully.";
+      const model = QopsNlFlow.buildDefaultFromText(flow);
+      return [{
+        id: uid(),
+        title: "Primary flow",
+        category: "positive",
+        flowSteps: model.steps,
+        flow: QopsNlFlow.serializeFlow(model),
+      }];
+    }
+
+    function normalizeLoadedCases(list) {
+      return list.map((c) => enrichCase(QopsNlFlow.normalizeCaseFlow(c)));
+    }
+
+    function loadCases() {
+      if (reopened && window.QopsRequestFlow?.prepareReopenReview) {
+        const runRaw = sessionStorage.getItem(RUN_KEY);
+        let runId = null;
+        try {
+          runId = runRaw ? JSON.parse(runRaw).id : null;
+        } catch (_) {}
+        if (runId) {
+          const payload = QopsRequestFlow.prepareReopenReview(runId);
+          QopsRequestFlow.persistReopenReview(payload);
+          cases = normalizeLoadedCases(payload.cases);
+          nextId = Math.max(0, ...cases.map((c) => parseInt(c.id.split("-")[1], 10) || 0)) + 1;
+          return;
+        }
+      }
+      const saved = sessionStorage.getItem(CASES_KEY);
+      if (saved) {
+        try {
+          cases = normalizeLoadedCases(JSON.parse(saved));
+          nextId = Math.max(0, ...cases.map((c) => parseInt(c.id.split("-")[1], 10) || 0)) + 1;
+          return;
+        } catch (_) {}
+      }
+      cases = defaultCasesFromRequest().map(enrichCase);
+      persistCases();
+      nextId = Math.max(0, ...cases.map((c) => parseInt(c.id.split("-")[1], 10) || 0)) + 1;
+    }
+
+    function persistCases() {
+      try {
+        sessionStorage.setItem(CASES_KEY, JSON.stringify(cases));
+      } catch (_) {}
+    }
+
+    function syncFormToCase() {
+      if (!selectedId) return false;
+      const c = cases.find((x) => x.id === selectedId);
+      if (!c) return false;
+      const data = workbench.syncToCase();
+      if (!data) return false;
+      Object.assign(c, data);
+      persistCases();
+      renderList();
+      return true;
+    }
+
+    function openDeleteConfirm(id) {
+      const c = cases.find((x) => x.id === id);
+      if (!c) return;
+      if (cases.length <= 1) {
+        setValidation("At least one case is required.");
+        return;
+      }
+      setValidation("");
+      pendingDeleteId = id;
+      deleteConfirmDesc.textContent = `Remove "${c.title}" from the proposed set? You need at least one case to continue.`;
+      deleteConfirm.hidden = false;
+      deleteCancelBtn.focus();
+    }
+
+    function closeDeleteConfirm() {
+      deleteConfirm.hidden = true;
+      pendingDeleteId = null;
+    }
+
+    function stepCountForCase(c) {
+      if (c.flowSteps?.length) return c.flowSteps.length;
+      if (c.flow) return QopsNlFlow.parseFlow(c.flow).steps.length;
+      return 0;
+    }
+
+    function renderRequestContext() {
+      requestContext = buildRequestContext();
+      workbench.setRequestContext(requestContext);
+      const req = requestContext;
+      ctxMode.textContent = MODE_LABELS[req.request_mode] || "—";
+      const inputText = req.user_input || "—";
+      ctxInput.textContent = inputText;
+      ctxInput.title = inputText;
+      ctxSession.textContent = req.session_file || "Platform default";
+      const failedCount = cases.filter((c) => c.status === "failed").length;
+      if (reopened) {
+        caseCountEl.textContent = failedCount
+          ? `${cases.length} cases · ${failedCount} failed`
+          : `${cases.length} cases`;
+      } else {
+        caseCountEl.textContent = `${cases.length} proposed`;
+      }
+    }
+
+    function syncReviewLayout() {
+      if (reviewLayout) reviewLayout.classList.toggle("is-detail-open", !!selectedId);
+    }
+
+    function renderList() {
+      renderRequestContext();
+      syncReviewLayout();
+      const filter = categoryFilter.value;
+      caseList.innerHTML = "";
+      const filtered = cases.filter((c) => !filter || c.category === filter);
+      const showRowActions = mode !== "single";
+      if (!filtered.length) {
+        caseList.innerHTML = `<li class="case-list__empty"><div class="empty-state"><p class="empty-state__title">No cases match</p><p class="empty-state__hint">Clear the category filter or add a case.</p></div></li>`;
+        return;
+      }
+      filtered.forEach((c) => {
+        const li = document.createElement("li");
+        li.className = `case-item${c.id === selectedId ? " active" : ""}`;
+        li.dataset.id = c.id;
+        li.setAttribute("role", "button");
+        li.setAttribute("tabindex", "0");
+        li.setAttribute("aria-pressed", c.id === selectedId ? "true" : "false");
+        const actionsHtml = showRowActions
+          ? `<div class="case-item-actions">
+              <button type="button" class="btn btn-icon-only btn-small case-item-edit" data-icon="edit" data-icon-only="true" data-label="Edit ${escapeHtml(c.title)}">Edit</button>
+              <button type="button" class="btn btn-icon-only btn-small btn-danger case-item-del" data-icon="trash" data-icon-only="true" data-label="Delete ${escapeHtml(c.title)}">Delete</button>
+            </div>`
+          : "";
+        const status = c.status || "proposed";
+        let statusHtml = "";
+        if (reopened && status !== "proposed") {
+          const statusClass = status === "failed" ? "case-item-status--fail" : "case-item-status--pass";
+          const statusLabel = status === "failed" ? "Failed" : "Passed";
+          statusHtml = `<span class="case-item-status ${statusClass}">${statusLabel}</span>`;
+        } else if (!reopened) {
+          statusHtml = `<span class="case-item-status case-item-status--proposed">Proposed</span>`;
+        }
+        li.innerHTML = `
+          <div class="case-item-body">
+            <div class="case-item-title">${escapeHtml(c.title)}</div>
+            <div class="case-item-meta">
+              <span class="case-item-cat">${CATEGORY_LABELS[c.category] || c.category}</span>
+              <span class="case-item-steps">${stepCountForCase(c)} step${stepCountForCase(c) === 1 ? "" : "s"}</span>
+              ${statusHtml}
+            </div>
+          </div>
+          ${actionsHtml}
+        `;
+        li.addEventListener("click", (e) => {
+          if (e.target.closest(".case-item-del")) {
+            e.stopPropagation();
+            openDeleteConfirm(c.id);
+            return;
+          }
+          if (e.target.closest(".case-item-edit")) {
+            e.stopPropagation();
+            selectCase(c.id, { editing: true });
+            return;
+          }
+          selectCase(c.id);
+        });
+        li.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            selectCase(c.id);
+          }
+        });
+        caseList.appendChild(li);
+      });
+      if (window.enhanceButtons) enhanceButtons(caseList);
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function selectCase(id, opts) {
+      if (workbench.isDirty() && selectedId && selectedId !== id) {
+        syncFormToCase();
+      }
+      selectedId = id;
+      const c = cases.find((x) => x.id === id);
+      if (!c) return;
+      const tab = typeof opts === "string" ? opts : opts?.tab;
+      const editing = typeof opts === "object" && opts?.editing;
+      workbench.setCase(c, { tab: tab || "info", editing: !!editing });
+      renderList();
+    }
+
+    function saveCurrentCase() {
+      if (!selectedId) return;
+      if (syncFormToCase()) showToast("Case saved");
+    }
+
+    function removeCase(id) {
+      if (cases.length <= 1) {
+        setValidation("At least one case is required.");
+        return;
+      }
+      setValidation("");
+      cases = cases.filter((c) => c.id !== id);
+      if (selectedId === id) {
+        selectedId = cases[0]?.id || null;
+        if (selectedId) selectCase(selectedId);
+        else workbench.setCase(null);
+      }
+      persistCases();
+      renderList();
+      showToast("Case deleted");
+    }
+
+    function addCase() {
+      const model = QopsNlFlow.buildDefaultFromText("New test case");
+      const c = {
+        id: uid(),
+        title: "New test case",
+        category: "positive",
+        flowSteps: model.steps,
+        flow: QopsNlFlow.serializeFlow(model),
+      };
+      cases.push(enrichCase(c));
+      persistCases();
+      selectCase(c.id, { editing: true });
+      renderList();
+      workbench.getEditor()?.root.querySelector("#cd-title")?.focus();
+      workbench.getEditor()?.root.querySelector("#cd-title")?.select();
+    }
+
+    function duplicateCase() {
+      if (!selectedId) return;
+      syncFormToCase();
+      const src = cases.find((c) => c.id === selectedId);
+      if (!src) return;
+      const copy = enrichCase({
+        id: uid(),
+        title: `${src.title} (copy)`,
+        category: src.category,
+        flowSteps: JSON.parse(JSON.stringify(src.flowSteps || QopsNlFlow.parseFlow(src.flow).steps)),
+        flow: src.flow,
+        createdBy: "You",
+      });
+      pushEditHistory(src, `Duplicated as "${copy.title}"`);
+      cases.push(copy);
+      persistCases();
+      selectCase(copy.id, "edit");
+      renderList();
+      showToast("Case duplicated");
+    }
+
+    function initMode() {
+      if (mode === "single") {
+        listPanel.classList.add("single-mode");
+        modeChip.textContent = "single-case";
+        document.getElementById("step-eyebrow").innerHTML = '<span class="step-dot" aria-hidden="true"></span> Step 2 · Review case';
+        document.querySelector(".review-header__title").textContent = "Review test case";
+        document.getElementById("footer-hint").textContent = "Steps tab shows the flow — Edit test case to change, then confirm.";
+        workbench.getEditor()?.setHint("Edit title, category, and stepAI blocks below.");
+        if (cases.length > 1) cases = [cases[0]];
+        if (cases.length === 0) cases = defaultCasesFromRequest().slice(0, 1);
+        selectedId = cases[0].id;
+        selectCase(selectedId);
+      } else {
+        modeChip.textContent = "multi-case · CRUD";
+        workbench.getEditor()?.setHint("");
+        document.getElementById("footer-hint").textContent = `${cases.length} cases — Steps tab for the flow; Edit to change, then confirm.`;
+        if (!selectedId && cases.length) {
+          const firstFailed = reopened ? cases.find((c) => c.status === "failed") : null;
+          selectCase((firstFailed || cases[0]).id);
+        } else if (!cases.length) workbench.setCase(null);
+        renderList();
+      }
+    }
+
+    function initReopen() {
+      const run = sessionStorage.getItem(RUN_KEY);
+      if (reopened && run) {
+        const parsed = JSON.parse(run);
+        runIdChip.textContent = parsed.id;
+        runIdChip.classList.add("chip-running");
+        reopenBanner.classList.add("visible");
+        document.getElementById("step-eyebrow").innerHTML =
+          '<span class="step-dot" aria-hidden="true"></span> Reopened · Review cases';
+        document.querySelector(".review-header__title").textContent = "Review executed cases";
+        document.getElementById("case-list-label").textContent = "Cases from last run";
+        document.getElementById("footer-hint").textContent =
+          "Info shows failure context — Steps tab for the flow; Edit test case to fix, then confirm.";
+        if (parsed.summary) {
+          reopenBanner.textContent = `Reopened from request queue — ${parsed.summary}. Cases are editable before re-processing.`;
+        }
+        return;
+      }
+      if (proposed && run) {
+        const { id } = JSON.parse(run);
+        runIdChip.textContent = id;
+        proposeBanner.classList.add("visible");
+        return;
+      }
+      runIdChip.textContent = "#q-new";
+    }
+
+    categoryFilter.addEventListener("change", renderList);
+    addCaseBtn.addEventListener("click", addCase);
+    deleteCancelBtn.addEventListener("click", closeDeleteConfirm);
+    deleteConfirmBtn.addEventListener("click", () => {
+      if (pendingDeleteId) removeCase(pendingDeleteId);
+      closeDeleteConfirm();
+    });
+    deleteConfirm.addEventListener("click", (e) => {
+      if (e.target === deleteConfirm) closeDeleteConfirm();
+    });
+
+    confirmBtn.addEventListener("click", () => {
+      setValidation("");
+      if (workbench.isDirty()) syncFormToCase();
+      if (mode === "single") saveCurrentCase();
+      if (!cases.length) { setValidation("No cases to process."); return; }
+      const incomplete = cases.find((c) => {
+        let model;
+        if (c.flowSteps) {
+          model = c.flowSteps[0]?.navigate !== undefined
+            ? { steps: c.flowSteps }
+            : QopsNlFlow.normalizeModel({ groups: c.flowSteps });
+        } else {
+          model = QopsNlFlow.parseFlow(c.flow);
+        }
+        return !QopsNlFlow.flowIsComplete(model);
+      });
+      if (incomplete) {
+        setValidation(`"${incomplete.title}" needs all flow steps filled in.`);
+        selectCase(incomplete.id, { editing: true });
+        return;
+      }
+      const runId = reopened ? JSON.parse(sessionStorage.getItem(RUN_KEY) || "{}").id : `#q-${Date.now().toString(36)}`;
+      sessionStorage.setItem(RUN_KEY, JSON.stringify({ id: runId, cases, confirmedAt: Date.now() }));
+      showToast(`Request ${runId} queued for processing`);
+      confirmBtn.disabled = true;
+      const confirmLabel = confirmBtn.querySelector(".btn-label") || confirmBtn;
+      confirmLabel.textContent = "Processing…";
+      setTimeout(() => {
+        confirmBtn.disabled = false;
+        confirmLabel.textContent = "Confirm and process";
+      }, 2000);
+    });
+
+    closeBtn.addEventListener("click", () => { window.location.href = "index.html"; });
+
+    loadCases();
+    initMode();
+    initReopen();
+  </script>
+  <script src="js/knowledge-data.js"></script>
+  <script src="js/shell.js"></script>
+</body>
+</html>

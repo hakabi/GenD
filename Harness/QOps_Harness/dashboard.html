@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Dashboard · QOps Harness</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/shell.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <script src="js/icons.js"></script>
+  <style>
+    .section-heading { font-size: 16px; margin: 0 0 12px; font-weight: 600; }
+  </style>
+</head>
+<body data-page="dashboard">
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+  <div class="app-shell" data-od-id="dashboard-tab">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+    <div class="app-main">
+      <header class="page-header">
+        <div>
+          <h2>Dashboard</h2>
+          <p class="page-desc">Pass rate, step mix, and taxonomy breakdown.</p>
+        </div>
+      </header>
+      <div class="toolbar-strip">
+        <div class="filter-row">
+          <label>Start<input type="date" value="2026-06-01" /></label>
+          <label>End<input type="date" value="2026-07-03" /></label>
+          <label>Project<input type="text" placeholder="optional" /></label>
+          <button type="button" class="btn btn-primary btn-small" data-icon="filter">Apply</button>
+          <button type="button" class="btn btn-secondary btn-small" data-icon="download">Export CSV</button>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="content">
+          <div class="kpis" aria-label="Summary statistics">
+            <div class="kpi"><span class="kpi-label">Active cases</span><span class="kpi-value">47</span></div>
+            <div class="kpi"><span class="kpi-label">Total runs</span><span class="kpi-value">312</span></div>
+            <div class="kpi"><span class="kpi-label">Open failures</span><span class="kpi-value kpi-value--danger">3</span></div>
+            <div class="kpi"><span class="kpi-label">AI steps</span><span class="kpi-value">1.2k</span></div>
+          </div>
+          <div class="charts">
+            <div class="chart-card"><h3>Playwright pass / fail</h3><div class="chart-placeholder" aria-hidden="true"></div></div>
+            <div class="chart-card"><h3>Step mix (AI / automation / fallback)</h3><div class="chart-placeholder" aria-hidden="true"></div></div>
+            <div class="chart-card"><h3>AI step ratio</h3><div class="chart-placeholder" aria-hidden="true"></div></div>
+            <div class="chart-card"><h3>Request outcomes</h3><div class="chart-placeholder" aria-hidden="true"></div></div>
+          </div>
+          <h3 class="section-heading">Taxonomy breakdown</h3>
+          <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Project</th><th>Category</th><th>Feature</th><th>Active cases</th><th>Failed (window)</th></tr></thead>
+            <tbody>
+              <tr><td>checkout</td><td>regression</td><td>Coupon</td><td>12</td><td>1</td></tr>
+              <tr><td>auth</td><td>smoke</td><td>Password reset</td><td>8</td><td>0</td></tr>
+              <tr><td>api</td><td>contract</td><td>Rate limits</td><td>5</td><td>0</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="mobile-nav-toggle btn-icon-only" id="mobile-nav-toggle" data-icon="menu" data-label="Open menu" aria-label="Open menu">Open menu</button>
+  <script src="js/knowledge-data.js"></script>
+  <script src="js/shell.js"></script>
+</body>
+</html>

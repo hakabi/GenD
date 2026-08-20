@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Executed history · QOps Harness</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/shell.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/runs.css" />
+  <script src="js/icons.js"></script>
+</head>
+<body data-page="runs">
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+  <div class="app-shell" data-od-id="runs-tab">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+    <div class="app-main">
+      <header class="page-header">
+        <div>
+          <h2>Executed history</h2>
+          <p class="page-desc">Playwright run log — filter by case or status.</p>
+        </div>
+      </header>
+      <div class="toolbar-strip">
+        <div class="filter-row">
+          <label>Case<input type="text" id="filter-case" placeholder="optional" /></label>
+          <label>Status<select id="filter-status"><option value="">All</option><option value="passed">Passed</option><option value="failed">Failed</option></select></label>
+          <button type="button" class="btn btn-secondary btn-small" id="refresh-btn" data-icon="refresh">Refresh</button>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="content">
+          <div class="runs-split" id="runs-split">
+            <div class="table-wrap">
+              <table class="data-table" id="runs-table">
+                <thead>
+                  <tr><th>Run</th><th>Case</th><th>Status</th><th>AI</th><th>Auto</th><th>Completed</th></tr>
+                </thead>
+                <tbody id="runs-body"></tbody>
+              </table>
+              <div class="runs-empty empty-state" id="runs-empty" hidden>
+                <p class="empty-state__title">No runs match</p>
+                <p class="empty-state__hint">Try clearing the Case or Status filter.</p>
+              </div>
+            </div>
+            <aside class="run-detail-panel" id="run-detail" aria-label="Run detail">
+              <h3 id="detail-title">Run detail</h3>
+              <pre id="detail-log" class="code-block"></pre>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="mobile-nav-toggle btn-icon-only" id="mobile-nav-toggle" data-icon="menu" data-label="Open menu" aria-label="Open menu">Open menu</button>
+  <script>
+    const RUNS = [
+      { id: "run-8821", case: "Invalid coupon code", status: "failed", ai: 4, auto: 12, at: "Jul 3, 10:41", log: "AssertionError: expected error banner\n  at checkout.spec.ts:42" },
+      { id: "run-8820", case: "Coupon apply — happy path", status: "passed", ai: 2, auto: 18, at: "Jul 3, 10:38", log: "1 passed (18.2s)" },
+      { id: "run-8812", case: "Password reset email", status: "passed", ai: 3, auto: 9, at: "Jul 2, 16:02", log: "1 passed (9.1s)" },
+      { id: "run-8801", case: "API rate limit header", status: "passed", ai: 1, auto: 6, at: "Jul 2, 09:22", log: "1 passed (6.4s)" },
+    ];
+    const params = new URLSearchParams(location.search);
+    const filterCase = document.getElementById("filter-case");
+    if (params.get("case")) filterCase.value = params.get("case");
+
+    const tbody = document.getElementById("runs-body");
+    const runsTable = document.getElementById("runs-table");
+    const runsEmpty = document.getElementById("runs-empty");
+    const runsSplit = document.getElementById("runs-split");
+    const detail = document.getElementById("run-detail");
+    const detailLog = document.getElementById("detail-log");
+    const detailTitle = document.getElementById("detail-title");
+    let selectedRunId = null;
+
+    function syncRunsLayout() {
+      if (runsSplit) runsSplit.classList.toggle("is-detail-open", !!selectedRunId);
+    }
+
+    function selectRun(run) {
+      if (!run) {
+        selectedRunId = null;
+        syncRunsLayout();
+        detailTitle.textContent = "Run detail";
+        detailLog.textContent = "Select a run from the table to view its log.";
+        return;
+      }
+      selectedRunId = run.id;
+      syncRunsLayout();
+      detailTitle.textContent = `${run.id} · ${run.case}`;
+      detailLog.textContent = run.log;
+    }
+
+    function render() {
+      const caseQ = filterCase.value.toLowerCase();
+      const statusQ = document.getElementById("filter-status").value;
+      const filtered = RUNS.filter((r) => (!caseQ || r.case.toLowerCase().includes(caseQ)) && (!statusQ || r.status === statusQ));
+
+      tbody.innerHTML = "";
+      const hasRows = filtered.length > 0;
+      runsTable.hidden = !hasRows;
+      runsEmpty.hidden = hasRows;
+
+      if (!hasRows) {
+        selectedRunId = null;
+        syncRunsLayout();
+        detailTitle.textContent = "Run detail";
+        detailLog.textContent = "No runs match the current filters.";
+        return;
+      }
+
+      if (!selectedRunId || !filtered.some((r) => r.id === selectedRunId)) {
+        selectRun(filtered[0]);
+      }
+
+      filtered.forEach((r) => {
+        const tr = document.createElement("tr");
+        tr.dataset.id = r.id;
+        tr.tabIndex = 0;
+        tr.setAttribute("role", "button");
+        tr.setAttribute("aria-pressed", r.id === selectedRunId ? "true" : "false");
+        tr.classList.toggle("selected", r.id === selectedRunId);
+        tr.innerHTML = `<td class="mono">${r.id}</td><td>${r.case}</td><td class="${r.status === "passed" ? "pass" : "fail"}">${r.status}</td><td class="mono">${r.ai}</td><td class="mono">${r.auto}</td><td class="mono">${r.at}</td>`;
+        const activate = () => {
+          document.querySelectorAll("#runs-body tr").forEach((x) => {
+            const on = x === tr;
+            x.classList.toggle("selected", on);
+            x.setAttribute("aria-pressed", on ? "true" : "false");
+          });
+          selectRun(r);
+        };
+        tr.addEventListener("click", activate);
+        tr.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            activate();
+          }
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById("refresh-btn").addEventListener("click", render);
+    document.getElementById("filter-status").addEventListener("change", render);
+    filterCase.addEventListener("input", render);
+    render();
+  </script>
+  <script src="js/knowledge-data.js"></script>
+  <script src="js/shell.js"></script>
+</body>
+</html>

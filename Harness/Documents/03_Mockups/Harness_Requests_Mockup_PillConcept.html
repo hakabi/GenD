@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness — Requests page · Created-by pill (visual concept)</title>
+<style>
+  :root{
+    --bg:#0d0f13; --panel:#14171d; --panel2:#1a1e26; --panel3:#11141a; --line:#262b34;
+    --text:#e6e9ee; --muted:#8b93a1; --green:#34d399; --greendim:#1f5f4b;
+    --red:#f0a3a3; --amber:#fbbf24; --grey:#6b7280; --accentbg:#0f2019;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:24px;line-height:1.45}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:16px;max-width:900px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 18px;font-size:12px;color:var(--muted)}
+  .legend b{color:var(--green)}
+  .badge{display:inline-flex;align-items:center;justify-content:center;height:19px;min-width:19px;padding:0 5px;border-radius:10px;
+    background:var(--green);color:#04150f;font-size:11px;font-weight:700;flex:none}
+  .concept-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--amber);border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.10);border-radius:20px;padding:2px 10px}
+
+  .app{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .apphead{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 18px 12px}
+  .apphead .h .t{font-size:16px;font-weight:600}
+  .apphead .h .d{font-size:12px;color:var(--muted);margin-top:2px}
+  .newbtn{background:#f4f5f7;color:#0d0f13;border:none;border-radius:20px;padding:8px 14px;font-size:12px;font-weight:600}
+  .toolrow{display:flex;align-items:center;justify-content:space-between;padding:0 18px 12px}
+  .btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:6px 12px;border-radius:8px;font-size:12px}
+  .session{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--panel3);font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .session .r{display:flex;gap:8px;align-items:center}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+
+  .panes{display:grid;grid-template-columns:400px 1fr;min-height:520px}
+  .queue{border-right:1px solid var(--line);padding:16px}
+  .detail{padding:16px 18px;position:relative}
+
+  .qhead{font-size:12px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin:0 0 12px;display:flex;gap:8px;align-items:center}
+  .qcount{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:0 8px;font-size:11px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .seg{display:flex;border:1px solid var(--greendim);border-radius:9px;overflow:hidden;cursor:pointer}
+  .seg span{padding:6px 11px;font-size:12px;user-select:none}
+  .seg .on{background:var(--green);color:#04150f;font-weight:600}
+  .seg .off{background:transparent;color:var(--muted)}
+  .fbtn{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:6px 12px;border-radius:9px;font-size:12px}
+  .ctrl{display:flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:6px 11px;font-size:12px;color:var(--muted)}
+  .ctrl .v{color:var(--text)}
+  .search{background:var(--panel2);border:1px solid var(--line);border-radius:9px;display:flex;align-items:center;gap:8px;padding:6px 11px;color:var(--muted);flex:1;min-width:150px}
+  .search input{width:100%;background:transparent;border:none;color:var(--text);font-size:12px;outline:none}
+  .search input::placeholder{color:var(--muted)}
+  .anno{display:inline-flex;align-items:center;gap:4px;margin-left:2px}
+  .placenote{font-size:11px;color:var(--muted);margin:0 0 14px}
+  .placenote b{color:var(--green)}
+
+  .qlist{display:flex;flex-direction:column;gap:9px}
+  .qrow{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px 13px}
+  .qrow.sel{border-color:var(--green);background:var(--accentbg)}
+  .qtop{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .ref{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--green);font-weight:600}
+  .copy{font-size:11px;color:var(--muted)}
+  .st{font-size:11.5px}
+  .st.fail{color:var(--red)} .st.ok{color:var(--green)}
+  .cases{margin-left:auto;font-size:11px;color:var(--muted)}
+  .title{font-size:12.5px;color:var(--text);margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .meta{font-size:11.5px;color:var(--muted);display:flex;gap:7px;align-items:center}
+  .meta .who{color:#c7ccd4}
+  .dot{color:#3a3f48}
+
+  /* detail */
+  .dtitle{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .dtitle .h{font-size:16px;font-weight:600}
+  .pillfail{font-size:11px;color:#ff6b6b;background:#2a1414;border:1px solid #5b2626;border-radius:20px;padding:2px 10px;font-weight:700;flex:none}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+  .chip{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+  .chip.ref{color:var(--green);font-family:ui-monospace,monospace}
+  .tabs{display:flex;gap:20px;border-bottom:1px solid var(--line);margin-bottom:16px}
+  .tabs .tab{font-size:13px;color:var(--muted);padding:0 0 10px}
+  .tabs .tab.on{color:var(--text);border-bottom:2px solid var(--green)}
+  .dcard{background:var(--panel3);border:1px solid var(--line);border-radius:11px;padding:14px;margin-bottom:12px}
+  .dcard .lbl{font-size:12px;font-weight:600;margin-bottom:6px}
+  .dcard .txt{font-size:12.5px;color:#c9ced6}
+  .attr{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:12px}
+  .attr:first-child{margin-top:0}
+  .aval{font-size:13px;color:var(--text);margin-top:2px}
+  .link{color:var(--green);text-decoration:none}
+  .uuid2{font-size:11px;color:var(--muted)}
+  .cbypill{display:inline-flex;border:1px solid var(--greendim);border-radius:9px;overflow:hidden;margin-top:4px;cursor:pointer;width:max-content}
+  .cbypill span{padding:5px 11px;font-size:12px}
+
+  .callbox{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .callbox h3{font-size:13px;margin:0 0 4px}
+  .callbox .grp{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 6px}
+  .cl{display:flex;gap:9px;font-size:12.5px;color:var(--muted);margin:7px 0;align-items:flex-start}
+  .cl b{color:var(--green)}
+</style>
+</head>
+<body>
+  <h1>Harness — Requests page · "Created by" pill <span class="concept-tag">◆ visual concept</span></h1>
+  <div class="sub">A look-and-feel exploration that brings the merged <b style="color:var(--green)">"Created by" pill</b> into the current two-pane layout. <b>Styling concept only</b> — the shipped creator filter is an "All requests" dropdown and this isn't a proposed change to it. Everything else mirrors the QG-141 mockup. <b>Click the pill to try it.</b></div>
+
+  <div class="legend">
+    <span><span class="badge">L1</span> = QG-141 proposal (unchanged from the current mockup)</span>
+    <span><span class="concept-tag">◆</span> = the pill is a visual concept, not a badged proposal</span>
+  </div>
+
+  <div class="app">
+    <!-- page chrome -->
+    <div class="apphead">
+      <div class="h"><div class="t">Requests</div><div class="d">Test request queue — select a row to inspect activity and open case review.</div></div>
+      <button class="newbtn">+ New request</button>
+    </div>
+    <div class="toolrow"><span class="mini" style="font-size:12px;color:var(--muted)">Show 20 ▾</span><span class="btn">⟳ Refresh</span></div>
+    <div class="session">
+      <div class="r">SESSION <span class="mono" style="color:#c7ccd4">data/sessions/aloha-auth.json</span> · harness override · saved 7/1/2026, 2:21:07 PM</div>
+      <div class="r"><span class="btn">⬆ Upload</span><span class="btn mono">data/sessions/aloha-auth.json ▾</span><span class="btn">↺ Use default</span></div>
+    </div>
+
+    <div class="panes">
+      <!-- LEFT: queue -->
+      <div class="queue">
+        <div class="qhead">Queue <span class="qcount">20</span> · newest first</div>
+        <div class="toolbar">
+          <div class="seg" id="cby" title="Created by — one-tap Mine / Anyone; caret picks a specific user">
+            <span class="on">● Mine</span><span class="off">Anyone&nbsp;▾</span>
+          </div>
+          <div class="ctrl">All statuses <span class="v">▾</span></div>
+          <div class="search">🔍 <input placeholder="Search request text or REQ ID…"></div><span class="anno"><span class="badge">L3</span></span>
+          <div class="ctrl">Created: <span class="v">Any date ▾</span></div><span class="anno"><span class="badge">L2</span></span>
+        </div>
+        <div class="placenote"><b>Created by</b> pill — one-tap <b>Mine</b> / <b>Anyone</b>, caret opens the full user list. The one-tap "Mine" keeps the most common action a single click. <i>(Concept; the shipped control is an "All requests" dropdown.)</i></div>
+
+        <div class="qlist">
+          <div class="qrow sel">
+            <div class="qtop"><span class="ref">REQ-1042</span><span class="badge">L1</span><span class="copy">⧉</span><span class="st fail">failed</span><span class="cases">1 case</span></div>
+            <div class="title">Validate the 'Total Endowment' menu display, default 'Overview' tab styling…</div>
+            <div class="meta"><span class="who">qa_user</span><span class="dot">·</span><span>Today, 11:09 AM</span></div>
+          </div>
+          <div class="qrow">
+            <div class="qtop"><span class="ref">REQ-1041</span><span class="copy">⧉</span><span class="st fail">failed</span><span class="cases">1 case</span></div>
+            <div class="title">Project: aloha. Navigate to Private Fund tab. Expand categories line…</div>
+            <div class="meta"><span class="who">qa_lead</span><span class="dot">·</span><span>Yesterday, 4:22 PM</span></div>
+          </div>
+          <div class="qrow">
+            <div class="qtop"><span class="ref">REQ-1040</span><span class="copy">⧉</span><span class="st fail">failed</span><span class="cases">1 case</span></div>
+            <div class="title">Test TC-UI-001: Global Dashboard Font Size Increase. Steps: 1. Load Cash Forecast…</div>
+            <div class="meta"><span class="who">qa_user</span><span class="dot">·</span><span>Yesterday, 12:52 PM</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: detail -->
+      <div class="detail">
+        <div class="dtitle">
+          <div class="h">Validate the 'Total Endowment' menu display, default 'Overview' tab sty…</div>
+          <span class="pillfail">FAILED</span>
+        </div>
+        <div class="chips">
+          <span class="chip ref">REQ-1042 <span class="copy">⧉ copy</span> <span class="badge">R1</span></span>
+          <span class="chip">Single test case</span>
+          <span class="chip">1 test case</span>
+        </div>
+
+        <div class="tabs"><span class="tab on">Info</span><span class="tab">Execution</span><span class="tab">History</span></div>
+
+        <div class="dcard">
+          <div class="lbl">Test request</div>
+          <div class="txt">Validate the 'Total Endowment' menu display, default 'Overview' tab styling, switching to 'Scenario Test' tab with blue collapse/expand behavior of the 'Test Scenario Input' table via plus/negative icons.</div>
+        </div>
+
+        <div class="dcard">
+          <div class="lbl">Reference <span class="badge">R1</span></div>
+          <div class="aval mono" style="color:var(--green)">REQ-1042 <span class="copy">⧉ copy</span></div>
+          <div class="uuid2 mono" style="margin-top:6px">UUID: cdb51a4b-afbc-4eff-8fef-d28770602df6</div>
+        </div>
+
+        <div class="dcard">
+          <div class="lbl">Request attributes</div>
+          <div class="attr">Status</div><div class="aval">failed</div>
+          <div class="attr">Request mode</div><div class="aval">Single test case</div>
+          <div class="attr">Created by</div>
+          <div class="aval">qa_user@gmail.com</div>
+          <div class="attr">Ticket <span class="badge">R2</span></div><div class="aval"><a class="link" href="#">QG-141 ↗</a></div>
+          <div class="attr">Created time</div><div class="aval">Jul 7, 2026, 11:09 AM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- explanation -->
+  <div class="callbox">
+    <h3>The "Created by" pill — concept notes</h3>
+    <div class="cl"><span class="concept-tag">◆</span><span><b>One control, two speeds</b> — one-tap <b>Mine</b> / <b>Anyone</b> segments for the 80% case, plus a caret to pick a specific user. Faster than opening a dropdown and selecting yourself.</span></div>
+    <div class="cl"><span class="concept-tag">◆</span><span><b>Reads as a filter, not a menu</b> — the active segment is highlighted, so the current view ("mine" vs "everyone") is visible at a glance without opening anything.</span></div>
+    <div class="cl"><span class="concept-tag">◆</span><span><b>Sits with the other filters</b> — same row as "All statuses", search, and the date filter, so all scoping controls live together above the queue.</span></div>
+    <div class="cl" style="margin-top:6px;color:var(--meta)">This is a styling exploration only; it does not change the shipped "All requests" dropdown or any QG-141 scope.</div>
+
+    <h3 style="margin-top:16px">Rest of the page (unchanged — QG-141)</h3>
+    <div class="grp">Queue (left)</div>
+    <div class="cl"><span class="badge">L1</span><span><b>Friendly REQ-####</b> on each row instead of the raw UUID; copy copies the reference / deep link only.</span></div>
+    <div class="cl"><span class="badge">L2</span><span><b>Created (date range)</b> — collapsible filter to scope the queue.</span></div>
+    <div class="cl"><span class="badge">L3</span><span><b>Richer search</b> — request body text + REQ ID; debounced.</span></div>
+    <div class="grp">Detail pane (right)</div>
+    <div class="cl"><span class="badge">R1</span><span><b>Friendly reference</b> in the header chip + a Reference block, UUID kept secondary.</span></div>
+    <div class="cl"><span class="badge">R2</span><span><b>Ticket as a link</b> — Ticket key / URL rendered as a clickable Jira link.</span></div>
+  </div>
+
+<script>
+  document.getElementById('cby').addEventListener('click', function(e){
+    var seg = e.target.closest('span'); if(!seg) return;
+    var spans = this.querySelectorAll('span');
+    spans.forEach(function(s){ s.className = 'off'; });
+    seg.className = 'on';
+    // keep the caret only on "Anyone"
+    spans.forEach(function(s){
+      var t = s.textContent.replace(' ▾','').replace('▾','').trim();
+      s.innerHTML = (t === 'Anyone') ? 'Anyone&nbsp;▾' : '● ' + t.replace('● ','');
+    });
+  });
+</script>
+</body>
+</html>

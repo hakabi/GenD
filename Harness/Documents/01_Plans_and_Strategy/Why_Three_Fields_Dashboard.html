@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Why Three Fields — Harness Test Classification</title>
+<style>
+  :root {
+    --bg: #f4f7f5;
+    --surface: #ffffff;
+    --surface-2: #eef3f0;
+    --border: #d9e3de;
+    --text: #10201a;
+    --muted: #5a6b64;
+    --accent: #0f9d76;
+    --accent-ink: #0b7d5e;
+    --accent-soft: rgba(15,157,118,.12);
+    --good: #0f9d76;
+    --good-soft: rgba(15,157,118,.12);
+    --bad: #c9483f;
+    --bad-soft: rgba(201,72,63,.10);
+    --warn: #b07d1e;
+    --warn-soft: rgba(176,125,30,.12);
+    --shadow: 0 1px 2px rgba(16,32,26,.04), 0 8px 24px rgba(16,32,26,.06);
+    --font-sans: 'Söhne', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0c1310;
+      --surface: #131c18;
+      --surface-2: #18231e;
+      --border: #26332e;
+      --text: #e9f1ec;
+      --muted: #91a49b;
+      --accent: #14b98c;
+      --accent-ink: #10a37f;
+      --accent-soft: rgba(20,185,140,.14);
+      --good: #23c493;
+      --good-soft: rgba(35,196,147,.14);
+      --bad: #e2574d;
+      --bad-soft: rgba(226,87,77,.14);
+      --warn: #e0a33d;
+      --warn-soft: rgba(224,163,61,.15);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f7f5; --surface: #ffffff; --surface-2: #eef3f0; --border: #d9e3de;
+    --text: #10201a; --muted: #5a6b64; --accent: #0f9d76; --accent-ink: #0b7d5e;
+    --accent-soft: rgba(15,157,118,.12); --good: #0f9d76; --good-soft: rgba(15,157,118,.12);
+    --bad: #c9483f; --bad-soft: rgba(201,72,63,.10); --warn: #b07d1e; --warn-soft: rgba(176,125,30,.12);
+    --shadow: 0 1px 2px rgba(16,32,26,.04), 0 8px 24px rgba(16,32,26,.06);
+  }
+  :root[data-theme="dark"] {
+    --bg: #0c1310; --surface: #131c18; --surface-2: #18231e; --border: #26332e;
+    --text: #e9f1ec; --muted: #91a49b; --accent: #14b98c; --accent-ink: #10a37f;
+    --accent-soft: rgba(20,185,140,.14); --good: #23c493; --good-soft: rgba(35,196,147,.14);
+    --bad: #e2574d; --bad-soft: rgba(226,87,77,.14); --warn: #e0a33d; --warn-soft: rgba(224,163,61,.15);
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.28);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--font-sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 56px 0; border-top: 1px solid var(--border); }
+  section:first-of-type { border-top: none; }
+
+  h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.12; letter-spacing: -.02em; }
+  h1 { font-size: clamp(1.9rem, 4.4vw, 3.1rem); font-weight: 680; }
+  h2 { font-size: clamp(1.35rem, 2.6vw, 1.85rem); font-weight: 640; }
+  h3 { font-size: 1.02rem; font-weight: 620; letter-spacing: -.01em; }
+  p { margin: 0; color: var(--muted); }
+  .lead { font-size: clamp(1.02rem, 1.7vw, 1.18rem); color: var(--muted); max-width: 62ch; }
+  strong { color: var(--text); font-weight: 630; }
+  code, .mono { font-family: var(--font-mono); font-size: .86em; }
+  .eyebrow {
+    font-size: .74rem; font-weight: 640; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent-ink); display: inline-flex; align-items: center; gap: .5em;
+  }
+  .eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--accent); border-radius: 2px; }
+
+  /* Top bar */
+  .topbar {
+    position: sticky; top: 0; z-index: 20; backdrop-filter: blur(10px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 620; font-size: .92rem; letter-spacing: -.01em; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .toggle {
+    font: inherit; font-size: .8rem; color: var(--muted); background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px; cursor: pointer;
+    display: inline-flex; gap: 7px; align-items: center; transition: color .15s, border-color .15s;
+  }
+  .toggle:hover { color: var(--text); border-color: var(--accent); }
+  .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Hero */
+  .hero { padding-top: 64px; }
+  .hero h1 span { color: var(--accent-ink); }
+  .hero .lead { margin-top: 20px; }
+  .statrow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .chip {
+    display: inline-flex; align-items: baseline; gap: 8px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 10px; padding: 9px 14px; box-shadow: var(--shadow);
+  }
+  .chip b { font-size: 1.12rem; font-weight: 680; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .chip span { font-size: .78rem; color: var(--muted); }
+
+  /* Towers hero visual */
+  .towers {
+    margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 30px; box-shadow: var(--shadow); align-items: end;
+  }
+  .tower { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+  .tower .cap { order: -1; }
+  .tower .cap .k { font-size: .76rem; text-transform: uppercase; letter-spacing: .09em; font-weight: 640; }
+  .tower .cap .k.bad { color: var(--bad); }
+  .tower .cap .k.good { color: var(--good); }
+  .tower .formula { font-family: var(--font-mono); font-size: .82rem; color: var(--muted); margin-top: 2px; }
+  .bar-track { width: 100%; height: 300px; display: flex; align-items: flex-end; justify-content: center; }
+  .bar {
+    width: 78%; border-radius: 10px 10px 4px 4px; position: relative;
+    display: flex; align-items: flex-start; justify-content: center; padding-top: 12px;
+    animation: rise .9s cubic-bezier(.22,.7,.3,1) both;
+  }
+  @keyframes rise { from { transform: scaleY(.02); opacity: .3; } to { transform: scaleY(1); opacity: 1; } }
+  .bar { transform-origin: bottom; }
+  .bar.bad { background: linear-gradient(180deg, var(--bad), color-mix(in srgb, var(--bad) 72%, #000)); }
+  .bar.good { background: linear-gradient(180deg, var(--good), color-mix(in srgb, var(--good) 76%, #000)); animation-delay: .12s; }
+  .bar .num { font-size: 1.5rem; font-weight: 720; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -.02em; text-shadow: 0 1px 6px rgba(0,0,0,.35); }
+  .bar .sub { position: absolute; bottom: 10px; font-size: .72rem; color: rgba(255,255,255,.86); font-weight: 560; }
+  .towers .foot { grid-column: 1 / -1; margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 18px; }
+  .towers .foot p { font-size: .95rem; }
+  @media (prefers-reduced-motion: reduce) { .bar { animation: none; } }
+
+  /* Generic cards grid */
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 30px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px;
+  }
+  .card.is-bad { border-top: 3px solid var(--bad); }
+  .card.is-warn { border-top: 3px solid var(--warn); }
+  .card.is-good { border-top: 3px solid var(--good); }
+  .card .head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .card .axes { font-size: 2rem; font-weight: 720; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .card .fields { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-family: var(--font-mono); font-size: .72rem; padding: 3px 8px; border-radius: 6px;
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+  }
+  .tag.ghost { color: var(--muted); border-style: dashed; text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--bad) 60%, transparent); }
+  .card .metric { font-size: .82rem; color: var(--muted); }
+  .card .metric b { font-variant-numeric: tabular-nums; }
+  .verdict { margin-top: auto; font-size: .86rem; padding: 11px 13px; border-radius: 9px; line-height: 1.45; }
+  .verdict.bad { background: var(--bad-soft); color: var(--text); }
+  .verdict.warn { background: var(--warn-soft); color: var(--text); }
+  .verdict.good { background: var(--good-soft); color: var(--text); }
+  .verdict .lab { font-weight: 640; }
+  .verdict.bad .lab { color: var(--bad); }
+  .verdict.warn .lab { color: var(--warn); }
+  .verdict.good .lab { color: var(--good); }
+
+  /* Questions matrix */
+  .tablewrap { margin-top: 28px; overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; min-width: 620px; background: var(--surface); }
+  thead th { text-align: left; font-size: .74rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 620; padding: 15px 18px; background: var(--surface-2); }
+  thead th.c { text-align: center; width: 92px; }
+  tbody td { padding: 14px 18px; border-top: 1px solid var(--border); font-size: .92rem; vertical-align: middle; }
+  tbody td .who { display: block; font-size: .76rem; color: var(--muted); margin-top: 2px; }
+  tbody td.c { text-align: center; }
+  tbody tr:hover { background: color-mix(in srgb, var(--accent-soft) 55%, transparent); }
+  .mark { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px; font-size: .9rem; font-weight: 700; }
+  .mark.y { background: var(--good-soft); color: var(--good); }
+  .mark.n { background: var(--bad-soft); color: var(--bad); }
+  .mark.p { background: var(--warn-soft); color: var(--warn); }
+  .legend { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; font-size: .8rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+
+  /* Anatomy of fusion */
+  .anatomy { margin-top: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 26px; box-shadow: var(--shadow); }
+  .fuse { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; justify-content: center; }
+  .token-big { font-family: var(--font-mono); font-size: clamp(1rem,2.4vw,1.5rem); font-weight: 600; padding: 10px 16px; border-radius: 10px; background: var(--bad-soft); border: 1px solid color-mix(in srgb, var(--bad) 40%, var(--border)); }
+  .token-big .p1 { color: var(--warn); }
+  .token-big .p2 { color: var(--accent-ink); }
+  .arrow { color: var(--muted); font-size: 1.4rem; }
+  .split { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .splitcard { border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; background: var(--surface-2); min-width: 190px; }
+  .splitcard .ax { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 620; }
+  .splitcard .val { font-family: var(--font-mono); font-size: .95rem; margin-top: 4px; }
+  .splitcard.a5 .val { color: var(--accent-ink); }
+  .splitcard.a2 .val { color: var(--warn); }
+  .conseq { margin-top: 20px; padding-top: 18px; border-top: 1px dashed var(--border); font-size: .92rem; }
+
+  /* Principle list */
+  .rules { margin-top: 26px; display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .rule { background: var(--surface); border: 1px solid var(--border); border-radius: 13px; padding: 20px; box-shadow: var(--shadow); }
+  .rule .n { font-family: var(--font-mono); font-size: .78rem; color: var(--accent-ink); font-weight: 620; }
+  .rule h3 { margin: 8px 0 8px; }
+  .rule p { font-size: .88rem; }
+  .note { margin-top: 24px; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border)); border-radius: 12px; padding: 18px 20px; font-size: .94rem; }
+  .note b { color: var(--accent-ink); }
+
+  /* Bottom line */
+  .bottomline { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 34px; box-shadow: var(--shadow); }
+  .bl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 22px; }
+  .bl-col h3 { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+  .bl-col ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .bl-col li { display: flex; gap: 10px; font-size: .92rem; align-items: flex-start; }
+  .bl-col li::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; margin-top: 8px; }
+  .bl-col.less li::before { background: var(--bad); }
+  .bl-col.more li::before { background: var(--good); }
+  .pin { width: 9px; height: 9px; border-radius: 50%; }
+  .pin.bad { background: var(--bad); } .pin.good { background: var(--good); }
+
+  footer { padding: 40px 0 64px; color: var(--muted); font-size: .82rem; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  @media (max-width: 860px) {
+    .grid3, .rules, .bl-grid { grid-template-columns: 1fr; }
+    .towers { grid-template-columns: 1fr 1fr; padding: 22px; }
+    .bar-track { height: 220px; }
+  }
+  @media (max-width: 520px) {
+    section { padding: 42px 0; }
+    .towers { grid-template-columns: 1fr; }
+    .bar-track { height: 180px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span> Harness · Aloha Test Classification</div>
+    <button class="toggle" id="themeToggle" aria-label="Toggle colour theme">
+      <span id="themeIcon">◐</span> <span id="themeLabel">Theme</span>
+    </button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">The question · is "feature + label" enough?</div>
+    <h1 style="margin-top:16px;">The field count isn't the fix.<br><span>Closing the vocabulary and namespacing is.</span></h1>
+    <p class="lead">A test case is never one thing — area, intent, run purpose, fund scope, environment. Harness already has the three fields to hold them: <code>feature</code>, <code>category</code>, <code>labels[]</code>. The collapse isn't about how many fields — it is that they are <strong>free text</strong>. Close them, and namespace <code>labels[]</code>, and the vocabulary grows by <strong>addition</strong> instead of <strong>multiplication</strong>.</p>
+
+    <div class="statrow">
+      <div class="chip"><b>313</b><span>cases today</span></div>
+      <div class="chip"><b>203</b><span>distinct feature values</span></div>
+      <div class="chip"><b>165</b><span>used exactly once</span></div>
+      <div class="chip"><b>~45</b><span>controlled values under 3 fields</span></div>
+    </div>
+
+    <!-- Towers -->
+    <div class="towers">
+      <div class="tower">
+        <div class="cap">
+          <div class="k bad">Free-text · fuse into feature</div>
+          <div class="formula">10 × 4 × 2 × 3 = 240</div>
+        </div>
+        <div class="bar-track">
+          <div class="bar bad" style="height:100%;">
+            <span class="num">240+</span>
+            <span class="sub">multiplicative</span>
+          </div>
+        </div>
+      </div>
+      <div class="tower">
+        <div class="cap">
+          <div class="k good">Closed + namespaced · 3 fields</div>
+          <div class="formula">10 + 5 + 5 + 3 + 24</div>
+        </div>
+        <div class="bar-track">
+          <div class="bar good" style="height:19%;">
+            <span class="num">~45</span>
+            <span class="sub">additive</span>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <p>Fold just <strong>four</strong> real dimensions (area × fund × environment × priority) into the <code>feature</code> field and the arithmetic already predicts <strong>~240 distinct values</strong>. The live catalog has <strong>203</strong> feature values. That is not a coincidence — it is the same multiplication, and free-text titles pile on top to make it worse. Keep the dimensions separate inside namespaced <code>labels[]</code> and the same information costs <strong>~45 governed values</strong> in total.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="note" style="margin: 0 0 8px;">
+    <strong>The proposal is THREE FIELDS — the debate is two disciplines, not field count.</strong> Both today and the
+    proposal use the three fields Harness already has: <code>feature</code> · <code>category</code> · <code>labels[]</code>.
+    What decides everything is (1) <strong>closing the vocabulary</strong> and (2) <strong>namespacing <code>labels[]</code></strong>.
+    The comparison below runs on those two: <strong>A</strong> free-text (today) → <strong>B</strong> closed but flat labels →
+    <strong>C</strong> closed + namespaced (the proposal). See <code>De_Xuat_Phan_Loai_3_Truong_VN.md</code>.
+  </div>
+
+  <!-- COMPARISON -->
+  <section>
+    <div class="eyebrow">The comparison</div>
+    <h2 style="margin-top:14px;">Three ways to run the same three fields</h2>
+    <p class="lead" style="margin-top:14px;">Same three fields — <code>feature</code>, <code>category</code>, <code>labels[]</code> — under three levels of discipline. What changes is whether the vocabulary is closed, and whether <code>labels[]</code> is namespaced.</p>
+
+    <div class="grid3">
+      <div class="card is-bad">
+        <div class="head">
+          <div class="axes" style="color:var(--bad);font-size:1.4rem;">A</div>
+          <div class="fields">
+            <span class="tag">feature</span><span class="tag">category</span><span class="tag">labels[]</span>
+          </div>
+        </div>
+        <p class="metric"><b>Free text</b> — today. All three fields accept anything, so every request mints a new value.</p>
+        <div class="fields">
+          <span class="tag ghost">closed?</span><span class="tag ghost">namespace?</span>
+        </div>
+        <p class="metric">Vocabulary mechanism: <b>multiplicative</b> → hundreds of values.</p>
+        <div class="verdict bad"><span class="lab">This is today.</span> 203 feature values for 313 cases, <code>category</code>=default on all, <code>labels</code> empty/polluted. <code>--grep @risk</code> returns nothing useful.</div>
+      </div>
+
+      <div class="card is-warn">
+        <div class="head">
+          <div class="axes" style="color:var(--warn);font-size:1.4rem;">B</div>
+          <div class="fields">
+            <span class="tag">feature ✓</span><span class="tag">category ✓</span><span class="tag">labels[] flat</span>
+          </div>
+        </div>
+        <p class="metric"><b>Closed, but labels flat</b> — vocabulary closed on all three, but <code>labels[]</code> has no namespaces: suite, fund, metric, jira share one bag.</p>
+        <div class="fields">
+          <span class="tag">closed ✓</span><span class="tag ghost">namespace ✗</span>
+        </div>
+        <p class="metric">Feature/category queries work. Cross-cutting is only loose text-match.</p>
+        <div class="verdict warn"><span class="lab">Half a fix.</span> "Every Risk case" and the coverage heatmap work. But "smoke before deploy", NAV impact, per-fund scope are only <em>fuzzy</em> — and a flat bag drifts back toward junk.</div>
+      </div>
+
+      <div class="card is-good">
+        <div class="head">
+          <div class="axes" style="color:var(--good);font-size:1.4rem;">C</div>
+          <div class="fields">
+            <span class="tag">feature ✓</span><span class="tag">category ✓</span><span class="tag">labels[] ns</span>
+          </div>
+        </div>
+        <p class="metric"><b>Closed + namespaced</b> — the proposal. <code>labels[]</code> values carry a typed prefix, so each dimension stays queryable inside one field.</p>
+        <div class="fields">
+          <span class="tag">suite:</span><span class="tag">fund:</span><span class="tag">env:</span><span class="tag">metric:</span><span class="tag">jira:</span>
+        </div>
+        <p class="metric">Vocabulary mechanism: <b>additive</b> → ~45 values total.</p>
+        <div class="verdict good"><span class="lab">The floor, not the ceiling.</span> Risk = one value; every metric/fund/suite query is typed and clean. Small enough to govern by hand.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUESTIONS -->
+  <section>
+    <div class="eyebrow">The stakes</div>
+    <h2 style="margin-top:14px;">Drop a discipline and you lose — or blur — a question</h2>
+    <p class="lead" style="margin-top:14px;">Each field — and its namespace — is the <em>only</em> thing that answers a particular question <em>cleanly</em>. Free-text makes it impossible; a flat labels bag makes it fuzzy.</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Question someone actually asks</th>
+            <th class="c">A · Free-text</th>
+            <th class="c">B · Closed-flat</th>
+            <th class="c">C · +namespace</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Show only Aloha cases<span class="who">Everyone · <code>project</code></span></td>
+            <td class="c"><span class="mark y">✓</span></td><td class="c"><span class="mark y">✓</span></td><td class="c"><span class="mark y">✓</span></td>
+          </tr>
+          <tr>
+            <td>Run every Risk test, across all four funds<span class="who">QA &amp; PO · <code>feature</code> closed</span></td>
+            <td class="c"><span class="mark n">✕</span></td><td class="c"><span class="mark y">✓</span></td><td class="c"><span class="mark y">✓</span></td>
+          </tr>
+          <tr>
+            <td>Where are negative / boundary tests missing?<span class="who">QA Lead · <code>category</code></span></td>
+            <td class="c"><span class="mark n">✕</span></td><td class="c"><span class="mark y">✓</span></td><td class="c"><span class="mark y">✓</span></td>
+          </tr>
+          <tr>
+            <td>Run the smoke suite before every deploy<span class="who">Release / CI · <code>labels: suite:</code></span></td>
+            <td class="c"><span class="mark n">✕</span></td><td class="c"><span class="mark p">~</span></td><td class="c"><span class="mark y">✓</span></td>
+          </tr>
+          <tr>
+            <td>The NAV calc changed — what must re-run?<span class="who">Dev &amp; PO · <code>labels: metric:nav</code></span></td>
+            <td class="c"><span class="mark n">✕</span></td><td class="c"><span class="mark p">~</span></td><td class="c"><span class="mark y">✓</span></td>
+          </tr>
+          <tr>
+            <td>Test this behaviour across all four funds<span class="who">QA · <code>labels: fund:</code></span></td>
+            <td class="c"><span class="mark n">✕</span></td><td class="c"><span class="mark p">~</span></td><td class="c"><span class="mark y">✓</span></td>
+          </tr>
+          <tr>
+            <td>Which cases write data to the lab environment?<span class="who">QA · <code>labels: env:lab</code></span></td>
+            <td class="c"><span class="mark n">✕</span></td><td class="c"><span class="mark p">~</span></td><td class="c"><span class="mark y">✓</span></td>
+          </tr>
+          <tr>
+            <td>Which tests cover ticket KS-963?<span class="who">PO · <code>labels: jira:</code></span></td>
+            <td class="c"><span class="mark n">✕</span></td><td class="c"><span class="mark p">~</span></td><td class="c"><span class="mark y">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><span class="mark y" style="width:22px;height:22px;">✓</span> Clean, typed query</span>
+      <span><span class="mark p" style="width:22px;height:22px;">~</span> Fuzzy text-match only (flat labels, not typed)</span>
+      <span><span class="mark n" style="width:22px;height:22px;">✕</span> Impossible — free-text, values fragmented</span>
+    </div>
+  </section>
+
+  <!-- JOURNEY -->
+  <section>
+    <div class="eyebrow">The journey · a prompt through the classifier</div>
+    <h2 style="margin-top:14px;">One prompt in, three fields out</h2>
+    <p class="lead" style="margin-top:14px;">QA writes plain English. The classifier fills the three fields at ingest — QA just reviews a preview and confirms.</p>
+
+    <div class="note" style="margin-top:20px;">
+      <strong>① QA writes (free-text prompt)</strong><br>
+      <span style="font-family:var(--font-mono);font-size:.84rem;line-height:1.7;">Go to <b>Cash Forecast → Hypothetical Flows</b>, enter an invalid negative amount and assert the <b>NAV error</b>. <b>Public</b> fund, <b>lab</b> environment, ticket <b>KS-963</b>, <b>regression</b> suite.</span>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px;">
+      <div style="flex:1;min-width:118px;border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--surface);box-shadow:var(--shadow);">
+        <div style="font-weight:640;font-size:.9rem;">② Prompt</div>
+        <div style="font-size:.74rem;color:var(--muted);margin-top:3px;">free text</div>
+      </div>
+      <div style="color:var(--muted);font-size:1.2rem;">→</div>
+      <div style="flex:1;min-width:118px;border:1px solid var(--accent);border-radius:12px;padding:12px 14px;background:var(--accent-soft);">
+        <div style="font-weight:640;font-size:.9rem;">Rule pass</div>
+        <div style="font-size:.74rem;color:var(--muted);margin-top:3px;">free · fills most</div>
+      </div>
+      <div style="color:var(--muted);font-size:1.2rem;">→</div>
+      <div style="flex:1;min-width:118px;border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--surface);box-shadow:var(--shadow);">
+        <div style="font-weight:640;font-size:.9rem;">LLM pass</div>
+        <div style="font-size:.74rem;color:var(--muted);margin-top:3px;">only the sub-area</div>
+      </div>
+      <div style="color:var(--muted);font-size:1.2rem;">→</div>
+      <div style="flex:1;min-width:118px;border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--surface);box-shadow:var(--shadow);">
+        <div style="font-weight:640;font-size:.9rem;">Gate 0.80</div>
+        <div style="font-size:.74rem;color:var(--muted);margin-top:3px;">0.93 ≥ 0.80 → auto</div>
+      </div>
+      <div style="color:var(--muted);font-size:1.2rem;">→</div>
+      <div style="flex:1;min-width:118px;border:1px solid var(--good);border-radius:12px;padding:12px 14px;background:var(--good-soft);">
+        <div style="font-weight:640;font-size:.9rem;">3 fields</div>
+        <div style="font-size:.74rem;color:var(--muted);margin-top:3px;">into catalog</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;">
+      <div class="card" style="flex:1;min-width:300px;">
+        <h3>③ Which keyword → which field</h3>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>In the prompt</th><th>Assigns</th><th class="c">Field</th></tr></thead>
+            <tbody>
+              <tr><td>"Cash Forecast → Hypothetical Flows"</td><td><code>cash-forecast/hypothetical-flows</code></td><td class="c"><code>feature</code></td></tr>
+              <tr><td>"invalid negative amount" + "assert error"</td><td><code>negative</code></td><td class="c"><code>category</code></td></tr>
+              <tr><td>"NAV error"</td><td><code>metric:nav</code></td><td class="c"><code>labels</code></td></tr>
+              <tr><td>"Public fund"</td><td><code>fund:public</code></td><td class="c"><code>labels</code></td></tr>
+              <tr><td>"lab environment"</td><td><code>env:lab</code></td><td class="c"><code>labels</code></td></tr>
+              <tr><td>"regression suite"</td><td><code>suite:regression</code></td><td class="c"><code>labels</code></td></tr>
+              <tr><td>"KS-963"</td><td><code>jira:KS-963</code></td><td class="c"><code>labels</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="flex:1;min-width:300px;">
+        <h3>④ What the classifier emits</h3>
+        <pre style="font-family:var(--font-mono);font-size:.76rem;line-height:1.6;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:13px;overflow-x:auto;color:var(--text);margin:0;">{
+  "project":  "aloha",
+  "feature":  "cash-forecast/hypothetical-flows",
+  "category": "negative",
+  "labels":   ["suite:regression", "fund:public",
+               "env:lab", "metric:nav", "jira:KS-963"],
+  "confidence": 0.93
+}</pre>
+        <p class="metric"><code>project</code> is ambient. 6 of 7 values come from the free keyword rules; the LLM only fills the sub-area.</p>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:18px;">
+      <strong>⑤ What it unlocks the moment it lands</strong> — <code>feature:cash-forecast</code> returns every Cash Forecast case · <code>labels ∋ metric:nav</code> is the NAV impact set · <code>labels ∋ suite:regression</code> is the regression suite · heatmap cell <code>cash-forecast × negative</code> shows covered-or-not.
+    </div>
+  </section>
+
+  <!-- ANATOMY -->
+  <section>
+    <div class="eyebrow">The proof, from your own data</div>
+    <h2 style="margin-top:14px;">One bad value shows the whole problem</h2>
+    <p class="lead" style="margin-top:14px;">The most common value in the catalog, <code>public-fund-risk</code>, is two fields fused into one token. That single fusion is why "Risk" already exists as <strong>twenty</strong> different values.</p>
+
+    <div class="anatomy">
+      <div class="fuse">
+        <div class="token-big"><span class="p1">public-fund</span>-<span class="p2">risk</span></div>
+        <span class="arrow">→</span>
+        <div class="split">
+          <div class="splitcard a2">
+            <div class="ax">labels[] · fund scope</div>
+            <div class="val">fund:public</div>
+          </div>
+          <div class="splitcard a5">
+            <div class="ax">feature · area</div>
+            <div class="val">feature:risk</div>
+          </div>
+        </div>
+      </div>
+      <div class="conseq">
+        <p>Split back into two fields, the fund becomes a <code>labels: fund:public</code> tag and the area collapses to a single <code>risk</code> value shared by all four funds. That one move is what turns <strong>twenty Risk values into one</strong>, makes <code>--grep @risk</code> return every Risk case, and lets a coverage grid finally count them. Refuse the split and you keep <code>public-fund-risk</code>, <code>total-endowment-risk-tab</code>, <code>risk-dashboard</code> … — the same test area, filed where no one else thinks to look.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRINCIPLE -->
+  <section>
+    <div class="eyebrow">The discipline — and how far it goes</div>
+    <h2 style="margin-top:14px;">The rules that decide what earns a namespace in <code>labels[]</code></h2>
+    <p class="lead" style="margin-top:14px;">The same reasoning that adds a <code>metric:</code> namespace also <em>refuses</em> a needless one. A dimension earns its own namespace only if it passes all three tests — which is also why fund and metric must leave <code>feature</code>.</p>
+
+    <div class="rules">
+      <div class="rule">
+        <div class="n">TEST 01</div>
+        <h3>Orthogonal</h3>
+        <p>Its value varies independently of the others. A Risk test can be positive <em>or</em> negative, smoke <em>or</em> regression, on the public <em>or</em> private fund. If a dimension always moves with another, it isn't a new dimension — merge it.</p>
+      </div>
+      <div class="rule">
+        <div class="n">TEST 02</div>
+        <h3>Answers a unique query</h3>
+        <p>It answers a question no other namespace can. "What re-runs if NAV changes" can only be asked of <code>metric:</code>; "run smoke before deploy" only of <code>suite:</code>. Drop the namespace and that question is gone.</p>
+      </div>
+      <div class="rule">
+        <div class="n">TEST 03</div>
+        <h3>Cutting it multiplies</h3>
+        <p>Folding it into <code>feature</code> multiplies the vocabulary instead of adding to it. Fund into feature = area ×4. This is the test that forces fund/metric/env out of <code>feature</code> and into namespaced <code>labels[]</code>.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>This is a ceiling, not a licence to grow.</b> The same rule freezes <code>feature</code> at 10 areas (2 levels deep, max), holds test types at 5, and <em>defers</em> accessibility until it earns a namespace. Closed + namespaced is the <b>minimum</b> discipline that answers every real query — not empire-building, and not open-ended. It is the smallest scheme that doesn't fragment.
+    </div>
+  </section>
+
+  <!-- BOTTOM LINE -->
+  <section>
+    <div class="eyebrow">Bottom line for the decision</div>
+    <div class="bottomline">
+      <h2>"Just use feature + label" is not the simpler option — it is the state you already have.</h2>
+      <div class="bl-grid">
+        <div class="bl-col less">
+          <h3><span class="pin bad"></span> Free-text / flat labels</h3>
+          <ul>
+            <li>Free-text lets every dimension fuse into <code>feature</code> → multiplicative explosion (the measured 203).</li>
+            <li>Loses or blurs the cross-cutting questions — impact analysis, suites, fund scope, environment, traceability.</li>
+            <li>Keeps <code>feature</code> fragmenting: twenty Risk values, <code>--grep @risk</code> broken.</li>
+            <li>Coverage dashboards report confidence built on single-use values.</li>
+          </ul>
+        </div>
+        <div class="bl-col more">
+          <h3><span class="pin good"></span> Closed + namespaced (3 fields)</h3>
+          <ul>
+            <li>Additive vocabulary — ~45 governed values for ~300 cases, not hundreds.</li>
+            <li>Every question answerable with one typed query; one screen, auto-filled at ingest.</li>
+            <li>Risk = one value across all funds; heatmap and impact queries actually work.</li>
+            <li>Frozen by rule — no new value or namespace without passing all three tests.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note" style="margin-top:26px;">
+        This isn't extra work for QA. They are the <b>three fields Harness already has</b>, filled automatically, so QA writes plain English and confirms a preview. The win isn't the field count — it is closing the vocabulary and namespacing <code>labels[]</code>. Drop those two disciplines and you are back at 203.
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Harness · Aloha Test Classification — prepared by BA under Epic QG-138.</span>
+    <span>Figures measured live on the Harness API, 6 Aug 2026. Vocabulary per <code>Aloha_Test_Case_Taxonomy.md</code> (v3.0).</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById('themeToggle');
+    var icon = document.getElementById('themeIcon');
+    var label = document.getElementById('themeLabel');
+    function current() {
+      var t = root.getAttribute('data-theme');
+      if (t) return t;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function apply(t) {
+      root.setAttribute('data-theme', t);
+      icon.textContent = t === 'dark' ? '☾' : '☀';
+      label.textContent = t === 'dark' ? 'Dark' : 'Light';
+    }
+    apply(current());
+    btn.addEventListener('click', function () {
+      apply(current() === 'dark' ? 'light' : 'dark');
+    });
+  })();
+</script>
+
+</body>
+</html>

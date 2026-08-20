@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vì sao 3 trường phân loại — Harness · Aloha</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#07101c;
+    --panel:#0d1928;
+    --panel2:#122238;
+    --border:rgba(255,255,255,.12);
+    --white:#fff;
+    --muted:rgba(255,255,255,.68);
+    --accent:#4fd8cf;
+    --blue:#6c8dff;
+    --green:#4bd995;
+    --amber:#ffc366;
+    --red:#ff7280;
+    --purple:#ad92ff;
+    --shadow:0 18px 48px rgba(0,0,0,.32);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    color:var(--white);
+    background:
+      radial-gradient(circle at 12% -5%,rgba(79,216,207,.16),transparent 30%),
+      radial-gradient(circle at 88% 0%,rgba(108,141,255,.14),transparent 26%),
+      var(--bg);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  body,button,select,option,input,table,th,td,a,p,span,div,h1,h2,h3,h4,strong,b{color:#fff}
+  .shell{max-width:1500px;margin:auto;padding:22px}
+  .nav{
+    position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+    gap:16px;padding:12px 16px;margin-bottom:18px;border:1px solid var(--border);
+    border-radius:16px;background:rgba(7,16,28,.91);backdrop-filter:blur(18px)
+  }
+  .brand{font-weight:850;letter-spacing:-.3px}
+  .nav-links{display:flex;gap:7px;flex-wrap:wrap}
+  .nav-links a{text-decoration:none;font-size:12px;font-weight:750;padding:8px 10px;border-radius:10px}
+  .nav-links a:hover{background:rgba(255,255,255,.05)}
+  .hero,.section,.card,.chart-panel{
+    border:1px solid var(--border);border-radius:20px;
+    background:linear-gradient(180deg,rgba(18,34,56,.97),rgba(13,25,40,.97));
+    box-shadow:var(--shadow)
+  }
+  .hero{display:grid;grid-template-columns:1.35fr .65fr;gap:0;overflow:hidden}
+  .hero-main{padding:42px}
+  .hero-side{padding:28px;border-left:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;gap:14px}
+  .eyebrow{font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--accent)}
+  h1{margin:14px 0 18px;font-size:46px;line-height:1.06;letter-spacing:-1.5px}
+  h1 .hl{color:var(--accent)}
+  .lead{font-size:18px;line-height:1.65;color:var(--muted)}
+  .hero-note{margin-top:26px;padding:17px 18px;border-left:4px solid var(--accent);background:rgba(79,216,207,.09);border-radius:0 14px 14px 0;line-height:1.6}
+  .beforeafter{display:flex;align-items:center;justify-content:center;gap:14px}
+  .ba-num{font-size:44px;font-weight:900;line-height:1}
+  .ba-arrow{font-size:26px;color:var(--muted)}
+  .ba-label{text-align:center;color:var(--muted);font-size:12.5px;line-height:1.5}
+  section{margin-top:18px;scroll-margin-top:94px}
+  .section{padding:28px}
+  .section-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:20px}
+  h2{margin:0;font-size:28px;letter-spacing:-.5px}
+  h3{margin:0 0 6px;font-size:17px}
+  .desc,.support{color:var(--muted);line-height:1.55}
+  .desc{margin-top:7px;max-width:940px}
+  .support{font-size:12px}
+  .badge{border:1px solid rgba(79,216,207,.25);background:rgba(79,216,207,.08);border-radius:999px;padding:8px 11px;font-size:11px;font-weight:850;white-space:nowrap}
+  .badge.real{border-color:rgba(75,217,149,.3);background:rgba(75,217,149,.09);color:var(--green)}
+  .badge.est{border-color:rgba(255,195,102,.3);background:rgba(255,195,102,.09);color:var(--amber)}
+  .grid{display:grid;gap:14px}
+  .kpis{grid-template-columns:repeat(4,1fr)}
+  .charts-2{grid-template-columns:1.25fr .75fr}
+  .charts-even{grid-template-columns:1fr 1fr}
+  .cards-3{grid-template-columns:repeat(3,1fr)}
+  .card{padding:18px}
+  .chart-panel{padding:18px;min-height:360px}
+  .chart-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+  .chart-wrap{height:290px;position:relative}
+  .chart-wrap.tall{height:340px}
+  .kpi-label{font-size:12px;text-transform:uppercase;letter-spacing:.5px;font-weight:800;color:var(--muted)}
+  .kpi-value{font-size:34px;font-weight:900;margin:8px 0 4px}
+  .bad{color:var(--red)!important}.warn{color:var(--amber)!important}.good{color:var(--green)!important}
+  .callout{border:1px solid rgba(108,141,255,.22);background:rgba(108,141,255,.09);border-radius:16px;padding:18px}
+  .callout.teal{border-color:rgba(79,216,207,.24);background:rgba(79,216,207,.09)}
+  .callout p{margin:0;color:rgba(255,255,255,.9);line-height:1.62}
+  .callout h3{margin-bottom:6px}
+
+  /* trục vs tầng */
+  .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+  .vs-col{border:1px solid var(--border);border-radius:16px;padding:20px;background:rgba(255,255,255,.02)}
+  .vs-col.good{border-color:rgba(75,217,149,.35)}
+  .vs-col.bad{border-color:rgba(255,114,128,.32)}
+  .vs-title{font-weight:850;font-size:15px;margin-bottom:4px}
+  .vs-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+  .axes-row{display:flex;gap:8px}
+  .axis-col{flex:1;border:1px solid var(--border);border-radius:11px;padding:10px 7px;text-align:center;background:linear-gradient(180deg,rgba(79,216,207,.12),rgba(18,34,56,.4))}
+  .axis-col .an{font-size:10.5px;color:var(--accent);font-weight:850;text-transform:uppercase;letter-spacing:.4px}
+  .axis-col .av{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;margin-top:6px;color:#fff}
+  .axis-col .sub{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;margin-top:4px;color:var(--muted)}
+  .tree{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.9}
+  .tree .d{color:var(--muted)}
+  .tree .rot{color:var(--red);font-weight:800}
+  .vs-mid{display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--muted);font-size:13px}
+  .vs-foot{margin-top:14px;font-size:12.5px;color:var(--muted);line-height:1.55}
+  .vs-foot.good-t{color:rgba(75,217,149,.92)}
+  .vs-foot.bad-t{color:rgba(255,114,128,.9)}
+
+  /* comparison cards (clickable) */
+  .cmp-card{cursor:pointer;transition:.2s}
+  .cmp-card:hover,.cmp-card.active{transform:translateY(-2px);border-color:rgba(79,216,207,.58)}
+  .cmp-card.active{background:linear-gradient(180deg,rgba(79,216,207,.14),rgba(18,34,56,.97))}
+  .cmp-axes{font-size:13px;font-weight:850;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .cmp-fields{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;margin-top:6px;color:#fff}
+  .cmp-score{font-size:40px;font-weight:900;margin:12px 0 2px}
+
+  /* matrix table */
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:11px;border-bottom:1px solid var(--border);text-align:left;font-size:12.5px}
+  th{color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-size:11px}
+  th.c,td.c{text-align:center;width:90px}
+  td .who{display:block;color:var(--muted);font-size:11px;margin-top:2px;font-family:ui-monospace,Menlo,Consolas,monospace}
+  .best{background:rgba(79,216,207,.11)}
+  .mk{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;font-weight:800}
+  .mk.y{background:rgba(75,217,149,.15);color:var(--green)}
+  .mk.n{background:rgba(255,114,128,.15);color:var(--red)}
+  .mk.p{background:rgba(255,195,102,.15);color:var(--amber)}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:12px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+
+  /* fusion anatomy */
+  .fuse{display:flex;align-items:center;flex-wrap:wrap;gap:16px;justify-content:center;padding:8px 0}
+  .token-big{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:26px;font-weight:800;padding:12px 18px;border-radius:12px;background:rgba(255,114,128,.1);border:1px solid rgba(255,114,128,.4)}
+  .token-big .p1{color:var(--amber)}.token-big .p2{color:var(--accent)}
+  .fz-arrow{font-size:24px;color:var(--muted)}
+  .splitcard{border:1px solid var(--border);border-radius:12px;padding:13px 16px;background:rgba(255,255,255,.03);min-width:180px}
+  .splitcard .ax{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:800}
+  .splitcard .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;margin-top:5px}
+  .splitcard.a2 .val{color:var(--amber)}.splitcard.a5 .val{color:var(--accent)}
+
+  /* rules */
+  .rules{grid-template-columns:repeat(3,1fr)}
+  .rule{border:1px solid var(--border);border-radius:14px;padding:18px;background:rgba(255,255,255,.02)}
+  .rule .n{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--accent);font-weight:800}
+  .rule h3{margin:8px 0}
+  .rule p{color:var(--muted);font-size:13px;line-height:1.55}
+
+  /* flow */
+  .flow{display:grid;grid-template-columns:repeat(11,auto);gap:8px;align-items:center;overflow-x:auto;padding-bottom:6px}
+  .node{min-width:120px;min-height:86px;padding:13px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.025);display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .node.hot{border-color:rgba(79,216,207,.5);background:linear-gradient(180deg,rgba(79,216,207,.14),rgba(18,34,56,.4))}
+  .node b{font-size:13px}
+  .node span{font-size:10.5px;color:var(--muted);margin-top:5px}
+  .arrow{text-align:center;color:var(--accent);font-size:18px}
+
+  /* bottom two-col */
+  .bl-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}
+  .bl-col{border:1px solid var(--border);border-radius:14px;padding:18px}
+  .bl-col.less{border-color:rgba(255,114,128,.3)}
+  .bl-col.more{border-color:rgba(75,217,149,.32)}
+  .bl-col h3{display:flex;align-items:center;gap:9px}
+  .bl-col ul{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+  .bl-col li{display:flex;gap:10px;font-size:13px;line-height:1.5;align-items:flex-start;color:rgba(255,255,255,.9)}
+  .bl-col li::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;margin-top:7px}
+  .bl-col.less li::before{background:var(--red)}
+  .bl-col.more li::before{background:var(--green)}
+  .pin{width:10px;height:10px;border-radius:50%}.pin.bad{background:var(--red)}.pin.good{background:var(--green)}
+
+  .footer{text-align:center;padding:30px 0 8px;color:var(--muted);font-size:12px;line-height:1.7}
+
+  @media(max-width:1180px){
+    .hero,.charts-2,.charts-even,.vs{grid-template-columns:1fr}
+    .vs-mid{transform:rotate(90deg)}
+    .kpis,.cards-3,.rules{grid-template-columns:repeat(2,1fr)}
+    .hero-side{border-left:none;border-top:1px solid var(--border)}
+    .bl-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:700px){
+    .shell{padding:14px}.nav{position:static}.nav-links{display:none}
+    .hero-main{padding:26px}h1{font-size:34px}
+    .kpis,.cards-3,.rules{grid-template-columns:1fr}
+    .section{padding:20px}.section-head{flex-direction:column}
+    .chart-wrap,.chart-wrap.tall{height:270px}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="nav">
+    <div class="brand">Harness · Aloha — Vì sao 3 trường phân loại</div>
+    <div class="nav-links">
+      <a href="#state">1. Hiện trạng</a>
+      <a href="#axis">2. Trục vs Tầng</a>
+      <a href="#math">3. Cộng vs Nhân</a>
+      <a href="#compare">4. So sánh</a>
+      <a href="#questions">5. Câu hỏi</a>
+      <a href="#journey">6. Ví dụ</a>
+      <a href="#discipline">7. Kết luận</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-main">
+      <div class="eyebrow">Đề xuất dựa trên dữ liệu</div>
+      <h1>Ít trục hơn không phải là đơn giản hơn.<br><span class="hl">Đó chính là phép nhân đã tạo ra 237 giá trị của bạn.</span></h1>
+      <p class="lead">Một test case không bao giờ chỉ là một thứ: nó có vùng chức năng, ý định, mục đích chạy, phạm vi quỹ, môi trường. Để mỗi thứ trên một <strong>trục riêng</strong> thì từ vựng tăng theo phép <strong>cộng</strong>. Dồn chúng vào 2–3 trường thì từ vựng tăng theo phép <strong>nhân</strong> — đúng bằng sự sụp đổ đã đo được trên catalog thật.</p>
+      <div class="hero-note"><b>Kết luận đề xuất:</b> <strong>3 TRƯỜNG</strong> — <code>feature</code> · <code>category</code> · <code>labels[]</code> (có namespace) — giữ <b>mọi chiều</b> riêng (đa diện / faceted), <code>feature</code> tối đa <strong>2 tầng</strong>. <em>Không phải</em> cây 5 tầng, cũng không phải 5 cột: ba cột, nhưng <code>labels[]</code> gánh nhiều chiều.</div>
+    </div>
+    <div class="hero-side">
+      <div class="beforeafter">
+        <div><div class="ba-num bad">203</div><div class="ba-label">giá trị feature<br>(đo 6/8)</div></div>
+        <div class="ba-arrow">→</div>
+        <div><div class="ba-num good">~45</div><div class="ba-label">giá trị mục tiêu<br>(3 trường)</div></div>
+      </div>
+      <div class="ba-label" style="border-top:1px solid var(--border);padding-top:14px">313 case · 165/203 feature dùng đúng 1 lần · feature đang là một <b>ID thứ hai</b></div>
+    </div>
+  </header>
+
+  <div class="callout teal" style="margin-bottom:18px">
+    <h3>⚠️ Đề xuất chốt: <b>3 TRƯỜNG</b> (feature · category · labels[]) — khác biệt nằm ở 2 kỷ luật</h3>
+    <p>Số <b>trường</b> không phải điều tranh cãi: cả hôm nay lẫn đề xuất đều là 3 trường Harness đã có. Điều quyết định là <b>hai kỷ luật</b> — (1) <b>đóng từ vựng</b> và (2) <b><code>labels[]</code> có namespace</b>. Các biểu đồ so sánh bên dưới đi theo đúng hai kỷ luật đó: <b>A</b> Tự do (hiện trạng) → <b>B</b> Đóng nhưng labels phẳng → <b>C</b> Đóng + namespace (đề xuất). Vì <code>labels[]</code> gánh nhiều chiều qua namespace, 3 trường vẫn giữ đủ mọi chiều. Chi tiết: <code>De_Xuat_Phan_Loai_3_Truong_VN.md</code>.</p>
+  </div>
+
+  <!-- 1. HIỆN TRẠNG -->
+  <section id="state" class="section">
+    <div class="section-head">
+      <div>
+        <h2>1. Hiện trạng — sự sụp đổ đã đo được</h2>
+        <div class="desc">Hai trường lẽ ra để gom nhóm — <code>Feature</code> và <code>Labels</code> — là văn bản tự do do người/LLM điền, và chúng đã vỡ vụn.</div>
+      </div>
+      <div class="badge real">Số liệu thực · API Harness 6/8/2026</div>
+    </div>
+
+    <div class="grid kpis">
+      <div class="card"><div class="kpi-label">Case trong catalog</div><div class="kpi-value">313</div><div class="support">245 aloha + 68 harness lẫn chung một chỗ.</div></div>
+      <div class="card"><div class="kpi-label">Giá trị feature khác nhau</div><div class="kpi-value bad">203</div><div class="support">Cho 313 case — feature đang là ID thứ hai.</div></div>
+      <div class="card"><div class="kpi-label">feature dùng đúng 1 lần</div><div class="kpi-value bad">165</div><div class="support">Giá trị dùng một lần thì không nhóm ai.</div></div>
+      <div class="card"><div class="kpi-label">Risk bị xé thành</div><div class="kpi-value bad">20</div><div class="support">giá trị feature — vì quỹ nhồi vào feature.</div></div>
+    </div>
+
+    <div class="grid charts-even" style="margin-top:14px">
+      <div class="chart-panel">
+        <div class="chart-head"><div><h3>203 giá trị feature gồm những gì</h3><div class="support">~81% dùng đúng 1 lần — nhiễu, không phải nhãn.</div></div><div class="badge real">Thực</div></div>
+        <div class="chart-wrap"><canvas id="valueDoughnut"></canvas></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-head"><div><h3>Một ý niệm → bao nhiêu giá trị</h3><div class="support">Cùng một vùng test bị xé thành nhiều nhãn. Lý tưởng = 1.</div></div><div class="badge real">Thực</div></div>
+        <div class="chart-wrap"><canvas id="fragBar"></canvas></div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:14px">
+      <h3>Hiện trạng đo được — cấu hình "feature + label" đang dùng đã sụp đổ</h3>
+      <p>Đếm thật trên API Harness 6/8: <code>category</code> = <b>"default" cho cả 313 case</b> (auto-phân-loại không phân loại gì), và case <b>không có trường labels</b> — pool gợi ý label khi có người gõ đã lẫn cả mã Jira (<code>FNC-001</code>) lẫn tên project (<code>aloha</code>, <code>harness</code>). Riêng "Risk" bị xé thành <b>20</b> giá trị feature vì phạm vi quỹ không có chỗ nào ngoài feature. Đây không phải rủi ro tương lai — đây là dữ liệu hiện tại.</p>
+    </div>
+  </section>
+
+  <!-- 2. TRỤC VS TẦNG -->
+  <section id="axis" class="section">
+    <div class="section-head">
+      <div>
+        <h2>2. Trục (axis) ≠ Tầng (level) — hiểu đúng đề xuất</h2>
+        <div class="desc">Phản biện "quá sâu, quá phức tạp" nhầm <b>bề rộng</b> với <b>chiều sâu</b>. Cây càng sâu càng mục rữa — điều đó <b>đúng</b>. Chính vì thế đề xuất trải thông tin ra <b>3 trường nông song song</b> (feature ≤ 2 tầng), không phải một cây sâu 5 tầng.</div>
+      </div>
+      <div class="badge">Điểm mấu chốt</div>
+    </div>
+
+    <div class="vs">
+      <div class="vs-col good">
+        <div class="vs-title good">✔ 3 TRƯỜNG — nhiều chiều, nông (đề xuất)</div>
+        <div class="vs-sub">Ba trường đặt cạnh nhau, mỗi trường nông (feature ≤ 2 tầng). <code>labels[]</code> gánh nhiều chiều qua namespace. Đọc theo chiều ngang.</div>
+        <div class="axes-row">
+          <div class="axis-col"><div class="an">feature</div><div class="av">risk</div><div class="sub">/dashboard</div></div>
+          <div class="axis-col"><div class="an">category</div><div class="av">negative</div></div>
+          <div class="axis-col"><div class="an">labels[]</div><div class="av">suite:smoke</div><div class="sub">fund:public · metric:nav</div></div>
+        </div>
+        <div class="vs-foot good-t">Từ vựng <b>cộng dồn</b> ≈ <b>45 giá trị</b> (+ <code>project</code> sẵn có). Không nhánh nào sâu quá 2 tầng nên không có gì để "mục".</div>
+      </div>
+
+      <div class="vs-mid">≠</div>
+
+      <div class="vs-col bad">
+        <div class="vs-title bad">✘ CÂY 5 TẦNG — sâu (KHÔNG phải đề xuất)</div>
+        <div class="vs-sub">Một cây phân cấp lồng 5 tầng. Đọc theo chiều dọc, mỗi tầng phụ thuộc tầng trên.</div>
+        <div class="tree">
+          <div>aloha</div>
+          <div class="d">└─ risk</div>
+          <div class="d">&nbsp;&nbsp;&nbsp;└─ public-fund</div>
+          <div class="d">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ negative</div>
+          <div class="d">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ smoke</div>
+          <div class="rot">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ … mục rữa</div>
+        </div>
+        <div class="vs-foot bad-t">Từ vựng <b>nhân lên</b>: mỗi tầng ép mọi tổ hợp tầng trên phải nhân bản. Đây chính là thứ báo cáo taxonomy khác gọi là "5+ tầng xấu" — và họ nói đúng.</div>
+      </div>
+    </div>
+
+    <div class="callout teal" style="margin-top:16px">
+      <p><b>Vậy nên:</b> đề xuất này <b>không mâu thuẫn</b> với nguyên tắc "đừng làm cây quá sâu". Nó dựa trên chính nguyên tắc đó: vì cây sâu mục rữa, ta trải thông tin ra <b>các trường song song</b> thay vì tầng lồng nhau. "3 trường" là <b>bề rộng</b>, không phải <b>chiều sâu</b>.</p>
+    </div>
+  </section>
+
+  <!-- 3. CỘNG VS NHÂN -->
+  <section id="math" class="section">
+    <div class="section-head">
+      <div>
+        <h2>3. Cộng vs Nhân — bằng chứng toán học</h2>
+        <div class="desc">Các chiều người ta cần truy vấn không biến mất khi bỏ bớt trục. Chúng chỉ dồn vào <code>feature</code> — và nhân lên.</div>
+      </div>
+      <div class="badge">Cơ chế</div>
+    </div>
+
+    <div class="grid charts-even">
+      <div class="chart-panel">
+        <div class="chart-head"><div><h3>Từ vựng phình ra khi gộp thêm mỗi chiều</h3><div class="support">Trục X: số chiều bị nhồi vào <code>feature</code>. Trục Y: số giá trị sinh ra.</div></div><div class="badge est">Mô hình</div></div>
+        <div class="chart-wrap tall"><canvas id="explosionLine"></canvas></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-head"><div><h3>Tổng từ vựng cuối cùng</h3><div class="support">Cùng một lượng thông tin, hai cách lưu.</div></div><div class="badge est">Mô hình</div></div>
+        <div class="chart-wrap tall"><canvas id="addMulBar"></canvas></div>
+      </div>
+    </div>
+
+    <div class="callout teal" style="margin-top:14px">
+      <h3>Con số chốt hạ</h3>
+      <p>Chỉ cần gộp <b>bốn</b> chiều thật (vùng × quỹ × môi trường × mức ưu tiên) vào <code>feature</code>: <b>10 × 4 × 2 × 3 = 240</b> giá trị. Đếm thật trên Harness 6/8: <b>203</b> giá trị feature cho 313 case (165 dùng đúng 1 lần). Đó không phải trùng hợp — đó là cùng một phép nhân, và các tiêu đề tự do còn chồng thêm lên. Giữ các chiều tách rời trong <code>labels[]</code> có namespace, cùng thông tin đó chỉ tốn <b>~45</b> giá trị.</p>
+    </div>
+  </section>
+
+  <!-- 4. SO SÁNH -->
+  <section id="compare" class="section">
+    <div class="section-head">
+      <div>
+        <h2>4. So sánh theo 2 kỷ luật: đóng từ vựng + namespace</h2>
+        <div class="desc">Bấm vào từng phương án để xem nó giữ được gì và đánh mất gì.</div>
+      </div>
+      <div class="badge est">Khung quyết định</div>
+    </div>
+
+    <div class="grid cards-3" id="cmpCards"></div>
+
+    <div class="grid charts-even" style="margin-top:14px">
+      <div class="chart-panel">
+        <div class="chart-head"><div><h3>Radar đánh đổi giữa các phương án</h3><div class="support">Càng phủ rộng ra ngoài càng tốt. C (đóng + namespace) thắng ở phủ câu hỏi và kiểm soát từ vựng.</div></div><div class="badge est">Ước lượng</div></div>
+        <div class="chart-wrap tall"><canvas id="cmpRadar"></canvas></div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-head"><div><h3>Điểm quyết định tổng hợp</h3><div class="support">Trọng số theo truy xuất, phủ câu hỏi, kiểm soát từ vựng, bảo trì, tải QA.</div></div><div class="badge est">Ước lượng</div></div>
+        <div class="chart-wrap tall"><canvas id="scoreBar"></canvas></div>
+      </div>
+    </div>
+
+    <div id="cmpRecommendation" class="callout" style="margin-top:14px"></div>
+  </section>
+
+  <!-- 5. CÂU HỎI -->
+  <section id="questions" class="section">
+    <div class="section-head">
+      <div>
+        <h2>5. Bỏ kỷ luật nào = mất (hoặc làm hỏng) câu hỏi nào</h2>
+        <div class="desc">Mỗi trường — và namespace của nó — là thứ <em>duy nhất</em> trả lời sạch được một câu hỏi. Thiếu đóng-từ-vựng hoặc thiếu namespace, câu hỏi thành <b>bất khả thi hoặc không đáng tin</b>.</div>
+      </div>
+      <div class="badge real">Câu hỏi thực</div>
+    </div>
+
+    <div class="grid charts-2">
+      <div class="card" style="padding:0">
+        <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Câu hỏi ai đó thực sự hỏi</th><th class="c">A · Tự do</th><th class="c">B · Đóng phẳng</th><th class="c best">C · +namespace</th></tr></thead>
+          <tbody>
+            <tr><td>Chỉ xem case của Aloha<span class="who">Mọi người · project</span></td><td class="c"><span class="mk y">✓</span></td><td class="c"><span class="mk y">✓</span></td><td class="c best"><span class="mk y">✓</span></td></tr>
+            <tr><td>Chạy mọi test Risk, trên cả 4 quỹ<span class="who">QA &amp; PO · feature đóng</span></td><td class="c"><span class="mk n">✕</span></td><td class="c"><span class="mk y">✓</span></td><td class="c best"><span class="mk y">✓</span></td></tr>
+            <tr><td>Thiếu test negative / boundary ở đâu?<span class="who">QA Lead · category</span></td><td class="c"><span class="mk n">✕</span></td><td class="c"><span class="mk y">✓</span></td><td class="c best"><span class="mk y">✓</span></td></tr>
+            <tr><td>Chạy bộ smoke trước mỗi lần deploy<span class="who">Release / CI · labels: suite:</span></td><td class="c"><span class="mk n">✕</span></td><td class="c"><span class="mk p">~</span></td><td class="c best"><span class="mk y">✓</span></td></tr>
+            <tr><td>NAV đổi công thức — test nào phải chạy lại?<span class="who">Dev &amp; PO · labels: metric:nav</span></td><td class="c"><span class="mk n">✕</span></td><td class="c"><span class="mk p">~</span></td><td class="c best"><span class="mk y">✓</span></td></tr>
+            <tr><td>Test hành vi này trên cả 4 quỹ<span class="who">QA · labels: fund:</span></td><td class="c"><span class="mk n">✕</span></td><td class="c"><span class="mk p">~</span></td><td class="c best"><span class="mk y">✓</span></td></tr>
+            <tr><td>Case nào ghi dữ liệu lên môi trường lab?<span class="who">QA · labels: env:lab</span></td><td class="c"><span class="mk n">✕</span></td><td class="c"><span class="mk p">~</span></td><td class="c best"><span class="mk y">✓</span></td></tr>
+            <tr><td>Test nào phủ ticket KS-963?<span class="who">PO · labels: jira:</span></td><td class="c"><span class="mk n">✕</span></td><td class="c"><span class="mk p">~</span></td><td class="c best"><span class="mk y">✓</span></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-head"><div><h3>Số câu hỏi trả lời sạch / 8</h3><div class="support">Tự do 1/8 · đóng-phẳng 3/8 (5 câu còn lại chỉ ~) · đóng+namespace 8/8.</div></div></div>
+        <div class="chart-wrap tall"><canvas id="qBar"></canvas></div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><span class="mk y" style="width:22px;height:22px">✓</span> Trả lời sạch bằng một truy vấn</span>
+      <span><span class="mk p" style="width:22px;height:22px">~</span> Lọc thô được nhưng không typed / không đáng tin (labels phẳng)</span>
+      <span><span class="mk n" style="width:22px;height:22px">✕</span> Bất khả thi — free-text, giá trị vỡ vụn</span>
+    </div>
+  </section>
+
+  <!-- 6. VÍ DỤ -->
+  <section id="journey" class="section">
+    <div class="section-head">
+      <div>
+        <h2>6. Ví dụ: một prompt đi qua bộ phân loại</h2>
+        <div class="desc">QA viết tiếng Anh đời thường. Hệ thống điền sẵn 3 trường ngay tại khâu nhập — QA chỉ rà lại và bấm xác nhận.</div>
+      </div>
+      <div class="badge">Đường đi</div>
+    </div>
+
+    <div class="callout" style="margin-bottom:14px">
+      <h3>① QA viết (prompt tự do)</h3>
+      <p style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.7;color:#fff">Vào <b>Cash Forecast → Hypothetical Flows</b>, nhập một khoản tiền âm không hợp lệ rồi kiểm tra hệ thống <b>báo lỗi NAV</b>. Quỹ <b>Public</b>, môi trường <b>lab</b>, ticket <b>KS-963</b>, thuộc bộ <b>regression</b>.</p>
+    </div>
+
+    <div class="flow" style="margin-bottom:16px">
+      <div class="node"><b>② Prompt</b><span>văn bản tự do</span></div><div class="arrow">→</div>
+      <div class="node hot"><b>Luật từ khoá</b><span>miễn phí — điền phần lớn</span></div><div class="arrow">→</div>
+      <div class="node"><b>LLM</b><span>chỉ chốt sub-area còn trống</span></div><div class="arrow">→</div>
+      <div class="node"><b>Cổng 0,80</b><span>0,93 ≥ 0,80 → tự áp dụng</span></div><div class="arrow">→</div>
+      <div class="node hot"><b>3 trường</b><span>ghi vào catalog</span></div>
+    </div>
+
+    <div class="grid charts-even">
+      <div class="card">
+        <h3>③ Từ khoá nào → trường nào</h3>
+        <div style="overflow-x:auto;margin-top:10px">
+        <table>
+          <thead><tr><th>Trong prompt</th><th>Gán</th><th>Trường</th></tr></thead>
+          <tbody>
+            <tr><td>"Cash Forecast → Hypothetical Flows"</td><td><code>cash-forecast/hypothetical-flows</code></td><td><code>feature</code></td></tr>
+            <tr><td>"tiền âm không hợp lệ" + "báo lỗi"</td><td><code>negative</code></td><td><code>category</code></td></tr>
+            <tr><td>"lỗi NAV"</td><td><code>metric:nav</code></td><td><code>labels</code></td></tr>
+            <tr><td>"Quỹ Public"</td><td><code>fund:public</code></td><td><code>labels</code></td></tr>
+            <tr><td>"môi trường lab"</td><td><code>env:lab</code></td><td><code>labels</code></td></tr>
+            <tr><td>"regression"</td><td><code>suite:regression</code></td><td><code>labels</code></td></tr>
+            <tr><td>"KS-963"</td><td><code>jira:KS-963</code></td><td><code>labels</code></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>④ Bộ phân loại xuất ra</h3>
+        <pre style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.65;background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:12px;padding:15px;overflow-x:auto;color:#fff;margin:10px 0 0">{
+  "project":  "aloha",
+  "feature":  "cash-forecast/hypothetical-flows",
+  "category": "negative",
+  "labels":   ["suite:regression", "fund:public",
+               "env:lab", "metric:nav", "jira:KS-963"],
+  "confidence": 0.93
+}</pre>
+        <p class="support" style="margin-top:10px"><code>project</code> là bộ chọn sẵn có. 6/7 giá trị do <b>luật từ khoá</b> điền (miễn phí); LLM chỉ chốt khu vực con.</p>
+      </div>
+    </div>
+
+    <div class="callout teal" style="margin-top:14px">
+      <h3>⑤ Vừa ghi xong là mở ra ngay</h3>
+      <p><code>feature:cash-forecast</code> → mọi case Cash Forecast · <code>labels chứa metric:nav</code> → NAV đổi thì chạy lại gì · <code>labels chứa suite:regression</code> → bộ regression · ô heatmap <code>cash-forecast × negative</code> → còn trống hay đã phủ.</p>
+    </div>
+  </section>
+
+  <!-- 7. KỶ LUẬT + KẾT LUẬN -->
+  <section id="discipline" class="section">
+    <div class="section-head">
+      <div>
+        <h2>7. Kỷ luật &amp; Kết luận</h2>
+        <div class="desc">Ba phép thử quyết định một chiều có được namespace riêng — và một giá trị hỏng chứng minh toàn bộ vấn đề.</div>
+      </div>
+      <div class="badge">Nguyên tắc</div>
+    </div>
+
+    <h3 style="margin-bottom:10px">Giải phẫu một giá trị hỏng: <code>public-fund-risk</code></h3>
+    <div class="card" style="margin-bottom:18px">
+      <div class="fuse">
+        <div class="token-big"><span class="p1">public-fund</span>-<span class="p2">risk</span></div>
+        <span class="fz-arrow">→</span>
+        <div class="splitcard a2"><div class="ax">labels[] · phạm vi quỹ</div><div class="val">fund:public</div></div>
+        <div class="splitcard a5"><div class="ax">feature · vùng chức năng</div><div class="val">feature:risk</div></div>
+      </div>
+      <p class="support" style="margin-top:14px;text-align:center;max-width:none">Một token gánh việc của hai trường. Tách ra: quỹ thành tag, vùng gom về <b>một</b> giá trị <code>risk</code> dùng chung cho cả 4 quỹ — biến <b>20 giá trị Risk thành 1</b> và làm <code>--grep @risk</code> trả về đủ mọi case Risk.</p>
+    </div>
+
+    <div class="grid rules">
+      <div class="rule"><div class="n">TEST 01</div><h3>Trực giao (độc lập)</h3><p>Giá trị của chiều biến thiên độc lập với các chiều khác. Một test Risk có thể positive <em>hoặc</em> negative, smoke <em>hoặc</em> regression, quỹ public <em>hoặc</em> private. Nếu một chiều luôn đi kèm chiều khác — gộp lại, không phải chiều mới.</p></div>
+      <div class="rule"><div class="n">TEST 02</div><h3>Trả lời một câu hỏi riêng</h3><p>Nó trả lời câu hỏi không chiều nào khác trả lời được. "NAV đổi thì chạy lại gì" chỉ hỏi được <code>metric:</code>; "smoke trước deploy" chỉ hỏi được <code>suite:</code>. Bỏ chiều là mất câu hỏi.</p></div>
+      <div class="rule"><div class="n">TEST 03</div><h3>Cắt đi thì nhân lên</h3><p>Gộp nó vào trường khác làm từ vựng <b>nhân</b> thay vì <b>cộng</b>. Quỹ gộp vào feature = vùng × 4. Đây là phép thử về mặt toán học buộc quỹ (và metric/env/jira) phải ra khỏi feature, vào <code>labels[]</code>.</p></div>
+    </div>
+
+    <div class="callout teal" style="margin-top:14px">
+      <p><b>Đây là trần, không phải giấy phép để phình.</b> Cùng nguyên tắc này <b>đóng băng</b> <code>feature</code> ở 10 vùng (tối đa 2 tầng), giữ 5 loại test, và <b>hoãn</b> accessibility cho đến khi nó xứng đáng có namespace riêng. "Đóng + namespace" là <b>kỷ luật tối thiểu</b> trả lời được mọi câu hỏi — không phải bành trướng, cũng không mở vô hạn.</p>
+    </div>
+
+    <h3 style="margin:22px 0 10px">Classification là lớp điều khiển giữa sinh test và chạy automation</h3>
+    <div class="flow">
+      <div class="node"><b>Yêu cầu</b><span>Prompt / user story</span></div><div class="arrow">→</div>
+      <div class="node hot"><b>Phân loại 3 trường</b><span>tự động, ngưỡng tin cậy 0,80</span></div><div class="arrow">→</div>
+      <div class="node"><b>Kiểm tra trùng</b><span>theo nhãn, không quét cả 287</span></div><div class="arrow">→</div>
+      <div class="node"><b>Sinh case còn thiếu</b><span>lấp ô trống heatmap</span></div><div class="arrow">→</div>
+      <div class="node"><b>Chạy automation</b><span>Playwright theo tag</span></div><div class="arrow">→</div>
+      <div class="node"><b>Giám sát</b><span>độ phủ + ROI</span></div>
+    </div>
+
+    <div class="bl-grid">
+      <div class="bl-col less">
+        <h3><span class="pin bad"></span> Giữ free-text / labels phẳng</h3>
+        <ul>
+          <li>Free-text để mỗi chiều dồn vào feature → từ vựng nổ theo phép nhân (203 giá trị đã đo).</li>
+          <li>Xóa 5/8 câu hỏi nghiệp vụ thường dùng — phân tích tác động, bộ suite, phạm vi quỹ, môi trường, truy vết ticket.</li>
+          <li>Feature vẫn vỡ vụn: 20 giá trị Risk, <code>--grep @risk</code> hỏng.</li>
+          <li>Dashboard độ phủ báo tự tin dựng trên nhãn dùng-một-lần.</li>
+        </ul>
+      </div>
+      <div class="bl-col more">
+        <h3><span class="pin good"></span> Đóng từ vựng + namespace (3 trường)</h3>
+        <ul>
+          <li>Từ vựng cộng dồn — ~45 giá trị cho ~300 case, không phải hàng trăm.</li>
+          <li>Mọi câu hỏi trả lời sạch bằng một truy vấn; một màn hình, tự điền tại khâu nhập.</li>
+          <li>Risk = một giá trị cho cả 4 quỹ; heatmap và truy vấn tác động hoạt động thật.</li>
+          <li>Đóng băng theo luật — không thêm namespace/giá trị nếu chưa qua 3 phép thử.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:16px">
+      <p>Năm trục không phải năm loại việc thêm cho QA. Chúng là năm trường hệ thống <b>tự điền</b>, để QA viết tiếng Anh đời thường rồi xác nhận bản xem trước. Con số là năm vì đó là ít nhất mà vẫn giữ mọi câu hỏi nghiệp vụ trả lời được — xuống dưới nữa là quay lại 237.</p>
+    </div>
+  </section>
+
+  <div class="footer">
+    Harness · Aloha — do BA soạn dưới Epic QG-138. Số liệu hiện trạng (313 case · 203 giá trị feature · 165 dùng 1 lần · Risk=20 · category 100% "default") đo trực tiếp trên API Harness ngày 6/8/2026.<br>
+    Các biểu đồ gắn nhãn <b>Ước lượng / Mô hình</b> là minh họa cơ chế, chưa phải số đo pilot. Từ vựng theo <code>Aloha_Test_Case_Taxonomy.md</code>.
+  </div>
+</div>
+
+<script>
+Chart.defaults.color = "#ffffff";
+Chart.defaults.borderColor = "rgba(255,255,255,.12)";
+Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+
+const P = { accent:"#4fd8cf", blue:"#6c8dff", green:"#4bd995", amber:"#ffc366", red:"#ff7280", purple:"#ad92ff", grid:"rgba(255,255,255,.10)" };
+
+function baseOptions(extra={}){
+  return {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{labels:{color:"#fff",boxWidth:12,boxHeight:12}},
+      tooltip:{backgroundColor:"#06101c",titleColor:"#fff",bodyColor:"#fff",borderColor:"rgba(255,255,255,.15)",borderWidth:1}
+    },
+    scales:{ x:{ticks:{color:"#fff"},grid:{color:P.grid}}, y:{ticks:{color:"#fff"},grid:{color:P.grid}} },
+    ...extra
+  };
+}
+
+/* 1a — 237 breakdown */
+new Chart(document.getElementById("valueDoughnut"),{
+  type:"doughnut",
+  data:{ labels:["feature dùng đúng 1 lần (165)","feature dùng lại ≥2 lần (38)"],
+    datasets:[{data:[165,38],backgroundColor:[P.red,P.accent],borderWidth:0}] },
+  options:{responsive:true,maintainAspectRatio:false,cutout:"62%",
+    plugins:{legend:{position:"bottom",labels:{color:"#fff"}},tooltip:{backgroundColor:"#06101c"}}}
+});
+
+/* 1b — fragmentation */
+new Chart(document.getElementById("fragBar"),{
+  type:"bar",
+  data:{ labels:["Risk","Scenario","Rating","Overview","Search","Pipeline"],
+    datasets:[{label:"Số giá trị feature",data:[20,15,10,9,9,5],
+      backgroundColor:[P.red,P.red,P.amber,P.amber,P.amber,P.blue],borderRadius:8}] },
+  options:baseOptions({indexAxis:"y",plugins:{legend:{display:false}},
+    scales:{x:{beginAtZero:true,ticks:{color:"#fff",stepSize:1},grid:{color:P.grid}},y:{ticks:{color:"#fff"},grid:{display:false}}}})
+});
+
+/* 3a — explosion line */
+new Chart(document.getElementById("explosionLine"),{
+  type:"line",
+  data:{ labels:["feature","+ quỹ (×4)","+ môi trường (×2)","+ ưu tiên (×3)","+ loại test (×5)"],
+    datasets:[
+      {label:"Gộp vào 1 trường (NHÂN)",data:[10,40,80,240,1200],borderColor:P.red,backgroundColor:"rgba(255,114,128,.10)",fill:true,tension:.35,pointRadius:5,pointBackgroundColor:P.red},
+      {label:"Tách chiều ra labels[] (CỘNG)",data:[10,14,16,19,24],borderColor:P.green,backgroundColor:"rgba(75,217,149,.10)",fill:true,tension:.3,pointRadius:5,pointBackgroundColor:P.green}
+    ] },
+  options:baseOptions({
+    plugins:{legend:{labels:{color:"#fff"}},
+      tooltip:{callbacks:{footer:(it)=> it[0].dataIndex===3 ? "≈ 203 giá trị feature (đo 6/8)" : ""}}},
+    scales:{x:{ticks:{color:"#fff"},grid:{color:P.grid}},y:{beginAtZero:true,ticks:{color:"#fff"},grid:{color:P.grid},title:{display:true,text:"Số giá trị từ vựng",color:"#fff"}}}})
+});
+
+/* 3b — additive vs multiplicative bar */
+new Chart(document.getElementById("addMulBar"),{
+  type:"bar",
+  data:{ labels:["Gộp vào feature","3 trường + namespace"],
+    datasets:[{label:"Số giá trị phải quản lý",data:[240,45],backgroundColor:[P.red,P.green],borderRadius:10,barPercentage:.6}] },
+  options:baseOptions({plugins:{legend:{display:false},
+    tooltip:{callbacks:{label:(c)=> c.parsed.y + " giá trị"}}},
+    scales:{x:{ticks:{color:"#fff"},grid:{display:false}},y:{beginAtZero:true,ticks:{color:"#fff"},grid:{color:P.grid}}}})
+});
+
+/* 4 — comparison cards */
+const schemes = [
+  {axes:"A · TỰ DO", fields:"hiện trạng — cả 3 trường nhập tự do", score:24, cls:"bad",
+   note:"Chính là hôm nay. Cả 3 trường free-text: feature = 203 giá trị (165 dùng đúng 1 lần), category = default cho cả 313, labels rỗng/rác. Gần như không truy vấn được gì."},
+  {axes:"B · ĐÓNG, LABELS PHẲNG", fields:"đóng từ vựng, labels KHÔNG namespace", score:62, cls:"warn",
+   note:"Đóng feature + category → 'mọi Risk' và heatmap chạy được. Nhưng labels là túi phẳng: suite/quỹ/metric/jira lẫn lộn — chỉ lọc thô, không truy vấn typed, và dễ phình lại thành túi rác."},
+  {axes:"C · ĐÓNG + NAMESPACE", fields:"đề xuất — labels[] có tiền tố", score:93, cls:"good",
+   note:"Mọi giá trị typed: feature/category đơn trị đóng, labels[] đa trị có namespace (fund:/metric:/suite:…). ~45 giá trị, mọi truy vấn cắt ngang sạch. Đây chính là hai điều bất di bất dịch."}
+];
+document.getElementById("cmpCards").innerHTML = schemes.map((s,i)=>`
+  <div class="card cmp-card ${i===2?"active":""}" data-i="${i}">
+    <div class="cmp-axes">${s.axes}</div>
+    <div class="cmp-fields">${s.fields}</div>
+    <div class="cmp-score ${s.cls}">${s.score}</div>
+    <div class="support">Điểm quyết định / 100</div>
+  </div>`).join("");
+function cmpText(i){
+  document.querySelectorAll(".cmp-card").forEach((x,j)=>x.classList.toggle("active",j===i));
+  const s=schemes[i];
+  document.getElementById("cmpRecommendation").innerHTML=`<h3 class="${s.cls}">${s.axes} — ${s.score}/100</h3><p>${s.note}</p>`;
+}
+document.querySelectorAll(".cmp-card").forEach(el=>el.addEventListener("click",()=>cmpText(Number(el.dataset.i))));
+cmpText(2);
+
+/* 4a — radar */
+new Chart(document.getElementById("cmpRadar"),{
+  type:"radar",
+  data:{ labels:["Truy xuất đúng","Phủ câu hỏi NV","Kiểm soát từ vựng","Chống phân mảnh","Giảm tải QA"],
+    datasets:[
+      {label:"A · Tự do",data:[22,20,15,12,40],borderColor:P.red,backgroundColor:"rgba(255,114,128,.08)"},
+      {label:"B · Đóng phẳng",data:[70,62,60,66,68],borderColor:P.amber,backgroundColor:"rgba(255,195,102,.08)"},
+      {label:"C · +namespace",data:[95,100,96,92,88],borderColor:P.accent,backgroundColor:"rgba(79,216,207,.14)"}
+    ] },
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{r:{min:0,max:100,ticks:{display:false},grid:{color:P.grid},angleLines:{color:P.grid},pointLabels:{color:"#fff",font:{size:11}}}},
+    plugins:{legend:{labels:{color:"#fff"}}}}
+});
+
+/* 4b — decision score bar */
+new Chart(document.getElementById("scoreBar"),{
+  type:"bar",
+  data:{ labels:["A · Tự do","B · Đóng phẳng","C · +namespace"],
+    datasets:[{label:"Điểm quyết định",data:[24,62,93],backgroundColor:[P.red,P.amber,P.green],borderRadius:9,barPercentage:.62}] },
+  options:baseOptions({plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:"#fff"},grid:{display:false}},y:{beginAtZero:true,max:100,ticks:{color:"#fff"},grid:{color:P.grid}}}})
+});
+
+/* 5 — questions answerable */
+new Chart(document.getElementById("qBar"),{
+  type:"bar",
+  data:{ labels:["A · Tự do","B · Đóng phẳng","C · +namespace"],
+    datasets:[{label:"Câu hỏi trả lời sạch",data:[1,3,8],backgroundColor:[P.red,P.amber,P.green],borderRadius:9,barPercentage:.6}] },
+  options:baseOptions({plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>c.parsed.y+" / 8 câu hỏi"}}},
+    scales:{x:{ticks:{color:"#fff"},grid:{display:false}},y:{beginAtZero:true,max:8,ticks:{color:"#fff",stepSize:1},grid:{color:P.grid}}}})
+});
+</script>
+</body>
+</html>

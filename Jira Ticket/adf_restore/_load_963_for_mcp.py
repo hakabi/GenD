@@ -1,0 +1,7 @@
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).parent
+args = json.loads((ROOT / "_963_mcp_tool_args.json").read_text(encoding="utf-8"))
+# stdout for agent to capture args dict size confirmation
+print(json.dumps({"ready": True, "bytes": len(json.dumps(args)), "issue": args["issueIdOrKey"]}))

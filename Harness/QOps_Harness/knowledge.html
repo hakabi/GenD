@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Knowledge · QOps Harness</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/shell.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <script src="js/icons.js"></script>
+  <script src="js/knowledge-data.js"></script>
+  <style>
+    .knowledge-main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      min-height: 0;
+    }
+    @media (max-width: 1100px) {
+      .knowledge-main { grid-template-columns: 1fr; }
+    }
+    .editor-panel {
+      padding: 24px;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+    .editor-panel h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0;
+      font-family: var(--font-body);
+      word-break: break-word;
+    }
+    .editor-panel .agent-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .editor-role-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: color-mix(in oklch, var(--accent) 14%, var(--surface));
+      color: var(--accent);
+    }
+    .editor-role-badge.memory {
+      background: var(--surface);
+      color: var(--muted);
+    }
+    .editor-role-badge.reference {
+      background: color-mix(in oklch, var(--fg) 6%, var(--surface));
+      color: var(--fg-2);
+    }
+    .editor-panel .meta { font-size: 13px; color: var(--muted); }
+    .editor-panel textarea {
+      flex: 1;
+      min-height: 320px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.55;
+      resize: vertical;
+    }
+    .editor-panel textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: var(--focus-ring);
+    }
+    .editor-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .save-status {
+      font-size: 13px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+    .assist-panel {
+      padding: 24px;
+      background: var(--surface-warm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+    .assist-panel h3 { font-size: 14px; font-weight: 600; margin: 0; }
+    .assist-thread {
+      flex: 1;
+      min-height: 120px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .assist-input {
+      min-height: 72px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      resize: vertical;
+      font-family: var(--font-body);
+      font-size: 14px;
+    }
+    .assist-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: var(--focus-ring);
+    }
+    .knowledge-empty {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body data-page="knowledge">
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+  <div class="app-shell" data-od-id="knowledge-tab">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+    <div class="app-main">
+      <header class="page-header">
+        <div>
+          <h2>Knowledge</h2>
+          <p class="page-desc" id="scope-desc">Select a file from the sidebar to edit.</p>
+        </div>
+        <div class="page-header-actions">
+          <button type="button" class="btn btn-secondary btn-small" id="refresh-site-btn" data-icon="sync">Refresh site knowledge</button>
+        </div>
+      </header>
+      <div class="page-body">
+        <div class="knowledge-main" id="knowledge-main">
+          <section class="editor-panel" id="editor-panel">
+            <div class="agent-title" id="file-title-wrap">
+              <h3 id="file-title">Select a file</h3>
+            </div>
+            <p class="meta" id="file-meta">—</p>
+            <textarea id="editor" placeholder="Choose a file under Global, Project, or Agent in the sidebar…" disabled></textarea>
+            <div class="editor-actions">
+              <button type="button" class="btn btn-secondary btn-small" id="save-btn" disabled data-icon="save">Save</button>
+              <span class="save-status" id="save-status" aria-live="polite"></span>
+            </div>
+          </section>
+          <aside class="assist-panel">
+            <h3>Assist</h3>
+            <div class="assist-thread" id="assist-thread">Describe changes in plain language — proposals appear here.</div>
+            <textarea class="assist-input" id="assist-input" placeholder="Describe what to change…"></textarea>
+            <button type="button" class="btn btn-teal btn-small" id="assist-send" data-icon="send">Send</button>
+          </aside>
+        </div>
+        <div class="knowledge-empty empty-state" id="knowledge-empty" hidden>
+          <p class="empty-state__title">Select a knowledge file</p>
+          <p class="empty-state__hint">Pick a file from the sidebar — under <strong>Global</strong>, <strong>Project</strong>, or an <strong>Agent</strong> name.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="mobile-nav-toggle btn-icon-only" id="mobile-nav-toggle" data-icon="menu" data-label="Open menu" aria-label="Open menu">Open menu</button>
+  <script>
+    const K = window.KNOWLEDGE;
+    const params = new URLSearchParams(location.search);
+    const scopeParam = params.get("scope") || "project";
+    const fileParam = params.get("file") || "";
+    const agentParam = params.get("agent") || "";
+
+    document.body.dataset.subpage = scopeParam === "agents" ? "agents" : scopeParam;
+    if (fileParam) document.body.dataset.knowledgeFile = fileParam;
+    if (agentParam) document.body.dataset.knowledgeAgent = agentParam;
+
+    const editor = document.getElementById("editor");
+    const fileTitle = document.getElementById("file-title");
+    const fileTitleWrap = document.getElementById("file-title-wrap");
+    const fileMeta = document.getElementById("file-meta");
+    const saveBtn = document.getElementById("save-btn");
+    const saveStatus = document.getElementById("save-status");
+    const scopeDesc = document.getElementById("scope-desc");
+
+    function scopeLabel(scope) {
+      return K.SCOPE_LABELS[scope] || scope;
+    }
+
+    function roleBadgeClass(role) {
+      return role === "memory" ? "memory" : role === "reference" ? "reference" : "";
+    }
+
+    function setFileTitle(scope, path, agentId) {
+      if (scope === "agents" && agentId) {
+        const agent = K.agentById(agentId);
+        const fileMetaEntry = K.resolveAgentFile(agentId, path);
+        const agentName = agent ? agent.name : agentId;
+        const roleLabel = fileMetaEntry ? fileMetaEntry.label : path;
+        const role = fileMetaEntry ? fileMetaEntry.role : "soul";
+        fileTitleWrap.innerHTML =
+          `<h3 id="file-title">${agentName}</h3>` +
+          `<span class="editor-role-badge ${roleBadgeClass(role)}">${roleLabel}</span>`;
+      } else {
+        fileTitleWrap.innerHTML = `<h3 id="file-title">${path}</h3>`;
+      }
+    }
+
+    function openFile(scope, path, agentId) {
+      scopeDesc.textContent = K.SCOPE_DESC[scope] || K.SCOPE_DESC.project;
+      setFileTitle(scope, path, agentId);
+      if (scope === "agents" && agentId) {
+        const fileMetaEntry = K.resolveAgentFile(agentId, path);
+        const agent = K.agentById(agentId);
+        const editable = fileMetaEntry?.role !== "memory";
+        fileMeta.textContent = editable
+          ? `${agent?.name || agentId} · ${fileMetaEntry?.label || path} — editable`
+          : `${agent?.name || agentId} · Memory — read-only (episodic log)`;
+        editor.disabled = !editable;
+        saveBtn.disabled = !editable;
+      } else {
+        fileMeta.textContent = `${scopeLabel(scope)} scope · markdown`;
+        editor.disabled = false;
+        saveBtn.disabled = false;
+      }
+      editor.value = K.defaultContent(path, agentId || null);
+      saveStatus.textContent = "";
+      document.getElementById("knowledge-empty").hidden = true;
+      document.getElementById("knowledge-main").hidden = false;
+    }
+
+    function showEmptyState() {
+      scopeDesc.textContent = K.SCOPE_DESC[scopeParam] || "Select a file from the sidebar to edit.";
+      fileTitleWrap.innerHTML = `<h3 id="file-title">Select a file</h3>`;
+      fileMeta.textContent = "—";
+      document.getElementById("knowledge-empty").hidden = false;
+      document.getElementById("knowledge-main").hidden = true;
+    }
+
+    function isValidSelection() {
+      if (!fileParam) return false;
+      if (scopeParam === "agents") {
+        return agentParam && K.resolveAgentFile(agentParam, fileParam);
+      }
+      return (K.FILES[scopeParam] || []).includes(fileParam);
+    }
+
+    document.getElementById("save-btn").addEventListener("click", () => {
+      saveStatus.textContent = "Saved";
+      setTimeout(() => { saveStatus.textContent = ""; }, 2000);
+    });
+
+    document.getElementById("assist-send").addEventListener("click", () => {
+      const input = document.getElementById("assist-input").value.trim();
+      if (!input) return;
+      document.getElementById("assist-thread").textContent =
+        `Proposal: ${input} — review diff before accepting.`;
+    });
+
+    document.getElementById("refresh-site-btn").addEventListener("click", () => {
+      saveStatus.textContent = "Site crawl started…";
+      setTimeout(() => { saveStatus.textContent = "Site knowledge refreshed"; }, 1200);
+    });
+
+    if (isValidSelection()) {
+      openFile(scopeParam, fileParam, agentParam || null);
+    } else if (!fileParam) {
+      showEmptyState();
+      scopeDesc.textContent = K.SCOPE_DESC[scopeParam] || K.SCOPE_DESC.project;
+      document.getElementById("knowledge-main").hidden = false;
+      document.getElementById("knowledge-empty").hidden = true;
+    } else {
+      showEmptyState();
+    }
+  </script>
+  <script src="js/shell.js"></script>
+</body>
+</html>

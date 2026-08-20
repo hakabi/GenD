@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness — retry status consistency mockup</title>
+<style>
+  :root{
+    --bg:#141414; --surface:#1c1c1c; --surface-warm:#101010; --fg:#ececec; --fg-2:#f5f5f5;
+    --muted:#9b9b9b; --meta:#6e6e6e; --border:#2e2e2e; --border-soft:#262626;
+    --accent:#10a37f; --accent-on:#fff; --accent-soft:rgba(16,163,127,.22);
+    --danger:#f2555a; --warn:#f5a623; --radius-sm:12px; --radius-md:16px; --radius-pill:9999px;
+    --font-body:"Söhne","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"Söhne Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-warm);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.6;padding:26px}
+  h1{font-size:21px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:22px;max-width:900px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1100px;align-items:start}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+  .ch{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .ch .t{font-weight:600;font-size:14px}
+  .tag{font-size:11px;padding:2px 9px;border-radius:var(--radius-pill);border:1px solid var(--border);color:var(--muted)}
+  .tag.a{color:var(--accent);border-color:var(--accent-soft);background:var(--accent-soft)}
+  .body{padding:16px}
+  .mono{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+  .hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .hdr .ttl{font-size:13.5px;font-weight:600}
+  .rc{display:flex;gap:8px;align-items:center}
+  .chip{font-size:10.5px;padding:2px 9px;border-radius:var(--radius-pill);font-weight:700;letter-spacing:.03em}
+  .chip.run{color:var(--accent);border:1px solid var(--accent-soft);background:var(--accent-soft)}
+  .chip.att{color:var(--fg-2);border:1px solid var(--border);background:var(--bg)}
+  .step{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:8px;font-size:12.5px;position:relative}
+  .step .s2{font-size:11px;color:var(--muted);margin-top:2px}
+  .st{float:right;font-size:10px;font-weight:700;padding:1px 8px;border-radius:var(--radius-pill)}
+  .st.fail{color:#ff8a8e;background:rgba(242,85,90,.16)}
+  .st.run{color:var(--accent);background:var(--accent-soft)}
+  .st.queue{color:var(--warn);background:rgba(245,166,35,.14)}
+  .badge-ai{font-size:9px;font-weight:700;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:0 4px;margin-left:5px}
+  .flag{font-size:12px;color:var(--muted);margin-top:12px}
+  .flag .x{color:var(--warn);font-weight:700;margin-right:4px}
+  .ok{color:var(--accent)}
+  .hist{margin-top:10px;font-size:12px;color:var(--muted);background:var(--bg);border:1px dashed var(--border);border-radius:var(--radius-sm);padding:9px 11px}
+  .callout{max-width:1100px;margin:22px 0 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px}
+  .callout h3{margin:0 0 8px;font-size:14px}
+  .cl{display:flex;gap:8px;font-size:13px;color:var(--muted);margin:7px 0}
+  .cl b{color:var(--accent)}
+</style>
+</head>
+<body>
+  <h1>Requests — keep status consistent on Retry</h1>
+  <div class="sub">When a request is re-run with <b>Retry</b>, the header flips to <b>RUNNING</b> but the Execution steps still show the previous run's <b>FAILED</b> — a contradiction QA flagged. The proposal resets the steps for the new attempt and keeps the old one in History. Dark theme, real <code>tokens.css</code>. Technical step names kept as-is.</div>
+
+  <div class="grid">
+    <!-- BEFORE -->
+    <div class="card">
+      <div class="ch"><span class="t">Now — on Retry</span><span class="tag">CURRENT</span></div>
+      <div class="body">
+        <div class="hdr">
+          <span class="ttl">Project: aloha</span>
+          <span class="chip run">RUNNING</span>
+        </div>
+        <div class="step">Request setup <span class="st fail">FAILED</span><div class="s2">29 events</div></div>
+        <div class="step">Build test steps <span class="badge-ai">AI</span> <span class="st fail">FAILED</span><div class="s2 mono">crew_phase_a_build</div></div>
+        <div class="step">CASE 1 · Direct test <span class="st fail">FAILED</span><div class="s2">AI steps</div></div>
+        <div class="step">Build test steps <span class="badge-ai">AI</span> <span class="st fail">FAILED</span><div class="s2 mono">crew_phase_a_build</div></div>
+        <div class="flag"><span class="x">▲</span> Header says <b>RUNNING</b>, but every step still reads <b>FAILED</b> from the last run — which is it?</div>
+        <div class="flag"><span class="x">▲</span> The old failed attempt is mixed into the live tree, not separated.</div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="card">
+      <div class="ch"><span class="t">Proposed</span><span class="tag a">PROPOSED</span></div>
+      <div class="body">
+        <div class="hdr">
+          <span class="ttl">Project: aloha</span>
+          <span class="rc"><span class="chip att">Re-running · attempt 2</span><span class="chip run">RUNNING</span></span>
+        </div>
+        <div class="step">Request setup <span class="st run">RUNNING</span><div class="s2">re-running…</div></div>
+        <div class="step">Build test steps <span class="badge-ai">AI</span> <span class="st queue">QUEUED</span><div class="s2 mono">crew_phase_a_build</div></div>
+        <div class="step">CASE 1 · Direct test <span class="st queue">QUEUED</span><div class="s2">AI steps</div></div>
+        <div class="step">Build test steps <span class="badge-ai">AI</span> <span class="st queue">QUEUED</span><div class="s2 mono">crew_phase_a_build</div></div>
+        <div class="hist">↳ Previous attempt (failed · 47:07) moved to <b style="color:var(--muted)">History</b> — not shown as live.</div>
+        <div class="flag ok">✓ Header and steps now agree: RUNNING everywhere, old FAILED cleared for the new attempt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h3>What changes</h3>
+    <div class="cl"><b>Reset on retry</b> — when a retry starts, the request's steps/cases move to Queued/Running for the new attempt; stale FAILED from the prior run is cleared.</div>
+    <div class="cl"><b>Attempt label</b> — a "Re-running · attempt N" marker so it's clear this is a fresh run, not the old result.</div>
+    <div class="cl"><b>Old attempt in History</b> — the previous (failed) attempt stays available under History rather than lingering in the live Execution tree.</div>
+    <div class="cl"><b>One source of truth</b> — the header status and step statuses are always consistent (header RUNNING ⇒ no step still reads FAILED from a past run).</div>
+  </div>
+</body>
+</html>

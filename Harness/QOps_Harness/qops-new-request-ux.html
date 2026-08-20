@@ -1,0 +1,230 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <title>QOps Harness — New Request UX Revision</title>
+ <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f5f5f5;
+      --surface-warm: #fafafa;
+      --fg: #0d0d0d;
+      --fg-2: #1a1a1a;
+      --muted: #6e6e6e;
+      --meta: #9b9b9b;
+      --border: #e5e5e5;
+      --border-soft: #ededed;
+      --accent: #10a37f;
+      --accent-on: #ffffff;
+      --accent-hover: #0a7a5e;
+      --accent-soft: color-mix(in oklch, var(--accent) 14%, transparent);
+      --font-display: "Signifier", "Source Serif Pro", Georgia, ui-serif, serif;
+      --font-body: "Söhne", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-mono: "Söhne Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+      --radius-sm: 12px;
+      --radius-md: 16px;
+      --radius-pill: 9999px;
+      --container-max: 1200px;
+      --space-4: 16px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-12: 48px;
+      --space-16: 64px;
+      --elev-raised: 0 4px 16px rgba(13, 13, 13, 0.06);
+      --motion-fast: 150ms;
+      --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    p { text-wrap: pretty; margin: 0; }
+    h1, h2, h3 { text-wrap: balance; margin: 0; }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: var(--container-max); margin-inline: auto; padding-inline: clamp(24px, 4vw, 48px); }
+    .topnav {
+      position: sticky; top: 0; z-index: 10;
+      background: color-mix(in oklch, var(--bg) 92%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topnav-inner { display: flex; align-items: center; justify-content: space-between; padding-block: 14px; }
+    .logo { font-family: var(--font-display); font-size: 19px; letter-spacing: -0.01em; }
+    .logo span { color: var(--accent); }
+    .hero { padding-block: clamp(64px, 10vw, 120px); }
+    .hero-center { max-width: 42ch; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-4);
+    }
+    .display {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-6);
+    }
+    .lead { color: var(--muted); font-size: 18px; max-width: 52ch; margin-bottom: var(--space-8); }
+    .section { padding-block: var(--space-16); border-top: 1px solid var(--border); }
+    .section h2 { font-size: 28px; font-weight: 600; letter-spacing: -0.005em; margin-bottom: var(--space-6); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+    @media (max-width: 920px) { .grid-3 { grid-template-columns: 1fr; } }
+    .screen-card {
+      display: flex; flex-direction: column; gap: var(--space-4);
+      background: var(--bg);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      transition: box-shadow var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard);
+    }
+    .screen-card:hover {
+      box-shadow: var(--elev-raised);
+      border-color: var(--border);
+    }
+    .screen-card h3 { font-size: 20px; font-weight: 600; }
+    .screen-card p { color: var(--muted); font-size: 14px; flex: 1; }
+    .chip {
+      display: inline-flex; align-items: center;
+      padding: 4px 10px;
+      background: var(--surface);
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      width: fit-content;
+    }
+    .chip-primary { background: var(--accent-soft); color: var(--accent); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard);
+    }
+    .btn-primary { background: var(--fg); color: var(--accent-on); }
+    .btn-primary:hover { background: var(--fg-2); }
+    .btn-secondary { background: var(--bg); color: var(--fg); border-color: var(--border); }
+    .btn-secondary:hover { background: var(--surface-warm); }
+    .flow-list { display: flex; flex-direction: column; gap: var(--space-4); max-width: 640px; }
+    .flow-step {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: var(--space-4);
+      align-items: start;
+    }
+    .flow-num {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .flow-step strong { display: block; margin-bottom: 4px; }
+    .flow-step span { color: var(--muted); font-size: 14px; }
+    .pagefoot {
+      padding-block: var(--space-12);
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+ </style>
+</head>
+<body>
+ <header class="topnav" data-od-id="topnav">
+    <div class="container topnav-inner">
+      <span class="logo">QOps <span>Harness</span></span>
+      <span class="chip chip-primary">UX revision prototype</span>
+    </div>
+ </header>
+
+ <main>
+    <section class="hero" data-od-id="hero">
+      <div class="container hero-center">
+        <p class="eyebrow">New request flow</p>
+        <h1 class="display">Chat-first parameters, then case review.</h1>
+        <p class="lead">Revised New Request dialog: converse to fill fields, edit directly anytime, then review single or multiple test cases before processing.</p>
+      </div>
+    </section>
+
+    <section class="section" data-od-id="flow">
+      <div class="container">
+        <h2>Flow</h2>
+        <div class="flow-list">
+          <div class="flow-step">
+            <span class="flow-num">1</span>
+            <div>
+              <strong>New Request — chat + parameters</strong>
+              <span>User describes the test in chat; request mode, flow text, and session file update live. Fields are also directly editable.</span>
+            </div>
+          </div>
+          <div class="flow-step">
+            <span class="flow-num">2</span>
+            <div>
+              <strong>OK → proposed test cases</strong>
+              <span>Single-case mode: update one case. Multi-case mode: list + CRUD before confirm.</span>
+            </div>
+          </div>
+          <div class="flow-step">
+            <span class="flow-num">3</span>
+            <div>
+              <strong>Reopen from run queue</strong>
+              <span>Click any past run to return to the case review screen with saved state.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-od-id="screens">
+      <div class="container">
+        <h2>Screens</h2>
+        <div class="grid-3">
+          <a class="screen-card" href="index.html?new=1">
+            <span class="chip chip-primary">Step 1</span>
+            <h3>New Request dialog</h3>
+            <p>Split layout: chat thread on the left, parameter panel on the right. Try typing about a login bug or new feature.</p>
+            <span class="btn btn-primary">Open screen →</span>
+          </a>
+          <a class="screen-card" href="case-review.html?mode=multi">
+            <span class="chip">Step 2a</span>
+            <h3>Multi-case review</h3>
+            <p>Proposed cases list with filter, add, edit, delete. Confirm and process when ready.</p>
+            <span class="btn btn-secondary">Open screen →</span>
+          </a>
+          <a class="screen-card" href="case-review.html?mode=single">
+            <span class="chip">Step 2b</span>
+            <h3>Single-case update</h3>
+            <p>One test case with inline edit — title, category, natural-language flow.</p>
+            <span class="btn btn-secondary">Open screen →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+ </main>
+
+ <footer class="pagefoot" data-od-id="footer">
+    <div class="container row-between">
+      <span>QOps Harness UX revision · OpenAI design system</span>
+      <span>Reference: qops_harness web UI</span>
+    </div>
+ </footer>
+</body>
+</html>

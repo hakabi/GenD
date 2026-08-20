@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Requests · QOps Harness</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/shell.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/request-dialog.css" />
+  <link rel="stylesheet" href="css/request-workbench.css" />
+  <link rel="stylesheet" href="css/requests.css" />
+  <script src="js/icons.js"></script>
+  <script src="js/mock-queue.js"></script>
+  <script src="js/request-flow.js"></script>
+  <script src="js/request-workbench-core.js"></script>
+  <script src="js/request-execution-tree.js"></script>
+  <script src="js/request-workbench.js"></script>
+</head>
+<body data-page="requests" data-mock-queue="100">
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+  <div class="app-shell" data-od-id="requests-tab">
+    <aside class="app-sidebar" id="app-sidebar" aria-label="App navigation"></aside>
+    <div class="app-main">
+      <header class="page-header">
+        <div>
+          <h2>Requests</h2>
+          <p class="page-desc">Test request queue — select a row for Info, step-level Execution, and History. Running requests open on Execution automatically.</p>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-primary btn-small" type="button" id="open-dialog-btn" data-icon="plus">New request</button>
+        </div>
+      </header>
+      <div class="toolbar-strip requests-toolbar">
+        <div class="toolbar-row">
+          <div class="inline-limit">
+            <label>Show
+              <select id="queue-limit-select" aria-label="Number of queue items to show">
+                <option value="5">5</option>
+                <option value="20">20</option>
+                <option value="100" selected>100</option>
+              </select>
+            </label>
+          </div>
+          <button class="btn btn-secondary btn-small" type="button" id="queue-refresh-btn" data-icon="refresh">Refresh</button>
+        </div>
+        <p class="mock-queue-banner" id="mock-queue-banner" role="status">Mock queue · 100 synthetic requests for scroll testing</p>
+      </div>
+
+      <footer class="session-bar session-bar--compact" aria-label="Playwright session configuration">
+        <div class="session-bar-main">
+          <span class="session-label">Session</span>
+          <code id="session-path" class="session-path">sessions/auth-flows.yaml</code>
+        </div>
+        <div class="session-bar-actions">
+          <button class="btn btn-secondary btn-small" type="button" data-icon="upload">Upload</button>
+          <select aria-label="Select session file">
+            <option value="">Platform default</option>
+            <option value="sessions/auth-flows.yaml" selected>auth-flows.yaml</option>
+            <option value="sessions/mobile-checkout.yaml">mobile-checkout.yaml</option>
+          </select>
+          <button class="btn btn-secondary btn-small" type="button" data-icon="revert">Use default</button>
+        </div>
+      </footer>
+
+      <div class="page-body">
+        <div class="requests-split" id="requests-split">
+          <div class="requests-queue-panel" aria-label="Request queue">
+            <div class="requests-queue-header">
+              <h3>Queue</h3>
+              <span class="requests-queue-count" id="queue-count">0</span>
+            </div>
+            <div class="requests-filter-bar" id="filter-bar">
+              <div class="filter-dropdown filter-owner-group" id="filter-owner-dropdown" role="listbox" aria-label="Filter by owner" tabindex="0">
+                <div class="filter-dropdown-trigger">
+                  <span class="filter-dropdown-label" id="filter-owner-label">My requests</span>
+                  <svg class="filter-dropdown-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="2 3.5 5 6.5 8 3.5"/></svg>
+                </div>
+                <div class="filter-dropdown-menu" role="list" hidden>
+                  <div class="filter-dropdown-item" role="option" data-value="my-requests" aria-selected="true">My requests</div>
+                  <div class="filter-dropdown-item" role="option" data-value="all" aria-selected="false">All requests</div>
+                  <div class="filter-dropdown-item" role="option" data-value="by-email" aria-selected="false">By email…</div>
+                </div>
+              </div>
+              <div class="filter-email-input" id="filter-email-input" hidden>
+                <input type="email" id="filter-email" placeholder="Filter by email address…" aria-label="Filter by email address" />
+              </div>
+              <div class="filter-dropdown" id="filter-status-dropdown" role="listbox" aria-label="Filter by status" tabindex="0">
+                <div class="filter-dropdown-trigger">
+                  <span class="filter-dropdown-label" id="filter-status-label">All statuses</span>
+                  <svg class="filter-dropdown-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="2 3.5 5 6.5 8 3.5"/></svg>
+                </div>
+                <div class="filter-dropdown-menu" role="list" hidden>
+                  <div class="filter-dropdown-item" role="option" data-value="all" aria-selected="true">All statuses</div>
+                  <div class="filter-dropdown-item" role="option" data-value="completed" aria-selected="false">Completed</div>
+                  <div class="filter-dropdown-item" role="option" data-value="running" aria-selected="false">Running</div>
+                  <div class="filter-dropdown-item" role="option" data-value="awaiting_review" aria-selected="false">Awaiting review</div>
+                  <div class="filter-dropdown-item" role="option" data-value="queued" aria-selected="false">Queued</div>
+                </div>
+              </div>
+              <div class="filter-search">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="filter-search-input" placeholder="Search requests…" aria-label="Search requests" />
+              </div>
+            </div>
+            <ul class="list-plain requests-queue-list" id="queue-list" role="list"></ul>
+          </div>
+
+          <div class="requests-split__resizer" id="requests-split-resizer" role="separator" aria-orientation="vertical" aria-label="Resize queue panel" tabindex="0"></div>
+
+          <div class="requests-workbench-mount" id="request-workbench-mount" aria-label="Request workbench"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="mobile-nav-toggle btn-icon-only" id="mobile-nav-toggle" data-icon="menu" data-label="Open menu" aria-label="Open menu">Open menu</button>
+
+  <div class="request-backdrop" id="request-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" data-od-id="new-request-dialog">
+    <div class="request-dialog">
+      <header class="request-dialog-header">
+        <div>
+          <div class="request-dialog-eyebrow"><span class="step-dot" aria-hidden="true"></span> Step 1 · Create request</div>
+          <h2 id="dialog-title">New test request</h2>
+          <p class="lead">Describe what to test in chat — parameters update live on the right. Edit any field directly.</p>
+          <div class="request-readiness">
+            <div class="request-readiness-bar" aria-hidden="true"><div class="request-readiness-fill" id="readiness-fill"></div></div>
+            <span class="request-readiness-label" id="readiness-label">0 / 3 required</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-small btn-icon-only" type="button" id="close-dialog-btn" data-icon="x" data-label="Close" aria-label="Close">Close</button>
+      </header>
+
+      <div class="request-panel-tabs" role="tablist" aria-label="Dialog panels">
+        <button type="button" class="request-panel-tab" role="tab" id="tab-chat" aria-selected="true" aria-controls="chat-panel">Chat</button>
+        <button type="button" class="request-panel-tab" role="tab" id="tab-params" aria-selected="false" aria-controls="params-panel">Parameters</button>
+      </div>
+
+      <div class="request-dialog-body">
+        <section class="request-chat-panel" id="chat-panel" aria-label="Chat">
+          <div class="request-column-label">
+            <span>Conversation</span>
+            <span class="hint">Enter to send</span>
+          </div>
+          <div class="request-chat-thread" id="chat-thread">
+            <div class="request-msg assistant">
+              <span class="request-msg-role">Assistant</span>
+              <div class="request-msg-bubble">
+                What would you like to test? Paste a Jira ticket, describe a new feature, or outline a user flow — I'll fill in the parameters on the right.
+              </div>
+            </div>
+          </div>
+          <div class="request-typing" id="typing-indicator">Updating parameters…</div>
+          <form class="request-chat-composer" id="chat-form">
+            <div class="composer-wrap">
+              <textarea id="chat-input" rows="1" placeholder="e.g. Write tests for the checkout coupon flow on mobile…" aria-label="Chat message"></textarea>
+              <span class="composer-hint">Shift+Enter for a new line</span>
+            </div>
+            <button class="btn btn-teal" type="submit" data-icon="send">Send</button>
+          </form>
+        </section>
+
+        <aside class="request-params-panel" id="params-panel" aria-label="Request parameters">
+          <div class="request-column-label">
+            <span>Parameters</span>
+            <span class="request-sync-badge" id="sync-badge">Updated</span>
+          </div>
+          <form class="request-params-form" id="params-form">
+            <div class="request-param-card" id="field-mode">
+              <div class="field">
+                <label for="param-mode">Request mode <span class="request-source-tag" id="src-mode">default</span></label>
+                <select id="param-mode" name="request_mode">
+                  <option value="single_case">Single test case</option>
+                  <option value="new_feature">Tests for a new feature</option>
+                  <option value="existing_feature">Tests for an existing feature</option>
+                  <option value="bug_ticket">Tests for a bug ticket</option>
+                </select>
+              </div>
+            </div>
+            <div class="request-param-card" id="field-input">
+              <div class="field">
+                <label for="param-input">Test request <span class="request-source-tag" id="src-input">empty</span></label>
+                <textarea id="param-input" name="user_input" placeholder="Natural-language flow or ticket URL…"></textarea>
+                <span class="request-field-hint">Populated from chat or editable here.</span>
+              </div>
+            </div>
+            <div class="request-param-card" id="field-session">
+              <div class="field">
+                <label for="param-session">Session file <span class="request-source-tag" id="src-session">default</span></label>
+                <select id="param-session" name="session_file">
+                  <option value="">Platform default</option>
+                  <option value="sessions/mobile-checkout.yaml">sessions/mobile-checkout.yaml</option>
+                  <option value="sessions/auth-flows.yaml">sessions/auth-flows.yaml</option>
+                  <option value="sessions/api-regression.yaml">sessions/api-regression.yaml</option>
+                </select>
+              </div>
+            </div>
+            <div class="request-param-card" id="field-ticket" hidden>
+              <div class="field">
+                <label for="param-ticket">Jira ticket URL <span class="request-source-tag" id="src-ticket">empty</span></label>
+                <input id="param-ticket" type="url" name="ticket_url" placeholder="https://…" />
+              </div>
+            </div>
+          </form>
+        </aside>
+      </div>
+
+      <footer class="request-dialog-footer">
+        <span class="validation-msg" id="validation-msg" role="alert"></span>
+        <div class="request-footer-actions">
+          <button class="btn btn-secondary" type="button" id="cancel-btn" data-icon="x">Cancel</button>
+          <button class="btn btn-primary" type="button" id="submit-btn" disabled data-icon="list">Review proposed cases</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "qops-new-request-params";
+    const SOURCES_KEY = "qops-param-sources";
+
+    const chatThread = document.getElementById("chat-thread");
+    const chatForm = document.getElementById("chat-form");
+    const chatInput = document.getElementById("chat-input");
+    const paramMode = document.getElementById("param-mode");
+    const paramInput = document.getElementById("param-input");
+    const paramSession = document.getElementById("param-session");
+    const paramTicket = document.getElementById("param-ticket");
+    const fieldTicket = document.getElementById("field-ticket");
+    const syncBadge = document.getElementById("sync-badge");
+    const validationMsg = document.getElementById("validation-msg");
+    const dialog = document.getElementById("request-dialog");
+    const submitBtn = document.getElementById("submit-btn");
+    const typingIndicator = document.getElementById("typing-indicator");
+    const readinessFill = document.getElementById("readiness-fill");
+    const readinessLabel = document.getElementById("readiness-label");
+    const tabChat = document.getElementById("tab-chat");
+    const tabParams = document.getElementById("tab-params");
+    const chatPanel = document.getElementById("chat-panel");
+    const paramsPanel = document.getElementById("params-panel");
+
+    const fieldMap = {
+      mode: document.getElementById("field-mode"),
+      input: document.getElementById("field-input"),
+      session: document.getElementById("field-session"),
+      ticket: fieldTicket,
+    };
+    const sourceTags = {
+      mode: document.getElementById("src-mode"),
+      input: document.getElementById("src-input"),
+      session: document.getElementById("src-session"),
+      ticket: document.getElementById("src-ticket"),
+    };
+
+    const sources = { mode: "default", input: "empty", session: "default", ticket: "empty" };
+
+    function getParams() {
+      return {
+        request_mode: paramMode.value,
+        user_input: paramInput.value,
+        session_file: paramSession.value,
+        ticket_url: paramTicket.value,
+      };
+    }
+
+    function setSource(key, src) {
+      sources[key] = src;
+      const tag = sourceTags[key];
+      if (!tag) return;
+      tag.textContent = src === "chat" ? "from chat" : src === "manual" ? "edited" : src;
+      tag.className = `request-source-tag ${src === "chat" ? "chat" : src === "manual" ? "manual" : ""}`;
+    }
+
+    function updateReadiness() {
+      const p = getParams();
+      let filled = 0;
+      const total = 3;
+      if (p.request_mode) filled++;
+      if (p.user_input.trim()) filled++;
+      if (p.session_file || p.request_mode) filled++;
+      const pct = Math.round((filled / total) * 100);
+      readinessFill.style.width = `${pct}%`;
+      readinessLabel.textContent = `${filled} / ${total} required`;
+      const ticketOk = p.request_mode !== "bug_ticket" || p.ticket_url.trim();
+      submitBtn.disabled = !p.user_input.trim() || !ticketOk;
+    }
+
+    function setParams(p, highlightFields = [], fromChat = false) {
+      if (p.request_mode !== undefined) {
+        paramMode.value = p.request_mode;
+        if (fromChat) setSource("mode", "chat");
+      }
+      if (p.user_input !== undefined) {
+        paramInput.value = p.user_input;
+        if (fromChat) setSource("input", "chat");
+      }
+      if (p.session_file !== undefined) {
+        paramSession.value = p.session_file;
+        if (fromChat) setSource("session", "chat");
+      }
+      if (p.ticket_url !== undefined) {
+        paramTicket.value = p.ticket_url;
+        if (fromChat) setSource("ticket", "chat");
+      }
+      fieldTicket.hidden = paramMode.value !== "bug_ticket";
+      highlightFields.forEach((key) => {
+        const el = fieldMap[key];
+        if (!el) return;
+        el.classList.add("updated");
+        setTimeout(() => el.classList.remove("updated"), 700);
+      });
+      if (highlightFields.length) flashSync();
+      updateReadiness();
+    }
+
+    function flashSync() {
+      syncBadge.classList.add("visible");
+      clearTimeout(flashSync._t);
+      flashSync._t = setTimeout(() => syncBadge.classList.remove("visible"), 1400);
+    }
+
+    function appendMessage(role, text, hint) {
+      const wrap = document.createElement("div");
+      wrap.className = `request-msg ${role}`;
+      const roleEl = document.createElement("span");
+      roleEl.className = "request-msg-role";
+      roleEl.textContent = role === "user" ? "You" : "Assistant";
+      const bubble = document.createElement("div");
+      bubble.className = "request-msg-bubble";
+      bubble.textContent = text;
+      if (hint) {
+        const tag = document.createElement("span");
+        tag.className = "param-hint";
+        tag.textContent = hint;
+        bubble.appendChild(document.createElement("br"));
+        bubble.appendChild(tag);
+      }
+      wrap.append(roleEl, bubble);
+      chatThread.appendChild(wrap);
+      chatThread.scrollTop = chatThread.scrollHeight;
+    }
+
+    function extractFromChat(text) {
+      const lower = text.toLowerCase();
+      const updates = {};
+      const highlights = [];
+
+      if (/jira|bug|ticket|defect|regression/.test(lower)) {
+        updates.request_mode = "bug_ticket";
+        highlights.push("mode", "ticket");
+        const urlMatch = text.match(/https?:\/\/[^\s]+/);
+        if (urlMatch) updates.ticket_url = urlMatch[0];
+      } else if (/new feature|ship|launch|add/.test(lower)) {
+        updates.request_mode = "new_feature";
+        highlights.push("mode");
+      } else if (/existing|already|current feature/.test(lower)) {
+        updates.request_mode = "existing_feature";
+        highlights.push("mode");
+      } else if (/single|one test|one case/.test(lower)) {
+        updates.request_mode = "single_case";
+        highlights.push("mode");
+      }
+
+      if (/checkout|coupon|cart/.test(lower)) {
+        updates.session_file = "sessions/mobile-checkout.yaml";
+        highlights.push("session");
+      } else if (/login|auth|sign.?in|password/.test(lower)) {
+        updates.session_file = "sessions/auth-flows.yaml";
+        highlights.push("session");
+      } else if (/api|endpoint|rest/.test(lower)) {
+        updates.session_file = "sessions/api-regression.yaml";
+        highlights.push("session");
+      }
+
+      if (text.trim().length > 12) {
+        const prev = paramInput.value.trim();
+        updates.user_input = prev ? `${prev}\n\n${text.trim()}` : text.trim();
+        highlights.push("input");
+      }
+
+      return { updates, highlights: [...new Set(highlights)] };
+    }
+
+    function respondToUser(userText) {
+      typingIndicator.classList.add("visible");
+      const { updates, highlights } = extractFromChat(userText);
+
+      setTimeout(() => {
+        typingIndicator.classList.remove("visible");
+        setParams(updates, highlights, true);
+
+        const modeLabels = {
+          single_case: "single test case",
+          new_feature: "new feature tests",
+          existing_feature: "existing feature tests",
+          bug_ticket: "bug ticket tests",
+        };
+        const parts = [];
+        if (updates.request_mode) parts.push(`mode → ${modeLabels[updates.request_mode]}`);
+        if (updates.session_file) parts.push("session file matched");
+        if (updates.user_input) parts.push("test request updated");
+
+        const reply = parts.length
+          ? `Got it. I updated ${parts.join(", ")}. Check the Parameters panel — or keep chatting.`
+          : "Noted. You can also edit the parameters directly on the right.";
+
+        const hint = parts.length ? parts.map((p) => p.split(" →")[0]).join(" · ") : null;
+        appendMessage("assistant", reply, hint);
+
+        if (window.matchMedia("(max-width: 900px)").matches && parts.length) {
+          tabParams.click();
+        }
+      }, 520);
+    }
+
+    chatForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+      appendMessage("user", text);
+      chatInput.value = "";
+      resizeChatInput();
+      respondToUser(text);
+    });
+
+    chatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        chatForm.requestSubmit();
+      }
+    });
+
+    // Auto-resize textarea up to ~13 lines
+    function resizeChatInput() {
+      chatInput.style.height = "auto";
+      const maxH = chatInput.style.maxHeight ? parseInt(getComputedStyle(chatInput).maxHeight, 10) : 300;
+      chatInput.style.height = Math.min(chatInput.scrollHeight, maxH) + "px";
+    }
+    chatInput.addEventListener("input", resizeChatInput);
+
+    paramMode.addEventListener("change", () => {
+      fieldTicket.hidden = paramMode.value !== "bug_ticket";
+      setSource("mode", "manual");
+      flashSync();
+      updateReadiness();
+    });
+
+    paramInput.addEventListener("input", () => {
+      setSource("input", paramInput.value.trim() ? "manual" : "empty");
+      flashSync();
+      updateReadiness();
+    });
+    paramSession.addEventListener("change", () => {
+      setSource("session", paramSession.value ? "manual" : "default");
+      flashSync();
+      updateReadiness();
+    });
+    paramTicket.addEventListener("input", () => {
+      setSource("ticket", paramTicket.value.trim() ? "manual" : "empty");
+      flashSync();
+      updateReadiness();
+    });
+
+    function setValidation(msg) { validationMsg.textContent = msg || ""; }
+
+    function closeDialog() { dialog.style.display = "none"; }
+    function openDialog() {
+      dialog.style.display = "grid";
+      chatInput.focus();
+      resizeChatInput();
+    }
+
+    document.getElementById("open-dialog-btn").addEventListener("click", openDialog);
+    document.getElementById("close-dialog-btn").addEventListener("click", closeDialog);
+    document.getElementById("cancel-btn").addEventListener("click", closeDialog);
+
+    function setSubmitLabel(text) {
+      if (window.setBtnLabel) window.setBtnLabel(submitBtn, text);
+      else {
+        const label = submitBtn.querySelector(".btn-label");
+        if (label) label.textContent = text;
+        else submitBtn.textContent = text;
+      }
+    }
+
+    function resetSubmitBtn() {
+      submitBtn.disabled = false;
+      setSubmitLabel("Review proposed cases");
+      updateReadiness();
+    }
+
+    submitBtn.addEventListener("click", async () => {
+      setValidation("");
+      const params = getParams();
+      if (!params.user_input.trim()) {
+        setValidation("Test request is required — describe it in chat or type in the parameter field.");
+        return;
+      }
+      if (params.request_mode === "bug_ticket" && !params.ticket_url.trim()) {
+        setValidation("Jira ticket URL is required for bug ticket mode.");
+        return;
+      }
+
+      const flow = window.QopsRequestFlow;
+      if (!flow?.prepareCaseReview) {
+        setValidation("Case review module did not load — refresh the page and try again.");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      setSubmitLabel("Proposing cases…");
+
+      try {
+        await new Promise((r) => setTimeout(r, 480));
+        const handoff = flow.prepareCaseReview(params, { sources });
+        if (flow.navigateTo) flow.navigateTo(handoff.url);
+        else window.location.assign(handoff.url);
+      } catch (err) {
+        console.error(err);
+        setValidation("Could not open case review — try again or refresh the page.");
+        resetSubmitBtn();
+      }
+    });
+
+    dialog.addEventListener("click", (e) => { if (e.target === dialog) closeDialog(); });
+
+    const QUEUE_SPLIT_WIDTH_KEY = "qops.requests.queueWidth";
+
+    const queueListEl = document.getElementById("queue-list");
+    const queueCountEl = document.getElementById("queue-count");
+    const requestsSplit = document.getElementById("requests-split");
+    const splitResizer = document.getElementById("requests-split-resizer");
+    const queueLimitSelect = document.getElementById("queue-limit-select");
+    const workbenchMount = document.getElementById("request-workbench-mount");
+    // Filter bar elements — must be declared before paintMockQueue calls getFilteredParents()
+    const filterEmailInputWrap = document.getElementById("filter-email-input");
+    const filterEmailInput = document.getElementById("filter-email");
+    // Custom dropdown state (replaces native <select> values)
+    let filterOwnerValue = "my-requests";
+    let filterStatusValue = "all";
+    let selectedQueueId = null;
+
+    // ── Custom dropdown helper ──────────────────────────────────────
+    function initDropdown(dropdownEl, labelEl, onSelect) {
+      if (!dropdownEl) return;
+      const trigger = dropdownEl.querySelector(".filter-dropdown-trigger");
+      const menu = dropdownEl.querySelector(".filter-dropdown-menu");
+      const items = menu?.querySelectorAll(".filter-dropdown-item") || [];
+
+      function openMenu() {
+        menu?.removeAttribute("hidden");
+        dropdownEl.classList.add("open");
+      }
+      function closeMenu() {
+        menu?.setAttribute("hidden", "");
+        dropdownEl.classList.remove("open");
+      }
+      function selectItem(itemEl) {
+        const val = itemEl?.dataset.value;
+        if (!val) return;
+        // Update label
+        if (labelEl) labelEl.textContent = itemEl.textContent;
+        // Update selected state
+        items.forEach((it) => {
+          it.classList.toggle("selected", it === itemEl);
+          it.setAttribute("aria-selected", it === itemEl ? "true" : "false");
+        });
+        closeMenu();
+        onSelect?.(val, itemEl);
+      }
+
+      trigger?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpen = dropdownEl.classList.contains("open");
+        if (isOpen) closeMenu(); else openMenu();
+      });
+
+      items.forEach((item) => {
+        item.addEventListener("click", () => selectItem(item));
+      });
+
+      dropdownEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          const isOpen = dropdownEl.classList.contains("open");
+          if (isOpen) closeMenu(); else openMenu();
+        } else if (e.key === "Escape") {
+          closeMenu();
+        } else if (e.key === "ArrowDown" && dropdownEl.classList.contains("open")) {
+          e.preventDefault();
+          const idx = Array.from(items).indexOf(document.activeElement);
+          const next = items[(idx + 1) % items.length];
+          next?.focus();
+        } else if (e.key === "ArrowUp" && dropdownEl.classList.contains("open")) {
+          e.preventDefault();
+          const idx = Array.from(items).indexOf(document.activeElement);
+          const prev = items[(idx - 1 + items.length) % items.length];
+          prev?.focus();
+        }
+      });
+
+      // Expose for external use
+      dropdownEl._close = closeMenu;
+      return { open: openMenu, close: closeMenu, select: selectItem };
+    }
+
+    // Close all dropdowns when clicking outside
+    document.addEventListener("click", (e) => {
+      document.querySelectorAll(".filter-dropdown.open").forEach((dd) => {
+        if (!dd.contains(e.target)) dd._close?.();
+      });
+    });
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text == null ? "" : String(text);
+      return div.innerHTML;
+    }
+
+    function getFilteredParents() {
+      if (!window.QopsMockQueue) return [];
+      const data = QopsMockQueue.getMockQueueData(getQueueLimit());
+      if (!data?.parents) return [];
+      let parents = [...data.parents];
+
+      // Owner filter (custom dropdown state)
+      if (filterOwnerValue === "my-requests") {
+        parents = parents.filter((p) => {
+          const submittedBy = QopsMockQueue.mockQuestDetail?.(p)?.parent?.submitted_by || "";
+          return submittedBy.includes("qa@example.com");
+        });
+      } else if (filterOwnerValue === "by-email") {
+        const email = filterEmailInput?.value.trim().toLowerCase();
+        if (email) {
+          parents = parents.filter((p) => {
+            const submittedBy = (QopsMockQueue.mockQuestDetail?.(p)?.parent?.submitted_by || "").toLowerCase();
+            return submittedBy.includes(email);
+          });
+        }
+      }
+      // "all" → no filtering
+
+      // Status filter (custom dropdown state)
+      if (filterStatusValue !== "all") {
+        parents = parents.filter((p) => p.status === filterStatusValue);
+      }
+
+      // Search filter
+      const searchInput = document.getElementById("filter-search-input");
+      if (searchInput && searchInput.value.trim()) {
+        const q = searchInput.value.trim().toLowerCase();
+        parents = parents.filter((p) => {
+          return p.user_input.toLowerCase().includes(q) || p.runId.toLowerCase().includes(q);
+        });
+      }
+
+      return parents;
+    }
+
+    function paintMockQueue(limit) {
+      if (!queueListEl) return;
+      if (!window.QopsMockQueue) {
+        queueListEl.innerHTML = `<li class="empty-state"><p class="empty-state__title">Queue module did not load</p><p class="empty-state__hint">Check that js/mock-queue.js is available, then refresh.</p></li>`;
+        if (queueCountEl) queueCountEl.textContent = "0";
+        return;
+      }
+      const parents = getFilteredParents();
+      if (!parents.length) {
+        const data = QopsMockQueue.getMockQueueData(limit || 100);
+        const emptyMsg = data?.parents?.length
+          ? `<li class="empty-state"><p class="empty-state__title">No matching requests</p><p class="empty-state__hint">Try adjusting your filters.</p></li>`
+          : `<li class="empty-state"><p class="empty-state__title">No mock requests</p><p class="empty-state__hint">Add <code>?mockQueue=100</code> or set <code>data-mock-queue="100"</code> on the page.</p></li>`;
+        queueListEl.innerHTML = emptyMsg;
+        if (queueCountEl) queueCountEl.textContent = String(data?.parents?.length || 0);
+        return;
+      }
+      const fragment = document.createDocumentFragment();
+      parents.forEach((parent) => {
+        const li = document.createElement("li");
+        li.setAttribute("role", "none");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        const reopenable = parent.status === "completed" || parent.status === "awaiting_review";
+        const isRunning = parent.status === "running";
+        btn.className = "queue-item" + (reopenable ? " reopenable" : "") + (isRunning ? " is-running" : "");
+        btn.dataset.runId = parent.runId;
+        btn.setAttribute("aria-pressed", "false");
+
+        // Derive display values from mock data
+        const detail = QopsMockQueue.mockQuestDetail?.(parent) || {};
+        const p = detail.parent || {};
+        const refId = parent.runId.replace(/#q-/i, "REQ-").replace(/-\d+$/, "");
+        const shortRef = refId.replace(/#q-/i, "REQ-");
+        const caseCount = p.children_total || 1;
+        const submittedBy = p.submitted_by || "unknown";
+        const whoLabel = submittedBy.includes("qa") ? "QA" : submittedBy.includes("product") ? "Product" : submittedBy === "cli" ? "CLI" : submittedBy.split("@")[0];
+        const submittedAt = p.submitted_at || "";
+        let dateStr = "";
+        if (submittedAt) {
+          try {
+            const d = new Date(submittedAt);
+            const now = new Date();
+            const diffMs = now - d;
+            const diffDays = Math.floor(diffMs / 86400000);
+            if (diffDays === 0) {
+              dateStr = "Today, " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            } else if (diffDays === 1) {
+              dateStr = "Yesterday, " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            } else {
+              dateStr = d.toLocaleDateString([], { month: "short", day: "numeric" }) + ", " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            }
+          } catch (_) {
+            dateStr = submittedAt.slice(0, 10);
+          }
+        }
+
+        btn.innerHTML = `
+          <div class="queue-card-top">
+            <span class="queue-card-ref">${escapeHtml(shortRef)}</span>
+            <span class="queue-card-copy" title="Copy REQ ID">⧉</span>
+            <span class="queue-card-status ${escapeHtml(parent.status)}">${escapeHtml(parent.status)}</span>
+            <span class="queue-card-case-count">${caseCount} case${caseCount !== 1 ? "s" : ""}</span>
+          </div>
+          <p class="queue-card-title">${escapeHtml(parent.user_input)}</p>
+          <div class="queue-card-meta">
+            <span class="meta-who">${escapeHtml(whoLabel)}</span>
+            <span class="meta-sep">·</span>
+            <span>${escapeHtml(dateStr)}</span>
+          </div>`;
+
+        // Copy button handler
+        const copyBtn = btn.querySelector(".queue-card-copy");
+        if (copyBtn) {
+          copyBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            navigator.clipboard?.writeText(shortRef);
+            copyBtn.textContent = "✓";
+            setTimeout(() => { copyBtn.textContent = "⧉"; }, 1200);
+          });
+        }
+
+        btn.addEventListener("click", () => renderQueueDetail(parent.runId, parent));
+        li.appendChild(btn);
+        fragment.appendChild(li);
+      });
+      queueListEl.innerHTML = "";
+      queueListEl.appendChild(fragment);
+      if (queueCountEl) queueCountEl.textContent = String(parents.length);
+    }
+
+    function getQueueLimit() {
+      return Number.parseInt(queueLimitSelect?.value || "100", 10) || 100;
+    }
+
+    // Paint queue immediately — must not wait on dialog or workbench init
+    paintMockQueue(getQueueLimit());
+
+    const RequestWorkbench = window.QopsRequestWorkbench?.RequestWorkbench;
+    let workbench = null;
+    try {
+      workbench = RequestWorkbench
+        ? new RequestWorkbench({
+            root: workbenchMount,
+            onReviewCases: (req) => {
+              const runId = req.runId || req.quest_id;
+              const reviewMode = (req.mode || "").includes("single") ? "single" : "multi";
+              if (window.QopsRequestFlow?.prepareReopenReview) {
+                const payload = QopsRequestFlow.prepareReopenReview(runId);
+                QopsRequestFlow.persistReopenReview(payload);
+              } else {
+                sessionStorage.setItem("qops-active-run", JSON.stringify({ id: runId }));
+              }
+              window.location.href = `case-review.html?mode=${reviewMode}&reopen=1`;
+            },
+            onCaseClick: (req) => {
+              const runId = req.runId || req.quest_id;
+              const reviewMode = req.request_mode === "single_case" ? "single" : "multi";
+              window.location.href = `case-review.html?mode=${reviewMode}&reopen=1&quest_id=${encodeURIComponent(runId)}`;
+            },
+          })
+        : null;
+    } catch (err) {
+      console.error("Request workbench failed to initialize", err);
+      if (workbenchMount) {
+        workbenchMount.innerHTML = `<div class="empty-state"><p class="empty-state__title">Workbench unavailable</p><p class="empty-state__hint">Refresh the page. Queue list above should still work.</p></div>`;
+      }
+    }
+
+    function syncRequestsLayout() {
+      if (requestsSplit) requestsSplit.classList.toggle("is-detail-open", !!selectedQueueId);
+    }
+
+    function initRequestsSplitResizer() {
+      if (!requestsSplit || !splitResizer) return;
+      const MIN = 240;
+      const MAX = 560;
+      function applyWidth(px) {
+        const clamped = Math.max(MIN, Math.min(MAX, px));
+        requestsSplit.style.setProperty("--requests-queue-width", `${clamped}px`);
+        try {
+          sessionStorage.setItem(QUEUE_SPLIT_WIDTH_KEY, String(clamped));
+        } catch (_) {
+          /* ignore */
+        }
+      }
+      const saved = Number.parseInt(sessionStorage.getItem(QUEUE_SPLIT_WIDTH_KEY) || "", 10);
+      if (Number.isFinite(saved)) applyWidth(saved);
+      let dragging = false;
+      let activePointerId = null;
+      const onPointerMove = (e) => {
+        if (!dragging) return;
+        const rect = requestsSplit.getBoundingClientRect();
+        applyWidth(e.clientX - rect.left);
+      };
+      const stopDrag = () => {
+        if (!dragging) return;
+        dragging = false;
+        requestsSplit.classList.remove("is-resizing");
+        document.body.classList.remove("is-split-resizing");
+        if (activePointerId != null) {
+          try {
+            splitResizer.releasePointerCapture(activePointerId);
+          } catch (_) {
+            /* ignore */
+          }
+        }
+        activePointerId = null;
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", stopDrag);
+        window.removeEventListener("pointercancel", stopDrag);
+      };
+      splitResizer.addEventListener("pointerdown", (e) => {
+        if (window.matchMedia("(max-width: 1100px)").matches) return;
+        dragging = true;
+        activePointerId = e.pointerId;
+        requestsSplit.classList.add("is-resizing");
+        document.body.classList.add("is-split-resizing");
+        splitResizer.setPointerCapture(e.pointerId);
+        window.addEventListener("pointermove", onPointerMove);
+        window.addEventListener("pointerup", stopDrag);
+        window.addEventListener("pointercancel", stopDrag);
+        e.preventDefault();
+      });
+      splitResizer.addEventListener("keydown", (e) => {
+        const current = Number.parseInt(
+          getComputedStyle(requestsSplit).getPropertyValue("--requests-queue-width") || "320",
+          10
+        );
+        if (e.key === "ArrowLeft") {
+          applyWidth(current - 16);
+          e.preventDefault();
+        } else if (e.key === "ArrowRight") {
+          applyWidth(current + 16);
+          e.preventDefault();
+        }
+      });
+    }
+
+    function focusWorkbench() {
+      if (window.matchMedia("(max-width: 1100px)").matches && workbenchMount) {
+        const top = workbenchMount.getBoundingClientRect().top + window.scrollY - 12;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      }
+    }
+
+    function renderQueueDetail(runId, parent) {
+      selectedQueueId = runId;
+      syncRequestsLayout();
+
+      document.querySelectorAll(".queue-item").forEach((el) => {
+        const selected = el.dataset.runId === runId;
+        el.classList.toggle("selected", selected);
+        el.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
+
+      const canReview = parent.status === "completed" || parent.status === "awaiting_review";
+      const mockDetail = window.QopsMockQueue?.mockQuestDetail?.(parent) || {};
+      const mockParent = mockDetail.parent || parent;
+      const linkedCases = mockDetail.linkedCases || window.QopsMockQueue?.mockLinkedCases?.(parent) || [];
+      if (workbench) {
+        workbench.setRequest({
+          runId,
+          quest_id: runId,
+          shortId: runId,
+          status: mockParent.status || parent.status,
+          request_mode: mockParent.request_mode || parent.request_mode,
+          user_input: mockParent.user_input || parent.user_input,
+          mode: parent.mode,
+          modeLabel: parent.mode,
+          session: mockParent.session_file || parent.session,
+          session_file: mockParent.session_file || parent.session,
+          submitted_at: mockParent.submitted_at,
+          submitted_by: mockParent.submitted_by,
+          started_at: mockParent.started_at,
+          completed_at: mockParent.completed_at,
+          review_status: mockParent.review_status,
+          review_updated_at: mockDetail.reviewUpdatedAt,
+          outcome_summary: mockParent.outcome_summary,
+          children_total: mockParent.children_total,
+          children_complete: mockParent.children_complete,
+          queue_position: mockParent.queue_position,
+          input_type: mockParent.input_type,
+          pr_url: mockDetail.pr_url,
+          canReview,
+          reviewLabel: "Review cases",
+          linkedCases,
+        });
+        workbench.clearActivity();
+        const activity = window.QopsMockQueue?.mockActivityFor?.(parent) || [];
+        if (activity.length) {
+          activity.forEach((line, index) => {
+            workbench.appendMockActivity(line, index, { autoSelect: false });
+          });
+          const errIdx = activity.findIndex((l) => l.cls === "error" || l.level === "error");
+          if (errIdx >= 0) {
+            workbench.selectEvent(
+              { id: `mock-${errIdx}`, name: activity[errIdx].text },
+              { switchTab: false }
+            );
+          }
+        } else {
+          workbench.setActivityEmpty();
+        }
+      }
+
+      focusWorkbench();
+    }
+
+    queueLimitSelect?.addEventListener("change", () => {
+      const prev = selectedQueueId;
+      paintMockQueue(getQueueLimit());
+      if (prev) {
+        const btn = document.querySelector(`.queue-item[data-run-id="${CSS.escape(prev)}"]`);
+        btn?.click();
+      }
+    });
+
+    // Filter: owner custom dropdown
+    const ownerDropdown = document.getElementById("filter-owner-dropdown");
+    const ownerLabel = document.getElementById("filter-owner-label");
+    initDropdown(ownerDropdown, ownerLabel, (val) => {
+      filterOwnerValue = val;
+      // Show/hide email input
+      if (filterEmailInputWrap) {
+        filterEmailInputWrap.hidden = val !== "by-email";
+      }
+      const prev = selectedQueueId;
+      paintMockQueue(getQueueLimit());
+      if (prev) {
+        const btn = document.querySelector(`.queue-item[data-run-id="${CSS.escape(prev)}"]`);
+        btn?.click();
+      }
+    });
+
+    // Email input — re-filter on change
+    let emailDebounce = null;
+    filterEmailInput?.addEventListener("input", () => {
+      clearTimeout(emailDebounce);
+      emailDebounce = setTimeout(() => {
+        const prev = selectedQueueId;
+        paintMockQueue(getQueueLimit());
+        if (prev) {
+          const btn = document.querySelector(`.queue-item[data-run-id="${CSS.escape(prev)}"]`);
+          btn?.click();
+        }
+      }, 200);
+    });
+
+    // Filter: status custom dropdown
+    const statusDropdown = document.getElementById("filter-status-dropdown");
+    const statusLabel = document.getElementById("filter-status-label");
+    initDropdown(statusDropdown, statusLabel, (val) => {
+      filterStatusValue = val;
+      const prev = selectedQueueId;
+      paintMockQueue(getQueueLimit());
+      if (prev) {
+        const btn = document.querySelector(`.queue-item[data-run-id="${CSS.escape(prev)}"]`);
+        btn?.click();
+      }
+    });
+
+    // Filter: search input (debounced)
+    let searchDebounce = null;
+    const filterSearchInput = document.getElementById("filter-search-input");
+    filterSearchInput?.addEventListener("input", () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        const prev = selectedQueueId;
+        paintMockQueue(getQueueLimit());
+        if (prev) {
+          const btn = document.querySelector(`.queue-item[data-run-id="${CSS.escape(prev)}"]`);
+          btn?.click();
+        }
+      }, 200);
+    });
+
+    document.getElementById("queue-refresh-btn")?.addEventListener("click", () => paintMockQueue(getQueueLimit()));
+
+    initRequestsSplitResizer();
+
+    tabChat.addEventListener("click", () => {
+      tabChat.setAttribute("aria-selected", "true");
+      tabParams.setAttribute("aria-selected", "false");
+      chatPanel.hidden = false;
+      paramsPanel.hidden = true;
+    });
+    tabParams.addEventListener("click", () => {
+      tabParams.setAttribute("aria-selected", "true");
+      tabChat.setAttribute("aria-selected", "false");
+      chatPanel.hidden = true;
+      paramsPanel.hidden = false;
+    });
+
+    updateReadiness();
+    if (new URLSearchParams(location.search).get("new") === "1") {
+      openDialog();
+    } else {
+      const running = document.querySelector(".queue-item.is-running");
+      const first = document.querySelector(".queue-item");
+      (running || first)?.click();
+    }
+  </script>
+  <script src="js/knowledge-data.js"></script>
+  <script src="js/shell.js"></script>
+</body>
+</html>

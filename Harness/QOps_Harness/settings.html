@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Settings · QOps Harness</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/shell.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    .settings-layout {
+      max-width: 640px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .settings-section {
+      background: var(--bg);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+    }
+    .settings-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 6px;
+    }
+    .settings-section .section-desc {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0 0 20px;
+      line-height: 1.55;
+    }
+    .appearance-segment {
+      display: inline-flex;
+      padding: 4px;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+    }
+    .appearance-segment button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: calc(var(--radius-sm) - 4px);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+    }
+    .appearance-segment button:hover {
+      color: var(--fg);
+      background: color-mix(in oklch, var(--fg) 4%, var(--surface));
+    }
+    .appearance-segment button.is-selected,
+    .appearance-segment button[aria-pressed="true"] {
+      background: var(--bg);
+      color: var(--fg);
+      box-shadow: var(--shadow-soft);
+    }
+    .appearance-segment .btn-icon {
+      width: 16px;
+      height: 16px;
+    }
+    .appearance-status {
+      margin: 14px 0 0;
+      font-size: 13px;
+      color: var(--meta);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+<body data-page="settings">
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+  <div class="app-shell">
+    <aside class="app-sidebar" id="app-sidebar" aria-label="App navigation"></aside>
+    <div class="app-main">
+      <header class="page-header">
+        <div>
+          <h2>Settings</h2>
+          <p class="page-desc">Appearance and preferences for this workspace.</p>
+        </div>
+      </header>
+      <div class="page-body">
+        <div class="settings-layout">
+          <section class="settings-section" aria-labelledby="appearance-heading">
+            <h3 id="appearance-heading">Appearance</h3>
+            <p class="section-desc">Choose day, night, or match your operating system. Applies across all QOps Harness screens.</p>
+            <div class="appearance-segment" role="group" aria-label="Appearance mode">
+              <button type="button" data-appearance-option="day" aria-pressed="false">
+                <span class="btn-icon" data-icon-slot="sun"></span>
+                <span>Day</span>
+              </button>
+              <button type="button" data-appearance-option="night" aria-pressed="false">
+                <span class="btn-icon" data-icon-slot="moon"></span>
+                <span>Night</span>
+              </button>
+              <button type="button" data-appearance-option="system" aria-pressed="false">
+                <span class="btn-icon" data-icon-slot="monitor"></span>
+                <span>System</span>
+              </button>
+            </div>
+            <p class="appearance-status" data-appearance-status aria-live="polite"></p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open navigation">
+    <span class="btn-icon" data-icon="menu"></span>
+  </button>
+  <script src="js/icons.js"></script>
+  <script src="js/knowledge-data.js"></script>
+  <script src="js/shell.js"></script>
+  <script>
+    document.querySelectorAll("[data-icon-slot]").forEach(function (el) {
+      var name = el.getAttribute("data-icon-slot");
+      if (window.odIcon && name) el.innerHTML = window.odIcon(name);
+    });
+    if (window.QopsTheme) {
+      window.QopsTheme.initAppearanceControls(document);
+    }
+  </script>
+</body>
+</html>

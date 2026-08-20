@@ -1,0 +1,70 @@
+## User Story
+As a **Portfolio Manager**, I want a single **"Fixed Income, Cash and Derivatives"** summary card on the Cash Forecast Dashboard — matching the approved layout — so that I can see derivative notional (from the forecast engine), cash and fixed-income balances (from the datalake), policy illiquid NAV metrics, and current endowment beta in one structured view before reviewing the chart.
+
+## Overview
+This ticket implements the **left-hand summary card** on the Dashboard sub-tab titled **"Fixed Income, Cash and Derivatives"**. The card follows the **structure in the approved mockup / Figma** (see attachment on this ticket): **header** (title  **as-of date**), a **Derivative Notional Value** row, **Fixed Income** and **Total Cash** blocks (each with a **section header row** showing the section name and **rolled-up section total** in USD, followed by **detail rows**), **Policy Illiquid NAV** metrics, and a **footer** row for **Current Endowment Beta**.
+
+![](blob:https://media.staging.atl-paas.net/?type=file&localId=b1b598682e79&id=041da4ab-31e1-4a72-b98b-2b94481631cf&&collection=&height=624&occurrenceKey=null&width=396&__contextId=null&__displayType=null&__external=false&__fileMimeType=null&__fileName=null&__fileSize=null&__mediaTraceId=null&url=null)
+
+**Data sourcing (hybrid card — intentional):**
+- **Derivative Notional Value** — from the **compute server** response field `body['base']['deriv_notional_value']` (same morning-run / **KS-964** refresh path as **KS-962**). **Not** sourced from the datalake. Updates when the latest compute output is loaded or refreshed.
+- **Fixed Income** and **Total Cash** detail lines — from **datalake Fund NAV** (and related cash sub-class breakdown) for the dashboard **as-of calendar date** (**KS-934**). When **KS-966** as-of picker is used, use **that selected calendar date** for these datalake queries.
+- **Policy Illiquid NAV** and **Policy Illiquid NAV as % of Endowment** — from datalake tables (see layout item 5 below). Always populated with the **latest available value as of Today**; not driven by the KS-966 historical as-of picker *(Kathleen Bui, KS-939, Jun 22, 2026)*.
+- **Current Endowment Beta** — read-only display wired per **KS-959** (live `fad_beta` from Aloha homepage; numeric format per **KS-959**, e.g. three decimal places such as `0.763`).
+
+**Hypothetical flows boundary (Kathleen Bui,** [**KS-939**](https://gendvn.atlassian.net/browse/KS-939)**):** Hypothetical rows from **KS-963** must **not** appear inside this card and must **not** alter datalake-backed lines. The **Derivative Notional** line reflects **compute output** (forecast engine), not user-editable hypothetical grid rows.
+
+## Key Requirements — layout order (must match mockup)
+
+1. **Card header:** Title **"Fixed Income, Cash and Derivatives"**  **as-of date** subtitle (e.g. `Apr 13, 2026` style — use the effective dashboard as-of date; default **today** unless **KS-966** selects a historical calendar date for datalake-backed sections).
+1. **Derivative Notional Value** — first monetary row under the header: label **"Derivative Notional Value"**  USD whole-number amount from `deriv_notional_value` (HALF_UP). Negative values allowed; emphasise sign per Figma (e.g. red for negative).
+1. **Fixed Income** block:
+- **Section header row:** label **"Fixed Income"** and the **section aggregate USD total** for all fixed-income accounts in that section (bold / colour per Figma — e.g. green in mockup).
+- **Detail rows:** one row per active fixed-income account from datalake (dynamic list — **no hardcoded** account names). Each row shows account name  USD amount.
+1. **Total Cash** block:
+- **Section header row:** label **"Total Cash"** and the **section aggregate USD total** across all cash sub-classes (styling per Figma).
+- **Detail rows:** one row per cash **sub-class** returned by datalake (e.g. Cash, Cash in Transit, Synthetic Cash — dynamic, **no hardcoded** list).
+1. **Policy Illiquid NAV metrics** *(Kathleen Bui, KS-939, Jun 15, 2026)* — two read-only rows displayed below the Total Cash block and above the footer:
+- **Policy Illiquid NAV** — USD whole-number amount (HALF_UP, thousand separators).
+- **Policy Illiquid NAV as % of Endowment** — percentage display (format per Figma; e.g. one decimal place).
+- **Derivation:**
+- **Policy Illiquid NAV** = **Private Equity**  **Real Assets** from the `forecast_asset_metrics` table, using the as-of date equal to **Today** (the current day the cash forecast is run).
+- **Total Endowment** = raw `total_value` from the `portfolio_dashboard` table where `fad_asset = "Financial Assets"` *(Kathleen Bui, KS-939, Jun 17, 2026 — use RAW value, not the formatted summary-header display)*.
+- **Policy Illiquid NAV as % of Endowment** = Policy Illiquid NAV ÷ Total Endowment.
+- **Data refresh:** always use the **latest stored value** (Today only); do not attempt historical replay via KS-966 as-of picker *(Kathleen Bui, KS-939, Jun 22, 2026)*.
+1. **Footer:** **"Current Endowment Beta"** label  read-only value from **KS-959** integration (not from datalake).
+
+**Formatting & behaviour**
+- All **USD money** amounts in the card (derivative line  fixed income  total cash  Policy Illiquid NAV): **whole numbers, HALF_UP**, thousand separators, per [**KS-939**](https://gendvn.atlassian.net/browse/KS-939) (2026-04-07) whole-dollar summary guidance.
+- **Beta** display precision follows **KS-959** (e.g. `0.763`).
+- Card refreshes **datalake-driven rows** on the **Mon–Fri 12pm EST** datalake schedule; **derivative notional** refreshes when **compute** morning run / **KS-964** output used by **KS-962** is updated (coordinate loading state between tickets).
+- **Empty states:** If datalake returns no fixed-income accounts, show `"No accounts available"` in that block; if no cash sub-classes, analogous empty state for Total Cash. If compute has no `deriv_notional_value`, show `—` for that row per chart empty-state rules. If Policy Illiquid NAV data is unavailable, show `—` for both Policy Illiquid NAV rows.
+- **Accessibility:** one logical `<table>` or grouped structure with correct headings, `scope`, and `aria-label` on monetary cells.
+
+## Acceptance Criteria
+
+**Scenario 1 — Happy Path (layout  mixed sources):**
+- Given morning compute output and datalake NAV are available for today
+- When the Dashboard loads
+- Then the card shows title  as-of date, **Derivative Notional Value** from `deriv_notional_value`, **Fixed Income** header with correct section total and detail account rows, **Total Cash** header with correct section total and sub-class rows, **Policy Illiquid NAV** and **Policy Illiquid NAV as % of Endowment** calculated per the derivation rules above, and **Current Endowment Beta** in the footer per **KS-959**
+
+**Scenario 2 — Error Path (datalake failure):**
+- Given the datalake API returns 500 for NAV
+- When the Dashboard loads
+- Then an inline error for the datalake-backed portions and dashes or empty states per UX pattern; derivative row may still render if compute data already cached (product choice — document in implementation)
+
+**Scenario 3 — Edge Case (empty fixed income list):**
+- Given datalake returns zero fixed-income accounts
+- When the Dashboard loads
+- Then the Fixed Income block shows `"No accounts available"` while other card sections still render per their data
+
+**Scenario 4 — Policy Illiquid NAV (Happy Path):**
+- Given `forecast_asset_metrics` contains Private Equity and Real Assets NAV for Today and `portfolio_dashboard` contains a Financial Assets `total_value`
+- When the Dashboard loads
+- Then **Policy Illiquid NAV** equals the sum of Private Equity  Real Assets (whole USD, thousand separators) and **Policy Illiquid NAV as % of Endowment** equals that sum divided by the raw Financial Assets `total_value`
+
+## Notes
+- Sprint 1 — depends on **KS-958** (Navigation Shell); coordinate **KS-959** (beta footer), **KS-962** / **KS-949** contract for `deriv_notional_value` timing with morning run
+- **Traceability — Policy Illiquid NAV (Kathleen Bui, KS-939, Jun 15–22, 2026):** Two new read-only rows added per customer request. Total Endowment uses raw `total_value` where `fad_asset = "Financial Assets"` (Jun 17 confirmation). Latest-value-only behaviour confirmed (Jun 22 — not tied to KS-966 historical picker).
+- **Traceability:** [**KS-939**](https://gendvn.atlassian.net/browse/KS-939) UI / Kathleen threads on derivative notional vs datalake tables; As of Jun 2026, the **Derivative Notional Value** row also updates when the user clicks **Apply** / **Apply with Hypothetical Flows** in the **KS-961** Forecast Parameters modal (both trigger KS-964 — see KS-961 & KS-963 comment thread)
+- Part of Epic: KS-950 Cash Forecasting Model

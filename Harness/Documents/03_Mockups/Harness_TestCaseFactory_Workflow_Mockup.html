@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness — Test-case factory workflow mockup</title>
+<style>
+  /* real QOps tokens (dark) from tokens.css */
+  :root{
+    --bg:#141414; --surface:#1c1c1c; --surface-warm:#101010; --fg:#ececec; --fg-2:#f5f5f5;
+    --muted:#9b9b9b; --meta:#6e6e6e; --border:#2e2e2e; --border-soft:#262626;
+    --accent:#10a37f; --accent-on:#fff; --accent-hover:#14b88f;
+    --accent-soft:rgba(16,163,127,.22); --danger:#f2555a; --warn:#f5a623;
+    --radius-sm:12px; --radius-md:16px; --radius-pill:9999px;
+    --font-body:"Söhne","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"Söhne Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--surface-warm);color:var(--fg);font-family:var(--font-body);
+    font-size:15px;line-height:1.6;padding:26px}
+  h1{font-size:21px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 8px;max-width:920px}
+  .mono{font-family:var(--font-mono)}
+  .wrap{max-width:1340px;margin:0 auto}
+  section{margin-top:30px}
+  .shead{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .shead .n{font-family:var(--font-mono);font-size:12px;color:var(--accent);font-weight:600}
+  .shead .h{font-size:16px;font-weight:600;color:var(--fg-2)}
+  .shead .d{font-size:12.5px;color:var(--muted)}
+  .verified{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;
+    color:var(--accent);border:1px solid var(--accent-soft);background:var(--accent-soft);
+    padding:2px 10px;border-radius:var(--radius-pill);margin-bottom:20px}
+
+  /* legend */
+  .legend{display:flex;gap:15px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:22px;align-items:center}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .d-qa{background:var(--accent)} .d-sys{background:var(--muted)}
+  .d-gate{background:var(--warn)} .d-ba{background:#7aa2f7}
+  .badge{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.05em;
+    padding:1px 6px;border-radius:var(--radius-pill);vertical-align:1px}
+  .badge.new{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-soft)}
+  .badge.has{background:rgba(155,155,155,.14);color:var(--muted);border:1px solid var(--border)}
+  .badge.part{background:rgba(245,166,35,.14);color:var(--warn);border:1px solid rgba(245,166,35,.35)}
+
+  /* pipeline */
+  .pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:stretch}
+  @media(max-width:1220px){.pipe{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:680px){.pipe{grid-template-columns:1fr}}
+  .phase{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+    display:flex;flex-direction:column;overflow:hidden}
+  .ph{padding:12px 14px 11px;border-bottom:1px solid var(--border);background:var(--bg)}
+  .ph .k{font-family:var(--font-mono);font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.05em;
+    display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .ord{font-size:9.5px;font-weight:700;letter-spacing:.05em;padding:1px 7px;border-radius:var(--radius-pill);
+    border:1px solid var(--border);color:var(--meta);background:var(--surface)}
+  .ord.seq{color:var(--accent);border-color:var(--accent-soft)}
+  .ph .t{font-size:14px;font-weight:600;color:var(--fg-2);margin-top:4px}
+  .ph .who{font-size:11.5px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:6px}
+  .pb{padding:12px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .step{background:var(--bg);border:1px solid var(--border-soft);border-radius:var(--radius-sm);
+    padding:9px 11px;display:flex;gap:9px}
+  .sn{font-family:var(--font-mono);font-size:10.5px;color:var(--meta);font-weight:600;padding-top:1px;flex-shrink:0}
+  .sc{flex:1;min-width:0}
+  .step .s{font-size:12.5px;font-weight:600;color:var(--fg);display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+  .step .m{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .step .code{font-family:var(--font-mono);font-size:10.5px;color:var(--meta);margin-top:3px;
+    overflow-wrap:anywhere}
+  .step.gate{border-color:rgba(245,166,35,.4);background:rgba(245,166,35,.06)}
+  .step.gate .s{color:var(--warn)}
+  .step.new{border-color:var(--accent-soft);background:rgba(16,163,127,.07)}
+
+  /* work-item chips on a step */
+  .step.owned{border-left:3px solid var(--accent);padding-left:9px}
+  .items{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px}
+  .item{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.09em;
+    color:#08281f;background:var(--accent);padding:2px 7px;border-radius:4px;white-space:nowrap}
+  .item.soft{color:var(--accent);background:transparent;border:1px solid var(--accent)}
+
+  /* work-item index bar above the pipeline */
+  .ibar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+    padding:13px 15px;margin-bottom:16px}
+  .ibar .ibt{font-size:12px;color:var(--muted);margin-bottom:11px}
+  .ibar .ibt b{color:var(--fg-2)}
+  .igrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media(max-width:1100px){.igrid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:700px){.igrid{grid-template-columns:repeat(2,1fr)}}
+  .ic{background:var(--bg);border:1px solid var(--border-soft);border-left:3px solid var(--accent);
+    border-radius:var(--radius-sm);padding:8px 10px}
+  .ic .n{font-family:var(--font-mono);font-size:11.5px;font-weight:700;color:var(--accent);letter-spacing:.06em}
+  .ic .w{font-size:10.5px;color:var(--meta);margin-top:3px}
+  .ic .w b{color:var(--muted);font-weight:600}
+  .ic.off{border-left-color:var(--border);opacity:.62}
+  .ic.off .n{color:var(--muted);text-decoration:line-through}
+  .ic.warn{border-left-color:var(--warn)}
+  .ic.warn .n{color:var(--warn)}
+  .out{margin-top:auto;padding:10px 14px;border-top:1px solid var(--border);background:var(--bg);
+    font-size:11.5px;color:var(--muted)}
+  .out b{color:var(--accent);font-family:var(--font-mono);font-weight:600;font-size:11px}
+
+  /* cards */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+  .ch{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;
+    align-items:center;gap:10px}
+  .ch .t{font-weight:600;font-size:13.5px}
+  .tag{font-size:10.5px;padding:2px 9px;border-radius:var(--radius-pill);border:1px solid var(--border);
+    color:var(--muted);white-space:nowrap;font-family:var(--font-mono)}
+  .tag.a{color:var(--accent);border-color:var(--accent-soft);background:var(--accent-soft)}
+  .tag.w{color:var(--warn);border-color:rgba(245,166,35,.35);background:rgba(245,166,35,.1)}
+  .cb{padding:13px 14px}
+  pre{font-family:var(--font-mono);font-size:11px;line-height:1.75;color:var(--fg);
+    background:var(--bg);border:1px solid var(--border-soft);border-radius:var(--radius-sm);
+    padding:11px 12px;margin:0;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+  pre .c{color:var(--meta)}
+  pre .g{color:var(--accent)}
+  pre .r{color:#ff8a8e}
+  pre .y{color:var(--warn)}
+  .fl{font-size:11px;color:var(--muted);margin:12px 0 6px;letter-spacing:.05em;font-weight:600}
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:980px){.ba{grid-template-columns:1fr}}
+
+  /* axis-fusion diagnosis */
+  .fuse{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+    padding:15px 17px;margin-top:14px}
+  .fuse .ft{font-size:12.5px;color:var(--muted);margin-bottom:13px}
+  .fuse .ft b{color:var(--fg-2)}
+  .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:860px){.fgrid{grid-template-columns:1fr}}
+  .fz{background:var(--bg);border:1px solid var(--border-soft);border-radius:var(--radius-sm);padding:12px}
+  .fz .bad{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--warn);
+    text-align:center;padding:6px 8px;background:rgba(245,166,35,.1);
+    border:1px solid rgba(245,166,35,.35);border-radius:6px;overflow-wrap:anywhere}
+  .fz .split{text-align:center;color:var(--meta);font-size:11px;margin:7px 0 5px;letter-spacing:.04em}
+  .fz .row{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:11.5px;
+    color:var(--fg);background:rgba(16,163,127,.08);border:1px solid var(--accent-soft);
+    border-radius:6px;padding:5px 8px;margin-top:5px}
+  .fz .ax{font-size:9.5px;font-weight:700;color:#08281f;background:var(--accent);
+    border-radius:3px;padding:1px 5px;flex-shrink:0}
+  .fz .row b{color:var(--accent);font-weight:700}
+  .fz .row i{color:var(--meta);font-style:normal;font-size:10px;margin-left:auto;white-space:nowrap}
+  .fuse .fn{font-size:12px;color:var(--muted);margin-top:13px;padding-top:12px;
+    border-top:1px solid var(--border-soft)}
+  .fuse .fn b{color:var(--warn)}
+
+  /* facts */
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:980px){.facts{grid-template-columns:1fr}}
+  .fact{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px}
+  .fact .ft{font-size:13px;font-weight:600;color:var(--fg-2);margin-bottom:6px}
+  .fact .fd{font-size:12.5px;color:var(--muted)}
+  .fact .fd b{color:var(--accent);font-weight:600}
+  .fact .fd .warnt{color:var(--warn);font-weight:600}
+
+  /* maturity */
+  .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:900px){.ladder{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.ladder{grid-template-columns:1fr}}
+  .rung{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);
+    padding:13px 14px;position:relative}
+  .rung.here{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-soft)}
+  .rung .lv{font-family:var(--font-mono);font-size:11px;color:var(--meta);font-weight:600}
+  .rung.here .lv{color:var(--accent)}
+  .rung .nm{font-size:13.5px;font-weight:600;color:var(--fg-2);margin:2px 0 5px}
+  .rung .ds{font-size:11.5px;color:var(--muted)}
+  .here-tag{position:absolute;top:-9px;right:12px;background:var(--accent);color:#08281f;
+    font-size:9.5px;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:var(--radius-pill)}
+
+  /* deps */
+  .deps{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:15px 17px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th{text-align:left;font-size:10.5px;letter-spacing:.05em;color:var(--meta);font-weight:600;
+    padding:0 8px 7px;border-bottom:1px solid var(--border)}
+  td{padding:8px;border-bottom:1px solid var(--border-soft);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .tk{font-family:var(--font-mono);font-size:11px;color:var(--accent);font-weight:600}
+  .delta{font-size:11px;font-weight:600}
+  .delta.dn{color:var(--accent)} .delta.up{color:var(--warn)} .delta.same{color:var(--meta)}
+  .note{font-size:12px;color:var(--muted);margin-top:12px;padding-top:12px;border-top:1px solid var(--border-soft)}
+  .note b{color:var(--warn)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Test-case factory — from a written request to a self-organising automated suite</h1>
+  <p class="sub">How one QA-written prompt becomes a labelled family of Aloha test cases, joins a suite automatically,
+  and feeds the next round of coverage.</p>
+  <div class="verified">✓ walked end to end on the live system — request #c1017339-45b · 3 Aug · re-verified against Test groups &amp; the 287-case catalog, 4 Aug 2026</div>
+
+  <div class="legend">
+    <span><i class="dot d-qa"></i> QA — human</span>
+    <span><i class="dot d-sys"></i> Harness — automated / LLM</span>
+    <span><i class="dot d-gate"></i> Gate — can stop or divert</span>
+    <span><i class="dot d-ba"></i> BA / PO — governance</span>
+    <span style="margin-left:8px"><span class="badge has">EXISTS</span> built &amp; verified</span>
+    <span><span class="badge part">PARTIAL</span> exists but ungoverned</span>
+    <span><span class="badge new">NEW</span> to build</span>
+    <span style="margin-left:8px"><span class="item">VOCAB</span> &nbsp;a step that carries a work item — see §05</span>
+  </div>
+
+  <!-- ============ PIPELINE ============ -->
+  <section>
+    <div class="shead">
+      <span class="n">01</span><span class="h">The pipeline</span>
+      <span class="d">Phases run left → right. Steps are numbered only where the order is load-bearing.</span>
+    </div>
+
+    <div class="ibar">
+      <div class="ibt"><b>The nine work items, and where each one lands in the flow.</b>
+        Steps carrying an item have a green left edge and a green tag. Everything else is existing behaviour.</div>
+      <div class="igrid">
+        <div class="ic"><div class="n">VOCAB</div><div class="w">Phase <b>2</b> · <b>5</b> — the closed list</div></div>
+        <div class="ic"><div class="n">VALIDATE</div><div class="w">Phase <b>2</b> — Gate A</div></div>
+        <div class="ic"><div class="n">CLASSIFY</div><div class="w">Phase <b>1</b> · <b>2</b> — rules → LLM</div></div>
+        <div class="ic"><div class="n">QUEUE</div><div class="w">Phase <b>2</b> — Gate B fallback</div></div>
+        <div class="ic"><div class="n">MODEL</div><div class="w">Phase <b>3</b> — sub_area + tags</div></div>
+        <div class="ic"><div class="n">GROUPS</div><div class="w">Phase <b>5</b> — query membership</div></div>
+        <div class="ic"><div class="n">HEATMAP</div><div class="w">Phase <b>5</b> — coverage grid</div></div>
+        <div class="ic warn"><div class="n">BACKFILL</div><div class="w"><b>Not in this flow</b> — one-time migration of 287 cases</div></div>
+        <div class="ic off"><div class="n">FILTERS</div><div class="w"><b>Delivered</b> by the platform, 3 Aug</div></div>
+      </div>
+    </div>
+
+    <div class="pipe">
+
+      <!-- PHASE 1 -->
+      <div class="phase">
+        <div class="ph">
+          <div class="k"><span>PHASE 1</span><span class="ord">ANY ORDER</span></div>
+          <div class="t">Author the request</div>
+          <div class="who"><i class="dot d-qa"></i> QA</div>
+        </div>
+        <div class="pb">
+          <div class="step"><div class="sn">·</div><div class="sc">
+            <div class="s">Write the prompt <span class="badge has">EXISTS</span></div>
+            <div class="m">Plain English. <span class="mono">Project: aloha</span> + target URL on the first lines.</div>
+          </div></div>
+          <div class="step"><div class="sn">·</div><div class="sc">
+            <div class="s">Pick the mode <span class="badge has">EXISTS</span></div>
+            <div class="m">Single case · new feature · existing feature · bug ticket</div>
+          </div></div>
+          <div class="step owned new"><div class="sn">·</div><div class="sc">
+            <div class="items"><span class="item">CLASSIFY</span></div>
+            <div class="s">Declare the area <span class="badge new">NEW</span></div>
+            <div class="m">Optional <span class="mono">Area:</span> line. Author confirms rather than the LLM guessing.</div>
+          </div></div>
+        </div>
+        <div class="out">Output → <b>REQUEST</b></div>
+      </div>
+
+      <!-- PHASE 2 -->
+      <div class="phase">
+        <div class="ph">
+          <div class="k"><span>PHASE 2</span><span class="ord seq">IN ORDER</span></div>
+          <div class="t">Intake &amp; label</div>
+          <div class="who"><i class="dot d-sys"></i> Harness &nbsp;<i class="dot d-gate"></i> gates</div>
+        </div>
+        <div class="pb">
+          <div class="step owned gate"><div class="sn">1</div><div class="sc">
+            <div class="items"><span class="item">VALIDATE</span></div>
+            <div class="s">Gate A — validate the request <span class="badge new">NEW</span></div>
+            <div class="m">The <span class="mono">1 / 2 required</span> meter counts a field that <b>can never be empty</b>. The only real check is a non-empty prompt — nothing verifies <span class="mono">Project:</span>, the URL, or a typo like "Fun Setup".</div>
+            <div class="code">submitBtn.disabled = !p.user_input.trim()</div>
+          </div></div>
+          <div class="step owned new"><div class="sn">2</div><div class="sc">
+            <div class="items"><span class="item">CLASSIFY</span></div>
+            <div class="s">Classify — rules first <span class="badge new">NEW</span></div>
+            <div class="m">Keyword → label. Free and deterministic; resolves the easy majority before any tokens are spent.</div>
+          </div></div>
+          <div class="step owned"><div class="sn">3</div><div class="sc">
+            <div class="items"><span class="item">CLASSIFY</span><span class="item">VOCAB</span></div>
+            <div class="s">Classify — LLM <span class="badge part">PARTIAL</span></div>
+            <div class="m">The LLM already fills Feature and Category. It needs a <b>closed vocabulary</b>, not a new pipeline.</div>
+          </div></div>
+          <div class="step owned gate"><div class="sn">4</div><div class="sc">
+            <div class="items"><span class="item">QUEUE</span></div>
+            <div class="s">Gate B — confidence &lt; 0.80 <span class="badge new">NEW</span></div>
+            <div class="m">Drops into a "Needs labeling" queue instead of guessing.</div>
+          </div></div>
+          <div class="step gate"><div class="sn">5</div><div class="sc">
+            <div class="s">Gate C — duplicate request <span class="badge part">PARTIAL</span></div>
+            <div class="m">A <span class="mono">Duplicate</span> status exists in the queue filter. Scoping it by area makes it precise.</div>
+          </div></div>
+        </div>
+        <div class="out">Output → <b>LABELLED REQUEST</b></div>
+      </div>
+
+      <!-- PHASE 3 -->
+      <div class="phase">
+        <div class="ph">
+          <div class="k"><span>PHASE 3</span><span class="ord seq">IN ORDER</span></div>
+          <div class="t">Generate the case family</div>
+          <div class="who"><i class="dot d-sys"></i> Harness LLM</div>
+        </div>
+        <div class="pb">
+          <div class="step"><div class="sn">1</div><div class="sc">
+            <div class="s">Build test steps <span class="badge has">EXISTS</span></div>
+            <div class="m">Each step = 1 NAVIGATE + N VALIDATION. Groups sensibly, not line-by-line.</div>
+            <div class="code">crew_phase_a_build</div>
+          </div></div>
+          <div class="step"><div class="sn">2</div><div class="sc">
+            <div class="s">Expand into types <span class="badge has">EXISTS</span></div>
+            <div class="m">Test Feature mode proposes positive / negative / boundary / security.</div>
+          </div></div>
+          <div class="step owned new"><div class="sn">3</div><div class="sc">
+            <div class="items"><span class="item">MODEL</span></div>
+            <div class="s">Inherit the labels <span class="badge new">NEW</span></div>
+            <div class="m">Children inherit area + tags; only <span class="mono">category</span> differs per child.</div>
+          </div></div>
+          <div class="step gate"><div class="sn">4</div><div class="sc">
+            <div class="s">Gate E — duplicate case <span class="badge new">NEW</span></div>
+            <div class="m">Per generated case, scoped by area + sub-area + category: ~7 candidates, not ~300.</div>
+          </div></div>
+          <div class="step"><div class="sn">5</div><div class="sc">
+            <div class="s">Assign IDs <span class="badge part">PARTIAL</span></div>
+            <div class="m">Spec slugs are already descriptive + hashed — but the UI shows only "Direct test".</div>
+          </div></div>
+        </div>
+        <div class="out">Output → <b>CASES</b></div>
+      </div>
+
+      <!-- PHASE 4 -->
+      <div class="phase">
+        <div class="ph">
+          <div class="k"><span>PHASE 4</span><span class="ord seq">IN ORDER</span></div>
+          <div class="t">Review, run, triage</div>
+          <div class="who"><i class="dot d-qa"></i> QA &nbsp;<i class="dot d-sys"></i> Playwright</div>
+        </div>
+        <div class="pb">
+          <div class="step gate"><div class="sn">1</div><div class="sc">
+            <div class="s">Gate D — case review <span class="badge has">EXISTS</span></div>
+            <div class="m">A real milestone, and re-enterable — reopening shows "cases are editable before re-processing".</div>
+          </div></div>
+          <div class="step"><div class="sn">2</div><div class="sc">
+            <div class="s">Build the automation <span class="badge has">EXISTS</span></div>
+            <div class="code">render_nlonly_spec → crew_phase_b_migrate → validate_pre_run_spec</div>
+          </div></div>
+          <div class="step"><div class="sn">3</div><div class="sc">
+            <div class="s">Execute <span class="badge has">EXISTS</span></div>
+            <div class="m">AI fallback when a selector decays. Every milestone on the observed run carried an <b>AI</b> badge.</div>
+            <div class="code">execute_run_playwright_spec</div>
+          </div></div>
+          <div class="step"><div class="sn">4</div><div class="sc">
+            <div class="s">Commit &amp; open PR <span class="badge has">EXISTS</span></div>
+            <div class="m">Specs land in a git test-repo — the catalog is versioned, not just a database.</div>
+            <div class="code">finalize_artifacts</div>
+          </div></div>
+          <div class="step"><div class="sn">5</div><div class="sc">
+            <div class="s">Triage the failures <span class="badge has">EXISTS</span></div>
+            <div class="m"><span class="mono">product_bug · test_bug · flaky · env · wont_fix</span></div>
+          </div></div>
+          <div class="step new"><div class="sn">6</div><div class="sc">
+            <div class="s">Cluster by label <span class="badge new">NEW</span></div>
+            <div class="m">"7 failures" resolves to "7 failures, all <span class="mono">risk/subtabs</span>" — one defect.</div>
+          </div></div>
+        </div>
+        <div class="out">Output → <b>RUNS</b> + defects</div>
+      </div>
+
+      <!-- PHASE 5 -->
+      <div class="phase">
+        <div class="ph">
+          <div class="k"><span>PHASE 5</span><span class="ord">ANY ORDER</span></div>
+          <div class="t">Organise &amp; improve</div>
+          <div class="who"><i class="dot d-ba"></i> BA / PO</div>
+        </div>
+        <div class="pb">
+          <div class="step owned"><div class="sn">·</div><div class="sc">
+            <div class="items"><span class="item">GROUPS</span></div>
+            <div class="s">Test groups <span class="badge part">PARTIAL</span></div>
+            <div class="m"><b>Shipped 3 Aug</b> with cron, webhooks, nesting, Run now. But membership is a
+            <b>hand-ticked static list</b> — a new matching case does <i>not</i> join. Query-defined membership is what's left.</div>
+            <div class="code">Add cases from catalog → filter → tick → Add selected (N)</div>
+          </div></div>
+          <div class="step owned new"><div class="sn">·</div><div class="sc">
+            <div class="items"><span class="item">HEATMAP</span></div>
+            <div class="s">Coverage heatmap <span class="badge new">NEW</span></div>
+            <div class="m">area × type grid. Empty cells <i>are</i> the backlog.</div>
+          </div></div>
+          <div class="step new"><div class="sn">·</div><div class="sc">
+            <div class="s">Impact query <span class="badge new">NEW</span></div>
+            <div class="m">"NAV calc changed — what re-runs?" → <span class="mono">metric:nav</span>, across every area.</div>
+          </div></div>
+          <div class="step owned"><div class="sn">·</div><div class="sc">
+            <div class="items"><span class="item">VOCAB</span></div>
+            <div class="s">Feed Knowledge + tickets <span class="badge has">EXISTS</span></div>
+            <div class="m">Per-project markdown is already injected into the LLM — the vocabulary can live there.</div>
+            <div class="code">project/aloha/README.md · project/aloha/aloha.md</div>
+          </div></div>
+        </div>
+        <div class="out">Loops back → <b>PHASE 1</b></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ WORKED EXAMPLE ============ -->
+  <section>
+    <div class="shead">
+      <span class="n">02</span><span class="h">One real request — observed vs. governed</span>
+      <span class="d">Left is exactly what the live system produced. Right is the same request under the taxonomy.</span>
+    </div>
+
+    <div class="ba">
+
+      <div class="card">
+        <div class="ch"><span class="t">Today — request #c1017339-45b</span><span class="tag w">as observed</span></div>
+        <div class="cb">
+          <div class="fl">THE PROMPT</div>
+<pre><span class="c">Project: aloha
+Go to workbench-app.lab.gend.vn
+Assume the menu 'Public Fund' is displayed.
+Click on the 'Risk' tab.
+Verify the 'Risk Model Dashboard' is displayed.
+Verify the 'Total Risk' table is displayed.
+Verify the 'Download Report' button is displayed.</span></pre>
+
+          <div class="fl">WHAT HARNESS RECORDED</div>
+<pre>Feature   <span class="y">public-fund-risk</span>   <span class="c">free text, LLM-invented</span>
+Category  <span class="g">positive</span>           <span class="c">auto-assigned ✓</span>
+Labels    <span class="r">(empty)</span>
+Case      <span class="y">"Direct test"</span>      <span class="c">2 steps · 4 validations</span></pre>
+
+          <div class="fl">WHERE THE SPEC LANDED</div>
+<pre>tests/playwright/aloha/generated/<span class="y">public-fund-risk</span>/
+  risk-model-dashboard-total-risk-table-
+  and-download-report-461dc2.spec.ts
+
+<span class="c">tags →</span> @aloha <span class="y">@public-fund-risk</span> @qops</pre>
+
+          <div class="fl">RESULT</div>
+<pre><span class="r">FAILED</span> — Playwright run failed (exit 1)
+<span class="c">which of the 3 validations failed is not surfaced</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><span class="t">Under the taxonomy</span><span class="tag a">same prompt</span></div>
+        <div class="cb">
+          <div class="fl">THE PROMPT</div>
+<pre><span class="c">Project: aloha</span>
+<span class="g">Area: risk</span>                <span class="g">← one optional line</span>
+<span class="c">Go to workbench-app.lab.gend.vn
+… unchanged …</span></pre>
+
+          <div class="fl">WHAT HARNESS WOULD RECORD <span style="color:var(--meta);font-weight:400">— (n) = dimension</span></div>
+<pre><span class="c">(1)</span> project   <span class="g">aloha</span>
+<span class="c">(2)</span> feature   <span class="g">risk</span>            <span class="c">closed list</span>
+<span class="c">(2b)</span> sub_area <span class="g">dashboard</span>
+<span class="c">(3)</span> category  <span class="g">positive</span>       <span class="c">← only this differs</span>
+<span class="c">(4)</span> label     <span class="g">[smoke]</span>          <span class="c">   between siblings</span>
+<span class="c">(5)</span> tags      <span class="g">fund:public · env:lab</span>
+              <span class="g">pri:P1 · metric:risk</span></pre>
+
+          <div class="fl">GROUP IT JOINS</div>
+<pre>aloha/<span class="g">risk</span>/<span class="g">dashboard</span>   <span class="c">— 1 of ~45 leaf groups</span></pre>
+
+          <div class="fl">WHERE THE SPEC WOULD LAND</div>
+<pre>tests/playwright/aloha/generated/<span class="g">risk/dashboard</span>/
+  risk-model-dashboard-…-461dc2.spec.ts
+
+<span class="c">tags →</span> @aloha <span class="g">@risk @risk-dashboard
+        @fund-public</span> @qops</pre>
+
+          <div class="fl">WHAT THAT UNLOCKS</div>
+<pre><span class="c">--grep</span> <span class="g">@risk</span>          <span class="c">every risk case, all 4 funds</span>
+<span class="c">--grep</span> <span class="g">@fund-public</span>   <span class="c">every Public Fund case</span>
+<span class="c">heatmap</span>              <span class="c">risk × negative = 0 → gap</span></pre>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="fuse">
+      <div class="ft"><b>The root cause, in one picture.</b>
+        Every drifted value is <b>two dimensions welded into a single token</b> — the feature area fused with the
+        fund it was tested against. Split them and the duplicates collapse.</div>
+
+      <div class="fgrid">
+
+        <div class="fz">
+          <div class="bad">public-fund-risk</div>
+          <div class="split">splits into</div>
+          <div class="row"><span class="ax">2</span> feature <b>risk</b><i>closed, 1 value</i></div>
+          <div class="row"><span class="ax">5</span> tag <b>fund:public</b><i>cuts across</i></div>
+        </div>
+
+        <div class="fz">
+          <div class="bad">total-endowment-risk-tab</div>
+          <div class="split">splits into</div>
+          <div class="row"><span class="ax">2</span> feature <b>risk</b><i>same area!</i></div>
+          <div class="row"><span class="ax">5</span> tag <b>fund:total-endowment</b></div>
+        </div>
+
+        <div class="fz">
+          <div class="bad">total-endowment-upload</div>
+          <div class="split">splits into</div>
+          <div class="row"><span class="ax">2</span> feature <b>fund-admin/upload</b></div>
+          <div class="row"><span class="ax">5</span> tag <b>fund:total-endowment</b></div>
+        </div>
+
+      </div>
+
+      <div class="fn">Look at the first two: <b>the same feature area, counted as two different values</b>
+        because they were tested against different funds. That is how Risk ended up with seven, why
+        <span class="mono">--grep @risk</span> returns nothing, and why 287 cases produced 237 grouping values.
+        The <code>feature</code> field answers <i>what</i> is being tested; a <code>fund:</code> label answers <i>where</i>. One field cannot hold both — so fund moves into namespaced <code>labels[]</code>.</div>
+    </div>
+  </section>
+
+  <!-- ============ VERIFIED FACTS ============ -->
+  <section>
+    <div class="shead">
+      <span class="n">03</span><span class="h">What the walkthrough changed</span>
+      <span class="d">Four findings that move the build estimate — three of them downward.</span>
+    </div>
+
+    <div class="facts">
+      <div class="fact">
+        <div class="ft">① <span class="mono">Feature</span> is load-bearing twice over</div>
+        <div class="fd">It is simultaneously <b>a directory on disk</b> and <b>a grep-able Playwright tag</b>.
+        So drift doesn't just muddle labels — it fragments the test repo's tree <i>and</i> the grep handles.
+        <span class="warnt">Governing it is now the highest-value single change.</span></div>
+      </div>
+      <div class="fact">
+        <div class="ft">② Tag-based suites already work</div>
+        <div class="fd">The generated spec carries <span class="mono">@aloha @public-fund-risk @qops</span>, so
+        <span class="mono">--grep</span> batch runs are live today. <b>GROUPS shrinks to a UI</b> over an existing engine.</div>
+      </div>
+      <div class="fact">
+        <div class="ft">③ Half the model already exists</div>
+        <div class="fd"><span class="mono">Category</span> is auto-assigned and filterable; a <span class="mono">Labels</span>
+        field exists. <b>MODEL and CLASSIFY shrink</b> — an LLM already fills these fields. It needs a closed list, not a new pipeline.</div>
+      </div>
+      <div class="fact">
+        <div class="ft">④ The vocabulary has already collapsed — measured</div>
+        <div class="fd"><b>287 cases · ~237 distinct values · ~202 of them used once.</b>
+        That is <b>≈1.2 cases per grouping value</b> — an ID, not a taxonomy. Risk alone has seven values
+        (<span class="mono">risk-dashboard</span>, <span class="mono">public-fund-risk</span>,
+        <span class="mono">total-endowment-risk-tab</span>, …).
+        <span class="warnt">This is the failure VOCAB prevents, already well advanced.</span></div>
+      </div>
+      <div class="fact">
+        <div class="ft">⑤ Phase A taxonomy already exists <span class="warnt">— blocking</span></div>
+        <div class="fd"><span class="mono">fix(catalog): prefer managed app_project for Phase A taxonomy</span> shipped
+        4 Aug. There is an existing taxonomy workstream. <b>Do not present this vocabulary to the PO as a new idea
+        until we know what Phase A covers.</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MATURITY ============ -->
+  <section>
+    <div class="shead">
+      <span class="n">04</span><span class="h">Where this goes — the automation ladder</span>
+      <span class="d">The workflow is the same at every rung; what changes is how much of Phase 1 a human still writes.</span>
+    </div>
+
+    <div class="ladder">
+      <div class="rung">
+        <div class="lv">LEVEL 0</div>
+        <div class="nm">One prompt, one case</div>
+        <div class="ds">Single-test-case mode. Retrieval is scrolling; duplicates are found by memory.</div>
+      </div>
+      <div class="rung here">
+        <span class="here-tag">YOU ARE HERE</span>
+        <div class="lv">LEVEL 1</div>
+        <div class="nm">One prompt, one family</div>
+        <div class="ds">Test Feature expands a request into positive / negative / boundary / security. Volume climbs fast — and retrieval starts to hurt.</div>
+      </div>
+      <div class="rung">
+        <div class="lv">LEVEL 2</div>
+        <div class="nm">Labelled &amp; self-filing</div>
+        <div class="ds">Classified at ingest against a closed vocabulary. Suites are queries, so new cases join their group with no filing.</div>
+      </div>
+      <div class="rung">
+        <div class="lv">LEVEL 3</div>
+        <div class="nm">Coverage-driven generation</div>
+        <div class="ds">The heatmap drives the prompt: Harness proposes requests that fill empty area × type cells. QA reviews proposals instead of facing a blank page.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEPENDENCIES ============ -->
+  <section>
+    <div class="shead">
+      <span class="n">05</span><span class="h">What Level 2 needs built</span>
+      <span class="d">Draft children of Epic QG-138, re-sized after the walkthrough.</span>
+    </div>
+
+    <div class="deps">
+      <table>
+        <thead><tr><th>#</th><th>Change</th><th>Size</th><th>vs. first draft</th></tr></thead>
+        <tbody>
+          <tr><td class="tk">VOCAB</td><td>Enforce closed vocabulary on <span class="mono">Feature</span> and <span class="mono">Labels</span> — select-from-list + "request new value"</td><td>S</td><td class="delta up">▲ bigger payoff — governs a folder <i>and</i> a tag</td></tr>
+          <tr><td class="tk">MODEL</td><td>Add <span class="mono">sub_area</span>; confirm <span class="mono">Labels</span> is an array server-side</td><td>S</td><td class="delta dn">▼ Labels &amp; Category already exist</td></tr>
+          <tr><td class="tk">CLASSIFY</td><td>Classifier at ingest — rules → LLM → confidence, vocabulary from Knowledge</td><td>M</td><td class="delta dn">▼ the LLM already fills these fields</td></tr>
+          <tr><td class="tk">QUEUE</td><td>"Needs labeling" queue, reusing the Case Review pattern</td><td>M</td><td class="delta same">— unchanged</td></tr>
+          <tr style="opacity:.55"><td class="tk" style="text-decoration:line-through">FILTERS</td><td style="text-decoration:line-through">Facet filters on the Cases list</td><td>—</td><td class="delta dn">✅ <b>DELIVERED 3 Aug</b> — Search · Feature · Labels · Status · Reason. Closed</td></tr>
+          <tr><td class="tk">BACKFILL</td><td>Backfill classifier over existing cases</td><td>S</td><td class="delta same">— scope now known: <b>287 cases</b></td></tr>
+          <tr><td class="tk">GROUPS</td><td>Query-defined membership for the groups that already exist</td><td>S</td><td class="delta dn">▼▼ rewritten — Test groups shipped, but membership is static</td></tr>
+          <tr><td class="tk">HEATMAP</td><td>Coverage heatmap on the Dashboard</td><td>S</td><td class="delta same">— needs real label data first</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        Order unchanged: <b>VOCAB → MODEL → CLASSIFY → QUEUE → FILTERS → BACKFILL → GROUPS → HEATMAP.</b>
+        VOCAB first — every day it waits, more <span class="mono">Feature</span> directories and more junk labels are created,
+        and BACKFILL has more to clean up. The overall build is <b>lighter than first estimated</b>; the urgency is higher.
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

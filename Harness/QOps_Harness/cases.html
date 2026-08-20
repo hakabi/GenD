@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Test cases · QOps Harness</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/shell.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/case-detail.css" />
+  <link rel="stylesheet" href="css/case-workbench.css" />
+  <link rel="stylesheet" href="css/cases.css" />
+  <script src="js/icons.js"></script>
+  <script src="js/nl-flow.js"></script>
+  <script src="js/case-detail.js"></script>
+  <script src="js/case-workbench.js"></script>
+</head>
+<body data-page="cases">
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+  <div class="app-shell" data-od-id="cases-tab">
+    <aside class="app-sidebar" id="app-sidebar"></aside>
+    <div class="app-main">
+      <header class="page-header">
+        <div>
+          <h2 id="page-title">Failed</h2>
+          <p class="page-desc" id="page-desc">Recently failed test cases — assign a reason and notes.</p>
+        </div>
+        <div class="page-header-actions" id="all-actions" hidden>
+          <button class="btn btn-primary btn-small" type="button" id="run-selected" disabled data-icon="play">Run (0)</button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Failed view -->
+        <div class="view-panel" id="panel-triage" data-od-id="failed-triage">
+          <div class="view-toolbar">
+            <div class="filter-row">
+              <label>Reason
+                <select id="filter-triage">
+                  <option value="">All reasons</option>
+                  <option value="unlabeled">Unlabeled</option>
+                  <option value="product_bug">Product bug</option>
+                  <option value="test_bug">Test bug</option>
+                  <option value="flaky">Flaky</option>
+                  <option value="env">Environment</option>
+                  <option value="wont_fix">Won't fix</option>
+                </select>
+              </label>
+              <label>Project<input type="text" id="filter-project" placeholder="e.g. checkout" value="checkout" /></label>
+              <button class="btn btn-secondary btn-small" type="button" id="refresh-btn" data-icon="refresh">Refresh</button>
+            </div>
+          </div>
+          <div class="breakdown-scroll">
+            <div class="breakdown-grid" id="breakdown-grid" role="list" aria-label="Failure breakdown"></div>
+          </div>
+          <div class="triage-layout" id="triage-layout">
+            <div class="fail-list-panel">
+              <div class="fail-list-header">
+                <h3 id="fail-list-title">Failing cases</h3>
+                <span class="fail-list-count" id="fail-list-count">0</span>
+              </div>
+              <ul class="fail-list" id="fail-list"></ul>
+            </div>
+            <div class="triage-detail cases-detail-mount" id="triage-workbench-mount" aria-label="Case workbench"></div>
+          </div>
+        </div>
+
+        <!-- All cases view -->
+        <div class="view-panel" id="panel-all" hidden data-od-id="all-cases">
+          <div class="view-toolbar">
+            <div class="filter-row">
+              <label>Project<input type="text" id="all-filter-project" placeholder="e.g. checkout" /></label>
+              <label>Category<input type="text" placeholder="default" /></label>
+              <label>Status
+                <select id="all-filter-status">
+                  <option value="">All</option>
+                  <option value="passed">Passed</option>
+                  <option value="failed">Failed</option>
+                </select>
+              </label>
+              <label>Label<select><option>All</option><option>smoke</option><option>regression</option></select></label>
+              <button class="btn btn-secondary btn-small" type="button" id="all-refresh-btn" data-icon="refresh">Refresh</button>
+            </div>
+          </div>
+          <div class="all-split" id="all-split">
+            <div class="table-wrap">
+              <table id="cases-table" class="data-table">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" id="select-all" aria-label="Select all" /></th>
+                    <th>Case</th>
+                    <th>Feature</th>
+                    <th>Project</th>
+                    <th>Triage</th>
+                    <th>Last run</th>
+                  </tr>
+                </thead>
+                <tbody id="cases-body"></tbody>
+              </table>
+            </div>
+            <div class="cases-detail-mount" id="all-workbench-mount" aria-label="Case workbench"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="mobile-nav-toggle btn-icon-only" id="mobile-nav-toggle" data-icon="menu" data-label="Open menu" aria-label="Open menu">Open menu</button>
+  <div class="cases-toast" id="cases-toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const TRIAGE_LABELS = ["unlabeled", "product_bug", "test_bug", "flaky", "env", "wont_fix"];
+    const LABEL_NAMES = {
+      unlabeled: "Unlabeled",
+      product_bug: "Product bug",
+      test_bug: "Test bug",
+      flaky: "Flaky",
+      env: "Environment",
+      wont_fix: "Won't fix",
+    };
+
+    const ALL_CASES = [
+      { id: "c1", title: "Coupon apply — happy path", feature: "Checkout", project: "checkout", label: "regression", triage: "unlabeled", status: "passed", category: "positive",
+        createdBy: "Alex Chen", createdAt: "Jun 12, 2026", updatedBy: "Alex Chen", updatedAt: "Jun 28, 2026",
+        lastRun: { id: "run-8820", status: "passed", at: "Jul 3, 10:38", duration: "18.2s" },
+        runHistory: [
+          { id: "run-8820", status: "passed", at: "Jul 3, 10:38", triggeredBy: "queue", ai: 2, auto: 18 },
+          { id: "run-8701", status: "passed", at: "Jun 28, 14:02", triggeredBy: "Alex Chen", ai: 2, auto: 17 },
+        ],
+        editHistory: [
+          { by: "Alex Chen", action: "Updated Step 2 check assertion", at: "Jun 28" },
+          { by: "System", action: "Created from request #q-1038", at: "Jun 12" },
+        ],
+        flowSteps: [
+          { title: "Open checkout with cart items", navigate: "Navigate to checkout with items in the cart", check: "Verify cart summary and line items are displayed" },
+          { title: "Apply valid coupon code", navigate: "Enter a valid coupon code and click Apply", check: "Verify discount applies and order total updates correctly" },
+        ] },
+      { id: "c2", title: "Invalid coupon code", feature: "Checkout", project: "checkout", label: "regression", triage: "unlabeled", status: "failed", category: "negative",
+        createdBy: "Morgan Lee", createdAt: "Jun 10, 2026", updatedBy: "Morgan Lee", updatedAt: "Jul 1, 2026",
+        failedStepIndex: 1, failedAt: "Jul 3, 10:41",
+        failureScreenshotLabel: "Checkout page — no error banner visible",
+        failureReason: "Expected inline error banner after expired coupon; UI shows success toast instead.",
+        lastRun: { id: "run-8821", status: "failed", at: "Jul 3, 10:41", duration: "12.4s" },
+        runHistory: [
+          { id: "run-8821", status: "failed", at: "Jul 3, 10:41", triggeredBy: "queue", ai: 4, auto: 12, note: "Failed at Step 2 — assertion on error banner" },
+          { id: "run-8799", status: "failed", at: "Jul 2, 09:10", triggeredBy: "Morgan Lee", ai: 4, auto: 11 },
+          { id: "run-8750", status: "passed", at: "Jun 20, 16:44", triggeredBy: "CI", ai: 3, auto: 10 },
+        ],
+        editHistory: [
+          { by: "Morgan Lee", action: "Tightened Step 2 verify text", at: "Jul 1" },
+          { by: "System", action: "Created from request #q-1022", at: "Jun 10" },
+        ],
+        flowSteps: [
+          { title: "Open checkout with cart", navigate: "Navigate to checkout with items in the cart", check: "Verify checkout form is ready" },
+          { title: "Submit expired coupon", navigate: "Enter an expired coupon code and apply", check: "Verify inline error shows and total remains unchanged" },
+        ],
+        failure: "AssertionError: expected visible error banner\n  at checkout.spec.ts:42\n  locator('[data-testid=coupon-error]') not visible" },
+      { id: "c3", title: "Password reset email", feature: "Auth", project: "auth", label: "smoke", triage: "flaky", status: "passed", category: "positive",
+        createdBy: "Jordan Kim", createdAt: "May 22, 2026", updatedBy: "Jordan Kim", updatedAt: "Jul 2, 2026",
+        lastRun: { id: "run-8812", status: "passed", at: "Jul 2, 16:02", duration: "9.1s" },
+        runHistory: [
+          { id: "run-8812", status: "passed", at: "Jul 2, 16:02", triggeredBy: "queue", ai: 3, auto: 9 },
+          { id: "run-8805", status: "failed", at: "Jul 1, 11:20", triggeredBy: "CI", ai: 3, auto: 8, note: "Email delivery timeout — marked flaky" },
+        ],
+        editHistory: [{ by: "Jordan Kim", action: "Increased wait on Step 2", at: "Jul 2" }],
+        flowSteps: [
+          { title: "Open password reset", navigate: "Navigate to the password reset page", check: "Verify email input is visible" },
+          { title: "Submit registered email", navigate: "Enter a registered email and submit", check: "Verify confirmation message appears within 30s" },
+        ] },
+      { id: "c4", title: "Guest checkout — empty cart", feature: "Checkout", project: "checkout", label: "smoke", triage: "test_bug", status: "failed", category: "edge_case",
+        createdBy: "Alex Chen", createdAt: "Jun 5, 2026", updatedBy: "Alex Chen", updatedAt: "Jul 2, 2026",
+        failedStepIndex: 1, failedAt: "Jul 2, 18:22",
+        failureScreenshotLabel: "Empty cart page — checkout button still enabled",
+        failureReason: "Test expected redirect to cart; app now blocks checkout inline (product change).",
+        triageNotes: "Update Step 2 check to match new empty-cart UX.",
+        lastRun: { id: "run-8810", status: "failed", at: "Jul 2, 18:22", duration: "30.0s" },
+        runHistory: [
+          { id: "run-8810", status: "failed", at: "Jul 2, 18:22", triggeredBy: "Alex Chen", ai: 2, auto: 14 },
+        ],
+        editHistory: [{ by: "Alex Chen", action: "Assigned triage: test bug", at: "Jul 2" }],
+        flowSteps: [
+          { title: "Proceed with empty cart", navigate: "Navigate to checkout as guest with an empty cart", check: "Verify empty cart state is shown" },
+          { title: "Attempt checkout", navigate: "Click proceed to checkout", check: "Verify redirect to cart page with empty-state message" },
+        ],
+        failure: "Timeout 30000ms waiting for selector [data-testid=cart-empty]" },
+      { id: "c5", title: "API rate limit header", feature: "API", project: "api", label: "contract", triage: "product_bug", status: "failed", category: "negative",
+        createdBy: "Sam Rivera", createdAt: "Jun 1, 2026", updatedBy: "Sam Rivera", updatedAt: "Jul 1, 2026",
+        failedStepIndex: 0, failedAt: "Jul 1, 09:15",
+        failureScreenshotLabel: "Network panel — 429 response missing Retry-After",
+        failureReason: "API returns 429 but omits Retry-After header per contract.",
+        triageNotes: "Filed API-442; waiting on backend fix.",
+        lastRun: { id: "run-8801", status: "failed", at: "Jul 1, 09:15", duration: "6.4s" },
+        runHistory: [
+          { id: "run-8801", status: "failed", at: "Jul 1, 09:15", triggeredBy: "CI", ai: 1, auto: 6 },
+          { id: "run-8780", status: "failed", at: "Jun 25, 08:00", triggeredBy: "Sam Rivera", ai: 1, auto: 6 },
+        ],
+        editHistory: [{ by: "Sam Rivera", action: "Linked product bug API-442", at: "Jul 1" }],
+        flowSteps: [
+          { title: "Exceed API rate limit", navigate: "Send requests until rate limit is exceeded", check: "Verify 429 response includes Retry-After header" },
+        ],
+        failure: "Expected header Retry-After to be present\n  Received: undefined" },
+    ];
+
+    const longCheckout = window.QopsNlFlow.buildTwentyStepCheckout("guest purchase");
+    ALL_CASES.unshift({
+      id: "c6",
+      title: "Guest checkout — full purchase (20 steps)",
+      feature: "Checkout",
+      project: "checkout",
+      label: "regression",
+      triage: "unlabeled",
+      status: "passed",
+      category: "positive",
+      createdBy: "Alex Chen",
+      createdAt: "Jul 1, 2026",
+      updatedBy: "Alex Chen",
+      updatedAt: "Jul 3, 2026",
+      lastRun: { id: "run-8830", status: "passed", at: "Jul 3, 11:02", duration: "4m 12s" },
+      runHistory: [
+        { id: "run-8830", status: "passed", at: "Jul 3, 11:02", triggeredBy: "queue", ai: 20, auto: 38 },
+        { id: "run-8815", status: "passed", at: "Jul 2, 15:40", triggeredBy: "Alex Chen", ai: 20, auto: 36 },
+      ],
+      editHistory: [
+        { by: "Alex Chen", action: "Tightened Step 14 coupon assertion", at: "Jul 3" },
+        { by: "System", action: "Created from request #q-1045", at: "Jul 1" },
+      ],
+      flowSteps: longCheckout.steps,
+      flow: window.QopsNlFlow.serializeFlow(longCheckout),
+    });
+
+    ALL_CASES.forEach((c) => window.QopsNlFlow.normalizeCaseFlow(c));
+
+    const params = new URLSearchParams(location.search);
+    const view = params.get("view") === "all" ? "all" : "triage";
+    document.body.dataset.subpage = view === "all" ? "all" : "";
+
+    const panelTriage = document.getElementById("panel-triage");
+    const panelAll = document.getElementById("panel-all");
+    const allActions = document.getElementById("all-actions");
+
+    function setView(mode) {
+      const isAll = mode === "all";
+      panelTriage.hidden = isAll;
+      panelAll.hidden = !isAll;
+      allActions.hidden = !isAll;
+      document.getElementById("page-title").textContent = isAll ? "All cases" : "Failed";
+      document.getElementById("page-desc").textContent = isAll
+        ? "Full test case catalog — Info for context, Steps for the flow, History for runs."
+        : "Recently failed test cases — Info shows errors and triage; Steps tab for the flow.";
+    }
+    setView(view);
+
+    const casesToast = document.getElementById("cases-toast");
+    function showCasesToast(msg) {
+      casesToast.textContent = msg;
+      casesToast.classList.add("visible");
+      clearTimeout(showCasesToast._t);
+      showCasesToast._t = setTimeout(() => casesToast.classList.remove("visible"), 2400);
+    }
+
+    function syncCaseFromEditor(caseObj, editor) {
+      const data = editor.syncToCase ? editor.syncToCase() : editor.getCaseData?.();
+      if (!data) return;
+      Object.assign(caseObj, data);
+      return data;
+    }
+
+    /* ── Case workbench (Info · Steps · History) ── */
+    let selectedAllId = null;
+    let selectedFailId = null;
+    let allWorkbench = null;
+    let failWorkbench = null;
+
+    function ensureAllWorkbench() {
+      if (allWorkbench) return allWorkbench;
+      allWorkbench = new QopsCaseWorkbench({
+        root: document.getElementById("all-workbench-mount"),
+        showTriage: false,
+        defaultTab: "info",
+        onCaseChange: () => renderAllTable(),
+        onSave: () => {
+          const c = ALL_CASES.find((x) => x.id === selectedAllId);
+          if (c) showCasesToast("Case saved");
+          renderAllTable();
+        },
+      });
+      allWorkbench.setIdleText("Info for last run context · Steps for the flow · History for runs.");
+      return allWorkbench;
+    }
+
+    function ensureFailWorkbench() {
+      if (failWorkbench) return failWorkbench;
+      failWorkbench = new QopsCaseWorkbench({
+        root: document.getElementById("triage-workbench-mount"),
+        showTriage: true,
+        defaultTab: "info",
+        onCaseChange: () => renderFailList(),
+        onSave: () => {
+          showCasesToast("Case saved");
+          renderFailList();
+          renderAllTable();
+        },
+        onTriageSave: () => {
+          renderBreakdown();
+          renderFailList();
+          renderAllTable();
+        },
+      });
+      failWorkbench.setIdleText("Info for failure context and triage · Steps for the flow · History for runs.");
+      return failWorkbench;
+    }
+
+    function syncDetailLayout() {
+      const triageLayout = document.getElementById("triage-layout");
+      const allSplit = document.getElementById("all-split");
+      if (triageLayout) triageLayout.classList.toggle("is-detail-open", !!selectedFailId);
+      if (allSplit) allSplit.classList.toggle("is-detail-open", !!selectedAllId);
+    }
+
+    function selectFailCase(c) {
+      selectedFailId = c ? c.id : null;
+      syncDetailLayout();
+      ensureFailWorkbench().setCase(c, { tab: "info" });
+    }
+
+    function selectAllCase(c) {
+      selectedAllId = c ? c.id : null;
+      syncDetailLayout();
+      ensureAllWorkbench().setCase(c, { tab: "info" });
+    }
+
+    /* ── Failed ── */
+    let activeBreakdown = "";
+
+    function failedCases() {
+      return ALL_CASES.filter((c) => c.status === "failed");
+    }
+
+    function renderBreakdown() {
+      const grid = document.getElementById("breakdown-grid");
+      const fails = failedCases();
+      const counts = { "": fails.length };
+      TRIAGE_LABELS.forEach((l) => { counts[l] = fails.filter((c) => c.triage === l).length; });
+
+      grid.innerHTML = [
+        { key: "", label: "All failures" },
+        ...TRIAGE_LABELS.map((l) => ({ key: l, label: LABEL_NAMES[l] })),
+      ].map(({ key, label }) =>
+        `<button type="button" class="breakdown-card${activeBreakdown === key ? " active" : ""}" data-key="${key}" aria-pressed="${activeBreakdown === key ? "true" : "false"}">
+          <span class="breakdown-count">${counts[key] || 0}</span>
+          <span class="breakdown-label">${label}</span>
+        </button>`
+      ).join("");
+
+      grid.querySelectorAll(".breakdown-card").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeBreakdown = btn.dataset.key;
+          renderBreakdown();
+          renderFailList();
+        });
+      });
+    }
+
+    function renderFailList() {
+      const list = document.getElementById("fail-list");
+      const triageFilter = document.getElementById("filter-triage").value;
+      const projectFilter = document.getElementById("filter-project").value.toLowerCase();
+
+      let items = failedCases();
+      if (activeBreakdown) items = items.filter((c) => c.triage === activeBreakdown);
+      if (triageFilter) items = items.filter((c) => c.triage === triageFilter);
+      if (projectFilter) items = items.filter((c) => c.project.includes(projectFilter));
+
+      document.getElementById("fail-list-count").textContent = String(items.length);
+      list.innerHTML = items.length ? items.map((c) =>
+        `<li>
+          <button type="button" class="fail-item${selectedFailId === c.id ? " selected" : ""}" data-id="${c.id}" aria-pressed="${selectedFailId === c.id ? "true" : "false"}">
+            <div class="fail-item-title">${c.title}</div>
+            <div class="fail-item-meta">
+              <span class="fail-reason">${LABEL_NAMES[c.triage]}</span>
+              <span>${c.failedAt || "—"}</span>
+            </div>
+          </button>
+        </li>`
+      ).join("") : `<li class="fail-list__empty"><div class="empty-state"><p class="empty-state__title">No failing cases</p><p class="empty-state__hint">No cases match your filters. Try clearing Project or Reason.</p></div></li>`;
+
+      list.querySelectorAll(".fail-item[data-id]").forEach((el) => {
+        el.addEventListener("click", () => {
+          selectedFailId = el.dataset.id;
+          renderFailList();
+          selectFailCase(ALL_CASES.find((c) => c.id === selectedFailId));
+        });
+      });
+    }
+
+    document.getElementById("filter-triage").addEventListener("change", renderFailList);
+    document.getElementById("filter-project").addEventListener("input", renderFailList);
+    document.getElementById("refresh-btn").addEventListener("click", () => {
+      renderBreakdown();
+      renderFailList();
+    });
+
+    /* ── All cases ── */
+    function renderAllTable() {
+      const statusFilter = document.getElementById("all-filter-status")?.value || "";
+      const projectFilter = (document.getElementById("all-filter-project")?.value || "").toLowerCase();
+      let items = ALL_CASES;
+      if (statusFilter) items = items.filter((c) => c.status === statusFilter);
+      if (projectFilter) items = items.filter((c) => c.project.includes(projectFilter));
+
+      const tbody = document.getElementById("cases-body");
+      tbody.innerHTML = items.map((c) => {
+        const steps = c.flowSteps?.length || 0;
+        return `<tr data-id="${c.id}" class="${selectedAllId === c.id ? "selected" : ""}" tabindex="0" aria-selected="${selectedAllId === c.id ? "true" : "false"}">
+          <td><input type="checkbox" aria-label="Select ${c.title}" /></td>
+          <td><span class="case-row-title">${c.title}</span><span class="case-row-meta">${steps} step${steps === 1 ? "" : "s"}</span></td>
+          <td>${c.feature}</td>
+          <td>${c.project}</td>
+          <td><span class="label-chip">${LABEL_NAMES[c.triage] || c.triage}</span></td>
+          <td class="${c.status === "failed" ? "status-fail" : "status-pass"}">${c.status}</td>
+        </tr>`;
+      }).join("");
+
+      tbody.querySelectorAll("tr").forEach((row) => {
+        const openRow = () => {
+          selectedAllId = row.dataset.id;
+          selectAllCase(ALL_CASES.find((x) => x.id === selectedAllId));
+          renderAllTable();
+        };
+        row.addEventListener("click", (e) => {
+          if (e.target.type === "checkbox") return;
+          openRow();
+        });
+        row.addEventListener("keydown", (e) => {
+          if (e.target.type === "checkbox") return;
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openRow();
+          }
+        });
+      });
+
+      tbody.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+        cb.addEventListener("change", updateRunCount);
+      });
+    }
+
+    function updateRunCount() {
+      const n = document.querySelectorAll("#cases-body input:checked").length;
+      const btn = document.getElementById("run-selected");
+      btn.disabled = n === 0;
+      const labelEl = btn.querySelector(".btn-label") || btn;
+      labelEl.textContent = `Run (${n})`;
+    }
+
+    document.getElementById("select-all")?.addEventListener("change", (e) => {
+      document.querySelectorAll("#cases-body input[type=checkbox]").forEach((cb) => {
+        cb.checked = e.target.checked;
+      });
+      updateRunCount();
+    });
+
+    document.getElementById("all-filter-status")?.addEventListener("change", renderAllTable);
+    document.getElementById("all-filter-project")?.addEventListener("input", renderAllTable);
+    document.getElementById("all-refresh-btn")?.addEventListener("click", renderAllTable);
+
+    renderBreakdown();
+    renderFailList();
+    renderAllTable();
+
+    if (view === "triage") {
+      const firstFail = failedCases().find((c) => {
+        const projectFilter = document.getElementById("filter-project").value.toLowerCase();
+        return !projectFilter || c.project.includes(projectFilter);
+      });
+      if (firstFail) selectFailCase(firstFail);
+    } else if (view === "all" && ALL_CASES.length) {
+      selectAllCase(ALL_CASES[0]);
+    }
+
+    if (window.enhanceButtons) enhanceButtons(document.body);
+  </script>
+  <script src="js/knowledge-data.js"></script>
+  <script src="js/shell.js"></script>
+</body>
+</html>
