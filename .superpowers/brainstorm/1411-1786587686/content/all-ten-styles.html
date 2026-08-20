@@ -1,0 +1,1239 @@
+<style>
+.hx-wrap { margin: 0 0 10px; }
+.hx-meta { display:flex; gap:22px; flex-wrap:wrap; font-size:12.5px; margin:14px 0 4px; }
+.hx-meta div { flex:1; min-width:150px; }
+.hx-meta b { display:block; font-size:10px; letter-spacing:.09em; text-transform:uppercase; opacity:.55; margin-bottom:3px; }
+.hx-swatches { display:flex; gap:5px; align-items:center; margin-top:5px; }
+.hx-sw { width:16px; height:16px; border-radius:4px; border:1px solid rgba(128,128,128,.35); }
+
+/* ---------- shared mockup shell ---------- */
+.hx { border-radius:10px; overflow:hidden; display:flex; height:392px; font-size:10.5px; line-height:1.45; }
+.hx * { box-sizing:border-box; }
+.hx .rail, .hx .nav { flex:none; }
+.hx .qh { display:flex; align-items:center; justify-content:space-between; }
+.hx .row { cursor:default; }
+.hx .dot { width:6px; height:6px; border-radius:50%; flex:none; }
+.hx .mono { font-family: ui-monospace, "JetBrains Mono", Consolas, monospace; }
+
+/* =======================================================
+   A — CONSOLE
+   ======================================================= */
+.hxA { background:#0b0c0e; color:#e6e8ea; font-family:"Inter",system-ui,sans-serif; }
+.hxA .rail { width:44px; background:#0b0c0e; border-right:1px solid #1c1f24; display:flex; flex-direction:column; align-items:center; padding:9px 0; gap:3px; }
+.hxA .ic { width:28px; height:28px; border-radius:6px; display:grid; place-items:center; font-size:12px; color:#767d87; }
+.hxA .ic.on { background:#1a1d22; color:#4da3ff; box-shadow:inset 2px 0 0 #4da3ff; }
+.hxA .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.hxA .cmd { height:38px; flex:none; border-bottom:1px solid #1c1f24; display:flex; align-items:center; gap:7px; padding:0 10px; background:#0e1013; }
+.hxA .search { flex:1; height:24px; background:#141719; border:1px solid #22262c; border-radius:6px; display:flex; align-items:center; padding:0 8px; gap:6px; color:#6b727c; font-size:10px; }
+.hxA .kbd { margin-left:auto; border:1px solid #2a2f36; border-radius:3px; padding:0 4px; font-size:8.5px; color:#6b727c; }
+.hxA .chip { height:22px; border:1px solid #24282e; border-radius:6px; padding:0 8px; display:flex; align-items:center; gap:5px; color:#a8afb8; font-size:9.5px; background:#141719; }
+.hxA .chip.act { border-color:#2f4a6b; background:#12212f; color:#7cbcff; }
+.hxA .btn { height:24px; background:#4da3ff; color:#06121f; font-weight:650; border-radius:6px; padding:0 10px; display:flex; align-items:center; font-size:10px; }
+.hxA .body { flex:1; display:flex; min-height:0; }
+.hxA .queue { flex:1; min-width:0; display:flex; flex-direction:column; }
+.hxA .th { display:grid; grid-template-columns:14px 74px 1fr 58px 46px 52px; gap:8px; padding:6px 11px; font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#5d646d; border-bottom:1px solid #1c1f24; }
+.hxA .row { display:grid; grid-template-columns:14px 74px 1fr 58px 46px 52px; gap:8px; padding:8px 11px; align-items:center; border-bottom:1px solid #15181c; color:#c3c9d0; }
+.hxA .row.sel { background:#12161b; box-shadow:inset 2px 0 0 #4da3ff; color:#e6e8ea; }
+.hxA .row .ttl { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hxA .st { font-size:8.5px; letter-spacing:.05em; text-transform:uppercase; font-weight:650; }
+.hxA .det { width:284px; flex:none; border-left:1px solid #1c1f24; background:#0e1013; display:flex; flex-direction:column; }
+.hxA .dhead { padding:10px 12px; border-bottom:1px solid #1c1f24; }
+.hxA .tabs { display:flex; gap:14px; padding:0 12px; border-bottom:1px solid #1c1f24; }
+.hxA .tab { padding:7px 0; font-size:10px; color:#6b727c; }
+.hxA .tab.on { color:#e6e8ea; box-shadow:inset 0 -2px 0 #4da3ff; }
+.hxA .step { display:flex; align-items:center; gap:7px; padding:7px 12px; border-bottom:1px solid #15181c; }
+.hxA .tag { font-size:8px; padding:1px 4px; border-radius:3px; border:1px solid #2a2f36; color:#8b9199; }
+
+/* =======================================================
+   B — CALM WORKSPACE
+   ======================================================= */
+.hxB { background:#faf9f7; color:#1c1a17; font-family:"Inter",system-ui,sans-serif; }
+.hxB .nav { width:150px; background:#f3f1ed; border-right:1px solid #e7e3db; padding:12px 9px; display:flex; flex-direction:column; gap:2px; }
+.hxB .brand { font-family:Georgia,"Signifier",serif; font-size:14px; margin:0 4px 12px; letter-spacing:-.01em; }
+.hxB .nl { padding:6px 9px; border-radius:7px; color:#6d675f; display:flex; align-items:center; gap:7px; }
+.hxB .nl.on { background:#fff; color:#1c1a17; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.05); }
+.hxB .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.hxB .top { padding:13px 16px 11px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid #eae6df; }
+.hxB h4 { font-family:Georgia,"Signifier",serif; font-size:19px; margin:0; font-weight:400; letter-spacing:-.02em; }
+.hxB .sub { color:#8a8379; font-size:10px; margin-top:2px; }
+.hxB .btn { background:#4338ca; color:#fff; border-radius:8px; padding:6px 12px; font-size:10.5px; font-weight:600; }
+.hxB .seg { display:inline-flex; background:#eeebe5; border-radius:8px; padding:2px; gap:2px; }
+.hxB .sg { padding:4px 10px; border-radius:6px; font-size:10px; color:#6d675f; }
+.hxB .sg.on { background:#fff; color:#1c1a17; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+.hxB .body { flex:1; display:flex; min-height:0; padding:12px 16px; gap:14px; }
+.hxB .queue { width:216px; flex:none; display:flex; flex-direction:column; gap:7px; }
+.hxB .card { background:#fff; border:1px solid #eae6df; border-radius:10px; padding:9px 10px; }
+.hxB .card.sel { border-color:#c7c2f0; box-shadow:0 0 0 3px rgba(67,56,202,.09); }
+.hxB .pill { display:inline-flex; align-items:center; gap:4px; font-size:8.5px; font-weight:650; padding:2px 7px; border-radius:99px; }
+.hxB .det { flex:1; background:#fff; border:1px solid #eae6df; border-radius:10px; padding:12px 14px; min-width:0; }
+.hxB .crumb { font-size:9.5px; color:#8a8379; margin-bottom:7px; }
+.hxB .crumb b { color:#4338ca; font-weight:600; }
+.hxB .kv { display:flex; gap:22px; margin-top:11px; padding-top:10px; border-top:1px solid #f0ede7; }
+.hxB .kv b { display:block; font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; color:#a09889; font-weight:600; margin-bottom:2px; }
+
+/* =======================================================
+   C — PIPELINE
+   ======================================================= */
+.hxC { background:#f5f7f9; color:#0f172a; font-family:"Inter",system-ui,sans-serif; }
+.hxC .nav { width:52px; background:#0f2e2b; display:flex; flex-direction:column; align-items:center; padding:10px 0; gap:4px; }
+.hxC .ic { width:32px; height:32px; border-radius:8px; display:grid; place-items:center; font-size:12px; color:#7fa8a2; }
+.hxC .ic.on { background:#0d9488; color:#fff; }
+.hxC .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.hxC .top { padding:9px 14px; background:#fff; border-bottom:1px solid #e3e8ee; display:flex; align-items:center; gap:12px; }
+.hxC .health { display:flex; height:7px; border-radius:99px; overflow:hidden; width:132px; }
+.hxC .hstat { display:flex; gap:11px; font-size:9.5px; color:#5b6675; }
+.hxC .hstat i { font-style:normal; font-weight:700; color:#0f172a; }
+.hxC .btn { margin-left:auto; background:#0d9488; color:#fff; border-radius:7px; padding:6px 11px; font-size:10.5px; font-weight:600; }
+.hxC .body { flex:1; display:flex; min-height:0; }
+.hxC .queue { width:196px; flex:none; border-right:1px solid #e3e8ee; background:#fff; display:flex; flex-direction:column; }
+.hxC .qh { padding:7px 11px; border-bottom:1px solid #eef2f6; font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#7a8797; }
+.hxC .row { padding:8px 11px 8px 9px; border-bottom:1px solid #f1f4f8; border-left:3px solid transparent; }
+.hxC .row.sel { background:#f0fdf9; border-left-color:#0d9488; }
+.hxC .det { flex:1; min-width:0; display:flex; flex-direction:column; }
+.hxC .pipe { background:#fff; border-bottom:1px solid #e3e8ee; padding:12px 16px 13px; }
+.hxC .stages { display:flex; align-items:center; margin-top:9px; }
+.hxC .stg { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; position:relative; }
+.hxC .stg::before { content:''; position:absolute; top:8px; left:-50%; width:100%; height:2px; background:#dde4ec; }
+.hxC .stg:first-child::before { display:none; }
+.hxC .stg.done::before { background:#0d9488; }
+.hxC .stg.fail::before { background:#e11d48; }
+.hxC .bub { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; font-size:9px; color:#fff; background:#c9d3de; z-index:1; }
+.hxC .stg.done .bub { background:#0d9488; }
+.hxC .stg.fail .bub { background:#e11d48; box-shadow:0 0 0 4px rgba(225,29,72,.13); }
+.hxC .stg span { font-size:8.5px; color:#7a8797; }
+.hxC .stg.done span, .hxC .stg.fail span { color:#0f172a; font-weight:600; }
+.hxC .cases { padding:11px 16px; overflow:hidden; }
+.hxC .cs { background:#fff; border:1px solid #e3e8ee; border-radius:8px; padding:8px 10px; display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.hxC .tag { font-size:8px; padding:1.5px 5px; border-radius:4px; background:#eef2f6; color:#5b6675; font-weight:600; }
+</style>
+<style>
+.s { border-radius:11px; overflow:hidden; display:flex; height:404px; font-size:10.5px; line-height:1.45; position:relative; }
+.s *, .s *::before, .s *::after { box-sizing:border-box; }
+.s .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+.s .num { font-variant-numeric:tabular-nums; }
+.s .ico { width:11px; height:11px; stroke-width:2.6; fill:none; flex:none; }
+.s .qi { width:14px; height:14px; border-radius:50%; display:grid; place-items:center; flex:none; }
+.s .qi svg { width:8px; height:8px; stroke:#fff; stroke-width:3.4; fill:none; }
+.smeta { display:flex; gap:20px; flex-wrap:wrap; font-size:12.5px; margin:13px 0 2px; }
+.smeta div { flex:1; min-width:160px; }
+.smeta b { display:block; font-size:10px; letter-spacing:.09em; text-transform:uppercase; opacity:.55; margin-bottom:3px; }
+.sw { display:flex; gap:5px; margin-top:5px; }
+.sw span { width:17px; height:17px; border-radius:4px; border:1px solid rgba(128,128,128,.3); display:block; }
+
+/* ============ D · AURORA ============ */
+.sD { background:#0a1020; color:#e6ebf5; font-family:"Inter",system-ui,sans-serif; }
+.sD::before { content:''; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(700px 320px at 8% -10%, rgba(124,58,237,.34), transparent 62%),
+              radial-gradient(620px 300px at 88% 4%, rgba(34,211,238,.20), transparent 60%); }
+.sD .nav { width:158px; flex:none; background:rgba(14,22,40,.72); border-right:1px solid rgba(255,255,255,.07); padding:12px 10px; display:flex; flex-direction:column; gap:2px; position:relative; z-index:1; }
+.sD .brand { display:flex; align-items:center; gap:8px; padding:0 4px 12px; }
+.sD .mk { width:22px; height:22px; border-radius:7px; background:linear-gradient(135deg,#7c3aed,#22d3ee); }
+.sD .bn { font-weight:650; font-size:12px; letter-spacing:-.01em; }
+.sD .nl { padding:6px 9px; border-radius:8px; color:#8f9cb5; display:flex; align-items:center; gap:8px; }
+.sD .nl.on { background:linear-gradient(135deg,rgba(124,58,237,.30),rgba(34,211,238,.16)); color:#fff; font-weight:600; box-shadow:inset 0 0 0 1px rgba(255,255,255,.10); }
+.sD .main { flex:1; display:flex; flex-direction:column; min-width:0; position:relative; z-index:1; }
+.sD .hd { padding:12px 15px; display:flex; align-items:center; gap:10px; border-bottom:1px solid rgba(255,255,255,.07); }
+.sD h5 { margin:0; font-size:15px; font-weight:650; letter-spacing:-.02em; }
+.sD .cta { margin-left:auto; background:linear-gradient(135deg,#7c3aed,#22d3ee); color:#05101c; font-weight:700; border-radius:9px; padding:7px 13px; font-size:10.5px; box-shadow:0 4px 16px rgba(124,58,237,.42); }
+.sD .stats { display:flex; gap:8px; padding:11px 15px; }
+.sD .stat { flex:1; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:7px 10px; }
+.sD .stat .n { font-size:16px; font-weight:700; line-height:1.1; }
+.sD .stat .l { font-size:9px; color:#8f9cb5; margin-top:1px; }
+.sD .bar { height:3px; border-radius:99px; margin-top:6px; background:linear-gradient(90deg,#7c3aed,#22d3ee); }
+.sD .body { flex:1; display:flex; min-height:0; padding:0 15px 14px; gap:12px; }
+.sD .q { width:186px; flex:none; display:flex; flex-direction:column; gap:6px; }
+.sD .row { background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:8px 10px; }
+.sD .row.sel { background:linear-gradient(135deg,rgba(124,58,237,.20),rgba(34,211,238,.09)); border-color:rgba(167,139,250,.45); }
+.sD .det { flex:1; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:12px 14px; min-width:0; }
+.sD .pillg { display:inline-flex; align-items:center; gap:4px; font-size:9px; font-weight:700; padding:2.5px 8px; border-radius:99px; }
+.sD .stg { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; position:relative; }
+.sD .stg::before { content:''; position:absolute; top:7px; right:50%; width:100%; height:2px; background:rgba(255,255,255,.12); }
+.sD .stg:first-child::before { display:none; }
+.sD .stg.d::before { background:linear-gradient(90deg,#7c3aed,#22d3ee); }
+.sD .bub { width:15px; height:15px; border-radius:50%; background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16); z-index:1; display:grid; place-items:center; }
+.sD .stg.d .bub { background:linear-gradient(135deg,#7c3aed,#22d3ee); border-color:transparent; }
+.sD .stg.f .bub { background:#fb7185; border-color:transparent; box-shadow:0 0 0 4px rgba(251,113,133,.18); }
+.sD .stp { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.06); }
+
+/* ============ E · NEO-BRUTALIST ============ */
+.sE { background:#fffdf3; color:#111; font-family:"Inter",system-ui,sans-serif; }
+.sE .nav { width:150px; flex:none; background:#ffd84d; border-right:2px solid #111; padding:11px 9px; display:flex; flex-direction:column; gap:5px; }
+.sE .bn { font-weight:900; font-size:13px; letter-spacing:-.03em; text-transform:uppercase; margin-bottom:8px; }
+.sE .nl { padding:5px 8px; border:2px solid #111; background:#fff; font-weight:700; font-size:10px; text-transform:uppercase; letter-spacing:.02em; }
+.sE .nl.on { background:#111; color:#ffd84d; box-shadow:3px 3px 0 #111; }
+.sE .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.sE .hd { padding:11px 14px; border-bottom:2px solid #111; display:flex; align-items:center; gap:9px; }
+.sE h5 { margin:0; font-size:19px; font-weight:900; letter-spacing:-.035em; text-transform:uppercase; }
+.sE .cta { margin-left:auto; background:#111; color:#fff; font-weight:800; padding:7px 13px; font-size:10.5px; text-transform:uppercase; box-shadow:3px 3px 0 #ff4d3d; }
+.sE .stats { display:flex; border-bottom:2px solid #111; }
+.sE .stat { flex:1; padding:8px 11px; border-right:2px solid #111; }
+.sE .stat:last-child { border-right:none; }
+.sE .stat .n { font-size:19px; font-weight:900; line-height:1; }
+.sE .stat .l { font-size:8.5px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+.sE .body { flex:1; display:flex; min-height:0; }
+.sE .q { width:196px; flex:none; border-right:2px solid #111; }
+.sE .row { padding:8px 10px; border-bottom:2px solid #111; }
+.sE .row.sel { background:#111; color:#fff; }
+.sE .tag { font-size:8px; font-weight:900; text-transform:uppercase; padding:1px 5px; border:1.5px solid currentColor; }
+.sE .det { flex:1; padding:12px 14px; min-width:0; }
+.sE .box { border:2px solid #111; padding:9px 11px; box-shadow:3px 3px 0 #111; background:#fff; }
+.sE .stp { display:flex; align-items:center; gap:8px; padding:5px 0; border-bottom:1.5px solid #111; font-weight:600; }
+
+/* ============ F · FROSTED GLASS ============ */
+.sF { color:#131a2b; font-family:"Inter",system-ui,sans-serif;
+      background:linear-gradient(135deg,#eef2ff 0%,#f7f0ff 38%,#e8f7fb 100%); }
+.sF::before { content:''; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(340px 220px at 18% 6%, rgba(129,140,248,.30), transparent 65%),
+              radial-gradient(360px 240px at 84% 88%, rgba(45,212,191,.24), transparent 65%); }
+.sF .glass { background:rgba(255,255,255,.60); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+             border:1px solid rgba(255,255,255,.75); box-shadow:0 6px 22px rgba(23,31,56,.09); }
+.sF .nav { width:154px; flex:none; padding:12px 10px; display:flex; flex-direction:column; gap:3px; position:relative; z-index:1;
+           background:rgba(255,255,255,.48); backdrop-filter:blur(14px); border-right:1px solid rgba(255,255,255,.7); }
+.sF .bn { font-weight:650; font-size:12.5px; letter-spacing:-.015em; padding:0 4px 11px; }
+.sF .nl { padding:6px 9px; border-radius:9px; color:#5a6480; display:flex; align-items:center; gap:8px; }
+.sF .nl.on { background:rgba(255,255,255,.85); color:#4338ca; font-weight:650; box-shadow:0 2px 8px rgba(67,56,202,.14); }
+.sF .main { flex:1; display:flex; flex-direction:column; min-width:0; padding:12px 14px; gap:10px; position:relative; z-index:1; }
+.sF .hd { display:flex; align-items:center; gap:9px; }
+.sF h5 { margin:0; font-size:16px; font-weight:650; letter-spacing:-.02em; }
+.sF .cta { margin-left:auto; background:#4f46e5; color:#fff; font-weight:650; border-radius:10px; padding:7px 13px; font-size:10.5px; box-shadow:0 5px 16px rgba(79,70,229,.32); }
+.sF .stats { display:flex; gap:8px; }
+.sF .stat { flex:1; border-radius:12px; padding:8px 11px; }
+.sF .stat .n { font-size:16px; font-weight:700; line-height:1.1; }
+.sF .stat .l { font-size:9px; color:#5a6480; margin-top:1px; }
+.sF .body { flex:1; display:flex; gap:10px; min-height:0; }
+.sF .q { width:184px; flex:none; border-radius:13px; padding:8px; display:flex; flex-direction:column; gap:6px; }
+.sF .row { border-radius:9px; padding:7px 9px; }
+.sF .row.sel { background:rgba(255,255,255,.92); box-shadow:0 3px 12px rgba(23,31,56,.11); }
+.sF .det { flex:1; border-radius:13px; padding:12px 14px; min-width:0; }
+.sF .pill { display:inline-flex; align-items:center; gap:4px; font-size:9px; font-weight:700; padding:2.5px 8px; border-radius:99px; }
+.sF .stp { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid rgba(19,26,43,.08); }
+
+/* ============ G · SWISS DATA ============ */
+.sG { background:#fff; color:#000; font-family:"Inter","Helvetica Neue",Helvetica,sans-serif; }
+.sG .nav { width:146px; flex:none; border-right:1px solid #000; padding:12px 11px; display:flex; flex-direction:column; gap:0; }
+.sG .bn { font-weight:700; font-size:12px; letter-spacing:-.02em; padding-bottom:11px; border-bottom:1px solid #000; margin-bottom:9px; }
+.sG .nl { padding:5px 0; font-size:10.5px; border-bottom:1px solid #e0e0e0; display:flex; align-items:center; justify-content:space-between; }
+.sG .nl.on { font-weight:700; }
+.sG .nl.on::after { content:'—'; }
+.sG .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.sG .hd { padding:12px 15px 10px; border-bottom:1px solid #000; display:flex; align-items:baseline; gap:10px; }
+.sG h5 { margin:0; font-size:22px; font-weight:700; letter-spacing:-.045em; }
+.sG .kicker { font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:#666; }
+.sG .cta { margin-left:auto; background:#e5372a; color:#fff; font-weight:700; padding:6px 12px; font-size:10px; letter-spacing:.03em; text-transform:uppercase; }
+.sG .stats { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid #000; }
+.sG .stat { padding:8px 15px; border-right:1px solid #e0e0e0; }
+.sG .stat:last-child { border-right:none; }
+.sG .stat .l { font-size:8.5px; letter-spacing:.14em; text-transform:uppercase; color:#666; }
+.sG .stat .n { font-size:21px; font-weight:700; letter-spacing:-.04em; line-height:1.1; }
+.sG .body { flex:1; display:flex; min-height:0; }
+.sG .q { width:206px; flex:none; border-right:1px solid #000; }
+.sG .qh { padding:6px 12px; font-size:8.5px; letter-spacing:.14em; text-transform:uppercase; color:#666; border-bottom:1px solid #e0e0e0; }
+.sG .row { padding:8px 12px; border-bottom:1px solid #e0e0e0; }
+.sG .row.sel { background:#f5f5f5; box-shadow:inset 3px 0 0 #e5372a; }
+.sG .det { flex:1; padding:13px 15px; min-width:0; }
+.sG .lab { font-size:8.5px; letter-spacing:.14em; text-transform:uppercase; color:#666; }
+.sG .stp { display:grid; grid-template-columns:20px 1fr 68px 38px; gap:9px; padding:6px 0; border-bottom:1px solid #e0e0e0; align-items:center; }
+
+/* ============ H · BENTO ============ */
+.sH { background:#f2f4f7; color:#111827; font-family:"Inter",system-ui,sans-serif; padding:11px; gap:9px; display:flex; }
+.sH .nav { width:52px; flex:none; background:#fff; border-radius:14px; padding:9px 0; display:flex; flex-direction:column; align-items:center; gap:5px; box-shadow:0 1px 3px rgba(17,24,39,.07); }
+.sH .ic { width:32px; height:32px; border-radius:10px; display:grid; place-items:center; color:#9aa3b2; }
+.sH .ic.on { background:#111827; color:#fff; }
+.sH .grid { flex:1; display:grid; grid-template-columns:1.05fr 1fr 1fr; grid-template-rows:auto auto 1fr; gap:9px; min-width:0; }
+.sH .bx { background:#fff; border-radius:14px; padding:10px 12px; box-shadow:0 1px 3px rgba(17,24,39,.07); min-width:0; }
+.sH .bl { font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:#9aa3b2; font-weight:650; }
+.sH .big { font-size:24px; font-weight:700; letter-spacing:-.03em; line-height:1.1; margin-top:3px; }
+.sH .cta { background:#111827; color:#fff; border-radius:10px; padding:7px 12px; font-size:10.5px; font-weight:650; display:inline-flex; align-items:center; gap:6px; }
+.sH .row { padding:6px 0; border-bottom:1px solid #f0f2f5; display:flex; align-items:center; gap:7px; }
+.sH .row:last-child { border-bottom:none; }
+.sH .stp { display:flex; align-items:center; gap:8px; padding:5px 0; border-bottom:1px solid #f0f2f5; }
+.sH .chip { font-size:8px; font-weight:650; padding:1.5px 6px; border-radius:6px; }
+</style>
+<style>
+.s2 { border-radius:11px; overflow:hidden; display:flex; height:406px; font-size:10.5px; line-height:1.45; position:relative; }
+.s2 *, .s2 *::before, .s2 *::after { box-sizing:border-box; }
+.s2 .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+.s2 .num { font-variant-numeric:tabular-nums; }
+.s2 .qi { width:14px; height:14px; border-radius:50%; display:grid; place-items:center; flex:none; }
+.s2 .qi svg { width:8px; height:8px; stroke:#fff; stroke-width:3.4; fill:none; }
+.smeta2 { display:flex; gap:20px; flex-wrap:wrap; font-size:12.5px; margin:13px 0 2px; }
+.smeta2 div { flex:1; min-width:160px; }
+.smeta2 b { display:block; font-size:10px; letter-spacing:.09em; text-transform:uppercase; opacity:.55; margin-bottom:3px; }
+.sw2 { display:flex; gap:5px; margin-top:5px; }
+.sw2 span { width:17px; height:17px; border-radius:4px; border:1px solid rgba(128,128,128,.3); display:block; }
+
+/* ============ I · AURORA LIGHT ============ */
+.sI { background:#faf5ff; color:#1e1b4b; font-family:"Inter",system-ui,sans-serif; }
+.sI::before { content:''; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(620px 300px at 6% -12%, rgba(124,58,237,.13), transparent 62%),
+              radial-gradient(560px 280px at 92% -6%, rgba(8,145,178,.11), transparent 60%); }
+.sI .nav { width:160px; flex:none; background:rgba(255,255,255,.72); border-right:1px solid #e6dcfb; padding:12px 10px; display:flex; flex-direction:column; gap:2px; position:relative; z-index:1; }
+.sI .brand { display:flex; align-items:center; gap:8px; padding:0 4px 12px; }
+.sI .mk { width:22px; height:22px; border-radius:7px; background:linear-gradient(135deg,#7c3aed,#0891b2); }
+.sI .bn { font-weight:650; font-size:12px; letter-spacing:-.01em; }
+.sI .nl { padding:6px 9px; border-radius:8px; color:#6b6795; display:flex; align-items:center; gap:8px; }
+.sI .nl.on { background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(8,145,178,.10)); color:#5b21b6; font-weight:650; box-shadow:inset 0 0 0 1px rgba(124,58,237,.18); }
+.sI .main { flex:1; display:flex; flex-direction:column; min-width:0; position:relative; z-index:1; }
+.sI .hd { padding:12px 15px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #e9e2fb; }
+.sI h5 { margin:0; font-size:15px; font-weight:650; letter-spacing:-.02em; }
+.sI .cta { margin-left:auto; background:linear-gradient(135deg,#6d28d9,#0e7490); color:#fff; font-weight:650; border-radius:9px; padding:7px 13px; font-size:10.5px; box-shadow:0 4px 14px rgba(109,40,217,.28); }
+.sI .stats { display:flex; gap:8px; padding:11px 15px; }
+.sI .stat { flex:1; background:#fff; border:1px solid #e9e2fb; border-radius:10px; padding:7px 10px; box-shadow:0 1px 3px rgba(76,29,149,.05); }
+.sI .stat .n { font-size:16px; font-weight:700; line-height:1.1; }
+.sI .stat .l { font-size:9px; color:#6b6795; margin-top:1px; }
+.sI .bar { height:3px; border-radius:99px; margin-top:6px; }
+.sI .body { flex:1; display:flex; min-height:0; padding:0 15px 14px; gap:12px; }
+.sI .q { width:186px; flex:none; display:flex; flex-direction:column; gap:6px; }
+.sI .row { background:#fff; border:1px solid #ece6fb; border-radius:10px; padding:8px 10px; box-shadow:0 1px 2px rgba(76,29,149,.04); }
+.sI .row.sel { background:linear-gradient(135deg,rgba(124,58,237,.10),rgba(8,145,178,.06)); border-color:#c4b5fd; box-shadow:0 2px 10px rgba(109,40,217,.10); }
+.sI .det { flex:1; background:#fff; border:1px solid #e9e2fb; border-radius:12px; padding:12px 14px; min-width:0; box-shadow:0 2px 12px rgba(76,29,149,.06); }
+.sI .pillg { display:inline-flex; align-items:center; gap:4px; font-size:9px; font-weight:700; padding:2.5px 8px; border-radius:99px; }
+.sI .stg { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; position:relative; }
+.sI .stg::before { content:''; position:absolute; top:7px; right:50%; width:100%; height:2px; background:#e6dcfb; }
+.sI .stg:first-child::before { display:none; }
+.sI .stg.d::before { background:linear-gradient(90deg,#7c3aed,#0891b2); }
+.sI .bub { width:15px; height:15px; border-radius:50%; background:#f1ebfe; border:1px solid #ddd0fb; z-index:1; }
+.sI .stg.d .bub { background:linear-gradient(135deg,#7c3aed,#0891b2); border-color:transparent; }
+.sI .stg.f .bub { background:#e11d48; border-color:transparent; box-shadow:0 0 0 4px rgba(225,29,72,.14); }
+.sI .stp { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid #f2edfd; }
+
+/* ============ J · MATERIAL TONAL ============ */
+.sJ { background:#f4faf9; color:#161d1d; font-family:"Roboto","Inter",system-ui,sans-serif; }
+.sJ .rail { width:74px; flex:none; background:#eef5f4; padding:11px 0; display:flex; flex-direction:column; align-items:center; gap:9px; }
+.sJ .fab { width:44px; height:40px; border-radius:14px; background:#9cf1f0; color:#002020; display:grid; place-items:center; box-shadow:0 1px 3px rgba(0,32,32,.16); margin-bottom:5px; }
+.sJ .ritem { display:flex; flex-direction:column; align-items:center; gap:3px; width:100%; }
+.sJ .rpill { width:44px; height:26px; border-radius:99px; display:grid; place-items:center; color:#3f4948; }
+.sJ .ritem.on .rpill { background:#9cf1f0; color:#002020; }
+.sJ .rlbl { font-size:8.5px; letter-spacing:.04em; color:#3f4948; }
+.sJ .ritem.on .rlbl { font-weight:600; color:#161d1d; }
+.sJ .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.sJ .hd { padding:13px 16px 11px; display:flex; align-items:center; gap:10px; }
+.sJ h5 { margin:0; font-size:19px; font-weight:400; letter-spacing:0; }
+.sJ .cta { margin-left:auto; background:#00696b; color:#fff; font-weight:600; border-radius:99px; padding:8px 16px; font-size:10.5px; }
+.sJ .chipbar { display:flex; gap:7px; padding:0 16px 11px; }
+.sJ .fchip { border:1px solid #6f7979; border-radius:8px; padding:5px 11px; font-size:10px; color:#3f4948; display:flex; align-items:center; gap:5px; }
+.sJ .fchip.on { background:#9cf1f0; border-color:transparent; color:#002020; font-weight:600; }
+.sJ .body { flex:1; display:flex; min-height:0; gap:11px; padding:0 16px 14px; }
+.sJ .q { width:196px; flex:none; background:#e8efee; border-radius:16px; padding:8px; display:flex; flex-direction:column; gap:5px; }
+.sJ .row { background:#f4faf9; border-radius:11px; padding:8px 10px; }
+.sJ .row.sel { background:#9cf1f0; color:#002020; }
+.sJ .det { flex:1; background:#fff; border-radius:16px; padding:13px 15px; min-width:0; box-shadow:0 1px 3px rgba(0,32,32,.10); }
+.sJ .mchip { display:inline-flex; align-items:center; gap:4px; font-size:9px; font-weight:600; padding:3px 9px; border-radius:8px; }
+.sJ .stg { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; position:relative; }
+.sJ .stg::before { content:''; position:absolute; top:7px; right:50%; width:100%; height:3px; background:#c4cbca; border-radius:99px; }
+.sJ .stg:first-child::before { display:none; }
+.sJ .stg.d::before { background:#00696b; }
+.sJ .bub { width:15px; height:15px; border-radius:50%; background:#c4cbca; z-index:1; }
+.sJ .stg.d .bub { background:#00696b; }
+.sJ .stg.f .bub { background:#ba1a1a; box-shadow:0 0 0 4px rgba(186,26,26,.14); }
+.sJ .stp { display:flex; align-items:center; gap:9px; padding:7px 0; border-bottom:1px solid #dde4e3; }
+</style>
+<style>
+.index { display:grid; grid-template-columns:repeat(auto-fill,minmax(206px,1fr)); gap:9px; margin:0 0 8px; }
+.ix { display:flex; align-items:baseline; gap:8px; text-decoration:none; color:inherit;
+      border:1px solid rgba(128,128,128,.28); border-radius:10px; padding:9px 11px; }
+.ix:hover { border-color:#0d9488; }
+.ixl { font-weight:700; color:#0d9488; font-size:13px; width:14px; flex:none; }
+.ixn { font-weight:640; font-size:13px; }
+.ixd { opacity:.62; font-size:11.5px; margin-left:auto; text-align:right; flex:1; }
+.option { scroll-margin-top:16px; }
+.banner { border:1px solid rgba(128,128,128,.28); border-left:3px solid #0d9488; border-radius:10px;
+          padding:11px 15px; margin:0 0 20px; font-size:13px; opacity:.9; }
+</style>
+<div class="banner"><b>Harness Requests page — ten UI/UX directions, A to J.</b> Static mockups for review. Every mockup shows the same real content captured from the live console on 6 Aug 2026 (request <span class="mono">#79c94116-ca3</span>, its four steps ending in the failed transaction-pill check, session <span class="mono">aloha-auth.json</span>) so the comparison is like for like. Layout and visual system only — no functional changes are implied.</div>
+<h1>Ten directions for the Requests page</h1>
+<p class="subtitle">Jump to any direction below. Each one carries notes on character, colour, what to watch out for, and rough dev cost. The full comparison table is at the end.</p>
+<div class="index">
+<a class="ix" href="#style-a"><span class="ixl">A</span><span class="ixn">Console</span><span class="ixd">dark, dense, engineer-first</span></a>
+<a class="ix" href="#style-b"><span class="ixl">B</span><span class="ixn">Calm Workspace</span><span class="ixd">light, editorial, newcomer-friendly</span></a>
+<a class="ix" href="#style-c"><span class="ixl">C</span><span class="ixn">Pipeline</span><span class="ixd">status is the interface</span></a>
+<a class="ix" href="#style-d"><span class="ixl">D</span><span class="ixn">Aurora</span><span class="ixd">purple &rarr; aqua gradient, dark</span></a>
+<a class="ix" href="#style-e"><span class="ixl">E</span><span class="ixn">Bold Ops</span><span class="ixd">neo-brutalist, unmissable</span></a>
+<a class="ix" href="#style-f"><span class="ixl">F</span><span class="ixn">Frosted</span><span class="ixd">glassmorphism, soft and calm</span></a>
+<a class="ix" href="#style-g"><span class="ixl">G</span><span class="ixn">Swiss Data</span><span class="ixd">typographic, AAA, timeless</span></a>
+<a class="ix" href="#style-h"><span class="ixl">H</span><span class="ixn">Bento</span><span class="ixd">modular dashboard tiles</span></a>
+<a class="ix" href="#style-i"><span class="ixl">I</span><span class="ixn">Aurora Light</span><span class="ixd">D&rsquo;s gradient in daylight</span></a>
+<a class="ix" href="#style-j"><span class="ixl">J</span><span class="ixn">Material Tonal</span><span class="ixd">off-the-shelf components</span></a>
+</div>
+<div class="options" data-multiselect>
+<!-- ============ A ============ -->
+<div class="option" id="style-a" data-choice="a" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">A</div>
+<div class="content">
+<h3>Console — dark, dense, built for speed</h3>
+<p class="subtitle" style="margin-bottom:10px">Linear / GitHub Actions territory. Nav shrinks to a 44px icon rail, all five chrome bands collapse into one command bar, and the queue becomes a real table you can scan in one pass. Status is a colour you read before you read any word.</p>
+
+<div class="hx hxA">
+  <div class="rail">
+    <div class="ic on">▤</div><div class="ic">▣</div><div class="ic">◈</div><div class="ic">◫</div><div class="ic">◴</div>
+    <div style="flex:1"></div><div class="ic">⚙</div>
+  </div>
+  <div class="main">
+    <div class="cmd">
+      <div class="search">⌕ Search requests, cases, runs<span class="kbd">⌘K</span></div>
+      <div class="chip act">● Failed · 4</div>
+      <div class="chip">My requests</div>
+      <div class="chip">aloha</div>
+      <div class="btn">+ New request</div>
+    </div>
+    <div class="body">
+      <div class="queue">
+        <div class="th"><div></div><div>Request</div><div>Title</div><div>Mode</div><div>Cases</div><div>Time</div></div>
+        <div class="row sel">
+          <div class="dot" style="background:#ff5c5c"></div>
+          <div class="mono" style="color:#7cbcff">79c94116</div>
+          <div class="ttl">Assume the menu · Transaction type pill rendering</div>
+          <div class="st" style="color:#ff5c5c">failed</div>
+          <div class="mono">1</div><div style="color:#767d87">10:33</div>
+        </div>
+        <div class="row">
+          <div class="dot" style="background:#f5a623; box-shadow:0 0 0 3px rgba(245,166,35,.18)"></div>
+          <div class="mono" style="color:#7cbcff">dd6326bc</div>
+          <div class="ttl">Go to qops-harness.lab.gend.vn/requests</div>
+          <div class="st" style="color:#f5a623">running</div>
+          <div class="mono">1</div><div style="color:#767d87">2:24</div>
+        </div>
+        <div class="row">
+          <div class="dot" style="background:#35c57f"></div>
+          <div class="mono" style="color:#7cbcff">d5633970</div>
+          <div class="ttl">Cash Forecast · historical flows totals</div>
+          <div class="st" style="color:#35c57f">passed</div>
+          <div class="mono">6</div><div style="color:#767d87">Yest</div>
+        </div>
+        <div class="row">
+          <div class="dot" style="background:#ff5c5c"></div>
+          <div class="mono" style="color:#7cbcff">cc1b86ea</div>
+          <div class="ttl">Assume the menu · Risk tab parameters</div>
+          <div class="st" style="color:#ff5c5c">failed</div>
+          <div class="mono">1</div><div style="color:#767d87">Yest</div>
+        </div>
+        <div class="row">
+          <div class="dot" style="background:#5d646d"></div>
+          <div class="mono" style="color:#7cbcff">df3f005b</div>
+          <div class="ttl">Click on Private → fund detail loads</div>
+          <div class="st" style="color:#8b9199">queued</div>
+          <div class="mono">3</div><div style="color:#767d87">Yest</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="dhead">
+          <div style="display:flex; align-items:center; gap:7px">
+            <span class="mono" style="color:#7cbcff; font-size:10px">#79c94116-ca3</span>
+            <span class="st" style="color:#ff5c5c; margin-left:auto">● failed</span>
+          </div>
+          <div style="margin-top:5px; font-size:11px; color:#e6e8ea">Verify Transaction Type Pill Rendering</div>
+          <div style="margin-top:4px; display:flex; gap:5px">
+            <span class="tag">single case</span><span class="tag">aloha</span><span class="tag">nguyenhoangly103</span>
+          </div>
+        </div>
+        <div class="tabs"><div class="tab">Info</div><div class="tab on">Execution</div><div class="tab">History</div></div>
+        <div class="step"><div class="dot" style="background:#35c57f"></div><div style="flex:1">Navigate to Workbench</div><span class="tag">auto</span></div>
+        <div class="step"><div class="dot" style="background:#35c57f"></div><div style="flex:1">Navigate to Cash Forecast</div><span class="tag" style="border-color:#3d4a5c; color:#7cbcff">ai</span></div>
+        <div class="step"><div class="dot" style="background:#35c57f"></div><div style="flex:1">Open Transaction Details</div><span class="tag" style="border-color:#3d4a5c; color:#7cbcff">ai</span></div>
+        <div class="step" style="background:#1a1013; box-shadow:inset 2px 0 0 #ff5c5c"><div class="dot" style="background:#ff5c5c"></div><div style="flex:1; color:#ffb4b4">Verify Transaction Type Pill</div><span class="tag" style="border-color:#3d4a5c; color:#7cbcff">ai</span></div>
+        <div style="padding:9px 12px; color:#8b9199; font-size:9.5px; border-top:1px solid #1c1f24">Expected pill "Dividend", found "—"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hx-meta">
+  <div><b>Best for</b>QA running the tool all day. Highest information density of the three — ~14 requests visible where you currently fit 4.</div>
+  <div><b>Colour</b>Near-black base, one electric blue for interaction only. Green / amber / red / grey are reserved strictly for status, so colour always means something.<div class="hx-swatches"><span class="hx-sw" style="background:#0b0c0e"></span><span class="hx-sw" style="background:#4da3ff"></span><span class="hx-sw" style="background:#35c57f"></span><span class="hx-sw" style="background:#f5a623"></span><span class="hx-sw" style="background:#ff5c5c"></span></div></div>
+  <div><b>Trade-off</b>Reads as an engineer's tool. Great for QA, less warm when you demo to a PO or a customer. Dark-first (a light mode still ships, but it's the second citizen).</div>
+  <div><b>Dev cost</b>Medium. Queue becomes a table — the biggest single piece of work. Everything else is token + component swaps.</div>
+</div>
+</div>
+</div>
+
+<!-- ============ B ============ -->
+<div class="option" id="style-b" data-choice="b" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">B</div>
+<div class="content">
+<h3>Calm Workspace — light, editorial, easy on newcomers</h3>
+<p class="subtitle" style="margin-bottom:10px">Notion / Stripe territory. Warm off-white paper, a serif display face for headings — you already have <span class="mono">Signifier</span> sitting unused in <span class="mono">tokens.css</span>. Dropdowns become segmented controls. Breadcrumb makes Request → Cases → Runs literally visible, which is theme T1 in your own review.</p>
+
+<div class="hx hxB">
+  <div class="nav">
+    <div class="brand">QOps <span style="color:#4338ca">Harness</span></div>
+    <div class="nl on">▤ Requests</div><div class="nl">▣ Test cases</div><div class="nl">◈ Test groups</div><div class="nl">◫ Knowledge</div><div class="nl">◴ Dashboards</div>
+    <div style="flex:1"></div>
+    <div class="nl" style="font-size:9.5px">⚙ Settings</div>
+  </div>
+  <div class="main">
+    <div class="top">
+      <div>
+        <h4>Requests</h4>
+        <div class="sub">6 in queue · 1 running · session <span class="mono">aloha-auth.json</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:9px">
+        <div class="seg"><div class="sg on">All</div><div class="sg">Mine</div><div class="sg">Failed</div></div>
+        <div class="btn">+ New request</div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="queue">
+        <div class="card sel">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span class="mono" style="font-size:9px; color:#8a8379">79c94116</span>
+            <span class="pill" style="background:#fdeaea; color:#b91c1c"><span class="dot" style="background:#dc2626"></span>Failed</span>
+          </div>
+          <div style="margin-top:4px; font-weight:600">Transaction type pill rendering</div>
+          <div style="margin-top:3px; color:#8a8379; font-size:9.5px">nguyenhoangly103 · 10:33 AM · 1 case</div>
+        </div>
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span class="mono" style="font-size:9px; color:#8a8379">dd6326bc</span>
+            <span class="pill" style="background:#fdf1dc; color:#92400e"><span class="dot" style="background:#b45309"></span>Running</span>
+          </div>
+          <div style="margin-top:4px; font-weight:600">Requests page smoke check</div>
+          <div style="margin-top:3px; color:#8a8379; font-size:9.5px">hakhoabinh · 2:24 elapsed · 1 case</div>
+        </div>
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span class="mono" style="font-size:9px; color:#8a8379">d5633970</span>
+            <span class="pill" style="background:#e7f6ec; color:#15803d"><span class="dot" style="background:#15803d"></span>Passed</span>
+          </div>
+          <div style="margin-top:4px; font-weight:600">Cash Forecast historical flows</div>
+          <div style="margin-top:3px; color:#8a8379; font-size:9.5px">nguyenhoangly103 · Yesterday · 6 cases</div>
+        </div>
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span class="mono" style="font-size:9px; color:#8a8379">df3f005b</span>
+            <span class="pill" style="background:#efedea; color:#6d675f"><span class="dot" style="background:#a09889"></span>Queued</span>
+          </div>
+          <div style="margin-top:4px; font-weight:600">Private fund detail loads</div>
+          <div style="margin-top:3px; color:#8a8379; font-size:9.5px">glzmaxdinh · Yesterday · 3 cases</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="crumb">Request <b>#79c94116</b> &nbsp;›&nbsp; 1 case &nbsp;›&nbsp; 4 runs</div>
+        <div style="font-family:Georgia,serif; font-size:15px; letter-spacing:-.01em">Verify Transaction Type Pill Rendering</div>
+        <div style="margin-top:5px; display:flex; gap:6px; align-items:center">
+          <span class="pill" style="background:#fdeaea; color:#b91c1c">Failed</span>
+          <span class="pill" style="background:#f2f0eb; color:#6d675f">Single test case</span>
+          <span class="pill" style="background:#eeecfb; color:#4338ca">AI fallback used</span>
+        </div>
+        <div class="kv">
+          <div><b>Created by</b>nguyenhoangly103</div>
+          <div><b>Created</b>Jul 10, 10:33 AM</div>
+          <div><b>Duration</b>2m 24s</div>
+        </div>
+        <div style="margin-top:11px; background:#fdf7f7; border:1px solid #f4dede; border-left:3px solid #dc2626; border-radius:7px; padding:9px 10px">
+          <div style="font-weight:600; color:#b91c1c">Step 4 failed — Verify Transaction Type Pill</div>
+          <div style="margin-top:3px; color:#7a736b; font-size:9.5px">Expected pill "Dividend", found "—". Steps 1–3 passed.</div>
+          <div style="margin-top:7px; display:flex; gap:6px">
+            <span style="background:#4338ca; color:#fff; border-radius:6px; padding:4px 9px; font-size:9.5px; font-weight:600">Retry</span>
+            <span style="border:1px solid #e0dcd4; border-radius:6px; padding:4px 9px; font-size:9.5px">Open case</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hx-meta">
+  <div><b>Best for</b>A mixed audience — QA plus PO, BA and stakeholders. This is the one that demos well and that a new joiner understands without training.</div>
+  <div><b>Colour</b>Warm paper neutrals with an indigo brand. Crucially, brand ≠ status, so the teal-green stops meaning two things at once.<div class="hx-swatches"><span class="hx-sw" style="background:#faf9f7"></span><span class="hx-sw" style="background:#4338ca"></span><span class="hx-sw" style="background:#15803d"></span><span class="hx-sw" style="background:#b45309"></span><span class="hx-sw" style="background:#dc2626"></span></div></div>
+  <div><b>Trade-off</b>Lowest density of the three — ~6 requests per screen. Power users scroll more. Drops your current OpenAI-teal identity for something less borrowed.</div>
+  <div><b>Dev cost</b>Low–medium. Mostly token changes plus one control library (segmented control, pill, card). Layout stays three-column.</div>
+</div>
+</div>
+</div>
+
+<!-- ============ C ============ -->
+<div class="option" id="style-c" data-choice="c" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">C</div>
+<div class="content">
+<h3>Pipeline — status is the interface</h3>
+<p class="subtitle" style="margin-bottom:10px">CI/CD territory (Buildkite, CircleCI). The lifecycle your <span class="mono">History</span> tab currently hides in a text log becomes the headline: a stage bar showing exactly where a request is and where it broke. A health strip answers "is anything on fire" before you click anything. Keeps and modernises your existing teal.</p>
+
+<div class="hx hxC">
+  <div class="nav">
+    <div class="ic on">▤</div><div class="ic">▣</div><div class="ic">◈</div><div class="ic">◫</div><div class="ic">◴</div>
+    <div style="flex:1"></div><div class="ic">⚙</div>
+  </div>
+  <div class="main">
+    <div class="top">
+      <div style="font-weight:700; font-size:12px">Requests</div>
+      <div class="health">
+        <div style="flex:1; background:#f59e0b"></div><div style="flex:4; background:#e11d48"></div><div style="flex:1; background:#0d9488"></div><div style="flex:1; background:#cbd5e1"></div>
+      </div>
+      <div class="hstat"><span><i>1</i> running</span><span><i>4</i> failed</span><span><i>1</i> passed</span><span><i>1</i> queued</span></div>
+      <div style="font-size:9.5px; color:#7a8797; border-left:1px solid #e3e8ee; padding-left:12px">session <span class="mono">aloha-auth.json</span></div>
+      <div class="btn">+ New request</div>
+    </div>
+    <div class="body">
+      <div class="queue">
+        <div class="qh">Queue · 6</div>
+        <div class="row sel">
+          <div style="display:flex; align-items:center; gap:6px"><span class="mono" style="font-size:9px; color:#7a8797">79c94116</span><span style="margin-left:auto; font-size:8.5px; font-weight:700; color:#e11d48">FAILED · 4/4</span></div>
+          <div style="margin-top:3px; font-weight:600">Transaction type pill</div>
+          <div style="margin-top:2px; color:#7a8797; font-size:9px">nguyenhoangly103 · 10:33</div>
+        </div>
+        <div class="row" style="border-left-color:#f59e0b">
+          <div style="display:flex; align-items:center; gap:6px"><span class="mono" style="font-size:9px; color:#7a8797">dd6326bc</span><span style="margin-left:auto; font-size:8.5px; font-weight:700; color:#b45309">RUNNING · 2/5</span></div>
+          <div style="margin-top:3px; font-weight:600">Requests page smoke</div>
+          <div style="margin-top:2px; color:#7a8797; font-size:9px">hakhoabinh · 2:24</div>
+        </div>
+        <div class="row" style="border-left-color:#0d9488">
+          <div style="display:flex; align-items:center; gap:6px"><span class="mono" style="font-size:9px; color:#7a8797">d5633970</span><span style="margin-left:auto; font-size:8.5px; font-weight:700; color:#0f766e">PASSED · 6/6</span></div>
+          <div style="margin-top:3px; font-weight:600">Cash Forecast flows</div>
+          <div style="margin-top:2px; color:#7a8797; font-size:9px">nguyenhoangly103 · Yest</div>
+        </div>
+        <div class="row" style="border-left-color:#e11d48">
+          <div style="display:flex; align-items:center; gap:6px"><span class="mono" style="font-size:9px; color:#7a8797">cc1b86ea</span><span style="margin-left:auto; font-size:8.5px; font-weight:700; color:#e11d48">FAILED · 3/4</span></div>
+          <div style="margin-top:3px; font-weight:600">Risk tab parameters</div>
+          <div style="margin-top:2px; color:#7a8797; font-size:9px">nguyenhoangly103 · Yest</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="pipe">
+          <div style="display:flex; align-items:center; gap:8px">
+            <span style="font-weight:700; font-size:12px">Verify Transaction Type Pill Rendering</span>
+            <span class="tag" style="background:#fee2e6; color:#be123c">FAILED</span>
+            <span class="mono" style="margin-left:auto; font-size:9px; color:#7a8797">#79c94116-ca3 · 2m 24s</span>
+          </div>
+          <div class="stages">
+            <div class="stg done"><div class="bub">✓</div><span>Created</span></div>
+            <div class="stg done"><div class="bub">✓</div><span>Generated</span></div>
+            <div class="stg done"><div class="bub">✓</div><span>Reviewed</span></div>
+            <div class="stg done"><div class="bub">✓</div><span>Queued</span></div>
+            <div class="stg done"><div class="bub">✓</div><span>Running</span></div>
+            <div class="stg fail"><div class="bub">✕</div><span>Step 4 of 4</span></div>
+          </div>
+        </div>
+        <div class="cases">
+          <div style="font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#7a8797; margin-bottom:7px">1 case · 4 steps</div>
+          <div class="cs"><div class="dot" style="background:#0d9488"></div><div style="flex:1">Navigate to Workbench</div><span class="tag">auto</span><span style="color:#7a8797; font-size:9px">0.8s</span></div>
+          <div class="cs"><div class="dot" style="background:#0d9488"></div><div style="flex:1">Navigate to Cash Forecast Tab</div><span class="tag" style="background:#e0f2f1; color:#0f766e">ai</span><span style="color:#7a8797; font-size:9px">4.1s</span></div>
+          <div class="cs"><div class="dot" style="background:#0d9488"></div><div style="flex:1">Open Transaction Details Popup</div><span class="tag" style="background:#e0f2f1; color:#0f766e">ai</span><span style="color:#7a8797; font-size:9px">3.6s</span></div>
+          <div class="cs" style="border-color:#f7c9d1; background:#fff6f7"><div class="dot" style="background:#e11d48"></div><div style="flex:1; font-weight:600; color:#be123c">Verify Transaction Type Pill Rendering</div><span class="tag" style="background:#e0f2f1; color:#0f766e">ai</span><span style="color:#be123c; font-size:9px">failed</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hx-meta">
+  <div><b>Best for</b>Exactly the complaint "we can't tell where a request is or why it failed". It's the direction that fixes workflow, not just looks.</div>
+  <div><b>Colour</b>Cool slate base with your teal evolved to <span class="mono">#0d9488</span> — recognisably still Harness, no longer the OpenAI swatch. Status owns amber/rose.<div class="hx-swatches"><span class="hx-sw" style="background:#f5f7f9"></span><span class="hx-sw" style="background:#0d9488"></span><span class="hx-sw" style="background:#0f2e2b"></span><span class="hx-sw" style="background:#f59e0b"></span><span class="hx-sw" style="background:#e11d48"></span></div></div>
+  <div><b>Trade-off</b>The stage bar needs lifecycle data exposed per request. Your History tab already logs those events, but the API may need to surface them as a state — worth checking with the dev team before you propose it.</div>
+  <div><b>Dev cost</b>Medium–high. Two new components (stage bar, health strip) and possibly one API field. The most valuable and the most work.</div>
+</div>
+</div>
+</div>
+
+<!-- ================= D ================= -->
+<div class="option" id="style-d" data-choice="d" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">D</div>
+<div class="content">
+<h3>Aurora — gradient purple → aqua, dark premium</h3>
+<p class="subtitle" style="margin-bottom:10px">The modern-SaaS look you asked for. Violet <span class="mono">#7C3AED</span> flowing into aqua <span class="mono">#22D3EE</span>, on a deep navy base with a soft aurora glow behind the chrome. The gradient is used with discipline — brand mark, primary button, active nav, progress rails, selected row — and <b>never behind body text</b>, which is the usual way this style fails an accessibility check.</p>
+
+<div class="s sD">
+  <div class="nav">
+    <div class="brand"><div class="mk"></div><div class="bn">QOps Harness</div></div>
+    <div class="nl on">Requests</div><div class="nl">Test cases</div><div class="nl">Test groups</div><div class="nl">Knowledge</div><div class="nl">Dashboards</div>
+    <div style="flex:1"></div>
+    <div style="border:1px solid rgba(255,255,255,.09); border-radius:9px; padding:7px 9px; background:rgba(255,255,255,.04)">
+      <div style="font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#8f9cb5">Session</div>
+      <div class="mono" style="margin-top:3px; font-size:9.5px; color:#a5f3fc">aloha-auth.json</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="hd">
+      <h5>Requests</h5>
+      <span style="background:rgba(255,255,255,.07); border-radius:99px; padding:1px 8px; font-size:9.5px; color:#8f9cb5" class="num">6 active</span>
+      <div class="cta">+ New request</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n" style="color:#fbbf24">1</div><div class="l">Running</div><div class="bar" style="background:linear-gradient(90deg,#fbbf24,#f59e0b)"></div></div>
+      <div class="stat" style="border-color:rgba(251,113,133,.42)"><div class="n" style="color:#fb7185">4</div><div class="l">Failed</div><div class="bar" style="background:linear-gradient(90deg,#fb7185,#f43f5e)"></div></div>
+      <div class="stat"><div class="n" style="color:#34d399">1</div><div class="l">Passed</div><div class="bar" style="background:linear-gradient(90deg,#34d399,#10b981)"></div></div>
+      <div class="stat"><div class="n" style="background:linear-gradient(135deg,#a78bfa,#22d3ee); -webkit-background-clip:text; background-clip:text; color:transparent">9</div><div class="l">AI fallbacks</div><div class="bar"></div></div>
+    </div>
+    <div class="body">
+      <div class="q">
+        <div class="row sel">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#fb7185"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="font-weight:600">Transaction pill</span></div>
+          <div style="margin-top:4px; font-size:9px; color:#8f9cb5"><span class="mono">79c94116</span> · 10:33 · 1 case</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#fbbf24"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg></span><span style="font-weight:600">Requests smoke</span></div>
+          <div style="margin-top:4px; font-size:9px; color:#8f9cb5"><span class="mono">dd6326bc</span> · 2:24 · 1 case</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#34d399"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="font-weight:600">Cash Forecast flows</span></div>
+          <div style="margin-top:4px; font-size:9px; color:#8f9cb5"><span class="mono">d5633970</span> · Yest · 6 cases</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#fb7185"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="font-weight:600">Risk parameters</span></div>
+          <div style="margin-top:4px; font-size:9px; color:#8f9cb5"><span class="mono">cc1b86ea</span> · Yest · 4 cases</div>
+        </div>
+      </div>
+      <div class="det">
+        <div style="display:flex; align-items:center; gap:8px">
+          <span style="font-size:12.5px; font-weight:650">Verify Transaction Type Pill Rendering</span>
+          <span class="pillg" style="background:rgba(251,113,133,.17); color:#fda4af">FAILED</span>
+        </div>
+        <div class="mono" style="margin-top:3px; font-size:9px; color:#8f9cb5">#79c94116-ca3 · 2m 24s · nguyenhoangly103</div>
+        <div style="display:flex; margin-top:12px">
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#8f9cb5">Created</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#8f9cb5">Generated</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#8f9cb5">Reviewed</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#8f9cb5">Queued</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#8f9cb5">Running</span></div>
+          <div class="stg f"><div class="bub"></div><span style="font-size:8.5px; color:#fda4af; font-weight:600">Failed</span></div>
+        </div>
+        <div style="margin-top:13px">
+          <div class="stp"><span class="qi" style="background:#34d399"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Navigate to Workbench</span><span class="mono" style="color:#8f9cb5">0.8s</span></div>
+          <div class="stp"><span class="qi" style="background:#34d399"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Navigate to Cash Forecast</span><span class="pillg" style="background:linear-gradient(135deg,rgba(124,58,237,.34),rgba(34,211,238,.24)); color:#c4b5fd; font-size:8px">AI</span><span class="mono" style="color:#8f9cb5">4.1s</span></div>
+          <div class="stp"><span class="qi" style="background:#34d399"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Open Transaction Details</span><span class="pillg" style="background:linear-gradient(135deg,rgba(124,58,237,.34),rgba(34,211,238,.24)); color:#c4b5fd; font-size:8px">AI</span><span class="mono" style="color:#8f9cb5">3.6s</span></div>
+          <div class="stp" style="border-bottom:none"><span class="qi" style="background:#fb7185"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="flex:1; color:#fda4af; font-weight:600">Verify Transaction Type Pill</span><span class="mono" style="color:#fda4af">1.2s</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="smeta">
+  <div><b>Character</b>Premium, current, distinctly 2026. The one that looks least like an internal tool and most like a product you'd pay for.</div>
+  <div><b>Colour</b>Violet → aqua gradient on a deep navy base. Status keeps its own semantic set so the gradient never has to mean "pass" or "fail".<div class="sw"><span style="background:#0a1020"></span><span style="background:linear-gradient(135deg,#7c3aed,#22d3ee)"></span><span style="background:#34d399"></span><span style="background:#fbbf24"></span><span style="background:#fb7185"></span></div></div>
+  <div><b>Watch out</b>The style database flags gradient UIs for text contrast. Rule to write into the spec: gradients on chrome and accents only, never behind reading text. Also dark-first — the light variant needs designing deliberately, not auto-inverting.</div>
+  <div><b>Dev cost</b>Medium. Gradient tokens, glow layers and a full second theme. More CSS than A–C but no new components.</div>
+</div>
+</div>
+</div>
+
+<!-- ================= E ================= -->
+<div class="option" id="style-e" data-choice="e" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">E</div>
+<div class="content">
+<h3>Bold Ops — neo-brutalist, high contrast, impossible to misread</h3>
+<p class="subtitle" style="margin-bottom:10px">The opposite bet from Aurora. No gradients, no soft shadows, no rounded corners — 2px black rules, flat blocks of colour, heavy uppercase type and hard offset shadows. Scores WCAG AAA almost by construction, and a failed run is visible from across the room.</p>
+
+<div class="s sE">
+  <div class="nav">
+    <div class="bn">QOps<br>Harness</div>
+    <div class="nl on">Requests</div><div class="nl">Cases</div><div class="nl">Groups</div><div class="nl">Knowledge</div><div class="nl">Dashboards</div>
+    <div style="flex:1"></div>
+    <div style="border:2px solid #111; background:#fff; padding:6px 7px">
+      <div style="font-size:7.5px; font-weight:900; text-transform:uppercase; letter-spacing:.08em">Session</div>
+      <div class="mono" style="font-size:8.5px; margin-top:2px">aloha-auth</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="hd"><h5>Requests</h5><div class="cta">+ New request</div></div>
+    <div class="stats">
+      <div class="stat" style="background:#fff6d6"><div class="n">1</div><div class="l">Running</div></div>
+      <div class="stat" style="background:#ff4d3d; color:#fff"><div class="n">4</div><div class="l">Failed</div></div>
+      <div class="stat" style="background:#3ddc84"><div class="n">1</div><div class="l">Passed</div></div>
+      <div class="stat"><div class="n">1</div><div class="l">Queued</div></div>
+    </div>
+    <div class="body">
+      <div class="q">
+        <div class="row sel">
+          <div style="display:flex; align-items:center; gap:6px"><span class="tag" style="color:#ff8a80">Failed 4/4</span></div>
+          <div style="margin-top:4px; font-weight:800; font-size:11px">Transaction type pill rendering</div>
+          <div class="mono" style="margin-top:2px; font-size:8.5px; opacity:.75">79c94116 · 10:33</div>
+        </div>
+        <div class="row">
+          <div><span class="tag" style="color:#a86b00">Running 2/5</span></div>
+          <div style="margin-top:4px; font-weight:800; font-size:11px">Requests page smoke check</div>
+          <div class="mono" style="margin-top:2px; font-size:8.5px; opacity:.6">dd6326bc · 2:24</div>
+        </div>
+        <div class="row">
+          <div><span class="tag" style="color:#0a7d3f">Passed 6/6</span></div>
+          <div style="margin-top:4px; font-weight:800; font-size:11px">Cash Forecast historical flows</div>
+          <div class="mono" style="margin-top:2px; font-size:8.5px; opacity:.6">d5633970 · Yesterday</div>
+        </div>
+        <div class="row">
+          <div><span class="tag" style="color:#c1121f">Failed 3/4</span></div>
+          <div style="margin-top:4px; font-weight:800; font-size:11px">Risk tab parameters subtab</div>
+          <div class="mono" style="margin-top:2px; font-size:8.5px; opacity:.6">cc1b86ea · Yesterday</div>
+        </div>
+      </div>
+      <div class="det">
+        <div style="display:flex; align-items:center; gap:8px">
+          <span style="font-weight:900; font-size:13px; letter-spacing:-.02em; text-transform:uppercase">Transaction Type Pill</span>
+          <span style="background:#ff4d3d; color:#fff; font-weight:900; font-size:8.5px; padding:2px 7px; text-transform:uppercase">Failed</span>
+        </div>
+        <div class="mono" style="margin-top:3px; font-size:9px">#79c94116-ca3 · 2m 24s · nguyenhoangly103</div>
+        <div class="box" style="margin-top:11px; box-shadow:3px 3px 0 #ff4d3d; border-color:#111">
+          <div style="font-weight:900; text-transform:uppercase; font-size:10.5px">Step 4 of 4 failed</div>
+          <div style="margin-top:4px; font-size:10px">Expected <b class="mono">"Dividend"</b> — found <b class="mono">"—"</b></div>
+        </div>
+        <div style="margin-top:11px">
+          <div class="stp"><span style="font-weight:900; width:16px">01</span><span style="flex:1">Navigate to Workbench</span><span class="tag">Auto</span><span class="mono">0.8s</span></div>
+          <div class="stp"><span style="font-weight:900; width:16px">02</span><span style="flex:1">Navigate to Cash Forecast</span><span class="tag" style="background:#111; color:#fff">AI</span><span class="mono">4.1s</span></div>
+          <div class="stp"><span style="font-weight:900; width:16px">03</span><span style="flex:1">Open Transaction Details</span><span class="tag" style="background:#111; color:#fff">AI</span><span class="mono">3.6s</span></div>
+          <div class="stp" style="background:#ff4d3d; color:#fff; border-bottom:none; padding:5px 6px"><span style="font-weight:900; width:16px">04</span><span style="flex:1">Verify Transaction Pill</span><span class="tag">AI</span><span class="mono">1.2s</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="smeta">
+  <div><b>Character</b>Loud, confident, deliberately unfashionable. People either love it immediately or not at all — there's no middle reaction, which is worth knowing before you show it to the team.</div>
+  <div><b>Colour</b>Signal yellow and black with pure status colours. No tints, no transparency.<div class="sw"><span style="background:#fffdf3"></span><span style="background:#ffd84d"></span><span style="background:#111"></span><span style="background:#3ddc84"></span><span style="background:#ff4d3d"></span></div></div>
+  <div><b>Watch out</b>Density suffers — heavy borders and big type eat space, so fewer rows per screen. And it's a strong brand statement for an internal tool; get PO buy-in before spending build time.</div>
+  <div><b>Dev cost</b>Low. It's the cheapest of all eight — flat colours, no shadows to tune, no gradients, no second theme needed.</div>
+</div>
+</div>
+</div>
+
+<!-- ================= F ================= -->
+<div class="option" id="style-f" data-choice="f" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">F</div>
+<div class="content">
+<h3>Frosted — glassmorphism, light and airy</h3>
+<p class="subtitle" style="margin-bottom:10px">Translucent panels floating over a soft indigo-to-teal wash, with real background blur. Apple-adjacent, calm, and depth comes from layering rather than borders. The quietest of the eight while still looking clearly modern.</p>
+
+<div class="s sF">
+  <div class="nav">
+    <div class="bn">QOps Harness</div>
+    <div class="nl on">Requests</div><div class="nl">Test cases</div><div class="nl">Test groups</div><div class="nl">Knowledge</div><div class="nl">Dashboards</div>
+    <div style="flex:1"></div>
+    <div class="glass" style="border-radius:10px; padding:7px 9px">
+      <div style="font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; color:#5a6480">Session</div>
+      <div class="mono" style="margin-top:2px; font-size:9.5px; color:#4338ca">aloha-auth.json</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="hd">
+      <h5>Requests</h5>
+      <span style="font-size:9.5px; color:#5a6480" class="num">6 active</span>
+      <div class="cta">+ New request</div>
+    </div>
+    <div class="stats">
+      <div class="stat glass"><div class="n" style="color:#b45309">1</div><div class="l">Running</div></div>
+      <div class="stat glass" style="box-shadow:0 6px 22px rgba(225,29,72,.16)"><div class="n" style="color:#e11d48">4</div><div class="l">Failed</div></div>
+      <div class="stat glass"><div class="n" style="color:#059669">1</div><div class="l">Passed</div></div>
+      <div class="stat glass"><div class="n" style="color:#4f46e5">9</div><div class="l">AI fallbacks</div></div>
+    </div>
+    <div class="body">
+      <div class="q glass">
+        <div class="row sel">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#e11d48"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="font-weight:600">Transaction pill</span></div>
+          <div style="margin-top:3px; font-size:9px; color:#5a6480"><span class="mono">79c94116</span> · 10:33</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#d97706"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg></span><span style="font-weight:600">Requests smoke</span></div>
+          <div style="margin-top:3px; font-size:9px; color:#5a6480"><span class="mono">dd6326bc</span> · 2:24</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="font-weight:600">Cash Forecast flows</span></div>
+          <div style="margin-top:3px; font-size:9px; color:#5a6480"><span class="mono">d5633970</span> · Yest</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#e11d48"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="font-weight:600">Risk parameters</span></div>
+          <div style="margin-top:3px; font-size:9px; color:#5a6480"><span class="mono">cc1b86ea</span> · Yest</div>
+        </div>
+      </div>
+      <div class="det glass">
+        <div style="display:flex; align-items:center; gap:8px">
+          <span style="font-size:12.5px; font-weight:650">Verify Transaction Type Pill Rendering</span>
+          <span class="pill" style="background:rgba(225,29,72,.13); color:#be123c">FAILED</span>
+        </div>
+        <div class="mono" style="margin-top:3px; font-size:9px; color:#5a6480">#79c94116-ca3 · 2m 24s · nguyenhoangly103</div>
+        <div style="margin-top:11px; border-radius:10px; padding:9px 11px; background:rgba(255,255,255,.72); border-left:3px solid #e11d48">
+          <div style="font-weight:650; color:#be123c; font-size:10.5px">Step 4 failed — pill did not render</div>
+          <div style="margin-top:3px; color:#5a6480; font-size:10px">Expected <span class="mono">"Dividend"</span>, found <span class="mono">"—"</span></div>
+        </div>
+        <div style="margin-top:11px">
+          <div class="stp"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Navigate to Workbench</span><span class="mono" style="color:#5a6480">0.8s</span></div>
+          <div class="stp"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Navigate to Cash Forecast</span><span class="pill" style="background:rgba(79,70,229,.13); color:#4338ca; font-size:8px">AI</span><span class="mono" style="color:#5a6480">4.1s</span></div>
+          <div class="stp"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Open Transaction Details</span><span class="pill" style="background:rgba(79,70,229,.13); color:#4338ca; font-size:8px">AI</span><span class="mono" style="color:#5a6480">3.6s</span></div>
+          <div class="stp" style="border-bottom:none"><span class="qi" style="background:#e11d48"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="flex:1; color:#be123c; font-weight:600">Verify Transaction Type Pill</span><span class="mono" style="color:#be123c">1.2s</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="smeta">
+  <div><b>Character</b>Soft, premium, unaggressive. Reads as modern without shouting. Sits comfortably between B (Calm Workspace) and D (Aurora).</div>
+  <div><b>Colour</b>Indigo → teal background wash, white translucent panels, standard semantic status.<div class="sw"><span style="background:linear-gradient(135deg,#eef2ff,#e8f7fb)"></span><span style="background:#4f46e5"></span><span style="background:#059669"></span><span style="background:#d97706"></span><span style="background:#e11d48"></span></div></div>
+  <div><b>Watch out</b>The real risk of this style: translucent surfaces reduce text contrast, and <span class="mono">backdrop-filter</span> is expensive to paint. With a list that refreshes every 30s that can feel sluggish on older laptops — worth a performance check before committing.</div>
+  <div><b>Dev cost</b>Medium. Blur layers, a background wash and careful contrast testing on every surface.</div>
+</div>
+</div>
+</div>
+
+<!-- ================= G ================= -->
+<div class="option" id="style-g" data-choice="g" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">G</div>
+<div class="content">
+<h3>Swiss Data — typographic, hairline grid, one accent</h3>
+<p class="subtitle" style="margin-bottom:10px">Design by removal. Pure white, black text, 1px rules, zero rounded corners, one red accent, and typography doing all the hierarchy work. It's the densest of the eight and the only one that scores WCAG AAA out of the box.</p>
+
+<div class="s sG">
+  <div class="nav">
+    <div class="bn">QOps Harness</div>
+    <div class="nl on">Requests</div><div class="nl">Test cases</div><div class="nl">Test groups</div><div class="nl">Knowledge</div><div class="nl">Dashboards</div>
+    <div style="flex:1"></div>
+    <div style="border-top:1px solid #000; padding-top:7px">
+      <div class="lab" style="font-size:8px">Session</div>
+      <div class="mono" style="font-size:9px; margin-top:2px">aloha-auth.json</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="hd">
+      <div><div class="kicker">Test operations</div><h5>Requests</h5></div>
+      <span class="kicker num">6 active</span>
+      <div class="cta">New request</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="l">Running</div><div class="n num">1</div></div>
+      <div class="stat"><div class="l">Failed</div><div class="n num" style="color:#e5372a">4</div></div>
+      <div class="stat"><div class="l">Passed</div><div class="n num">1</div></div>
+      <div class="stat"><div class="l">AI fallbacks</div><div class="n num">9</div></div>
+    </div>
+    <div class="body">
+      <div class="q">
+        <div class="qh">Queue — newest first</div>
+        <div class="row sel">
+          <div style="display:flex; justify-content:space-between; align-items:baseline"><span class="mono" style="font-size:9px">79c94116</span><span style="font-size:8.5px; font-weight:700; letter-spacing:.08em; color:#e5372a">FAILED 4/4</span></div>
+          <div style="margin-top:3px; font-weight:600">Transaction type pill rendering</div>
+          <div style="margin-top:2px; font-size:9px; color:#666">nguyenhoangly103 · <span class="num">10:33</span></div>
+        </div>
+        <div class="row">
+          <div style="display:flex; justify-content:space-between; align-items:baseline"><span class="mono" style="font-size:9px">dd6326bc</span><span style="font-size:8.5px; font-weight:700; letter-spacing:.08em">RUNNING 2/5</span></div>
+          <div style="margin-top:3px; font-weight:600">Requests page smoke check</div>
+          <div style="margin-top:2px; font-size:9px; color:#666">hakhoabinh · <span class="num">2:24</span></div>
+        </div>
+        <div class="row">
+          <div style="display:flex; justify-content:space-between; align-items:baseline"><span class="mono" style="font-size:9px">d5633970</span><span style="font-size:8.5px; font-weight:700; letter-spacing:.08em">PASSED 6/6</span></div>
+          <div style="margin-top:3px; font-weight:600">Cash Forecast historical flows</div>
+          <div style="margin-top:2px; font-size:9px; color:#666">nguyenhoangly103 · Yesterday</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; justify-content:space-between; align-items:baseline"><span class="mono" style="font-size:9px">cc1b86ea</span><span style="font-size:8.5px; font-weight:700; letter-spacing:.08em; color:#e5372a">FAILED 3/4</span></div>
+          <div style="margin-top:3px; font-weight:600">Risk tab parameters subtab</div>
+          <div style="margin-top:2px; font-size:9px; color:#666">nguyenhoangly103 · Yesterday</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="lab">Request · <span class="mono">#79c94116-ca3</span></div>
+        <div style="font-size:15px; font-weight:700; letter-spacing:-.03em; margin-top:2px">Verify Transaction Type Pill Rendering</div>
+        <div style="margin-top:4px; font-size:9.5px; color:#666">Single test case · <span class="num">2m 24s</span> · nguyenhoangly103 · <b style="color:#e5372a">Failed at step 4</b></div>
+        <div style="margin-top:11px; border-top:1px solid #000; border-bottom:1px solid #000; padding:8px 0">
+          <div style="display:flex; gap:26px">
+            <div><div class="lab">Expected</div><div class="mono" style="font-size:11px">"Dividend"</div></div>
+            <div><div class="lab">Found</div><div class="mono" style="font-size:11px; color:#e5372a">"—"</div></div>
+            <div><div class="lab">Path</div><div class="mono" style="font-size:11px">AI fallback</div></div>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+          <div class="lab" style="margin-bottom:5px">Steps — 4</div>
+          <div class="stp"><span class="mono" style="font-size:9px; color:#666">01</span><span>Navigate to Workbench</span><span style="font-size:8.5px; letter-spacing:.08em; color:#666">AUTO</span><span class="mono" style="font-size:9px; text-align:right">0.8s</span></div>
+          <div class="stp"><span class="mono" style="font-size:9px; color:#666">02</span><span>Navigate to Cash Forecast Tab</span><span style="font-size:8.5px; letter-spacing:.08em; color:#666">AI</span><span class="mono" style="font-size:9px; text-align:right">4.1s</span></div>
+          <div class="stp"><span class="mono" style="font-size:9px; color:#666">03</span><span>Open Transaction Details Popup</span><span style="font-size:8.5px; letter-spacing:.08em; color:#666">AI</span><span class="mono" style="font-size:9px; text-align:right">3.6s</span></div>
+          <div class="stp" style="border-bottom:none"><span class="mono" style="font-size:9px; color:#e5372a">04</span><span style="font-weight:700; color:#e5372a">Verify Transaction Type Pill</span><span style="font-size:8.5px; letter-spacing:.08em; color:#e5372a">AI</span><span class="mono" style="font-size:9px; text-align:right; color:#e5372a">1.2s</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="smeta">
+  <div><b>Character</b>Serious, editorial, credible. The look of a tool that reports facts. Ages extremely well — it will look the same in five years, which no gradient style can claim.</div>
+  <div><b>Colour</b>Black, white, one red. That's the whole palette; restraint is the design.<div class="sw"><span style="background:#fff"></span><span style="background:#000"></span><span style="background:#e5372a"></span><span style="background:#f5f5f5"></span></div></div>
+  <div><b>Watch out</b>With a single accent, status has to lean on words and weight rather than colour — that's an accessibility strength but it means "failed" is less instantly scannable than in C or E. Also reads as austere; some people will call it unfinished.</div>
+  <div><b>Dev cost</b>Lowest of the eight, alongside E. No shadows, no radii, no gradients, no second theme. Mostly deleting CSS.</div>
+</div>
+</div>
+</div>
+
+<!-- ================= H ================= -->
+<div class="option" id="style-h" data-choice="h" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">H</div>
+<div class="content">
+<h3>Bento — modular cards, dashboard-first</h3>
+<p class="subtitle" style="margin-bottom:10px">The page stops being "list plus detail" and becomes a grid of independent modules — health, queue, lifecycle, failure, AI usage — each in its own rounded tile. Currently fashionable, and genuinely useful here because tiles can be reordered per role: QA leads with the queue, a PO leads with health.</p>
+
+<div class="s sH">
+  <div class="nav">
+    <div class="ic on"><svg class="ico" style="stroke:currentColor; width:15px; height:15px" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+    <div class="ic"><svg class="ico" style="stroke:currentColor; width:15px; height:15px" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></div>
+    <div class="ic"><svg class="ico" style="stroke:currentColor; width:15px; height:15px" viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7"/><rect x="14" y="4" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+    <div class="ic"><svg class="ico" style="stroke:currentColor; width:15px; height:15px" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/></svg></div>
+    <div style="flex:1"></div>
+    <div class="ic"><svg class="ico" style="stroke:currentColor; width:15px; height:15px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
+  </div>
+  <div class="grid">
+
+    <div class="bx" style="grid-column:1 / -1; display:flex; align-items:center; gap:11px; padding:9px 13px">
+      <div><div style="font-size:15px; font-weight:700; letter-spacing:-.02em">Requests</div></div>
+      <div style="display:flex; gap:7px; margin-left:8px">
+        <span class="chip" style="background:#fef3c7; color:#92400e"><b class="num">1</b> running</span>
+        <span class="chip" style="background:#ffe4e6; color:#be123c"><b class="num">4</b> failed</span>
+        <span class="chip" style="background:#d1fae5; color:#065f46"><b class="num">1</b> passed</span>
+        <span class="chip" style="background:#ede9fe; color:#5b21b6"><b class="num">9</b> AI fallbacks</span>
+      </div>
+      <div style="margin-left:auto" class="cta">+ New request</div>
+    </div>
+
+    <div class="bx" style="grid-row:span 2; display:flex; flex-direction:column; min-height:0">
+      <div class="bl">Queue · 6</div>
+      <div style="margin-top:5px; flex:1; overflow:hidden">
+        <div class="row"><span class="qi" style="background:#e11d48"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><div style="flex:1; min-width:0"><div style="font-weight:600">Transaction pill</div><div class="mono" style="font-size:8.5px; color:#9aa3b2">79c94116 · 10:33</div></div></div>
+        <div class="row"><span class="qi" style="background:#d97706"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg></span><div style="flex:1; min-width:0"><div style="font-weight:600">Requests smoke</div><div class="mono" style="font-size:8.5px; color:#9aa3b2">dd6326bc · 2:24</div></div></div>
+        <div class="row"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><div style="flex:1; min-width:0"><div style="font-weight:600">Cash Forecast flows</div><div class="mono" style="font-size:8.5px; color:#9aa3b2">d5633970 · Yest</div></div></div>
+        <div class="row"><span class="qi" style="background:#e11d48"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><div style="flex:1; min-width:0"><div style="font-weight:600">Risk parameters</div><div class="mono" style="font-size:8.5px; color:#9aa3b2">cc1b86ea · Yest</div></div></div>
+        <div class="row"><span class="qi" style="background:#9aa3b2"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></span><div style="flex:1; min-width:0"><div style="font-weight:600">Private fund detail</div><div class="mono" style="font-size:8.5px; color:#9aa3b2">df3f005b · Yest</div></div></div>
+      </div>
+    </div>
+
+    <div class="bx" style="grid-column:2 / -1">
+      <div class="bl">Selected request</div>
+      <div style="margin-top:3px; font-size:12.5px; font-weight:650; letter-spacing:-.015em">Verify Transaction Type Pill Rendering</div>
+      <div style="margin-top:4px; display:flex; align-items:center; gap:7px">
+        <span class="chip" style="background:#ffe4e6; color:#be123c">FAILED</span>
+        <span class="mono" style="font-size:9px; color:#9aa3b2">#79c94116-ca3 · 2m 24s · step 4 of 4</span>
+      </div>
+    </div>
+
+    <div class="bx">
+      <div class="bl">Pass rate · 7d</div>
+      <div class="big">38<span style="font-size:14px">%</span></div>
+      <div style="display:flex; gap:2px; align-items:flex-end; height:26px; margin-top:6px">
+        <div style="flex:1; height:60%; background:#d1fae5; border-radius:3px"></div>
+        <div style="flex:1; height:35%; background:#ffe4e6; border-radius:3px"></div>
+        <div style="flex:1; height:80%; background:#d1fae5; border-radius:3px"></div>
+        <div style="flex:1; height:25%; background:#ffe4e6; border-radius:3px"></div>
+        <div style="flex:1; height:45%; background:#ffe4e6; border-radius:3px"></div>
+        <div style="flex:1; height:70%; background:#d1fae5; border-radius:3px"></div>
+        <div style="flex:1; height:30%; background:#ffe4e6; border-radius:3px"></div>
+      </div>
+    </div>
+
+    <div class="bx" style="min-width:0">
+      <div class="bl">Steps · 3 passed, 1 failed</div>
+      <div style="margin-top:4px">
+        <div class="stp"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">Navigate to Workbench</span><span class="mono" style="font-size:8.5px; color:#9aa3b2">0.8s</span></div>
+        <div class="stp"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">Cash Forecast Tab</span><span class="chip" style="background:#ede9fe; color:#5b21b6">AI</span></div>
+        <div class="stp"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">Transaction Details</span><span class="chip" style="background:#ede9fe; color:#5b21b6">AI</span></div>
+        <div class="stp" style="border-bottom:none"><span class="qi" style="background:#e11d48"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="flex:1; color:#be123c; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">Verify pill</span></div>
+      </div>
+    </div>
+
+    <div class="bx" style="background:#111827; color:#fff; min-width:0">
+      <div class="bl" style="color:#6b7280">Why it failed</div>
+      <div style="margin-top:5px; font-size:10.5px">Expected <span class="mono" style="color:#6ee7b7">"Dividend"</span></div>
+      <div style="margin-top:2px; font-size:10.5px">Found <span class="mono" style="color:#fda4af">"—"</span></div>
+      <div style="margin-top:8px; display:flex; gap:5px">
+        <span class="chip" style="background:#1f2937; color:#d1d5db">trace.zip</span>
+        <span class="chip" style="background:#1f2937; color:#d1d5db">screenshot</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="smeta">
+  <div><b>Character</b>Contemporary dashboard. The only direction that treats Requests as an overview first and a work queue second — which suits a PO opening it once a day more than QA living in it.</div>
+  <div><b>Colour</b>Neutral grey canvas, white tiles, one dark tile for emphasis, pastel status chips.<div class="sw"><span style="background:#f2f4f7"></span><span style="background:#111827"></span><span style="background:#059669"></span><span style="background:#d97706"></span><span style="background:#e11d48"></span></div></div>
+  <div><b>Watch out</b>Tiles fragment attention — five boxes competing means no single focal point, and on a laptop screen each tile gets small. It also needs a real responsive plan, since a bento grid collapses badly if you just stack it.</div>
+  <div><b>Dev cost</b>Medium–high. Every module becomes its own component with its own empty and loading state, plus grid reflow rules per breakpoint.</div>
+</div>
+</div>
+</div>
+
+<!-- ================= I ================= -->
+<div class="option" id="style-i" data-choice="i" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">I</div>
+<div class="content">
+<h3>Aurora Light — D's gradient, daylight version</h3>
+<p class="subtitle" style="margin-bottom:10px">Same violet → aqua identity as D, rebuilt for a light canvas rather than inverted. The background is a lavender-tinted white with the aurora washes dropped to about a third of their dark-mode strength — at full strength on white they turn muddy and the text loses contrast.</p>
+
+<div class="s2 sI">
+  <div class="nav">
+    <div class="brand"><div class="mk"></div><div class="bn">QOps Harness</div></div>
+    <div class="nl on">Requests</div><div class="nl">Test cases</div><div class="nl">Test groups</div><div class="nl">Knowledge</div><div class="nl">Dashboards</div>
+    <div style="flex:1"></div>
+    <div style="border:1px solid #e6dcfb; border-radius:9px; padding:7px 9px; background:#fff">
+      <div style="font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#8b84b8">Session</div>
+      <div class="mono" style="margin-top:3px; font-size:9.5px; color:#0e7490">aloha-auth.json</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="hd">
+      <h5>Requests</h5>
+      <span style="background:#f1ebfe; border-radius:99px; padding:1px 8px; font-size:9.5px; color:#6b6795" class="num">6 active</span>
+      <div class="cta">+ New request</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n" style="color:#b45309">1</div><div class="l">Running</div><div class="bar" style="background:linear-gradient(90deg,#f59e0b,#d97706)"></div></div>
+      <div class="stat" style="border-color:#f8c9d2"><div class="n" style="color:#e11d48">4</div><div class="l">Failed</div><div class="bar" style="background:linear-gradient(90deg,#fb7185,#e11d48)"></div></div>
+      <div class="stat"><div class="n" style="color:#059669">1</div><div class="l">Passed</div><div class="bar" style="background:linear-gradient(90deg,#34d399,#059669)"></div></div>
+      <div class="stat"><div class="n" style="background:linear-gradient(135deg,#6d28d9,#0e7490); -webkit-background-clip:text; background-clip:text; color:transparent">9</div><div class="l">AI fallbacks</div><div class="bar" style="background:linear-gradient(90deg,#7c3aed,#0891b2)"></div></div>
+    </div>
+    <div class="body">
+      <div class="q">
+        <div class="row sel">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#e11d48"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="font-weight:600">Transaction pill</span></div>
+          <div style="margin-top:4px; font-size:9px; color:#6b6795"><span class="mono">79c94116</span> · 10:33 · 1 case</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#d97706"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg></span><span style="font-weight:600">Requests smoke</span></div>
+          <div style="margin-top:4px; font-size:9px; color:#6b6795"><span class="mono">dd6326bc</span> · 2:24 · 1 case</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="font-weight:600">Cash Forecast flows</span></div>
+          <div style="margin-top:4px; font-size:9px; color:#6b6795"><span class="mono">d5633970</span> · Yest · 6 cases</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#e11d48"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="font-weight:600">Risk parameters</span></div>
+          <div style="margin-top:4px; font-size:9px; color:#6b6795"><span class="mono">cc1b86ea</span> · Yest · 4 cases</div>
+        </div>
+      </div>
+      <div class="det">
+        <div style="display:flex; align-items:center; gap:8px">
+          <span style="font-size:12.5px; font-weight:650">Verify Transaction Type Pill Rendering</span>
+          <span class="pillg" style="background:#ffe4e6; color:#be123c">FAILED</span>
+        </div>
+        <div class="mono" style="margin-top:3px; font-size:9px; color:#6b6795">#79c94116-ca3 · 2m 24s · nguyenhoangly103</div>
+        <div style="display:flex; margin-top:12px">
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#6b6795">Created</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#6b6795">Generated</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#6b6795">Reviewed</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#6b6795">Queued</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#6b6795">Running</span></div>
+          <div class="stg f"><div class="bub"></div><span style="font-size:8.5px; color:#be123c; font-weight:650">Failed</span></div>
+        </div>
+        <div style="margin-top:12px; border-radius:9px; padding:9px 11px; background:linear-gradient(135deg,rgba(124,58,237,.055),rgba(8,145,178,.045)); border-left:3px solid #e11d48">
+          <div style="font-weight:650; color:#be123c; font-size:10.5px">Step 4 failed — pill did not render</div>
+          <div style="margin-top:3px; color:#4c4a75; font-size:10px">Expected <span class="mono">"Dividend"</span>, found <span class="mono">"—"</span></div>
+        </div>
+        <div style="margin-top:10px">
+          <div class="stp"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Navigate to Workbench</span><span class="mono" style="color:#6b6795">0.8s</span></div>
+          <div class="stp"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Navigate to Cash Forecast</span><span class="pillg" style="background:#f1ebfe; color:#5b21b6; font-size:8px">AI</span><span class="mono" style="color:#6b6795">4.1s</span></div>
+          <div class="stp" style="border-bottom:none"><span class="qi" style="background:#e11d48"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="flex:1; color:#be123c; font-weight:600">Verify Transaction Type Pill</span><span class="mono" style="color:#be123c">1.2s</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="smeta2">
+  <div><b>What changed from D</b>Three things, and they're the whole craft of it. The washes drop to roughly a third opacity. The gradient stops darken — <span class="mono">#7C3AED→#22D3EE</span> becomes <span class="mono">#6D28D9→#0E7490</span> on the button, because bright aqua under white text only reaches about 2:1 contrast and fails. And depth switches from glow to soft shadow, since glow is invisible on white.</div>
+  <div><b>Colour</b>Lavender-white canvas, deep indigo ink, white cards with violet-tinted borders.<div class="sw2"><span style="background:#faf5ff"></span><span style="background:linear-gradient(135deg,#6d28d9,#0e7490)"></span><span style="background:#059669"></span><span style="background:#d97706"></span><span style="background:#e11d48"></span></div></div>
+  <div><b>Where it wins over D</b>Readable in a bright office and on a projector — dark themes wash out badly in demos. It also prints. And it keeps the modern gradient identity while staying closer to the light UI your team already uses.</div>
+  <div><b>Dev cost</b>Same as D if built together from one token set. Roughly double if the light theme is bolted on later, which is the usual mistake — decide now, not after.</div>
+</div>
+</div>
+</div>
+
+<!-- ================= J ================= -->
+<div class="option" id="style-j" data-choice="j" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">J</div>
+<div class="content">
+<h3>Material Tonal — the one that ships fastest</h3>
+<p class="subtitle" style="margin-bottom:10px">Google's Material 3, seeded from a teal close to your existing brand. Depth comes from <i>tonal layers</i> — surfaces at slightly different tints of the same hue — rather than borders and shadows. The reason to consider it isn't looks: it's that every component here already exists, tested and accessible, in Material Web, MUI or Angular Material.</p>
+
+<div class="s2 sJ">
+  <div class="rail">
+    <div class="fab"><svg style="width:17px;height:17px;stroke:currentColor;stroke-width:2.4;fill:none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+    <div class="ritem on"><div class="rpill"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div><div class="rlbl">Requests</div></div>
+    <div class="ritem"><div class="rpill"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></div><div class="rlbl">Cases</div></div>
+    <div class="ritem"><div class="rpill"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none" viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="1"/><rect x="14" y="4" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div><div class="rlbl">Groups</div></div>
+    <div class="ritem"><div class="rpill"><svg style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/></svg></div><div class="rlbl">Knowledge</div></div>
+  </div>
+  <div class="main">
+    <div class="hd">
+      <h5>Requests</h5>
+      <span style="font-size:10px; color:#3f4948" class="num">6 active · session aloha-auth.json</span>
+      <div class="cta">New request</div>
+    </div>
+    <div class="chipbar">
+      <div class="fchip"><span class="qi" style="background:#d97706; width:8px; height:8px"></span>Running <b class="num">1</b></div>
+      <div class="fchip on"><svg style="width:11px;height:11px;stroke:currentColor;stroke-width:2.8;fill:none" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>Failed <b class="num">4</b></div>
+      <div class="fchip"><span class="qi" style="background:#059669; width:8px; height:8px"></span>Passed <b class="num">1</b></div>
+      <div class="fchip"><span class="qi" style="background:#7c3aed; width:8px; height:8px"></span>AI fallbacks <b class="num">9</b></div>
+    </div>
+    <div class="body">
+      <div class="q">
+        <div class="row sel">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#ba1a1a"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="font-weight:600">Transaction pill</span></div>
+          <div style="margin-top:3px; font-size:9px; opacity:.72"><span class="mono">79c94116</span> · 10:33 · 1 case</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#d97706"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg></span><span style="font-weight:600">Requests smoke</span></div>
+          <div style="margin-top:3px; font-size:9px; color:#3f4948"><span class="mono">dd6326bc</span> · 2:24</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#059669"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="font-weight:600">Cash Forecast flows</span></div>
+          <div style="margin-top:3px; font-size:9px; color:#3f4948"><span class="mono">d5633970</span> · Yesterday</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="qi" style="background:#ba1a1a"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="font-weight:600">Risk parameters</span></div>
+          <div style="margin-top:3px; font-size:9px; color:#3f4948"><span class="mono">cc1b86ea</span> · Yesterday</div>
+        </div>
+      </div>
+      <div class="det">
+        <div style="display:flex; align-items:center; gap:8px">
+          <span style="font-size:13px; font-weight:500">Verify Transaction Type Pill Rendering</span>
+          <span class="mchip" style="background:#ffdad6; color:#410002">FAILED</span>
+        </div>
+        <div class="mono" style="margin-top:3px; font-size:9px; color:#3f4948">#79c94116-ca3 · 2m 24s · nguyenhoangly103</div>
+        <div style="display:flex; margin-top:13px">
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#3f4948">Created</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#3f4948">Generated</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#3f4948">Reviewed</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#3f4948">Queued</span></div>
+          <div class="stg d"><div class="bub"></div><span style="font-size:8.5px; color:#3f4948">Running</span></div>
+          <div class="stg f"><div class="bub"></div><span style="font-size:8.5px; color:#ba1a1a; font-weight:600">Failed</span></div>
+        </div>
+        <div style="margin-top:13px; background:#ffdad6; border-radius:12px; padding:9px 12px">
+          <div style="font-weight:600; color:#410002; font-size:10.5px">Step 4 failed — pill did not render</div>
+          <div style="margin-top:3px; color:#5f1412; font-size:10px">Expected <span class="mono">"Dividend"</span>, found <span class="mono">"—"</span></div>
+        </div>
+        <div style="margin-top:11px">
+          <div class="stp"><span class="qi" style="background:#00696b"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Navigate to Workbench</span><span class="mchip" style="background:#e8efee; color:#3f4948">Auto</span><span class="mono" style="color:#3f4948">0.8s</span></div>
+          <div class="stp"><span class="qi" style="background:#00696b"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span style="flex:1">Navigate to Cash Forecast Tab</span><span class="mchip" style="background:#ede9fe; color:#4c1d95">AI</span><span class="mono" style="color:#3f4948">4.1s</span></div>
+          <div class="stp" style="border-bottom:none"><span class="qi" style="background:#ba1a1a"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><span style="flex:1; color:#ba1a1a; font-weight:600">Verify Transaction Type Pill</span><span class="mchip" style="background:#ede9fe; color:#4c1d95">AI</span><span class="mono" style="color:#ba1a1a">1.2s</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="smeta2">
+  <div><b>Character</b>Familiar and unshowy — it looks like software people already know how to use, which cuts training. The pill-shaped nav rail keeps labels visible while costing less width than a full sidebar.</div>
+  <div><b>Colour</b>Teal seed, tonal surface layers, Material's own error tones. Close enough to your current <span class="mono">#10a37f</span> that it won't feel like a rebrand.<div class="sw2"><span style="background:#f4faf9"></span><span style="background:#00696b"></span><span style="background:#9cf1f0"></span><span style="background:#ba1a1a"></span><span style="background:#ffdad6"></span></div></div>
+  <div><b>Watch out</b>It will look like a Google product, not like Harness — low differentiation is the price of the free components. Tonal layers are also subtle: on a poorly calibrated monitor the surface tints can flatten into one grey.</div>
+  <div><b>Dev cost</b>Lowest real-world effort of all ten, despite looking the most complete. The components exist; the work is theming and layout, not building.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" style="margin-top:26px">
+<h3>All ten, compared</h3>
+<div style="overflow-x:auto; margin-top:10px">
+<table style="width:100%; border-collapse:collapse; font-size:12.5px; min-width:660px">
+<thead>
+<tr style="text-align:left; border-bottom:2px solid rgba(128,128,128,.3)">
+<th style="padding:7px 9px 7px 0">Style</th><th style="padding:7px 9px">Theme</th><th style="padding:7px 9px">Density</th><th style="padding:7px 9px">Dev cost</th><th style="padding:7px 9px">Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16)"><td style="padding:7px 9px 7px 0"><b>A</b> Console</td><td style="padding:7px 9px">Dark-first</td><td style="padding:7px 9px">Highest</td><td style="padding:7px 9px">Medium</td><td style="padding:7px 9px">QA living in the tool all day</td></tr>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16)"><td style="padding:7px 9px 7px 0"><b>B</b> Calm Workspace</td><td style="padding:7px 9px">Light</td><td style="padding:7px 9px">Low</td><td style="padding:7px 9px">Low–med</td><td style="padding:7px 9px">Mixed audience, demos, new joiners</td></tr>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16)"><td style="padding:7px 9px 7px 0"><b>C</b> Pipeline</td><td style="padding:7px 9px">Light</td><td style="padding:7px 9px">Medium-high</td><td style="padding:7px 9px">Med–high</td><td style="padding:7px 9px">Fixing "where is it and why did it fail"</td></tr>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16)"><td style="padding:7px 9px 7px 0"><b>D</b> Aurora</td><td style="padding:7px 9px">Dark-first</td><td style="padding:7px 9px">Medium</td><td style="padding:7px 9px">Medium</td><td style="padding:7px 9px">Looking modern and premium</td></tr>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16)"><td style="padding:7px 9px 7px 0"><b>E</b> Bold Ops</td><td style="padding:7px 9px">Light</td><td style="padding:7px 9px">Low</td><td style="padding:7px 9px">Lowest</td><td style="padding:7px 9px">Maximum legibility, strong statement</td></tr>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16)"><td style="padding:7px 9px 7px 0"><b>F</b> Frosted</td><td style="padding:7px 9px">Light</td><td style="padding:7px 9px">Medium</td><td style="padding:7px 9px">Medium</td><td style="padding:7px 9px">Modern but understated</td></tr>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16)"><td style="padding:7px 9px 7px 0"><b>G</b> Swiss Data</td><td style="padding:7px 9px">Light</td><td style="padding:7px 9px">Highest</td><td style="padding:7px 9px">Lowest</td><td style="padding:7px 9px">Credibility, AAA accessibility, longevity</td></tr>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16)"><td style="padding:7px 9px 7px 0"><b>H</b> Bento</td><td style="padding:7px 9px">Light</td><td style="padding:7px 9px">Low</td><td style="padding:7px 9px">Med–high</td><td style="padding:7px 9px">Overview-first, PO/manager view</td></tr>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16); background:rgba(124,58,237,.07)"><td style="padding:7px 9px 7px 0"><b>I</b> Aurora Light</td><td style="padding:7px 9px">Light</td><td style="padding:7px 9px">Medium</td><td style="padding:7px 9px">Medium</td><td style="padding:7px 9px">D's identity, readable in daylight & demos</td></tr>
+<tr style="border-bottom:1px solid rgba(128,128,128,.16); background:rgba(0,105,107,.07)"><td style="padding:7px 9px 7px 0"><b>J</b> Material Tonal</td><td style="padding:7px 9px">Light + dark</td><td style="padding:7px 9px">Medium</td><td style="padding:7px 9px">Lowest effort</td><td style="padding:7px 9px">Shipping fast with off-the-shelf components</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="subtitle" style="margin-top:14px">Two honest observations now that all ten exist. First, <b>you are choosing two things, not one</b> — a layout (C's lifecycle-first arrangement is the only one that fixes the workflow complaint) and a skin (any of the ten). Keeping those decisions separate will make the conversation with the dev team much shorter. Second, <b>I is probably the better bet than D</b>: it carries the same modern gradient identity, but dark themes wash out on projectors and in bright rooms, which is where you'll be presenting this.</p>
+<p class="subtitle" style="margin-top:9px">My recommendation, unchanged in substance: <b>C's structure with I's surface.</b> Say the word and I'll build that as one screen, then write it up as a spec you can hand to the dev team.</p>
+</div>

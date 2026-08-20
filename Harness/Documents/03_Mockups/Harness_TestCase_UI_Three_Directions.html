@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness — Test Case UI, three directions</title>
+<style>
+  :root { --pg:#fff; --tx:#111827; --tx2:#5b6472; --ln:rgba(17,24,39,.14); --cd:#fbfbfc; --ac:#10a37f; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#15171b; --tx:#e8eaed; --tx2:#9aa3af; --ln:rgba(232,234,237,.16); --cd:#1b1e23; --ac:#2dd4bf; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; font-size:15px; line-height:1.6;
+         -webkit-font-smoothing:antialiased; }
+  .page { max-width:1220px; margin:0 auto; padding:32px 22px 70px; }
+  h1 { font-size:28px; font-weight:660; letter-spacing:-.024em; margin:0 0 6px; }
+  h2 { font-size:20px; font-weight:650; letter-spacing:-.018em; margin:0 0 4px; }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 14px; }
+  b, strong { color:var(--tx); }
+  .banner { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:10px;
+            padding:11px 15px; margin:0 0 22px; font-size:13px; color:var(--tx2); }
+  .banner b { color:var(--tx); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  .block { border:1px solid var(--ln); border-radius:15px; padding:20px 22px 22px; background:var(--cd);
+           position:relative; margin-top:34px; }
+  .tag { position:absolute; top:-12px; left:20px; background:var(--ac); color:#fff; font-weight:700;
+         font-size:12px; padding:3px 12px; border-radius:99px; box-shadow:0 2px 8px rgba(0,0,0,.18); }
+  .shot { border:1px solid var(--ln); border-radius:11px; overflow:hidden; box-shadow:0 8px 26px rgba(0,0,0,.13); margin-top:12px; }
+  .meta { display:flex; gap:20px; flex-wrap:wrap; font-size:12.5px; margin-top:14px; }
+  .meta div { flex:1; min-width:180px; }
+  .meta b { display:block; font-size:10px; letter-spacing:.09em; text-transform:uppercase; opacity:.55; margin-bottom:3px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:12px; }
+  th,td { text-align:left; padding:8px 11px 8px 0; vertical-align:top; border-bottom:1px solid var(--ln); color:var(--tx2); }
+  th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; border-bottom:2px solid var(--ln); }
+  td b { color:var(--tx); }
+  .st { display:inline-block; font-size:9.5px; font-weight:800; padding:2px 8px; border-radius:99px;
+        letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+  .st-b { background:#d6f3e5; color:#0a6543; }
+  .st-p { background:#fdeed3; color:#8a5600; }
+  .st-n { background:#eceef1; color:#59616d; }
+  .live { border:1px solid var(--ln); border-radius:13px; padding:16px 18px; margin-top:20px; background:var(--cd); }
+  .live h3 { font-size:15px; font-weight:650; margin:0 0 3px; }
+  .sub3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; margin-top:12px; }
+  .sub3 > div { border:1px solid var(--ln); border-radius:10px; padding:11px 13px; }
+  .sub3 b.h { display:block; font-size:12.5px; color:var(--tx); margin-bottom:4px; }
+  .sub3 p { font-size:12px; margin:0; }
+
+  /* ===== shared app frame ===== */
+  .ui { display:flex; height:520px; font-size:11px; line-height:1.45; }
+  .ui *, .ui *::before, .ui *::after { box-sizing:border-box; }
+  .ui .m { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+
+  /* ============================================================
+     A — HARNESS FAMILIAR (teal, rounded, light)
+     ============================================================ */
+  .A { background:#fafafa; color:#0d0d0d; font-family:"Inter",system-ui,sans-serif; }
+  .A .nav { width:150px; flex:none; background:#fff; border-right:1px solid #ededed; padding:12px 9px; display:flex; flex-direction:column; gap:2px; }
+  .A .bn { font-size:13px; font-weight:600; padding:0 5px 11px; }
+  .A .bn i { font-style:normal; color:#10a37f; }
+  .A .nl { padding:6px 9px; border-radius:10px; color:#3a3a3a; display:flex; align-items:center; gap:7px; }
+  .A .nl.on { background:#e7f6f1; color:#0a7a5e; font-weight:600; }
+  .A .nl .c { margin-left:auto; font-size:9.5px; color:#9b9b9b; }
+  .A .nl .b { margin-left:auto; background:#fdeaea; color:#c2352f; font-size:9px; font-weight:700; padding:0 5px; border-radius:99px; }
+  .A .tree { width:184px; flex:none; background:#fff; border-right:1px solid #ededed; padding:10px 8px; overflow:hidden; }
+  .A .th { font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:#9b9b9b; padding:3px 6px 7px; }
+  .A .tn { padding:5px 8px; border-radius:9px; display:flex; align-items:center; gap:6px; color:#3a3a3a; }
+  .A .tn.on { background:#e7f6f1; color:#0a7a5e; font-weight:600; }
+  .A .tn .c { margin-left:auto; font-size:9.5px; color:#9b9b9b; }
+  .A .tn.sub { padding-left:20px; font-size:10.5px; }
+  .A .main { flex:1; display:flex; min-width:0; }
+  .A .list { width:280px; flex:none; background:#fff; border-right:1px solid #ededed; display:flex; flex-direction:column; }
+  .A .top { padding:11px 13px; border-bottom:1px solid #ededed; background:#fff; }
+  .A .seg { display:inline-flex; background:#f2f2f2; border-radius:10px; padding:2px; gap:2px; }
+  .A .sg { padding:4px 10px; border-radius:8px; font-size:10.5px; color:#6e6e6e; }
+  .A .sg.on { background:#fff; color:#0d0d0d; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.08); }
+  .A .row { padding:9px 12px; border-bottom:1px solid #f5f5f5; border-left:3px solid transparent; }
+  .A .row.sel { background:#f4fbf9; border-left-color:#10a37f; }
+  .A .k { font-size:10px; font-weight:600; color:#0a7a5e; }
+  .A .pill { display:inline-block; font-size:8.5px; font-weight:700; padding:1px 6px; border-radius:99px; }
+  .A .det { flex:1; min-width:0; padding:12px 15px; overflow:hidden; }
+  .A .card { background:#fff; border:1px solid #ededed; border-radius:12px; padding:11px 13px; margin-top:10px; }
+  .A .tabs { display:flex; gap:16px; border-bottom:1px solid #ededed; margin-top:10px; }
+  .A .tab { padding:6px 0; font-size:11px; color:#6e6e6e; }
+  .A .tab.on { color:#0d0d0d; font-weight:600; box-shadow:inset 0 -2px 0 #10a37f; }
+  .A .btn { border-radius:9px; padding:5px 11px; font-size:10.5px; font-weight:600; display:inline-block; }
+  .A .bp { background:#10a37f; color:#fff; }
+  .A .bs { background:#fff; border:1px solid #e5e5e5; color:#3a3a3a; }
+  .A .kv { display:grid; grid-template-columns:1fr 1fr; gap:9px 16px; }
+  .A .kv .lb { font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#9b9b9b; }
+
+  /* ============================================================
+     B — QASE-LIKE
+     ============================================================ */
+  .B { background:#f6f7f9; color:#1c2333; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .B .nav { width:168px; flex:none; background:#fff; border-right:1px solid #e3e6ec; padding:10px 7px; display:flex; flex-direction:column; }
+  .B .grp { font-size:9px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#7b8496; padding:10px 8px 3px; }
+  .B .nl { padding:5px 8px; border-radius:4px; color:#414b5e; display:flex; align-items:center; gap:7px; }
+  .B .nl.on { background:#eceafe; color:#5a3ff0; font-weight:600; }
+  .B .nl .c { margin-left:auto; font-size:9.5px; color:#7b8496; }
+  .B .tree { width:196px; flex:none; background:#fff; border-right:1px solid #e3e6ec; padding:9px 7px; }
+  .B .th { font-size:9px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#7b8496; padding:3px 7px 7px; display:flex; }
+  .B .tn { padding:4px 7px; border-radius:4px; display:flex; align-items:center; gap:6px; color:#414b5e; }
+  .B .tn.on { background:#eceafe; color:#5a3ff0; font-weight:600; }
+  .B .tn .c { margin-left:auto; font-size:9.5px; color:#7b8496; }
+  .B .tn.sub { padding-left:19px; }
+  .B .main { flex:1; display:flex; flex-direction:column; min-width:0; position:relative; }
+  .B .top { background:#fff; border-bottom:1px solid #e3e6ec; padding:10px 14px; display:flex; align-items:center; gap:9px; }
+  .B .btn { border-radius:4px; padding:5px 11px; font-size:10.5px; font-weight:500; display:inline-block; }
+  .B .bp { background:#5a3ff0; color:#fff; }
+  .B .bs { background:#fff; border:1px solid #e3e6ec; color:#414b5e; }
+  .B .bar { background:#fff; border-bottom:1px solid #e3e6ec; padding:6px 14px; display:flex; gap:6px; align-items:center; }
+  .B .chip { border:1px solid #e3e6ec; background:#fbfcfd; border-radius:4px; padding:3px 8px; font-size:10px; color:#414b5e; }
+  .B .rows { flex:1; background:#fff; overflow:hidden; }
+  .B .rh { display:grid; grid-template-columns:16px 14px 18px 58px 1fr 66px 62px 52px; gap:9px; padding:6px 14px;
+           font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496; border-bottom:1px solid #e3e6ec; }
+  .B .r { display:grid; grid-template-columns:16px 14px 18px 58px 1fr 66px 62px 52px; gap:9px; padding:7px 14px;
+          align-items:center; border-bottom:1px solid #f2f4f7; }
+  .B .r.sel { background:#f5f3ff; }
+  .B .k { font-size:10px; font-weight:600; color:#5a3ff0; }
+  .B .lz { display:inline-block; font-size:8.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; padding:1px 5px; border-radius:3px; }
+  .B .panel { position:absolute; right:0; top:0; bottom:0; width:406px; background:#fff; border-left:1px solid #d7dbe3;
+              box-shadow:-8px 0 22px rgba(20,28,45,.10); padding:12px 15px; overflow:hidden; }
+  .B .ptabs { display:flex; gap:14px; border-bottom:2px solid #e3e6ec; margin-top:10px; }
+  .B .pt { padding:5px 0; font-size:10.5px; color:#7b8496; }
+  .B .pt.on { color:#5a3ff0; font-weight:600; box-shadow:inset 0 -2px 0 #5a3ff0; }
+  .B .pf { display:grid; grid-template-columns:1fr 1fr; gap:9px 14px; margin-top:11px; }
+  .B .pl { font-size:8.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496; }
+  .B .pv { border:1px solid #e3e6ec; border-radius:4px; padding:3px 7px; font-size:10.5px; margin-top:2px; display:flex; align-items:center; }
+  .B .pv::after { content:'⌄'; margin-left:auto; color:#7b8496; }
+
+  /* ============================================================
+     C — COVERAGE GRID (freestyle)
+     ============================================================ */
+  .C { background:#f7f8fa; color:#10151c; font-family:"Inter",system-ui,sans-serif; }
+  .C .nav { width:58px; flex:none; background:#ffffff; border-right:1px solid #e6e9ee; padding:10px 0; display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .C .ic { width:36px; height:32px; border-radius:9px; display:grid; place-items:center; color:#8b95a3; font-size:13px; }
+  .C .ic.on { background:#e3f7ec; color:#0b7a52; }
+  .C .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .C .top { padding:12px 16px; border-bottom:1px solid #e6e9ee; display:flex; align-items:center; gap:11px; }
+  .C .h { font-size:15px; font-weight:650; letter-spacing:-.02em; }
+  .C .sub { font-size:10px; color:#6b7683; }
+  .C .btn { border-radius:8px; padding:6px 12px; font-size:10.5px; font-weight:650; }
+  .C .bp { background:#0b7a52; color:#ffffff; }
+  .C .bs { border:1px solid #dbe0e6; color:#414b57; }
+  .C .body { flex:1; display:flex; min-height:0; }
+  .C .grid { flex:1; padding:13px 16px; min-width:0; overflow:hidden; }
+  .C .lbl { font-size:9px; letter-spacing:.11em; text-transform:uppercase; color:#8b95a3; margin-bottom:7px; }
+  .C table.cov { width:100%; border-collapse:separate; border-spacing:3px; }
+  .C table.cov th { font-size:9px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:#6b7683; padding:0 0 4px; text-align:center; border:none; }
+  .C table.cov th.f { text-align:left; width:150px; }
+  .C table.cov td { padding:0; border:none; }
+  .C .cell { height:32px; border-radius:7px; display:grid; place-items:center; font-size:11px; font-weight:650;
+             font-variant-numeric:tabular-nums; position:relative; }
+  .C .c0 { background:#eef1f5; color:#96a1ae; box-shadow:inset 0 0 0 1px #dce2e9; }
+  .C .c1 { background:#e3f7ec; color:#0b7a52; }
+  .C .c2 { background:#bcecd4; color:#14603f; }
+  .C .c3 { background:#86dcb4; color:#0b4b31; }
+  .C .cf { background:#fde8e8; color:#b42318; box-shadow:inset 0 0 0 1px #f5c2c0; }
+  .C .cw { background:#fdf2d9; color:#92610a; }
+  .C .cell .pend { position:absolute; top:-4px; right:-4px; background:#0b7a52; color:#ffffff;
+                   font-size:8px; font-weight:800; padding:0 4px; border-radius:99px; }
+  .C .fname { font-size:10.5px; color:#2b333d; padding-right:8px; }
+  .C .fname s { display:block; font-size:8.5px; color:#8b95a3; text-decoration:none; }
+  .C .drawer { width:296px; flex:none; border-left:1px solid #e6e9ee; background:#ffffff; padding:12px 14px; overflow:hidden; }
+  .C .trust { background:#fbfcfd; border:1px solid #e6e9ee; border-radius:10px; padding:10px 11px; margin-top:9px; }
+  .C .tr { display:flex; align-items:center; gap:7px; padding:4px 0; font-size:10px; color:#414b57; }
+  .C .dot { width:7px; height:7px; border-radius:50%; flex:none; }
+  .C .spark { display:flex; gap:2px; align-items:flex-end; height:20px; margin-top:5px; }
+  .C .spark i { flex:1; border-radius:1px; }
+  .C .pill { display:inline-block; font-size:8.5px; font-weight:700; padding:1px 6px; border-radius:99px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>DRAFT — three directions for handling test cases, assessed against the live system.</b> Each design was drawn first, then checked element by element against <span class="mono">qops-harness.lab.gend.vn/cases</span> as it stands on <b>18 August 2026</b>. Every element now carries a build status: <span class="st st-b">built</span> <span class="st st-p">partial</span> <span class="st st-n">not built</span>. Prepared by the Business Analyst. Not agreed, not scheduled.</div>
+
+<h1>Test case UI — three directions</h1>
+<p class="lead">All three answer the same four questions: how a case is <b>found</b>, how it is <b>judged</b>, how conflicts are <b>resolved</b>, and how its <b>health</b> is read. They differ in what they put at the centre.</p>
+<p class="lead"><b>The live system has moved a long way since these were conceived.</b> Reviewing it changed the conclusion: this is now less a choice between three designs than a map of what already exists, what needs finishing, and what is genuinely new. Read the section below before the mockups.</p>
+
+<div class="live">
+<h3>What is live today</h3>
+<p>Test cases now sit under three sub-tabs. Much of what these designs propose is already present in some form.</p>
+<div class="sub3">
+  <div>
+    <b class="h">Failed <span class="st st-b">built</span></b>
+    <p>A triage console. Five counters — <b>87 failing · 0 app bug · 1 test script · 0 new feature · 86 needs triage</b>. Filters on search, feature, labels and reason. Case detail with Info · Steps · History · Groups, a screenshot slot, raw error output, editable feature &amp; labels, and a Triage block with Reason and Notes.</p>
+  </div>
+  <div>
+    <b class="h">All cases <span class="st st-b">built</span></b>
+    <p>A real catalog table — <span class="mono">Case | Feature | Project | Triage | Last run</span> — with Configure columns, a status filter, bulk checkboxes, a Run action, and a side panel that keeps list context.</p>
+  </div>
+  <div>
+    <b class="h">Executed history <span class="st st-b">built</span></b>
+    <p>Runs as first-class objects. <span class="mono">Run | Case | Status | AI | Auto | Completed</span>, with a detail panel carrying run ID, spec path, return code, failed step, AI steps, automation, AI fallback, telemetry state and session — plus <b>View request</b> and <b>Re-run</b>.</p>
+  </div>
+</div>
+
+<div style="border:1px solid var(--ln); border-left:3px solid #c2352f; border-radius:9px; padding:11px 14px; margin-top:14px; font-size:12.5px; color:var(--tx2)">
+<b style="color:var(--tx); display:block; margin-bottom:3px">The gap is not features — it is data reaching them</b>
+<b>86 of 87 failures sit at "Needs triage"</b> and every row in All cases reads <span class="mono">unlabeled</span>, so the taxonomy is built but unused. <b>FAILED STEP renders as an em dash</b> — the field exists, nothing populates it. <b>Telemetry reports "Incomplete"</b> and the AI, Automation and AI-fallback counters all read zero. And feature drift is visible in the catalog: clean values such as <span class="mono">auth</span> and <span class="mono">cash-forecast</span> sit beside truncated titles like <span class="mono">application-loads-without-redirect-loop-and-disp</span>.
+</div>
+</div>
+
+<!-- =========================================================== A -->
+<div class="block">
+<span class="tag">A</span>
+<h2>Familiar — today's Harness style, extended</h2>
+<p class="lead">Keeps the current three-column shape and the existing teal-on-light visual language, and adds the two things missing: a <b>feature tree</b> for grouping, and a <b>segmented switch</b> between the review queue and the catalog. Lowest change cost of the three; a current user would need no explanation.</p>
+
+<div class="shot">
+<div class="ui A">
+  <div class="nav">
+    <div class="bn">QOps <i>Harness</i></div>
+    <div class="nl on">Test cases <span class="b">3</span></div>
+    <div class="nl">Requests <span class="c">6</span></div>
+    <div class="nl">Test groups</div>
+    <div class="nl">Runs</div>
+    <div class="nl">Knowledge</div>
+    <div class="nl">Dashboard</div>
+    <div style="flex:1"></div>
+    <div class="nl" style="font-size:10px">Settings</div>
+  </div>
+
+  <div class="tree">
+    <div class="th">Feature</div>
+    <div class="tn on">risk <span class="c">84</span></div>
+    <div class="tn sub on" style="background:#dff3ec">dashboard <span class="c">31</span></div>
+    <div class="tn sub">parameters <span class="c">28</span></div>
+    <div class="tn sub">history <span class="c">25</span></div>
+    <div class="tn">cash-forecast <span class="c">61</span></div>
+    <div class="tn sub">flows <span class="c">22</span></div>
+    <div class="tn sub">details <span class="c">39</span></div>
+    <div class="tn">public-fund <span class="c">57</span></div>
+    <div class="tn">pipeline <span class="c">44</span></div>
+    <div class="tn">total-endowment <span class="c">39</span></div>
+    <div class="tn">scenario-test <span class="c">28</span></div>
+    <div class="th" style="padding-top:11px">Saved views</div>
+    <div class="tn">⚑ Flaky <span class="c">12</span></div>
+    <div class="tn">◷ Not run 30d <span class="c">47</span></div>
+  </div>
+
+  <div class="main">
+    <div class="list">
+      <div class="top">
+        <div class="seg"><span class="sg on">Needs review · 3</span><span class="sg">Catalog · 313</span></div>
+        <div style="margin-top:8px; border:1px solid #e5e5e5; border-radius:9px; padding:4px 8px; font-size:10px; color:#9b9b9b">Search cases…</div>
+      </div>
+      <div class="row sel">
+        <div style="display:flex; align-items:center; gap:6px">
+          <span class="k">NEW</span>
+          <span class="pill" style="background:#fff4e0; color:#8a5a00; margin-left:auto">Extends existing</span>
+        </div>
+        <div style="margin-top:3px; font-weight:600">Verify NAV and Beta are numeric</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#9b9b9b">boundary · from REQ-1042</div>
+      </div>
+      <div class="row">
+        <div style="display:flex; align-items:center; gap:6px">
+          <span class="k">NEW</span>
+          <span class="pill" style="background:#efeafd; color:#5b3bb5; margin-left:auto">Exact duplicate</span>
+        </div>
+        <div style="margin-top:3px; font-weight:600">Verify Total Risk table is displayed</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#9b9b9b">positive · from REQ-1042</div>
+      </div>
+      <div class="row">
+        <div style="display:flex; align-items:center; gap:6px">
+          <span class="k">NEW</span>
+          <span class="pill" style="background:#efeafd; color:#5b3bb5; margin-left:auto">Similar 91%</span>
+        </div>
+        <div style="margin-top:3px; font-weight:600">Check Total Risk table renders</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#9b9b9b">positive · from REQ-1042</div>
+      </div>
+      <div style="padding:8px 12px; border-bottom:1px solid #f5f5f5; background:#f4fbf9; font-size:10px; color:#0a7a5e; font-weight:600">
+        ✓ 12 more ready — accept all
+      </div>
+      <div class="row">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">RISK-0042</span>
+          <span class="pill" style="background:#e7f6f1; color:#0a7a5e; margin-left:auto">Passed</span></div>
+        <div style="margin-top:3px; font-weight:600">Verify NAV is numeric on Risk dashboard</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#9b9b9b">boundary · run 2d ago · 4.1s</div>
+      </div>
+      <div class="row">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">RISK-0031</span>
+          <span class="pill" style="background:#fdeaea; color:#c2352f; margin-left:auto">Failed</span></div>
+        <div style="margin-top:3px; font-weight:600">Verify Total Risk table is displayed</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#9b9b9b">positive · ⚑ flaky · run 4h ago</div>
+      </div>
+    </div>
+
+    <div class="det">
+      <div style="display:flex; align-items:flex-start; gap:8px">
+        <div style="flex:1">
+          <div style="font-size:13.5px; font-weight:650">Verify NAV and Beta are numeric</div>
+          <div style="margin-top:3px; font-size:10px; color:#6e6e6e">Proposed by <span class="m" style="color:#0a7a5e">REQ-1042</span> · boundary · not yet in catalog</div>
+        </div>
+        <span class="btn bs">View prompt</span>
+      </div>
+
+      <div class="card" style="border-color:#f2d9a8; background:#fffdf7">
+        <div style="font-weight:650; color:#8a5a00; font-size:11.5px">Overlaps RISK-0042 — extends it</div>
+        <div style="margin-top:6px; display:grid; grid-template-columns:56px 1fr; gap:3px 8px; font-size:10.5px">
+          <span style="color:#9b9b9b">Same</span><span>Navigate to Risk tab · assert NAV is numeric</span>
+          <span style="color:#9b9b9b">New</span><span style="color:#0a7a5e; font-weight:600">+ assert Beta is numeric</span>
+        </div>
+        <div style="margin-top:9px; display:flex; gap:6px">
+          <span class="btn bp">Extend RISK-0042</span>
+          <span class="btn bs">Keep both…</span>
+          <span class="btn bs" style="color:#c2352f">Reject</span>
+        </div>
+      </div>
+
+      <div class="tabs"><span class="tab on">Details</span><span class="tab">Steps 4</span><span class="tab">Runs</span><span class="tab">History</span></div>
+
+      <div class="card">
+        <div class="kv">
+          <div><div class="lb">Feature</div><div>risk / dashboard</div></div>
+          <div><div class="lb">Category</div><div>boundary</div></div>
+          <div><div class="lb">Priority</div><div>P1</div></div>
+          <div><div class="lb">Layer</div><div>E2E</div></div>
+          <div><div class="lb">Automation</div><div>Playwright + AI fallback</div></div>
+          <div><div class="lb">Flaky</div><div>No</div></div>
+        </div>
+        <div style="margin-top:9px; display:flex; gap:4px; flex-wrap:wrap">
+          <span class="pill" style="background:#f2f2f2; color:#3a3a3a">fund:public</span>
+          <span class="pill" style="background:#f2f2f2; color:#3a3a3a">env:lab</span>
+          <span class="pill" style="background:#f2f2f2; color:#3a3a3a">metric:risk</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>Centre of gravity</b>The list. Review items and catalog items are the same kind of row, switched by one control.</div>
+  <div><b>Best for</b>Shipping quickly with no retraining. It is the current UI with the missing pieces added, not a new product.</div>
+  <div><b>Weakness</b>Four columns is a lot at 1280px. The catalog view inherits a list that was designed for a queue, so browsing 313 cases is still linear.</div>
+  <div><b>Verdict after review</b><b style="color:#c2352f">Largely overtaken.</b> The live nav already separates Failed / All cases / Executed history, and the detail panel already has tabs. Only two elements remain genuinely new.</div>
+</div>
+
+<table>
+<thead><tr><th style="width:30%">Element</th><th style="width:110px">Status</th><th>Against the live system</th></tr></thead>
+<tbody>
+<tr><td><b>Split of review and catalog</b></td><td><span class="st st-b">built</span></td><td>Delivered as three nav sub-tabs rather than a segmented control. Same outcome</td></tr>
+<tr><td><b>Case detail with tabs</b></td><td><span class="st st-b">built</span></td><td>Info · Steps · History · Groups already present, with editable feature and labels</td></tr>
+<tr><td><b>Conflict resolution inline</b></td><td><span class="st st-n">not built</span></td><td>No merge, extend or keep-both verb exists anywhere</td></tr>
+<tr><td><b>Feature tree with counts</b></td><td><span class="st st-n">not built</span></td><td>Feature is a flat dropdown filter. The tree is the main thing A still adds</td></tr>
+<tr><td><b>Saved views (Flaky, Not run 30d)</b></td><td><span class="st st-n">not built</span></td><td>Filters cannot be saved or named</td></tr>
+<tr><td><b>Case properties surfaced</b></td><td><span class="st st-p">partial</span></td><td>Feature, labels and triage reason are editable. Priority, layer, flaky and muted do not exist as fields</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- =========================================================== B -->
+<div class="block">
+<span class="tag" style="background:#5a3ff0">B</span>
+<h2>Repository — Qase's model, applied to Harness</h2>
+<p class="lead">The catalog is the product, and review is a <b>filter on it</b> rather than a separate place. A dense table with sortable columns, governed property fields, and a right-hand panel that never loses your place in the list. Closest to a proven test-management tool.</p>
+
+<div class="shot">
+<div class="ui B">
+  <div class="nav">
+    <div style="font-weight:650; font-size:12.5px; padding:2px 8px 9px">QOps Harness</div>
+    <div class="grp">Tests</div>
+    <div class="nl on">Repository <span class="c">313</span></div>
+    <div class="nl">Review <span class="c">3</span></div>
+    <div class="nl">Shared steps <span class="c">18</span></div>
+    <div class="nl">Requests <span class="c">6</span></div>
+    <div class="grp">Execution</div>
+    <div class="nl">Runs</div>
+    <div class="nl">Groups</div>
+    <div class="grp">Insight</div>
+    <div class="nl">Coverage</div>
+    <div class="nl">Knowledge</div>
+  </div>
+
+  <div class="tree">
+    <div class="th"><span>Features</span><span style="margin-left:auto">313</span></div>
+    <div class="tn on">risk <span class="c">84</span></div>
+    <div class="tn sub on" style="background:#e4e0fd">dashboard <span class="c">31</span></div>
+    <div class="tn sub">parameters <span class="c">28</span></div>
+    <div class="tn sub">history <span class="c">25</span></div>
+    <div class="tn">cash-forecast <span class="c">61</span></div>
+    <div class="tn">public-fund <span class="c">57</span></div>
+    <div class="tn">pipeline <span class="c">44</span></div>
+    <div class="tn">total-endowment <span class="c">39</span></div>
+    <div class="tn">scenario-test <span class="c">28</span></div>
+  </div>
+
+  <div class="main">
+    <div class="top">
+      <div style="font-size:15px; font-weight:600">risk / dashboard</div>
+      <span style="font-size:10px; color:#7b8496">31 cases · 3 awaiting review</span>
+      <span style="margin-left:auto" class="btn bs">Run selected</span>
+      <span class="btn bp">New request</span>
+    </div>
+    <div class="bar">
+      <span class="chip" style="background:#eceafe; border-color:#c9c0fb; color:#5a3ff0">Needs review · 3</span>
+      <span class="chip">Category ⌄</span><span class="chip">Priority ⌄</span>
+      <span class="chip">Automation ⌄</span><span class="chip">Flaky ⌄</span><span class="chip">Last run ⌄</span>
+      <span style="margin-left:auto; font-size:10px; color:#7b8496">Save as view</span>
+    </div>
+    <div class="rows">
+      <div class="rh"><span></span><span></span><span></span><span>Key</span><span>Title</span><span>Category</span><span>Last run</span><span>Status</span></div>
+
+      <div class="r sel">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span style="color:#d1443c">▲</span><span style="color:#5a3ff0">⚙</span>
+        <span class="k">NEW</span>
+        <span style="font-weight:600">Verify NAV and Beta are numeric</span>
+        <span style="color:#7b8496">boundary</span><span style="color:#7b8496">—</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">Extends</span>
+      </div>
+      <div class="r">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span style="color:#d1443c">▲</span><span style="color:#5a3ff0">⚙</span>
+        <span class="k">NEW</span>
+        <span style="font-weight:600">Verify Total Risk table is displayed</span>
+        <span style="color:#7b8496">positive</span><span style="color:#7b8496">—</span>
+        <span class="lz" style="background:#efeafd; color:#5b3bb5">Duplicate</span>
+      </div>
+      <div class="r">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span style="color:#e0a53c">▲</span><span style="color:#5a3ff0">⚙</span>
+        <span class="k">NEW</span>
+        <span style="font-weight:600">Check Total Risk table renders</span>
+        <span style="color:#7b8496">positive</span><span style="color:#7b8496">—</span>
+        <span class="lz" style="background:#efeafd; color:#5b3bb5">Similar 91%</span>
+      </div>
+      <div class="r">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span style="color:#d1443c">▲</span><span style="color:#5a3ff0">⚙</span>
+        <span class="k">RISK-0042</span>
+        <span>Verify NAV is numeric on Risk dashboard</span>
+        <span style="color:#7b8496">boundary</span><span class="m" style="color:#7b8496">2d</span>
+        <span class="lz" style="background:#e2f7ec; color:#136c46">Passed</span>
+      </div>
+      <div class="r">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span style="color:#d1443c">▲</span><span style="color:#7b8496">✋</span>
+        <span class="k">RISK-0031</span>
+        <span>Verify Total Risk table is displayed &nbsp;<span style="color:#e0a53c">⚑</span></span>
+        <span style="color:#7b8496">positive</span><span class="m" style="color:#7b8496">4h</span>
+        <span class="lz" style="background:#fde9e7; color:#a52a1f">Failed</span>
+      </div>
+      <div class="r">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span style="color:#e0a53c">▲</span><span style="color:#5a3ff0">⚙</span>
+        <span class="k">RISK-0028</span>
+        <span>Download Report button is enabled</span>
+        <span style="color:#7b8496">positive</span><span class="m" style="color:#7b8496">2d</span>
+        <span class="lz" style="background:#e2f7ec; color:#136c46">Passed</span>
+      </div>
+      <div class="r" style="opacity:.55">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span style="color:#9aa2b1">▲</span><span style="color:#7b8496">✋</span>
+        <span class="k">RISK-0019</span>
+        <span>Risk model dashboard loads &nbsp;<span style="font-size:9px">🔇 muted</span></span>
+        <span style="color:#7b8496">positive</span><span class="m" style="color:#7b8496">31d</span>
+        <span class="lz" style="background:#eef0f4; color:#5c6579">Muted</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="font-size:9.5px; color:#7b8496">NEW · proposed by REQ-1042</div>
+      <div style="font-size:13.5px; font-weight:600; margin-top:2px">Verify NAV and Beta are numeric</div>
+      <div class="ptabs"><span class="pt on">Properties</span><span class="pt">Steps</span><span class="pt">Runs</span><span class="pt">History</span><span class="pt">Defects</span></div>
+      <div class="pf">
+        <div><div class="pl">Feature</div><div class="pv">risk / dashboard</div></div>
+        <div><div class="pl">Category</div><div class="pv">boundary</div></div>
+        <div><div class="pl">Priority</div><div class="pv">P1 — High</div></div>
+        <div><div class="pl">Layer</div><div class="pv">E2E</div></div>
+        <div><div class="pl">Automation</div><div class="pv">AI fallback</div></div>
+        <div><div class="pl">Is flaky</div><div class="pv">No</div></div>
+        <div><div class="pl">Status</div><div class="pv">Draft</div></div>
+        <div><div class="pl">Muted</div><div class="pv">No</div></div>
+      </div>
+      <div style="margin-top:12px; background:#fffaf2; border:1px solid #f2dcb8; border-radius:5px; padding:9px 11px">
+        <div style="font-weight:600; color:#8a5300; font-size:11px">Extends RISK-0042</div>
+        <div style="margin-top:5px; font-size:10.5px; color:#414b5e">Adds <b>assert Beta is numeric</b> to an existing case.</div>
+        <div style="margin-top:8px; display:flex; gap:5px">
+          <span class="btn bp">Extend</span><span class="btn bs">Keep both…</span><span class="btn bs">Reject</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>Centre of gravity</b>The table. Every case is a row with sortable, filterable governed columns; review is one filter chip among several.</div>
+  <div><b>Best for</b>Scale. This is the only one of the three that stays usable at 1,000 cases, and the only one where a QA lead can audit the catalog.</div>
+  <div><b>Weakness</b>It looks like a competitor's product, and it treats generated cases as ordinary rows — the fact that a machine wrote them is not visible until you open the panel.</div>
+  <div><b>Verdict after review</b><b style="color:#0a6543">Roughly 60% already exists.</b> All cases is this design without the governed columns. That makes B an extension of shipped work, not a rebuild — and far cheaper than first costed.</div>
+</div>
+
+<table>
+<thead><tr><th style="width:30%">Element</th><th style="width:110px">Status</th><th>Against the live system</th></tr></thead>
+<tbody>
+<tr><td><b>Catalog as a table</b></td><td><span class="st st-b">built</span></td><td>All cases ships <span class="mono">Case | Feature | Project | Triage | Last run</span></td></tr>
+<tr><td><b>Configurable columns</b></td><td><span class="st st-b">built</span></td><td>A <i>Configure columns</i> control is already present</td></tr>
+<tr><td><b>Bulk select and run</b></td><td><span class="st st-b">built</span></td><td>Row checkboxes and a <i>Run (n)</i> action exist</td></tr>
+<tr><td><b>Side panel keeping list context</b></td><td><span class="st st-b">built</span></td><td>Detail opens beside the table, list stays visible</td></tr>
+<tr><td><b>Filter bar</b></td><td><span class="st st-p">partial</span></td><td>Search, feature, labels, status and reason exist. They are dropdowns, not removable chips, and cannot be saved</td></tr>
+<tr><td><b>Governed property fields</b></td><td><span class="st st-n">not built</span></td><td>Priority, layer, automation status, flaky and muted do not exist. This is the main gap</td></tr>
+<tr><td><b>Sortable column headers</b></td><td><span class="st st-n">not built</span></td><td>Columns display but do not sort</td></tr>
+<tr><td><b>Muted and flaky as state</b></td><td><span class="st st-n">not built</span></td><td>No way to suppress a known-broken case, so it keeps failing the batch</td></tr>
+<tr><td><b>Saved views</b></td><td><span class="st st-n">not built</span></td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- =========================================================== C -->
+<div class="block">
+<span class="tag" style="background:#0b7a52; color:#ffffff">C</span>
+<h2>Coverage — the freestyle direction</h2>
+<p class="lead">Built around what makes Harness different from a test-management tool: <b>cases are generated to fill gaps, and their trustworthiness varies.</b> The home screen is not a list but a <b>coverage matrix</b> — feature by category — where an empty cell is the most important thing on the page, and a request is understood by which gaps it fills.</p>
+
+<div class="shot">
+<div class="ui C">
+  <div class="nav">
+    <div class="ic on">▦</div><div class="ic">☰</div><div class="ic">⟳</div><div class="ic">◈</div><div class="ic">◫</div>
+    <div style="flex:1"></div><div class="ic">⚙</div>
+  </div>
+  <div class="main">
+    <div class="top">
+      <div>
+        <div class="h">Coverage — aloha</div>
+        <div class="sub">313 cases · 9 features · 6 categories · 12 flaky · 47 not run in 30 days</div>
+      </div>
+      <span style="margin-left:auto" class="btn bs">Filter</span>
+      <span class="btn bp">+ Request cases for a gap</span>
+    </div>
+    <div class="body">
+      <div class="grid">
+        <div class="lbl">Coverage matrix — cell shows case count, colour shows health</div>
+        <table class="cov">
+          <tr><th class="f">Feature</th><th>Positive</th><th>Negative</th><th>Boundary</th><th>Security</th><th>Perf</th><th>Edge</th></tr>
+          <tr>
+            <td class="fname">risk / dashboard<s>31 cases</s></td>
+            <td><div class="cell c3">12</div></td>
+            <td><div class="cell c2">8</div></td>
+            <td><div class="cell c1">4<span class="pend">+1</span></div></td>
+            <td><div class="cell c1">3</div></td>
+            <td><div class="cell c0">0</div></td>
+            <td><div class="cell c0">0</div></td>
+          </tr>
+          <tr>
+            <td class="fname">risk / parameters<s>28 cases</s></td>
+            <td><div class="cell c3">11</div></td>
+            <td><div class="cell cf">7</div></td>
+            <td><div class="cell c2">6</div></td>
+            <td><div class="cell c0">0</div></td>
+            <td><div class="cell c0">0</div></td>
+            <td><div class="cell c1">4</div></td>
+          </tr>
+          <tr>
+            <td class="fname">cash-forecast / flows<s>22 cases</s></td>
+            <td><div class="cell c2">9</div></td>
+            <td><div class="cell c1">5</div></td>
+            <td><div class="cell cw">4</div></td>
+            <td><div class="cell c0">0</div></td>
+            <td><div class="cell c1">2</div></td>
+            <td><div class="cell c1">2</div></td>
+          </tr>
+          <tr>
+            <td class="fname">public-fund<s>57 cases</s></td>
+            <td><div class="cell c3">21</div></td>
+            <td><div class="cell c3">14</div></td>
+            <td><div class="cell c2">9</div></td>
+            <td><div class="cell c1">5</div></td>
+            <td><div class="cell c1">3</div></td>
+            <td><div class="cell c1">5</div></td>
+          </tr>
+          <tr>
+            <td class="fname">pipeline<s>44 cases</s></td>
+            <td><div class="cell c3">18</div></td>
+            <td><div class="cell c2">10</div></td>
+            <td><div class="cell c1">6</div></td>
+            <td><div class="cell c0">0</div></td>
+            <td><div class="cell c0">0</div></td>
+            <td><div class="cell cw">10</div></td>
+          </tr>
+          <tr>
+            <td class="fname">total-endowment<s>39 cases</s></td>
+            <td><div class="cell c2">16</div></td>
+            <td><div class="cell c1">7</div></td>
+            <td><div class="cell c1">6</div></td>
+            <td><div class="cell c1">4</div></td>
+            <td><div class="cell c0">0</div></td>
+            <td><div class="cell c1">6</div></td>
+          </tr>
+          <tr>
+            <td class="fname">scenario-test<s>28 cases</s></td>
+            <td><div class="cell c2">12</div></td>
+            <td><div class="cell c1">6</div></td>
+            <td><div class="cell c0">0</div></td>
+            <td><div class="cell c0">0</div></td>
+            <td><div class="cell c1">5</div></td>
+            <td><div class="cell c1">5</div></td>
+          </tr>
+        </table>
+
+        <div style="display:flex; gap:14px; margin-top:12px; font-size:9.5px; color:#6b7683; align-items:center">
+          <span><span class="cell c0" style="display:inline-grid; width:16px; height:11px; vertical-align:middle"></span> no cases</span>
+          <span><span class="cell c1" style="display:inline-grid; width:16px; height:11px; vertical-align:middle"></span> thin</span>
+          <span><span class="cell c3" style="display:inline-grid; width:16px; height:11px; vertical-align:middle"></span> covered</span>
+          <span><span class="cell cw" style="display:inline-grid; width:16px; height:11px; vertical-align:middle"></span> stale</span>
+          <span><span class="cell cf" style="display:inline-grid; width:16px; height:11px; vertical-align:middle"></span> failing</span>
+          <span style="margin-left:auto"><b style="color:#0b7a52">+1</b> proposed by an unreviewed request</span>
+        </div>
+      </div>
+
+      <div class="drawer">
+        <div style="font-size:9px; letter-spacing:.11em; text-transform:uppercase; color:#8b95a3">risk / dashboard · boundary</div>
+        <div style="font-size:12.5px; font-weight:650; margin-top:4px">4 cases, 1 proposed</div>
+
+        <div class="trust" style="border-color:#a7e8c9; background:#ecfdf5">
+          <div style="display:flex; align-items:center; gap:6px">
+            <span class="pill" style="background:#0b7a52; color:#ffffff">PROPOSED</span>
+            <span style="font-size:10px; color:#2b333d">from REQ-1042</span>
+          </div>
+          <div style="margin-top:5px; font-size:11px; font-weight:600">Verify NAV and Beta are numeric</div>
+          <div style="margin-top:5px; font-size:10px; color:#0b7a52">Extends RISK-0042 — adds Beta assertion</div>
+          <div style="margin-top:8px; display:flex; gap:5px">
+            <span class="btn bp" style="padding:4px 9px; font-size:9.5px">Extend</span>
+            <span class="btn bs" style="padding:4px 9px; font-size:9.5px">Keep both</span>
+            <span class="btn bs" style="padding:4px 9px; font-size:9.5px">Reject</span>
+          </div>
+        </div>
+
+        <div style="font-size:9px; letter-spacing:.11em; text-transform:uppercase; color:#8b95a3; margin-top:13px">In catalog</div>
+        <div class="trust">
+          <div style="display:flex; align-items:center; gap:7px">
+            <span class="m" style="font-size:9.5px; color:#0b7a52">RISK-0042</span>
+            <span class="pill" style="background:#e3f7ec; color:#0b7a52; margin-left:auto">Passed</span>
+          </div>
+          <div style="margin-top:4px; font-size:10.5px">Verify NAV is numeric on Risk dashboard</div>
+          <div style="font-size:9px; letter-spacing:.11em; text-transform:uppercase; color:#8b95a3; margin-top:9px">Trust</div>
+          <div class="tr"><span class="dot" style="background:#0b7a52"></span>Human verified — 6 Aug by nguyenhoangly103</div>
+          <div class="tr"><span class="dot" style="background:#92610a"></span>AI fallback used on 2 of 4 steps</div>
+          <div class="tr"><span class="dot" style="background:#0b7a52"></span>Stable — 8 runs, 0 flips</div>
+          <div class="spark">
+            <i style="height:100%; background:#0b7a52"></i><i style="height:100%; background:#0b7a52"></i>
+            <i style="height:100%; background:#0b7a52"></i><i style="height:40%; background:#b42318"></i>
+            <i style="height:100%; background:#0b7a52"></i><i style="height:100%; background:#0b7a52"></i>
+            <i style="height:100%; background:#0b7a52"></i><i style="height:100%; background:#0b7a52"></i>
+          </div>
+        </div>
+
+        <div class="trust">
+          <div style="display:flex; align-items:center; gap:7px">
+            <span class="m" style="font-size:9.5px; color:#0b7a52">RISK-0037</span>
+            <span class="pill" style="background:#fdf2d9; color:#92610a; margin-left:auto">Stale 34d</span>
+          </div>
+          <div style="margin-top:4px; font-size:10.5px">NAV rejects negative values</div>
+          <div class="tr" style="margin-top:6px"><span class="dot" style="background:#92610a"></span>Never verified by a human</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>Centre of gravity</b>The gap. Navigation is by <i>what is missing</i>, not by what exists — the inverse of a catalog.</div>
+  <div><b>Best for</b>The actual product Harness is. It answers "what should we test next?" — the question generation exists to serve, and one no test-management tool answers.</div>
+  <div><b>Weakness</b>The most speculative, and weakest for the plain task of "find this one case".</div>
+  <div><b>Verdict after review</b><b style="color:#8a5600">Nothing drawn, but the data is already being collected.</b> The run panel exposes AI steps, automation and AI-fallback counters — the exact inputs the Trust panel needs. They read zero, and telemetry reports Incomplete.</div>
+</div>
+
+<table>
+<thead><tr><th style="width:30%">Element</th><th style="width:110px">Status</th><th>Against the live system</th></tr></thead>
+<tbody>
+<tr><td><b>AI-usage telemetry per run</b></td><td><span class="st st-p">partial</span></td><td>Fields exist — AI steps, Automation, AI fallback — but all read <span class="mono">0</span> and Telemetry reports <span class="mono">Incomplete</span></td></tr>
+<tr><td><b>Run history per case</b></td><td><span class="st st-b">built</span></td><td>History tab carries Last run and Executed history; Executed history lists every run with an ID</td></tr>
+<tr><td><b>Provenance back to the request</b></td><td><span class="st st-b">built</span></td><td>A <b>View request</b> action exists on the run detail</td></tr>
+<tr><td><b>Staleness ("not run in 34 days")</b></td><td><span class="st st-n">not built</span></td><td>Completion timestamps exist but age is never surfaced as a state</td></tr>
+<tr><td><b>Human-verified flag</b></td><td><span class="st st-n">not built</span></td><td>Nothing records that a person confirmed a case is correct</td></tr>
+<tr><td><b>Stability / flip history</b></td><td><span class="st st-n">not built</span></td><td>The run log holds the raw data; nothing aggregates it into a stability signal</td></tr>
+<tr><td><b>Coverage matrix</b></td><td><span class="st st-n">not built</span></td><td>Blocked — needs a clean feature axis and a populated category axis. Neither exists yet</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- =========================================================== COMPARE -->
+<h2 style="margin-top:40px">Comparison</h2>
+<table>
+<thead><tr><th style="width:19%"></th><th style="width:27%">A · Familiar</th><th style="width:27%">B · Repository</th><th>C · Coverage</th></tr></thead>
+<tbody>
+<tr><td><b>Organising idea</b></td><td>A list you switch between two modes</td><td>A governed table of everything</td><td>A matrix of what exists vs what should</td></tr>
+<tr><td><b>Finding a case</b></td><td>Feature tree + search</td><td>Filter chips + sortable columns — strongest</td><td>Drill into a cell; weakest for a known case</td></tr>
+<tr><td><b>Reviewing new cases</b></td><td>Own mode, conflicts inline</td><td>A filter chip on the table</td><td>Shown as gap-fillers in context</td></tr>
+<tr><td><b>Reading case health</b></td><td>Status pill + flaky flag</td><td>Governed columns: flaky, muted, last run</td><td>Trust panel — verified, AI use, stability, staleness</td></tr>
+<tr><td><b>Holds at 1,000 cases</b></td><td>Poorly — linear list</td><td><b>Yes</b></td><td>Yes, but only for browsing by area</td></tr>
+<tr><td><b>Answers "what next?"</b></td><td>No</td><td>No</td><td><b>Yes — it is the whole design</b></td></tr>
+<tr><td><b>Retraining needed</b></td><td>None</td><td>Some — new object model</td><td>Significant</td></tr>
+<tr><td><b>Depends on classification landing first</b></td><td>Helpful</td><td>Required for the property columns</td><td><b>Hard requirement</b></td></tr>
+<tr><td><b>Build cost as first estimated</b></td><td>Low</td><td>Medium</td><td>High</td></tr>
+<tr><td><b>Already shipped</b></td><td><span class="st st-b">most of it</span></td><td><span class="st st-b">~60%</span></td><td><span class="st st-p">telemetry only</span></td></tr>
+<tr><td><b>Revised cost of what remains</b></td><td>Very low — a feature tree and saved views</td><td><b>Low</b> — governed columns on an existing table</td><td>Medium for the Trust panel · High for the matrix</td></tr>
+</tbody>
+</table>
+
+<div style="border:1px solid var(--ln); border-left:3px solid #c2352f; border-radius:9px; padding:12px 15px; margin-top:20px; font-size:12.5px; color:var(--tx2)">
+<b style="color:var(--tx); display:block; margin-bottom:3px">The dependency, now confirmed against the live system</b>
+Every design groups by <span class="mono">feature</span> and splits by <span class="mono">category</span>. This was previously a caution based on a measurement taken on 6 August. <b>It is now confirmed live:</b> the catalog shows clean feature values such as <span class="mono">auth</span> and <span class="mono">cash-forecast</span> sitting beside truncated titles used as grouping keys, and the Triage column reads <span class="mono">unlabeled</span> on every row. Until this is resolved, A degrades to a flat list, B's new columns have nothing to show, and C's matrix cannot be drawn at all.
+</div>
+
+<h2 style="margin-top:36px">Recommendation</h2>
+<p class="lead">Reviewing the live system changes the conclusion. The screens are further along than these designs assumed, and what is missing is mostly <b>data reaching screens that already exist</b>. Suggested order:</p>
+
+<table>
+<thead><tr><th style="width:34px">#</th><th style="width:30%">Action</th><th>Why it comes first</th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td><b>Establish why triage is not happening</b></td><td>86 of 87 failures are unlabelled. The taxonomy is built and unused, so this is a workflow or ownership question rather than a design one. One conversation with QA, no build</td></tr>
+<tr><td><b>2</b></td><td><b>Populate <span class="mono">FAILED STEP</span></b></td><td>The field is already rendered and always empty. Filling it is the highest-value change available and needs no new interface. This is QG-139 #6</td></tr>
+<tr><td><b>3</b></td><td><b>Complete the run telemetry</b></td><td>AI, Automation and AI-fallback counters read zero and Telemetry reports Incomplete. Fixing this unlocks C's Trust panel without building C</td></tr>
+<tr><td><b>4</b></td><td><b>Extend All cases toward direction B</b></td><td>Governed columns, sortable headers, saved views, plus muted and flaky as real state. An extension of shipped work, not a rebuild</td></tr>
+<tr><td><b>5</b></td><td><b>Add C's Trust panel into B's side panel</b></td><td>Human-verified, AI-fallback usage, stability, staleness. Highest-value addition once step 3 is done</td></tr>
+<tr><td><b>6</b></td><td><b>Hold C's coverage matrix</b></td><td>Revisit only after classification lands and the feature axis is clean</td></tr>
+</tbody>
+</table>
+
+<p class="lead" style="margin-top:14px"><b>Direction A should be dropped.</b> The live build has overtaken it; its only remaining contributions — the feature tree and saved views — are absorbed into step 4.</p>
+
+<p class="lead" style="margin-top:22px; font-size:12.5px">Draft prepared by the Business Analyst. Designs drawn 18 August 2026 and assessed the same day against <span class="mono">qops-harness.lab.gend.vn/cases</span>. Mockup data is illustrative; build statuses are observed. Companion: <b>Harness_TestCase_Workbench_Plan.md</b> (<span class="mono">Documents/00_Active/</span>).</p>
+
+</div>
+</body>
+</html>

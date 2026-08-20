@@ -1,0 +1,1612 @@
+{
+  "version": "0.9.5",
+  "status": "success",
+  "data": {
+    "search_term": "!@#$%",
+    "count": 320,
+    "funds": [
+      {
+        "fund_id": "100051",
+        "fund_name": "Activa II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "273239",
+        "fund_name": "500 Mobile Collective",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "523324",
+        "fund_name": "28V Opportunities Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "107780",
+        "fund_name": "Accretion Fund III",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "265034",
+        "fund_name": "Accel-KKR Growth Capital III",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "434034",
+        "fund_name": "Accelerating Asia Ventures Fund II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "100047",
+        "fund_name": "Actera Partners",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "550291",
+        "fund_name": "Adams Street Co-Investment Select Fund II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "468063",
+        "fund_name": "3EDGE Systematic Strategy",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "297585",
+        "fund_name": "Actera Partners III",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "428355",
+        "fund_name": "Adams Street 2020 Non-US Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "57639",
+        "fund_name": "Acropole Convertibles Asia Fund (UCITS)",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "329956",
+        "fund_name": "Abraaj Turkey Fund II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "41660",
+        "fund_name": "Actian Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "565167",
+        "fund_name": "26North Commercial Real Estate Credit Strategies Fund I, L.P.",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "471137",
+        "fund_name": "AB European Real Estate Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "468616",
+        "fund_name": "AB European Secured Income Fund I",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "457311",
+        "fund_name": "AB European Secured Income Fund II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "531999",
+        "fund_name": "AB CarVal Asset Based Fund I",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "558420",
+        "fund_name": " 38sth Fund I",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "446800",
+        "fund_name": "Adams Street Co-Investment Fund V",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "38338",
+        "fund_name": "Abrams Capital Partners II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "280315",
+        "fund_name": "ACE Angel Partners",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "107397",
+        "fund_name": "Accent Equity 1999",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "468850",
+        "fund_name": "215 CC Ltd",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "100040",
+        "fund_name": "Accent Equity 2008",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "214141",
+        "fund_name": "Abacus Energy Fund II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "235130",
+        "fund_name": "Accent Equity 2012",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "106275",
+        "fund_name": "ABS Ventures VII and VIII",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "328432",
+        "fund_name": "Accent Equity 2020",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "474158",
+        "fund_name": "Accent Equity VII",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "107551",
+        "fund_name": "Absa Capital Private Equity I",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "107075",
+        "fund_name": "Adams Street US Partnership 2003",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "247623",
+        "fund_name": "Accelerate Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "107080",
+        "fund_name": "Adams Street US Partnership 2004",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "420182",
+        "fund_name": "Adams Street Co-Investment Fund III-A",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "107082",
+        "fund_name": "Adams Street US Partnership 2005",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "486788",
+        "fund_name": "abrdn SICAV I - Diversified Growth Fund (UCITS)",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "307398",
+        "fund_name": "Access Capital Co-investment Fund II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "107088",
+        "fund_name": "Adams Street US Partnership 2007",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "558846",
+        "fund_name": " Brenton Point Capital Partners Fund I",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "554072",
+        "fund_name": "ABB III",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "441597",
+        "fund_name": "Access Capital Fund III - Technology Europe",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "357049",
+        "fund_name": "Absolute Capital Opportunities Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "357045",
+        "fund_name": "Absolute Convertible Arbitrage Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "105936",
+        "fund_name": "5AM Ventures II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "552044",
+        "fund_name": "Adams Street Venture & Growth RIC",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "360786",
+        "fund_name": "360 Capital Becton Office Fund I",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "323023",
+        "fund_name": "Adams Street Venture Innovation Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "350127",
+        "fund_name": "Access Capital Fund VIII",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "323025",
+        "fund_name": "Adams Street Venture Innovation Fund II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "344833",
+        "fund_name": "Adams Street Venture Innovation Fund III",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "309467",
+        "fund_name": "Access Capital Private Debt Fund II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "103953",
+        "fund_name": "360 Capital Partners",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "402320",
+        "fund_name": "Access Foundation Partners Group II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "273133",
+        "fund_name": "360 Capital\u2014IoT Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "100049",
+        "fund_name": "Actis China Fund 1",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "61689",
+        "fund_name": "Absolute Insight Funds PLC - Absolute Insight Credit Fund (UCITS)",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "17605",
+        "fund_name": "Acru China+ Absolute Return Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "355205",
+        "fund_name": "5AM Ventures VII",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "418094",
+        "fund_name": "5AM Ventures VIII",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "261939",
+        "fund_name": "Abbott Select Buyouts III",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "103229",
+        "fund_name": "Actis China Fund 3",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "22313",
+        "fund_name": "Absolute Large Cap Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "237909",
+        "fund_name": "Actis China Fund 4",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "385835",
+        "fund_name": "Aavishkaar India Fund II",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "217016",
+        "fund_name": "ABCA FX Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "13762",
+        "fund_name": "Absolute Plus Management Hedged Global Commodity",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "385839",
+        "fund_name": "Aavishkaar India Fund IV",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "217896",
+        "fund_name": "AB Emerging Markets Growth Portfolio (UCITS)",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "282147",
+        "fund_name": "5Value Capital I",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "495114",
+        "fund_name": "Absolute Private Equity",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "334131",
+        "fund_name": "AB Emerging Markets Low Volatility Equity Portfolio (UCITS)",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "385849",
+        "fund_name": "Aavishkaar India Fund VI",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "242774",
+        "fund_name": "ABCA Inference Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "416616",
+        "fund_name": "AB 1.5 Degrees Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "217024",
+        "fund_name": "ABCA Multi Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "213202",
+        "fund_name": "ABRY Partners I",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "210126",
+        "fund_name": "ABCA Opportunities Fund",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "296841",
+        "fund_name": "500 Startups Japan",
+        "source": "ALB"
+      },
+      {
+        "fund_id": "52",
+        "fund_name": "Sequoia Capital Global Growth Fund III China Annex Fund LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "53",
+        "fund_name": "Thompson Street Capital Partners IV LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "54",
+        "fund_name": "Bayswater Natural Resources IV",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "55",
+        "fund_name": "Champion Ventures III, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "56",
+        "fund_name": "Resource Capital Fund VI LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "57",
+        "fund_name": "Lembas II LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "58",
+        "fund_name": "Hillhouse Focused Growth Fund V LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "60",
+        "fund_name": "Natural Gas Partners X, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "61",
+        "fund_name": "Sequoia Capital Israel Venture Fund V, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "62",
+        "fund_name": "Peak XV Partners Growth Fund III Ltd",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "63",
+        "fund_name": "Kandeo Fund II LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "64",
+        "fund_name": "Merit Energy Partners F-I LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "65",
+        "fund_name": "Maveron Equity Partners VII LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "67",
+        "fund_name": "ACM Permanent Crops, LLC",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "78",
+        "fund_name": "TA XI, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "79",
+        "fund_name": "Blackstone Capital Partners V, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "80",
+        "fund_name": "Sankaty Credit Opportunities III, LLC",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "81",
+        "fund_name": "Lime Rock Resources II-C, LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "82",
+        "fund_name": "Sanderling Venture Partners VI Co-Investment, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "83",
+        "fund_name": "Charles River Partnership XV, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "85",
+        "fund_name": "Charterhouse Capital Partners VIII, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "88",
+        "fund_name": "HongShan Capital Growth 2010 Fund, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "89",
+        "fund_name": "Oaktree Opportunities Fund X-B LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "90",
+        "fund_name": "HongShan Capital Venture 2010 Fund, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "91",
+        "fund_name": "The Founders Fund VI, L.P",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "92",
+        "fund_name": "Marlin Heritage LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "93",
+        "fund_name": "Bain Capital Fund XII LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "94",
+        "fund_name": "Bridgepoint Europe IV",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "95",
+        "fund_name": "Charles River Partnership XIII",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "68",
+        "fund_name": "Sequoia Capital US Venture 2010 - Seed Fund",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "69",
+        "fund_name": "Peak XV Partners Seed Fund I Ltd",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "70",
+        "fund_name": "Morgan Stanley Private Equity Asia, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "71",
+        "fund_name": "Initialized Annex LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "72",
+        "fund_name": "IDG China Capital Fund III LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "73",
+        "fund_name": "Longreach Capital Partners 3 LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "133",
+        "fund_name": "Thoma Bravo Fund XIV LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "134",
+        "fund_name": "The Founders Fund IV, LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "135",
+        "fund_name": "TA XII LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "136",
+        "fund_name": "DCM Ventures China Turbo Fund LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "184",
+        "fund_name": "Lime Rock Partners IV ACQ",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "185",
+        "fund_name": "First Reserve Fund XII, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "186",
+        "fund_name": "Valar Fund V LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "187",
+        "fund_name": "Sequoia Capital U.S. Venture 2010",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "188",
+        "fund_name": "IDG China Venture Capital V LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "189",
+        "fund_name": "Francisco Partners IV LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "190",
+        "fund_name": "Bain Capital Fund X, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "191",
+        "fund_name": "JOG Limited Partnership No. VI",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "192",
+        "fund_name": "Peak XV Partners IV Ltd",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "193",
+        "fund_name": "Francisco Partners Agility",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "195",
+        "fund_name": "MHR Institutional Partners IV LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "196",
+        "fund_name": "New Leaf Ventures II, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "197",
+        "fund_name": "Denham Commodity Partners Fund V, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "198",
+        "fund_name": "Sequoia Capital U.S. Venture Fund XV LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "200",
+        "fund_name": "Polaris Venture Partners V, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "201",
+        "fund_name": "Pamlico Capital V LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "203",
+        "fund_name": "Accel XIV LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "204",
+        "fund_name": "Felicis Ventures V LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "205",
+        "fund_name": "Madison Dearborn Capital Partners V, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "206",
+        "fund_name": "Kuramo Africa Opportunity Fund LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "209",
+        "fund_name": "Silver Lake Partners II, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "210",
+        "fund_name": "EnCap Energy Capital Fund VI, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "211",
+        "fund_name": "OCM Opportunities Fund VI, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "160",
+        "fund_name": "Lime Rock Partners VII LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "161",
+        "fund_name": "Technology Partners Fund VIII, L.P. (VC)",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "162",
+        "fund_name": "Andreessen Horowitz Fund V-Q LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "163",
+        "fund_name": "EnCap Energy Capital Fund X LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "164",
+        "fund_name": "A-Fund II LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "165",
+        "fund_name": "Zero2IPO China Angel Fund III LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "166",
+        "fund_name": "5AM Ventures V LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "167",
+        "fund_name": "Trustbridge Partners V LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "168",
+        "fund_name": "HongShan Capital Venture Fund V, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "169",
+        "fund_name": "SB Asia Investment Fund II, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "170",
+        "fund_name": "Polaris Partners VIII LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "171",
+        "fund_name": "Versant Venture Capital VII LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "172",
+        "fund_name": "Merit Energy Partners J LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "213",
+        "fund_name": "InterWest Partners X, LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "173",
+        "fund_name": "Maveron Equity Partners VI LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "214",
+        "fund_name": "Francisco Partners VI LP",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "174",
+        "fund_name": "HongShan Capital Venture Fund VI, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "175",
+        "fund_name": "Ironbridge Fund II, L.P.",
+        "source": "solovis"
+      },
+      {
+        "fund_id": "607692",
+        "fund_name": "Japanese Equity Long-Short Strategy",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "605425",
+        "fund_name": "VN Capital Fund I LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "601615",
+        "fund_name": "Merger Arbitrage- Unlevered",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "603453",
+        "fund_name": "JPM US Research Market Neutral",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "602131",
+        "fund_name": "Tactical Currency Allocation - Long/Short",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "602861",
+        "fund_name": "Dynamic Hedging (Active Currency Overlay)",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "600690",
+        "fund_name": "US Market Neutral Equity",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "602790",
+        "fund_name": "Bridgewater Pure Alpha 12% Volatility Strategy",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "605765",
+        "fund_name": "Currency Solutions - Dynamic hedging (0% hedged benchmark) \u2013 USD0 composite",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "600339",
+        "fund_name": "Falcon Point Long/Short Strategy",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632686",
+        "fund_name": "Bay Resource Partners, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632711",
+        "fund_name": "Gabelli Associates Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632960",
+        "fund_name": "Otus Smaller Companies Master Fund Limited",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632675",
+        "fund_name": "ECF Value Fund, LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "600766",
+        "fund_name": "Boston Partners Long/Short Equity",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632683",
+        "fund_name": "IBS Turnaround Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632698",
+        "fund_name": "Yankee Multi-Manager Fund, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632747",
+        "fund_name": "Firebird Republics Fund, Ltd.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632764",
+        "fund_name": "The GLI Fund LLC",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632726",
+        "fund_name": "Weaver Arbitrage Partners, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632785",
+        "fund_name": "Advent Global Partners",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632821",
+        "fund_name": "GLL Investors, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "607002",
+        "fund_name": "Commodity Real Return",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632853",
+        "fund_name": "Bridgewater All Weather 12% Fund, Ltd.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "606336",
+        "fund_name": "GMO Global Allocation Absolute Return Strategy",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "614256",
+        "fund_name": "CC&L Q Global Equity Market Neutral",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "614723",
+        "fund_name": "Goodwood Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633183",
+        "fund_name": "Amethyst Arbitrage Fund (Offshore)",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633529",
+        "fund_name": "Ventura Capital Fund, Ltd",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633565",
+        "fund_name": "GAMCO Medical Opportunities, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632659",
+        "fund_name": "Brookdale International Partners, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632713",
+        "fund_name": "Alternative Investments Institutional Master Fund Ltd.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632745",
+        "fund_name": "Firebird Fund, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633264",
+        "fund_name": "Lighthouse V Fund Limited",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633330",
+        "fund_name": "The Merchant Commodity Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633883",
+        "fund_name": "Japan Synthetic Warrant Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633423",
+        "fund_name": "The Cypress Partners L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633965",
+        "fund_name": "Canterbury Growth Fund Ltd.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633039",
+        "fund_name": "Dunwoody Partners, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633711",
+        "fund_name": "Rosseau Limited Partnership",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633725",
+        "fund_name": "Waterfall Eden Fund (High Yield ABS)",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632714",
+        "fund_name": "Gabelli Associates Limited",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633755",
+        "fund_name": "TRF Master Fund (Cayman), L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632692",
+        "fund_name": "Core Investment L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633016",
+        "fund_name": "Phalanx Japan AustralAsia Multi-Strategy Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634090",
+        "fund_name": "Contravisory Fund, LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634208",
+        "fund_name": "Axiom International Opportunity Fund, LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634258",
+        "fund_name": "Windmill Partners LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634285",
+        "fund_name": "Eckhardt Standard Master Fund, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634319",
+        "fund_name": "Perceptive Life Sciences Fund, LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633041",
+        "fund_name": "MKB Capital Appreciation Fund, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634034",
+        "fund_name": "Miller Global Partners, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633288",
+        "fund_name": "ABS Alpha Ltd - Global Equity Portfolio (ERISA)",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634453",
+        "fund_name": "Whitebox Relative Value Partners, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633413",
+        "fund_name": "NorthStar Fund III, LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632755",
+        "fund_name": "King Street Capital, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632756",
+        "fund_name": "King Street Capital, Ltd.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632773",
+        "fund_name": "FORT Global Trend",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "632774",
+        "fund_name": "New Paradigm Fund, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634572",
+        "fund_name": "Altius Capital Partners, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634585",
+        "fund_name": "TAG Relative Value Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634655",
+        "fund_name": "OEI Mac",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634672",
+        "fund_name": "Malta Offshore, Ltd.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634136",
+        "fund_name": "Oxbridge Associates, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634170",
+        "fund_name": "Horizon Growth Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634204",
+        "fund_name": "WPG Partners Opportunistic Value L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633284",
+        "fund_name": "Lighthouse Global Long/Short Fund, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634789",
+        "fund_name": "Aurum Managed Portfolio Ltd.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634198",
+        "fund_name": "DAFNA International Fund, Ltd",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634255",
+        "fund_name": "Shaker Investments Tower Fund, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633174",
+        "fund_name": "Amethyst Arbitrage Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633964",
+        "fund_name": "Hangar 4 Eagle I, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633998",
+        "fund_name": "Courage Special Situations Master Fund, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634936",
+        "fund_name": "Walbert Fund of Funds I, LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "633492",
+        "fund_name": "Harvey SMidCap Fund, LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634123",
+        "fund_name": "Antares European Fund LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "635306",
+        "fund_name": "P.A.W. Small Cap Partners, L.P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "635423",
+        "fund_name": "Wexford Credit Opportunities Fund",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634658",
+        "fund_name": "Sandalwood Debt Fund B, L. P.",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "634264",
+        "fund_name": "P & A Multi-Sector Fund, LP",
+        "source": "aevest"
+      },
+      {
+        "fund_id": "1534471",
+        "fund_name": "US Value Equity SMA Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "3341234",
+        "fund_name": "Kurv Yield Premium Strategy Amazon (AMZN) ETF",
+        "source": "evest"
+      },
+      {
+        "fund_id": "602203",
+        "fund_name": "F/m Core Fixed Income",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1162426",
+        "fund_name": "Compass",
+        "source": "evest"
+      },
+      {
+        "fund_id": "602777",
+        "fund_name": "Russell 1000 Growth Index Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2459123",
+        "fund_name": "China A Shares Long Only",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1461176",
+        "fund_name": "Nationwide Loomis Short-Term Bond Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "602365",
+        "fund_name": "Vanguard Growth Index Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "602371",
+        "fund_name": "Vanguard Intermediate-Term Treasury Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "602392",
+        "fund_name": "Vanguard Long-Term Bond Index Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2464005",
+        "fund_name": "NYLI CBRE Real Assets ETF (Formerly IndexIQ)",
+        "source": "evest"
+      },
+      {
+        "fund_id": "837343",
+        "fund_name": "Global Debt Unconstrained",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1525185",
+        "fund_name": "Fidelity Limited Term Bond",
+        "source": "evest"
+      },
+      {
+        "fund_id": "664620",
+        "fund_name": "Ninety One Emerging Markets Local Currency Debt (Broad)",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2374126",
+        "fund_name": "Small Cap Dividend Value",
+        "source": "evest"
+      },
+      {
+        "fund_id": "602660",
+        "fund_name": "Aurora Equity Carve-Out Composite",
+        "source": "evest"
+      },
+      {
+        "fund_id": "849240",
+        "fund_name": "Fidelity Advisor Diversified Stock Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "603590",
+        "fund_name": "JPM US REITs",
+        "source": "evest"
+      },
+      {
+        "fund_id": "660730",
+        "fund_name": "KBIGI Water Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "788193",
+        "fund_name": "High Income",
+        "source": "evest"
+      },
+      {
+        "fund_id": "602118",
+        "fund_name": "Moderate Duration - Core Plus Full Authority",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1138604",
+        "fund_name": "M&G Global Equity Composite USD",
+        "source": "evest"
+      },
+      {
+        "fund_id": "602717",
+        "fund_name": "Disciplined LargeCap",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2205179",
+        "fund_name": "Galliard Ultra Short Core",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1005582",
+        "fund_name": "BlueBay Emerging Market Investment Grade Corporate Debt Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "3114151",
+        "fund_name": "AQR Adaptive Long Short US Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1995041",
+        "fund_name": "The Materials Select Sector SPDR\u00ae Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "3213810",
+        "fund_name": "Global X Russell 2000 ETF",
+        "source": "evest"
+      },
+      {
+        "fund_id": "837812",
+        "fund_name": "All Cap Core",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2071355",
+        "fund_name": "INDURE Build-to-Core Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1472403",
+        "fund_name": "BlackRock Systematic ESG Bond Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "610075",
+        "fund_name": "U.S. Small Cap Opportunity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "779802",
+        "fund_name": "US Credit Fixed Income Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "785422",
+        "fund_name": "Bain Capital High Income Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "610194",
+        "fund_name": "Fidelity U.S. Bond Index Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2146576",
+        "fund_name": "Municipal Bond",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1455681",
+        "fund_name": "Franklin Large Cap Value (Yield Focus) Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "610279",
+        "fund_name": "Large Cap Core Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2160573",
+        "fund_name": "Taxable Municipal Bond Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1120758",
+        "fund_name": "Fidelity Small Cap Index Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1144757",
+        "fund_name": "Ancora/Thelen Mid Cap Core",
+        "source": "evest"
+      },
+      {
+        "fund_id": "610387",
+        "fund_name": "Limited Maturity Municipal Bond SMA",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1474152",
+        "fund_name": "Environmental Accountability U.S. Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2160753",
+        "fund_name": "Small Cap Growth Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1442938",
+        "fund_name": "Women in Leadership - Large Cap Quality Core SMA",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2161098",
+        "fund_name": "US Sustainable Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1321240",
+        "fund_name": "Federated Hermes Low Duration Moderate",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2066875",
+        "fund_name": "Short Duration Opportunities Municipal",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1414902",
+        "fund_name": "Angel Oak High Yield Opportunities ETF",
+        "source": "evest"
+      },
+      {
+        "fund_id": "605226",
+        "fund_name": "PineBridge Asia ex-Japan Equity Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "662479",
+        "fund_name": "AllianzGI Unconstrained Total Return Asia Pacific",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2281018",
+        "fund_name": "SaratogaRIM Large Cap Quality Ultra Focus",
+        "source": "evest"
+      },
+      {
+        "fund_id": "662480",
+        "fund_name": "AllianzGI China Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "959450",
+        "fund_name": "Muzinich Global Tactical Credit",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1487751",
+        "fund_name": "Money Market",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2385037",
+        "fund_name": "Fidelity Sustainable U.S. Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "611138",
+        "fund_name": "Value Equity Portfolio",
+        "source": "evest"
+      },
+      {
+        "fund_id": "682037",
+        "fund_name": "Veritas Asian Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "960214",
+        "fund_name": "L&G Buy and Maintain Credit Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2388604",
+        "fund_name": "Exencial Defensive Equity Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "609355",
+        "fund_name": "Leith Wheeler U.S. Equity Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2404502",
+        "fund_name": "USD High Yield",
+        "source": "evest"
+      },
+      {
+        "fund_id": "612169",
+        "fund_name": "AMI Large Cap Growth Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "842794",
+        "fund_name": "Russell Small Cap Completeness Index Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "687699",
+        "fund_name": "Asia Ex Japan Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "693083",
+        "fund_name": "Mirae Asset ESG China Sector Leader Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "954650",
+        "fund_name": "Global Research Equity ex Australia",
+        "source": "evest"
+      },
+      {
+        "fund_id": "845868",
+        "fund_name": "Diversified Property Fund",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2232760",
+        "fund_name": "ISG Total Market",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1474146",
+        "fund_name": "Environmental Accountability - Low Carbon Equity",
+        "source": "evest"
+      },
+      {
+        "fund_id": "615174",
+        "fund_name": "RGM Value Opportunity Fund II LP",
+        "source": "evest"
+      },
+      {
+        "fund_id": "652848",
+        "fund_name": "Asia Pacific Real Estate Income",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2238272",
+        "fund_name": "US Equity Advantage Diversified",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1484462",
+        "fund_name": "Arena Short Duration High Yield Composite",
+        "source": "evest"
+      },
+      {
+        "fund_id": "613644",
+        "fund_name": "Floating Rate",
+        "source": "evest"
+      },
+      {
+        "fund_id": "998115",
+        "fund_name": "Wasmer Schroeder Intermediate IG Credit",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2239187",
+        "fund_name": "U.S. Dividend Growers",
+        "source": "evest"
+      },
+      {
+        "fund_id": "999149",
+        "fund_name": "Galliard Intermediate Aggregate",
+        "source": "evest"
+      },
+      {
+        "fund_id": "1485731",
+        "fund_name": "Quality SMID Dividend Strategy",
+        "source": "evest"
+      },
+      {
+        "fund_id": "2239900",
+        "fund_name": "Aptus Collared Investment Opportunity ETF",
+        "source": "evest"
+      }
+    ],
+    "timestamp": "2026-08-07T03:44:20.372546"
+  },
+  "timestamp": "2026-08-07T03:44:20.374326"
+}

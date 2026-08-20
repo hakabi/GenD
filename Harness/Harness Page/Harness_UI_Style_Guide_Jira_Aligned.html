@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness UI Style Guide — Atlassian-aligned</title>
+<style>
+  :root { --pg:#fff; --tx:#172b4d; --tx2:#6b778c; --ln:#dfe1e6; --cd:#fafbfc; --ac:#0052cc; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#15171b; --tx:#e8eaed; --tx2:#9aa3af; --ln:rgba(232,234,237,.18); --cd:#1b1e23; --ac:#579dff; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",system-ui,sans-serif;
+         font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1080px; margin:0 auto; padding:34px 26px 70px; }
+  h1 { font-size:29px; font-weight:600; letter-spacing:-.02em; margin:0 0 6px; }
+  h2 { font-size:20px; font-weight:600; margin:38px 0 5px; padding-bottom:7px; border-bottom:2px solid var(--ln); }
+  h3 { font-size:14.5px; font-weight:600; margin:22px 0 6px; }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 16px; }
+  b, strong { color:var(--tx); }
+  .banner { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:4px;
+            padding:11px 15px; margin:0 0 22px; font-size:13px; color:var(--tx2); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin:10px 0 4px; }
+  th, td { text-align:left; padding:7px 10px 7px 0; vertical-align:top; border-bottom:1px solid var(--ln); color:var(--tx2); }
+  th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--tx2); border-bottom:2px solid var(--ln); }
+  td b { color:var(--tx); }
+  .sw { display:inline-block; width:34px; height:20px; border-radius:3px; border:1px solid rgba(0,0,0,.14);
+        vertical-align:middle; margin-right:8px; }
+  .demo { border:1px solid var(--ln); border-radius:4px; padding:15px 17px; background:var(--cd); margin:9px 0 4px; }
+  .demo.light { background:#fff; color:#172b4d; }
+  .row { display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
+  .note { border:1px solid var(--ln); border-left:3px solid #ff991f; border-radius:4px; padding:10px 13px;
+          font-size:12.5px; color:var(--tx2); margin:12px 0; }
+  .note b { display:block; margin-bottom:2px; }
+
+  /* component demos — fixed Atlassian look regardless of page theme */
+  .lz { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+        padding:2px 5px; border-radius:3px; line-height:1.45; }
+  .btn { border-radius:3px; padding:7px 13px; font-size:13px; font-weight:500; display:inline-block; }
+  .bp { background:#0052cc; color:#fff; }
+  .bs { background:#f4f5f7; color:#42526e; }
+  .bsub { color:#42526e; }
+  .bd { background:#de350b; color:#fff; }
+  .bdis { background:#f4f5f7; color:#a5adba; }
+  .ctl { border:1px solid #dfe1e6; background:#fafbfc; border-radius:3px; padding:6px 11px; font-size:13px; color:#42526e; display:inline-block; }
+  .key { font-size:12px; font-weight:600; color:#0052cc; }
+  .tabs { display:flex; gap:20px; border-bottom:2px solid #dfe1e6; }
+  .tab { padding:7px 0; font-size:13.5px; color:#6b778c; }
+  .tab.on { color:#0052cc; font-weight:600; box-shadow:inset 0 -2px 0 #0052cc; }
+  .navd { width:210px; background:#fff; border:1px solid #dfe1e6; border-radius:3px; padding:9px 7px; }
+  .grp { font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c; padding:9px 8px 4px; }
+  .nl { padding:6px 8px; border-radius:3px; color:#42526e; font-size:13px; display:flex; }
+  .nl.on { background:#deebff; color:#0052cc; font-weight:600; }
+  .kv { display:grid; grid-template-columns:1fr 1fr; gap:11px 22px; background:#fff; border:1px solid #dfe1e6;
+        border-radius:3px; padding:13px 15px; }
+  .kv .k { font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c; }
+  .kv .v { font-size:13px; color:#172b4d; margin-top:1px; }
+  .type-row { display:flex; align-items:baseline; gap:16px; padding:7px 0; border-bottom:1px solid var(--ln); }
+  .type-row .meta { font-size:11.5px; color:var(--tx2); margin-left:auto; white-space:nowrap; }
+  .sp { background:#0052cc; height:15px; border-radius:2px; display:inline-block; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>Harness UI Style Guide — Atlassian-aligned.</b> The build specification that accompanies the decision memo. Written for developers: every value here is meant to be copied into <span class="mono">tokens.css</span> and used as the single source of truth. Prepared by the BA, 14 Aug 2026.</div>
+
+<h1>Harness UI style guide</h1>
+<p class="lead">Modelled on the Atlassian Design System — the system behind Jira, which our team uses daily. Adopting its <b>values and patterns in our own code</b>; we are not installing Atlassian's component library. See the memo, section 3, option C.</p>
+
+<div class="note">
+<b>Verify before implementing</b>
+The colour values below are Atlassian's published palette as I recorded them, and should be checked against <span class="mono">atlassian.design</span> before they go into code — Atlassian has been migrating to a newer token set, and some values may have moved. This does not change the recommendation; it changes which hex codes you type.
+</div>
+
+<!-- ============ COLOUR ============ -->
+<h2>1 · Colour</h2>
+<p class="lead">Three groups: <b>brand</b> (one blue, used only for interaction), <b>neutrals</b> (everything structural), and <b>status</b> (meaning only — never decoration).</p>
+
+<h3>Brand</h3>
+<table>
+<thead><tr><th style="width:150px">Token</th><th style="width:130px">Value</th><th>Use for</th></tr></thead>
+<tbody>
+<tr><td><span class="sw" style="background:#0052cc"></span><b>--brand</b></td><td class="mono">#0052CC</td><td>Primary buttons, links, active nav text, focus rings, request keys</td></tr>
+<tr><td><span class="sw" style="background:#0747a6"></span><b>--brand-dark</b></td><td class="mono">#0747A6</td><td>Hover and pressed state of the above</td></tr>
+<tr><td><span class="sw" style="background:#deebff"></span><b>--brand-subtle</b></td><td class="mono">#DEEBFF</td><td>Selected row background, active nav background, info lozenge</td></tr>
+</tbody>
+</table>
+
+<h3>Neutrals</h3>
+<table>
+<thead><tr><th style="width:150px">Token</th><th style="width:130px">Value</th><th>Use for</th></tr></thead>
+<tbody>
+<tr><td><span class="sw" style="background:#172b4d"></span><b>--text</b></td><td class="mono">#172B4D</td><td>All primary text. Never pure black</td></tr>
+<tr><td><span class="sw" style="background:#42526e"></span><b>--text-2</b></td><td class="mono">#42526E</td><td>Secondary text, subtle button labels, nav items at rest</td></tr>
+<tr><td><span class="sw" style="background:#6b778c"></span><b>--text-muted</b></td><td class="mono">#6B778C</td><td>Metadata, timestamps, uppercase field labels</td></tr>
+<tr><td><span class="sw" style="background:#a5adba"></span><b>--text-disabled</b></td><td class="mono">#A5ADBA</td><td>Disabled text only. Never for body copy</td></tr>
+<tr><td><span class="sw" style="background:#dfe1e6"></span><b>--border</b></td><td class="mono">#DFE1E6</td><td>Every border and divider</td></tr>
+<tr><td><span class="sw" style="background:#f4f5f7"></span><b>--surface-sunken</b></td><td class="mono">#F4F5F7</td><td>App background behind panels; secondary button fill</td></tr>
+<tr><td><span class="sw" style="background:#fafbfc; border-color:#dfe1e6"></span><b>--surface-input</b></td><td class="mono">#FAFBFC</td><td>Input and select fill at rest</td></tr>
+<tr><td><span class="sw" style="background:#fff; border-color:#dfe1e6"></span><b>--surface</b></td><td class="mono">#FFFFFF</td><td>Panels, cards, sidebar, list background</td></tr>
+</tbody>
+</table>
+
+<h3>Status — the important one</h3>
+<p class="lead">Harness currently shows status four different ways across screens. <b>This table ends that.</b> Each Harness state maps to exactly one lozenge, everywhere it appears.</p>
+<table>
+<thead><tr><th style="width:190px">Harness state</th><th style="width:150px">Lozenge</th><th style="width:190px">Background / text</th><th>Meaning shown to user</th></tr></thead>
+<tbody>
+<tr><td><b>Queued</b></td><td><span class="lz" style="background:#dfe1e6; color:#42526e">Queued</span></td><td class="mono">#DFE1E6 / #42526E</td><td>Accepted, not started</td></tr>
+<tr><td><b>Running</b></td><td><span class="lz" style="background:#deebff; color:#0747a6">In progress</span></td><td class="mono">#DEEBFF / #0747A6</td><td>Executing now</td></tr>
+<tr><td><b>Awaiting review</b></td><td><span class="lz" style="background:#fffae6; color:#974f0c">Awaiting review</span></td><td class="mono">#FFFAE6 / #974F0C</td><td>Blocked on a person — <b>QG-150</b></td></tr>
+<tr><td><b>Passed</b></td><td><span class="lz" style="background:#e3fcef; color:#006644">Passed</span></td><td class="mono">#E3FCEF / #006644</td><td>All cases passed</td></tr>
+<tr><td><b>Failed</b></td><td><span class="lz" style="background:#ffebe6; color:#bf2600">Failed</span></td><td class="mono">#FFEBE6 / #BF2600</td><td>One or more cases failed</td></tr>
+<tr><td><b>Duplicate</b></td><td><span class="lz" style="background:#eae6ff; color:#403294">Duplicate</span></td><td class="mono">#EAE6FF / #403294</td><td>Blocked by dedupe — not a failure</td></tr>
+<tr><td><b>AI fallback used</b></td><td><span class="lz" style="background:#eae6ff; color:#403294">AI</span></td><td class="mono">#EAE6FF / #403294</td><td>Step ran via AI, not Playwright</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<b>Rule: colour never carries meaning alone</b>
+Every lozenge shows a word as well as a colour. Roughly one in twelve men has some colour-vision deficiency, and status is the one thing in Harness nobody can afford to misread. This also means status survives a black-and-white printout or a screenshot in a ticket.
+</div>
+
+<!-- ============ TYPE ============ -->
+<h2>2 · Typography</h2>
+<p class="lead">One family. Weight and size carry hierarchy — not colour, and not italics.</p>
+<p class="lead"><b>Font stack:</b> <span class="mono">-apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif</span> · <b>Numeric/ID stack:</b> <span class="mono">"Fira Code", ui-monospace, Consolas, monospace</span></p>
+
+<div class="demo light">
+  <div class="type-row"><span style="font-size:24px; font-weight:600; letter-spacing:-.01em">Page title</span><span class="meta">24 / 600 / -0.01em</span></div>
+  <div class="type-row"><span style="font-size:20px; font-weight:600">Section heading</span><span class="meta">20 / 600</span></div>
+  <div class="type-row"><span style="font-size:16px; font-weight:600">Panel heading</span><span class="meta">16 / 600</span></div>
+  <div class="type-row"><span style="font-size:14px">Body text — the default for everything readable</span><span class="meta">14 / 400 / 1.5</span></div>
+  <div class="type-row"><span style="font-size:12px; color:#6b778c">Metadata, timestamps, secondary detail</span><span class="meta">12 / 400</span></div>
+  <div class="type-row"><span style="font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c">Field label</span><span class="meta">11 / 700 / uppercase</span></div>
+  <div class="type-row" style="border-bottom:none"><span class="mono" style="font-size:13px; color:#172b4d">REQ-1042 · 2m 24s · trace.zip</span><span class="meta">13 / mono / tabular</span></div>
+</div>
+
+<div class="note">
+<b>Use tabular figures for all numbers in columns</b>
+<span class="mono">font-variant-numeric: tabular-nums</span> on durations, counts, timestamps and IDs. Without it, digits have different widths and columns visibly jitter as the queue refreshes — a small detail that reads as sloppiness.
+</div>
+
+<!-- ============ SPACING ============ -->
+<h2>3 · Spacing, radius, elevation</h2>
+<p class="lead">A 4px base. Only these steps — no arbitrary values.</p>
+
+<div class="demo light">
+  <div style="display:flex; flex-direction:column; gap:7px">
+    <div><span class="sp" style="width:4px"></span> <span class="mono" style="font-size:12px">4px</span> <span style="font-size:12px; color:#6b778c">— icon to label</span></div>
+    <div><span class="sp" style="width:8px"></span> <span class="mono" style="font-size:12px">8px</span> <span style="font-size:12px; color:#6b778c">— inside a component</span></div>
+    <div><span class="sp" style="width:12px"></span> <span class="mono" style="font-size:12px">12px</span> <span style="font-size:12px; color:#6b778c">— between related elements</span></div>
+    <div><span class="sp" style="width:16px"></span> <span class="mono" style="font-size:12px">16px</span> <span style="font-size:12px; color:#6b778c">— panel padding, default gap</span></div>
+    <div><span class="sp" style="width:24px"></span> <span class="mono" style="font-size:12px">24px</span> <span style="font-size:12px; color:#6b778c">— between panels</span></div>
+    <div><span class="sp" style="width:32px"></span> <span class="mono" style="font-size:12px">32px</span> <span style="font-size:12px; color:#6b778c">— between sections</span></div>
+  </div>
+</div>
+
+<table>
+<thead><tr><th style="width:200px">Property</th><th style="width:150px">Value</th><th>Applies to</th></tr></thead>
+<tbody>
+<tr><td><b>Border radius</b></td><td class="mono">3px</td><td>Everything — buttons, inputs, panels, lozenges. Atlassian is square; this is a big part of why it reads as businesslike</td></tr>
+<tr><td><b>Radius (avatar)</b></td><td class="mono">50%</td><td>Avatars only</td></tr>
+<tr><td><b>Elevation — card</b></td><td class="mono">0 1px 1px rgba(9,30,66,.25)</td><td>Panels lifted off the sunken background</td></tr>
+<tr><td><b>Elevation — overlay</b></td><td class="mono">0 4px 8px rgba(9,30,66,.25)</td><td>Dropdowns, dialogs, popovers</td></tr>
+<tr><td><b>Focus ring</b></td><td class="mono">0 0 0 2px #4C9AFF</td><td>Every focusable element. Never remove it</td></tr>
+<tr><td><b>Transition</b></td><td class="mono">150ms ease-out</td><td>Hover and state changes. Nothing slower than 300ms</td></tr>
+</tbody>
+</table>
+
+<!-- ============ COMPONENTS ============ -->
+<h2>4 · Component set</h2>
+<p class="lead">The minimum vocabulary needed to rebuild the Requests page. Build these once; every screen after that is assembly.</p>
+
+<h3>4.1 Buttons — one primary action per screen</h3>
+<div class="demo light">
+  <div class="row">
+    <span class="btn bp">Create request</span>
+    <span class="btn bs">Cancel</span>
+    <span class="btn bsub">Subtle action</span>
+    <span class="btn bd">Delete</span>
+    <span class="btn bdis">Disabled</span>
+  </div>
+</div>
+<table>
+<thead><tr><th style="width:150px">Variant</th><th style="width:210px">Fill / text</th><th>When</th></tr></thead>
+<tbody>
+<tr><td><b>Primary</b></td><td class="mono">#0052CC / #FFFFFF</td><td>The one main action. Never two on a screen</td></tr>
+<tr><td><b>Secondary</b></td><td class="mono">#F4F5F7 / #42526E</td><td>Cancel, and supporting actions</td></tr>
+<tr><td><b>Subtle</b></td><td class="mono">transparent / #42526E</td><td>Tertiary actions in dense areas</td></tr>
+<tr><td><b>Danger</b></td><td class="mono">#DE350B / #FFFFFF</td><td>Destructive only, and always confirmed first</td></tr>
+</tbody>
+</table>
+
+<h3>4.2 Lozenge — the status component</h3>
+<div class="demo light">
+  <div class="row">
+    <span class="lz" style="background:#dfe1e6; color:#42526e">Queued</span>
+    <span class="lz" style="background:#deebff; color:#0747a6">In progress</span>
+    <span class="lz" style="background:#fffae6; color:#974f0c">Awaiting review</span>
+    <span class="lz" style="background:#e3fcef; color:#006644">Passed</span>
+    <span class="lz" style="background:#ffebe6; color:#bf2600">Failed</span>
+    <span class="lz" style="background:#eae6ff; color:#403294">Duplicate</span>
+  </div>
+</div>
+<p class="lead" style="margin-top:8px"><span class="mono">font-size:11px · font-weight:700 · uppercase · letter-spacing:.04em · padding:2px 5px · radius:3px</span></p>
+
+<h3>4.3 Request key</h3>
+<div class="demo light">
+  <div class="row"><span class="key">REQ-1042</span><span style="font-size:13px; color:#6b778c">— always monospace-adjacent, always the brand blue, always clickable</span></div>
+</div>
+<p class="lead" style="margin-top:8px">Replaces <span class="mono">#79c94116-ca3</span>. This is <b>QG-141</b> delivered — a sequential identifier a person can say out loud in a stand-up and type into a search box.</p>
+
+<h3>4.4 Controls</h3>
+<div class="demo light">
+  <div class="row">
+    <span class="ctl">My requests ▾</span>
+    <span class="ctl">All statuses ▾</span>
+    <span class="ctl" style="color:#7a869a; min-width:210px">Search requests…</span>
+  </div>
+</div>
+<p class="lead" style="margin-top:8px">These replace the four native <span class="mono">&lt;select&gt;</span> elements. A styled control renders identically on every machine; a native one does not.</p>
+
+<h3>4.5 Tabs</h3>
+<div class="demo light">
+  <div class="tabs"><span class="tab on">Details</span><span class="tab">Execution 4</span><span class="tab">History 6</span></div>
+</div>
+<p class="lead" style="margin-top:8px">Counts in the label where a number is known. Two-pixel underline in brand blue for the active tab.</p>
+
+<h3>4.6 Sidebar navigation</h3>
+<div class="demo light">
+  <div class="navd">
+    <div class="grp">Work</div>
+    <div class="nl on">Requests <span style="margin-left:auto; color:#6b778c">6</span></div>
+    <div class="nl">Test cases <span style="margin-left:auto; color:#6b778c">313</span></div>
+    <div class="nl">Test groups</div>
+    <div class="grp">Context</div>
+    <div class="nl">Knowledge</div>
+    <div class="nl">Dashboards</div>
+  </div>
+</div>
+<p class="lead" style="margin-top:8px">Grouped under uppercase section labels. Active item gets <span class="mono">#DEEBFF</span> fill and brand-blue text. <b>Labels always visible</b> — icon-only navigation hurts discoverability and fails accessibility review.</p>
+
+<h3>4.7 Details panel</h3>
+<div class="demo light">
+  <div class="kv">
+    <div><div class="k">Status</div><div class="v"><span class="lz" style="background:#ffebe6; color:#bf2600">Failed</span> at step 4 of 4</div></div>
+    <div><div class="k">Request mode</div><div class="v">Single test case</div></div>
+    <div><div class="k">Created</div><div class="v">10 Jul 2026, 10:33</div></div>
+    <div><div class="k">Created by</div><div class="v">nguyenhoangly103</div></div>
+  </div>
+</div>
+<p class="lead" style="margin-top:8px">Two columns, uppercase labels above values. Identical to the pattern the team reads in Jira daily — zero learning cost.</p>
+
+<!-- ============ A11Y ============ -->
+<h2>5 · Accessibility rules — non-negotiable</h2>
+<table>
+<thead><tr><th style="width:230px">Rule</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><b>Body text contrast ≥ 4.5:1</b></td><td><span class="mono">#172B4D</span> on white clears this comfortably. <span class="mono">#A5ADBA</span> does not — disabled states only</td></tr>
+<tr><td><b>Never remove the focus ring</b></td><td>Keyboard users navigate by it. Restyle it if you must; never delete it</td></tr>
+<tr><td><b>Colour is never the only signal</b></td><td>Every status carries a word. Every icon-only button carries an <span class="mono">aria-label</span></td></tr>
+<tr><td><b>Click targets ≥ 32px tall</b></td><td>Applies to queue rows, nav items and dropdowns</td></tr>
+<tr><td><b>Respect <span class="mono">prefers-reduced-motion</span></b></td><td>Disable transitions when the user has asked the OS for that</td></tr>
+</tbody>
+</table>
+
+<!-- ============ MIGRATION ============ -->
+<h2>6 · Migration from the current tokens</h2>
+<p class="lead"><span class="mono">QOps_Harness/css/tokens.css</span> already has the right <i>shape</i> — a token file with light and dark themes. The work is replacing the values and then actually using them in the other eleven stylesheets.</p>
+<table>
+<thead><tr><th style="width:210px">Current token</th><th style="width:150px">Current value</th><th style="width:150px">Becomes</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td class="mono">--accent</td><td class="mono">#10a37f</td><td class="mono">#0052CC</td><td>Frees green to mean "passed" and nothing else</td></tr>
+<tr><td class="mono">--fg</td><td class="mono">#0d0d0d</td><td class="mono">#172B4D</td><td>Near-black is harsher than it needs to be</td></tr>
+<tr><td class="mono">--muted</td><td class="mono">#6e6e6e</td><td class="mono">#6B778C</td><td>—</td></tr>
+<tr><td class="mono">--border</td><td class="mono">#e5e5e5</td><td class="mono">#DFE1E6</td><td>—</td></tr>
+<tr><td class="mono">--surface</td><td class="mono">#f5f5f5</td><td class="mono">#F4F5F7</td><td>—</td></tr>
+<tr><td class="mono">--danger</td><td class="mono">#ef4146</td><td class="mono">#DE350B</td><td>—</td></tr>
+<tr><td class="mono">--radius-sm / md</td><td class="mono">12px / 16px</td><td class="mono">3px</td><td>The single biggest visual shift. Rounded reads consumer; square reads professional-tool</td></tr>
+<tr><td class="mono">--font-body</td><td class="mono">"Söhne", Inter…</td><td class="mono">system stack</td><td>Drops a font dependency and matches Jira's feel</td></tr>
+<tr><td class="mono">--font-display</td><td class="mono">"Signifier" serif</td><td>— remove</td><td>Currently used once, in the logo. No role in this system</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<b>The rule that makes this stick</b>
+After migration, <b>no colour, spacing or radius value may appear in any stylesheet except <span class="mono">tokens.css</span></b>. If a screen needs a value that does not exist, that is a conversation with the token owner — not a local override. Without this rule the twelve stylesheets drift apart again within a month, and we will have spent the effort for nothing.
+</div>
+
+<p class="lead" style="margin-top:26px; font-size:12.5px">Prepared by the BA to accompany <b>Harness_UI_System_Decision_Memo.md</b> and <b>Harness_UI_Current_vs_Jira_Comparison.html</b>. Values require verification against <span class="mono">atlassian.design</span>, and the component list requires dev-team sizing, before any sprint commitment.</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<style>
+.p2 { --teal:#0d9488; --teal-d:#0f766e; --ink:#0f172a; --ink2:#334155; --mut:#64748b; --mut2:#94a3b8;
+      --line:#e2e8f0; --line2:#eef2f7; --bg:#f1f5f9; --srf:#ffffff;
+      --ok:#059669; --okbg:#ecfdf5; --run:#d97706; --runbg:#fffbeb; --err:#e11d48; --errbg:#fff1f3; --idle:#94a3b8; --idlebg:#f1f5f9;
+      font-family:"Fira Sans","Inter",system-ui,sans-serif; font-size:11px; line-height:1.5; color:var(--ink);
+      background:var(--bg); border-radius:12px; overflow:hidden; display:flex; height:660px; position:relative; }
+.p2 *, .p2 *::before, .p2 *::after { box-sizing:border-box; }
+.p2 .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+.p2 .num { font-variant-numeric:tabular-nums; }
+.p2 .zi { position:absolute; width:17px; height:17px; border-radius:50%; background:var(--teal); color:#fff;
+          font-size:9.5px; font-weight:700; display:grid; place-items:center; z-index:5; box-shadow:0 0 0 2.5px #fff; }
+
+/* ---------- 1. NAV ---------- */
+.p2 .nav { width:186px; flex:none; background:var(--srf); border-right:1px solid var(--line); display:flex; flex-direction:column; }
+.p2 .brand { padding:13px 14px 11px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--line2); }
+.p2 .mark { width:22px; height:22px; border-radius:6px; background:var(--teal); color:#fff; display:grid; place-items:center; font-weight:700; font-size:10px; }
+.p2 .bname { font-weight:650; font-size:12.5px; letter-spacing:-.01em; }
+.p2 .ngrp { padding:12px 9px 4px; font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--mut2); font-weight:600; }
+.p2 .nl { margin:0 8px; padding:6.5px 9px; border-radius:7px; display:flex; align-items:center; gap:9px; color:var(--ink2); }
+.p2 .nl svg { width:14px; height:14px; flex:none; stroke:currentColor; stroke-width:1.7; fill:none; opacity:.75; }
+.p2 .nl.on { background:var(--okbg); color:var(--teal-d); font-weight:650; }
+.p2 .nl.on svg { opacity:1; }
+.p2 .nbadge { margin-left:auto; background:var(--errbg); color:var(--err); font-size:9px; font-weight:700; padding:0 5px; border-radius:99px; }
+.p2 .sess { margin:10px 12px; padding:9px 10px; border:1px solid var(--line); border-radius:9px; background:#fcfdfe; }
+.p2 .sess .lbl { font-size:9px; letter-spacing:.09em; text-transform:uppercase; color:var(--mut2); font-weight:600; display:flex; align-items:center; gap:5px; }
+.p2 .sess .val { margin-top:4px; display:flex; align-items:center; gap:6px; font-size:10px; }
+.p2 .sesspill { background:var(--okbg); color:var(--teal-d); border:1px solid #ccebe5; border-radius:6px; padding:3px 6px; font-weight:600; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.p2 .sesschg { color:var(--teal); font-weight:600; font-size:9.5px; }
+.p2 .who { margin-top:auto; padding:10px 12px; border-top:1px solid var(--line2); display:flex; align-items:center; gap:8px; }
+.p2 .av { width:22px; height:22px; border-radius:50%; background:#cbd5e1; color:#475569; display:grid; place-items:center; font-size:9.5px; font-weight:700; }
+
+/* ---------- main ---------- */
+.p2 .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.p2 .phead { flex:none; background:var(--srf); border-bottom:1px solid var(--line); padding:12px 18px 0; }
+.p2 .ptop { display:flex; align-items:center; gap:10px; }
+.p2 .ptop h5 { margin:0; font-size:17px; font-weight:650; letter-spacing:-.02em; }
+.p2 .cnt { background:var(--bg); color:var(--mut); border-radius:99px; padding:1px 8px; font-size:10px; font-weight:600; }
+.p2 .cta { margin-left:auto; background:var(--teal); color:#fff; border-radius:8px; padding:7px 13px; font-size:11px; font-weight:650; display:flex; align-items:center; gap:6px; box-shadow:0 1px 2px rgba(13,148,136,.28); }
+.p2 .ghost { border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:10.5px; color:var(--ink2); display:flex; align-items:center; gap:5px; background:#fff; }
+
+/* ---------- 3. STATUS FILTER TILES ---------- */
+.p2 .tiles { display:flex; gap:8px; padding:12px 0 13px; }
+.p2 .tile { flex:1; border:1px solid var(--line); border-radius:9px; padding:8px 10px; background:#fff; display:flex; align-items:center; gap:9px; position:relative; }
+.p2 .tile.on { border-color:var(--err); background:var(--errbg); box-shadow:0 0 0 2.5px rgba(225,29,72,.09); }
+.p2 .tile .ti { width:24px; height:24px; border-radius:7px; display:grid; place-items:center; flex:none; }
+.p2 .tile .tn { font-size:17px; font-weight:700; line-height:1; letter-spacing:-.02em; }
+.p2 .tile .tl { font-size:9.5px; color:var(--mut); margin-top:2px; }
+.p2 .tsvg { width:13px; height:13px; stroke-width:2.2; fill:none; }
+
+/* ---------- 4. QUEUE ---------- */
+.p2 .body { flex:1; display:flex; min-height:0; }
+.p2 .queue { width:252px; flex:none; background:var(--srf); border-right:1px solid var(--line); display:flex; flex-direction:column; }
+.p2 .qbar { padding:9px 11px; border-bottom:1px solid var(--line2); display:flex; gap:7px; align-items:center; }
+.p2 .inp { flex:1; height:27px; border:1px solid var(--line); border-radius:7px; display:flex; align-items:center; gap:6px; padding:0 8px; color:var(--mut2); font-size:10.5px; background:#fcfdfe; }
+.p2 .sortbtn { height:27px; border:1px solid var(--line); border-radius:7px; padding:0 7px; display:flex; align-items:center; gap:4px; font-size:10px; color:var(--ink2); }
+.p2 .qlist { flex:1; overflow:hidden; }
+.p2 .qr { padding:10px 12px 10px 11px; border-bottom:1px solid var(--line2); border-left:3px solid transparent; display:grid; grid-template-columns:15px 1fr; gap:8px; }
+.p2 .qr.sel { background:#f7fbfa; border-left-color:var(--teal); }
+.p2 .qicon { width:15px; height:15px; border-radius:50%; display:grid; place-items:center; margin-top:1px; }
+.p2 .qicon svg { width:9px; height:9px; stroke-width:3; fill:none; stroke:#fff; }
+.p2 .qt { font-weight:600; color:var(--ink); font-size:11px; line-height:1.35; }
+.p2 .qm { margin-top:4px; display:flex; align-items:center; gap:6px; font-size:9.5px; color:var(--mut); }
+.p2 .qm .sep { color:#cbd5e1; }
+.p2 .qs { font-size:9px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+.p2 .qfoot { padding:8px 12px; border-top:1px solid var(--line2); font-size:9.5px; color:var(--mut2); text-align:center; }
+
+/* ---------- 5. DETAIL ---------- */
+.p2 .det { flex:1; min-width:0; display:flex; flex-direction:column; background:var(--bg); }
+.p2 .dhead { flex:none; background:var(--srf); border-bottom:1px solid var(--line); padding:12px 18px 0; }
+.p2 .dtop { display:flex; align-items:flex-start; gap:10px; }
+.p2 .dtitle { font-size:14.5px; font-weight:650; letter-spacing:-.015em; }
+.p2 .dmeta { margin-top:4px; display:flex; align-items:center; gap:8px; font-size:10px; color:var(--mut); }
+.p2 .spill { display:inline-flex; align-items:center; gap:4px; font-size:9.5px; font-weight:700; padding:2.5px 8px; border-radius:99px; letter-spacing:.03em; }
+.p2 .spill svg { width:10px; height:10px; stroke-width:2.6; fill:none; }
+.p2 .dacts { margin-left:auto; display:flex; gap:7px; }
+.p2 .tabs { display:flex; gap:20px; margin-top:12px; }
+.p2 .tab { padding:8px 0; font-size:11px; color:var(--mut); font-weight:500; }
+.p2 .tab.on { color:var(--teal-d); font-weight:650; box-shadow:inset 0 -2px 0 var(--teal); }
+.p2 .dscroll { flex:1; overflow:hidden; padding:14px 18px; }
+
+/* pipeline card */
+.p2 .card { background:var(--srf); border:1px solid var(--line); border-radius:11px; }
+.p2 .chead { padding:9px 14px; border-bottom:1px solid var(--line2); display:flex; align-items:center; gap:8px; }
+.p2 .clbl { font-size:9.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--mut2); font-weight:650; }
+.p2 .stages { display:flex; padding:16px 14px 13px; }
+.p2 .stg { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; position:relative; }
+.p2 .stg::before { content:''; position:absolute; top:9px; right:50%; width:100%; height:2px; background:var(--line); z-index:0; }
+.p2 .stg:first-child::before { display:none; }
+.p2 .stg.done::before, .p2 .stg.fail::before { background:var(--teal); }
+.p2 .bub { width:19px; height:19px; border-radius:50%; display:grid; place-items:center; background:var(--srf);
+           border:2px solid var(--line); z-index:1; }
+.p2 .bub svg { width:9px; height:9px; stroke-width:3.2; fill:none; }
+.p2 .stg.done .bub { background:var(--teal); border-color:var(--teal); }
+.p2 .stg.fail .bub { background:var(--err); border-color:var(--err); box-shadow:0 0 0 4px rgba(225,29,72,.14); }
+.p2 .sname { font-size:10px; color:var(--mut); text-align:center; }
+.p2 .stg.done .sname { color:var(--ink2); }
+.p2 .stg.fail .sname { color:var(--err); font-weight:650; }
+.p2 .stime { font-size:9px; color:var(--mut2); }
+
+/* failure callout */
+.p2 .callout { margin-top:12px; background:var(--srf); border:1px solid #f8d3da; border-left:3px solid var(--err); border-radius:10px; padding:11px 14px; }
+.p2 .cotitle { font-weight:650; color:#be123c; font-size:11.5px; display:flex; align-items:center; gap:6px; }
+.p2 .codesc { margin-top:4px; color:var(--ink2); font-size:10.5px; }
+.p2 .diff { margin-top:8px; display:flex; gap:8px; }
+.p2 .dbox { flex:1; border:1px solid var(--line); border-radius:7px; padding:6px 9px; background:#fcfdfe; }
+.p2 .dbox b { display:block; font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--mut2); font-weight:650; margin-bottom:2px; }
+
+/* steps */
+.p2 .steps { margin-top:12px; }
+.p2 .strow { display:flex; align-items:center; gap:9px; padding:8px 14px; border-bottom:1px solid var(--line2); }
+.p2 .strow:last-child { border-bottom:none; }
+.p2 .strow.bad { background:var(--errbg); }
+.p2 .stn { width:16px; font-size:9.5px; color:var(--mut2); font-weight:600; }
+.p2 .chip { font-size:8.5px; font-weight:650; padding:1.5px 6px; border-radius:5px; letter-spacing:.02em; }
+.p2 .dur { font-size:9.5px; color:var(--mut); width:34px; text-align:right; }
+
+/* legend */
+.p2 .zlegend { }
+</style>
+
+<h2>Direction C, rearranged</h2>
+<p class="subtitle">Same visual language as before — slate + teal, status-driven. What changed is <b>where everything sits</b>. Seven zones, each with one job. The numbered markers on the mockup map to the notes underneath.</p>
+
+<div class="mockup" style="padding:0; overflow:hidden">
+<div class="p2">
+
+  <span class="zi" style="left:8px; top:8px">1</span>
+  <span class="zi" style="left:8px; top:494px">2</span>
+  <span class="zi" style="left:198px; top:8px">3</span>
+  <span class="zi" style="left:198px; top:58px">4</span>
+  <span class="zi" style="left:198px; top:132px">5</span>
+  <span class="zi" style="left:462px; top:132px">6</span>
+  <span class="zi" style="left:462px; top:244px">7</span>
+
+  <!-- ================= NAV ================= -->
+  <div class="nav">
+    <div class="brand"><div class="mark">Q</div><div class="bname">QOps Harness</div></div>
+
+    <div class="ngrp">Test operations</div>
+    <div class="nl on"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Requests<span class="nbadge">4</span></div>
+    <div class="nl"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 10h6M9 14h4"/></svg>Test cases</div>
+    <div class="nl"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>Test groups</div>
+
+    <div class="ngrp">Insight</div>
+    <div class="nl"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 8h6"/></svg>Knowledge</div>
+    <div class="nl"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Dashboards</div>
+
+    <div class="sess">
+      <div class="lbl"><svg style="width:10px;height:10px;stroke:currentColor;stroke-width:2;fill:none" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Login session</div>
+      <div class="val"><span class="sesspill mono">aloha-auth.json</span></div>
+      <div style="margin-top:5px; display:flex; justify-content:space-between; align-items:center">
+        <span style="font-size:9px; color:var(--mut2)">Saved 6 Aug, 15:49</span>
+        <span class="sesschg">Change</span>
+      </div>
+    </div>
+
+    <div class="who">
+      <div class="av">H</div>
+      <div style="flex:1; min-width:0"><div style="font-size:10px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">hakhoabinh</div></div>
+      <svg style="width:14px;height:14px;stroke:var(--mut2);stroke-width:1.7;fill:none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+    </div>
+  </div>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main">
+
+    <div class="phead">
+      <div class="ptop">
+        <h5>Requests</h5>
+        <span class="cnt num">6 active</span>
+        <span class="ghost">
+          <svg style="width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none" viewBox="0 0 24 24"><path d="M20 11A8 8 0 1 0 12 20"/><path d="M20 4v7h-7"/></svg>
+          Auto-refresh · 30s
+        </span>
+        <div class="cta"><svg style="width:13px;height:13px;stroke:currentColor;stroke-width:2.4;fill:none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New request</div>
+      </div>
+
+      <div class="tiles">
+        <div class="tile">
+          <div class="ti" style="background:var(--runbg)"><svg class="tsvg" style="stroke:var(--run)" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg></div>
+          <div><div class="tn num" style="color:var(--run)">1</div><div class="tl">Running</div></div>
+        </div>
+        <div class="tile on">
+          <div class="ti" style="background:#fee2e6"><svg class="tsvg" style="stroke:var(--err)" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+          <div><div class="tn num" style="color:var(--err)">4</div><div class="tl">Failed</div></div>
+        </div>
+        <div class="tile">
+          <div class="ti" style="background:var(--okbg)"><svg class="tsvg" style="stroke:var(--ok)" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></div>
+          <div><div class="tn num" style="color:var(--ok)">1</div><div class="tl">Passed</div></div>
+        </div>
+        <div class="tile">
+          <div class="ti" style="background:var(--idlebg)"><svg class="tsvg" style="stroke:var(--idle)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <div><div class="tn num" style="color:var(--mut)">1</div><div class="tl">Queued</div></div>
+        </div>
+        <div class="tile">
+          <div class="ti" style="background:#ede9fe"><svg class="tsvg" style="stroke:#7c3aed" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div><div class="tn num" style="color:#7c3aed">9</div><div class="tl">AI fallbacks</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="body">
+
+      <!-- ---------- QUEUE ---------- -->
+      <div class="queue">
+        <div class="qbar">
+          <div class="inp"><svg style="width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search title, ID, author…</div>
+          <div class="sortbtn">Newest <svg style="width:10px;height:10px;stroke:currentColor;stroke-width:2.2;fill:none" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>
+        </div>
+        <div class="qlist">
+
+          <div class="qr sel" style="border-left-color:var(--err)">
+            <div class="qicon" style="background:var(--err)"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+            <div>
+              <div class="qt">Verify transaction type pill rendering</div>
+              <div class="qm">
+                <span class="qs" style="color:var(--err)">Failed 4/4</span><span class="sep">·</span>
+                <span class="mono">79c94116</span>
+              </div>
+              <div class="qm" style="margin-top:2px"><span>nguyenhoangly103</span><span class="sep">·</span><span class="num">10:33</span><span class="sep">·</span><span class="num">1 case</span></div>
+            </div>
+          </div>
+
+          <div class="qr" style="border-left-color:var(--run)">
+            <div class="qicon" style="background:var(--run)"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg></div>
+            <div>
+              <div class="qt">Requests page smoke check</div>
+              <div class="qm">
+                <span class="qs" style="color:var(--run)">Running 2/5</span><span class="sep">·</span>
+                <span class="mono">dd6326bc</span>
+              </div>
+              <div class="qm" style="margin-top:2px"><span>hakhoabinh</span><span class="sep">·</span><span class="num">2:24 elapsed</span></div>
+            </div>
+          </div>
+
+          <div class="qr" style="border-left-color:var(--ok)">
+            <div class="qicon" style="background:var(--ok)"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></div>
+            <div>
+              <div class="qt">Cash Forecast historical flows totals</div>
+              <div class="qm">
+                <span class="qs" style="color:var(--ok)">Passed 6/6</span><span class="sep">·</span>
+                <span class="mono">d5633970</span>
+              </div>
+              <div class="qm" style="margin-top:2px"><span>nguyenhoangly103</span><span class="sep">·</span><span>Yesterday</span><span class="sep">·</span><span class="num">6 cases</span></div>
+            </div>
+          </div>
+
+          <div class="qr" style="border-left-color:var(--err)">
+            <div class="qicon" style="background:var(--err)"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+            <div>
+              <div class="qt">Risk tab parameters subtab loads</div>
+              <div class="qm">
+                <span class="qs" style="color:var(--err)">Failed 3/4</span><span class="sep">·</span>
+                <span class="mono">cc1b86ea</span>
+              </div>
+              <div class="qm" style="margin-top:2px"><span>nguyenhoangly103</span><span class="sep">·</span><span>Yesterday</span><span class="sep">·</span><span class="num">4 cases</span></div>
+            </div>
+          </div>
+
+          <div class="qr" style="border-left-color:var(--idle)">
+            <div class="qicon" style="background:var(--idle)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></div>
+            <div>
+              <div class="qt">Click on Private → fund detail loads</div>
+              <div class="qm">
+                <span class="qs" style="color:var(--mut)">Queued</span><span class="sep">·</span>
+                <span class="mono">df3f005b</span>
+              </div>
+              <div class="qm" style="margin-top:2px"><span>glzmaxdinh</span><span class="sep">·</span><span>Yesterday</span><span class="sep">·</span><span class="num">3 cases</span></div>
+            </div>
+          </div>
+
+        </div>
+        <div class="qfoot">Showing 5 of 6 · scroll for more</div>
+      </div>
+
+      <!-- ---------- DETAIL ---------- -->
+      <div class="det">
+        <div class="dhead">
+          <div class="dtop">
+            <div style="min-width:0">
+              <div class="dtitle">Verify Transaction Type Pill Rendering</div>
+              <div class="dmeta">
+                <span class="spill" style="background:var(--errbg); color:#be123c"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>FAILED</span>
+                <span class="mono">#79c94116-ca3</span><span style="color:#cbd5e1">·</span>
+                <span>Single test case</span><span style="color:#cbd5e1">·</span>
+                <span class="num">2m 24s</span><span style="color:#cbd5e1">·</span>
+                <span>nguyenhoangly103</span>
+              </div>
+            </div>
+            <div class="dacts">
+              <span class="ghost">Open case</span>
+              <span class="cta" style="box-shadow:none">Retry request</span>
+            </div>
+          </div>
+          <div class="tabs">
+            <div class="tab">Info</div>
+            <div class="tab on">Execution</div>
+            <div class="tab">History</div>
+          </div>
+        </div>
+
+        <div class="dscroll">
+
+          <!-- pipeline -->
+          <div class="card">
+            <div class="chead">
+              <span class="clbl">Request lifecycle</span>
+              <span style="margin-left:auto; font-size:9.5px; color:var(--mut)">Stopped at step 4 of 4 · <span class="num">10:41</span></span>
+            </div>
+            <div class="stages">
+              <div class="stg done"><div class="bub"><svg style="stroke:#fff" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></div><div class="sname">Created</div><div class="stime num">10:33</div></div>
+              <div class="stg done"><div class="bub"><svg style="stroke:#fff" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></div><div class="sname">Cases generated</div><div class="stime num">10:34</div></div>
+              <div class="stg done"><div class="bub"><svg style="stroke:#fff" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></div><div class="sname">Reviewed</div><div class="stime num">10:41</div></div>
+              <div class="stg done"><div class="bub"><svg style="stroke:#fff" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></div><div class="sname">Queued</div><div class="stime num">10:41</div></div>
+              <div class="stg done"><div class="bub"><svg style="stroke:#fff" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></div><div class="sname">Executing</div><div class="stime num">10:41</div></div>
+              <div class="stg fail"><div class="bub"><svg style="stroke:#fff" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></div><div class="sname">Failed</div><div class="stime num">10:41</div></div>
+            </div>
+          </div>
+
+          <!-- failure callout -->
+          <div class="callout">
+            <div class="cotitle">
+              <svg style="width:13px;height:13px;stroke:currentColor;stroke-width:2.3;fill:none" viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+              Step 4 failed — Verify Transaction Type Pill Rendering
+            </div>
+            <div class="codesc">The assertion ran through the AI path after Playwright could not resolve the pill selector.</div>
+            <div class="diff">
+              <div class="dbox"><b>Expected</b><span class="mono">"Dividend"</span></div>
+              <div class="dbox"><b>Found</b><span class="mono" style="color:var(--err)">"—" (empty)</span></div>
+              <div class="dbox"><b>Artifact</b><span class="mono" style="color:var(--teal-d)">trace.zip · screenshot</span></div>
+            </div>
+          </div>
+
+          <!-- steps -->
+          <div class="card steps">
+            <div class="chead">
+              <span class="clbl">1 case · 4 steps</span>
+              <span style="margin-left:auto; font-size:9.5px; color:var(--mut)">3 passed · 1 failed</span>
+            </div>
+            <div class="strow">
+              <span class="stn num">01</span>
+              <span class="qicon" style="background:var(--ok); width:14px; height:14px"><svg style="width:8px;height:8px;stroke:#fff;stroke-width:3.4;fill:none" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+              <span style="flex:1">Navigate to Workbench</span>
+              <span class="chip" style="background:var(--bg); color:var(--mut)">Playwright</span>
+              <span class="dur num">0.8s</span>
+            </div>
+            <div class="strow">
+              <span class="stn num">02</span>
+              <span class="qicon" style="background:var(--ok); width:14px; height:14px"><svg style="width:8px;height:8px;stroke:#fff;stroke-width:3.4;fill:none" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+              <span style="flex:1">Navigate to Cash Forecast Tab</span>
+              <span class="chip" style="background:#ede9fe; color:#6d28d9">AI fallback</span>
+              <span class="dur num">4.1s</span>
+            </div>
+            <div class="strow">
+              <span class="stn num">03</span>
+              <span class="qicon" style="background:var(--ok); width:14px; height:14px"><svg style="width:8px;height:8px;stroke:#fff;stroke-width:3.4;fill:none" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+              <span style="flex:1">Open Transaction Details Popup</span>
+              <span class="chip" style="background:#ede9fe; color:#6d28d9">AI fallback</span>
+              <span class="dur num">3.6s</span>
+            </div>
+            <div class="strow bad">
+              <span class="stn num" style="color:var(--err)">04</span>
+              <span class="qicon" style="background:var(--err); width:14px; height:14px"><svg style="width:8px;height:8px;stroke:#fff;stroke-width:3.4;fill:none" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+              <span style="flex:1; font-weight:650; color:#be123c">Verify Transaction Type Pill Rendering</span>
+              <span class="chip" style="background:#ede9fe; color:#6d28d9">AI fallback</span>
+              <span class="dur num" style="color:var(--err)">1.2s</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="section" style="margin-top:18px">
+<h3>What moved, and why</h3>
+
+<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; margin-top:12px">
+
+<div style="border:1px solid rgba(128,128,128,.22); border-radius:9px; padding:11px 13px">
+<b style="color:#0d9488">① Navigation now has labels and groups</b>
+<p class="subtitle" style="margin:5px 0 0">My first version used a 52px icon-only rail. That's a known discoverability failure — icon-only nav forces users to guess or hover. Now: icon + label, split into <i>Test operations</i> and <i>Insight</i>, with a red count badge on Requests so failures pull you back even from another page.</p>
+</div>
+
+<div style="border:1px solid rgba(128,128,128,.22); border-radius:9px; padding:11px 13px">
+<b style="color:#0d9488">② Session became a real control</b>
+<p class="subtitle" style="margin:5px 0 0">Today it's a full-width strip of cryptic text across the top of the page — costing a whole band of vertical space for something you change once a week. It moves into the sidebar as a small card with a plain-language label ("Login session"), the filename, when it was saved, and one <i>Change</i> action. Your review's C1 note, solved by relocation.</p>
+</div>
+
+<div style="border:1px solid rgba(128,128,128,.22); border-radius:9px; padding:11px 13px">
+<b style="color:#0d9488">③ Page header holds one job</b>
+<p class="subtitle" style="margin:5px 0 0">Title, live count, refresh state, and exactly one primary button. The old page split this across three separate bands (title block, <span class="mono">Show N</span> + Refresh, then session). One row now.</p>
+</div>
+
+<div style="border:1px solid rgba(128,128,128,.22); border-radius:9px; padding:11px 13px">
+<b style="color:#0d9488">④ Status tiles <i>are</i> the filter</b>
+<p class="subtitle" style="margin:5px 0 0">The single biggest rearrangement. Before, a health bar and two dropdowns competed for the same job. Now one row of tiles answers "what's the state of things?" <i>and</i> filters when clicked — Failed is active here. Both native <span class="mono">&lt;select&gt;</span> boxes disappear. The fifth tile surfaces AI fallbacks, which is invisible in today's UI (theme T3 in your review).</p>
+</div>
+
+<div style="border:1px solid rgba(128,128,128,.22); border-radius:9px; padding:11px 13px">
+<b style="color:#0d9488">⑤ Queue rows got a fixed reading order</b>
+<p class="subtitle" style="margin:5px 0 0">Every row now reads the same way: status icon → real title (wrapping, not truncated) → status + ID → author, time, case count. Status arrives through three channels — icon shape, colour, and the word — so it survives colourblindness and greyscale printing. Numbers are tabular so times and counts line up down the column.</p>
+</div>
+
+<div style="border:1px solid rgba(128,128,128,.22); border-radius:9px; padding:11px 13px">
+<b style="color:#0d9488">⑥ Tabs came back, under a sticky header</b>
+<p class="subtitle" style="margin:5px 0 0">My first C draft quietly dropped Info / Execution / History. They're restored — but the title, status, ID, duration and the two actions stay pinned above them, so you always know which request you're reading and can Retry without scrolling back up.</p>
+</div>
+
+<div style="border:1px solid rgba(128,128,128,.22); border-radius:9px; padding:11px 13px">
+<b style="color:#0d9488">⑦ One story, top to bottom</b>
+<p class="subtitle" style="margin:5px 0 0">Lifecycle (where it got to) → failure callout (what broke, expected vs found, artifact links) → steps (the detail). Each is a distinct card with its own header instead of one undifferentiated wall. And it's <b>one scroll region</b> — down from four independent scrollbars today, which was the "doesn't run smooth" feeling.</p>
+</div>
+
+</div>
+</div>
+
+<div class="section" style="margin-top:16px">
+<p class="subtitle"><b>Still open, and worth deciding:</b> the lifecycle bar needs per-request stage data from the API. Your History tab already logs these exact events, so it's a matter of exposing them as a state — worth one question to the dev team before this becomes a ticket. Tell me what to adjust and I'll iterate; when you're happy I'll write it up as a spec you can hand over.</p>
+</div>

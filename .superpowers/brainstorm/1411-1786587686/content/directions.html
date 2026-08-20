@@ -1,0 +1,387 @@
+<style>
+.hx-wrap { margin: 0 0 10px; }
+.hx-meta { display:flex; gap:22px; flex-wrap:wrap; font-size:12.5px; margin:14px 0 4px; }
+.hx-meta div { flex:1; min-width:150px; }
+.hx-meta b { display:block; font-size:10px; letter-spacing:.09em; text-transform:uppercase; opacity:.55; margin-bottom:3px; }
+.hx-swatches { display:flex; gap:5px; align-items:center; margin-top:5px; }
+.hx-sw { width:16px; height:16px; border-radius:4px; border:1px solid rgba(128,128,128,.35); }
+
+/* ---------- shared mockup shell ---------- */
+.hx { border-radius:10px; overflow:hidden; display:flex; height:392px; font-size:10.5px; line-height:1.45; }
+.hx * { box-sizing:border-box; }
+.hx .rail, .hx .nav { flex:none; }
+.hx .qh { display:flex; align-items:center; justify-content:space-between; }
+.hx .row { cursor:default; }
+.hx .dot { width:6px; height:6px; border-radius:50%; flex:none; }
+.hx .mono { font-family: ui-monospace, "JetBrains Mono", Consolas, monospace; }
+
+/* =======================================================
+   A — CONSOLE
+   ======================================================= */
+.hxA { background:#0b0c0e; color:#e6e8ea; font-family:"Inter",system-ui,sans-serif; }
+.hxA .rail { width:44px; background:#0b0c0e; border-right:1px solid #1c1f24; display:flex; flex-direction:column; align-items:center; padding:9px 0; gap:3px; }
+.hxA .ic { width:28px; height:28px; border-radius:6px; display:grid; place-items:center; font-size:12px; color:#767d87; }
+.hxA .ic.on { background:#1a1d22; color:#4da3ff; box-shadow:inset 2px 0 0 #4da3ff; }
+.hxA .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.hxA .cmd { height:38px; flex:none; border-bottom:1px solid #1c1f24; display:flex; align-items:center; gap:7px; padding:0 10px; background:#0e1013; }
+.hxA .search { flex:1; height:24px; background:#141719; border:1px solid #22262c; border-radius:6px; display:flex; align-items:center; padding:0 8px; gap:6px; color:#6b727c; font-size:10px; }
+.hxA .kbd { margin-left:auto; border:1px solid #2a2f36; border-radius:3px; padding:0 4px; font-size:8.5px; color:#6b727c; }
+.hxA .chip { height:22px; border:1px solid #24282e; border-radius:6px; padding:0 8px; display:flex; align-items:center; gap:5px; color:#a8afb8; font-size:9.5px; background:#141719; }
+.hxA .chip.act { border-color:#2f4a6b; background:#12212f; color:#7cbcff; }
+.hxA .btn { height:24px; background:#4da3ff; color:#06121f; font-weight:650; border-radius:6px; padding:0 10px; display:flex; align-items:center; font-size:10px; }
+.hxA .body { flex:1; display:flex; min-height:0; }
+.hxA .queue { flex:1; min-width:0; display:flex; flex-direction:column; }
+.hxA .th { display:grid; grid-template-columns:14px 74px 1fr 58px 46px 52px; gap:8px; padding:6px 11px; font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#5d646d; border-bottom:1px solid #1c1f24; }
+.hxA .row { display:grid; grid-template-columns:14px 74px 1fr 58px 46px 52px; gap:8px; padding:8px 11px; align-items:center; border-bottom:1px solid #15181c; color:#c3c9d0; }
+.hxA .row.sel { background:#12161b; box-shadow:inset 2px 0 0 #4da3ff; color:#e6e8ea; }
+.hxA .row .ttl { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.hxA .st { font-size:8.5px; letter-spacing:.05em; text-transform:uppercase; font-weight:650; }
+.hxA .det { width:284px; flex:none; border-left:1px solid #1c1f24; background:#0e1013; display:flex; flex-direction:column; }
+.hxA .dhead { padding:10px 12px; border-bottom:1px solid #1c1f24; }
+.hxA .tabs { display:flex; gap:14px; padding:0 12px; border-bottom:1px solid #1c1f24; }
+.hxA .tab { padding:7px 0; font-size:10px; color:#6b727c; }
+.hxA .tab.on { color:#e6e8ea; box-shadow:inset 0 -2px 0 #4da3ff; }
+.hxA .step { display:flex; align-items:center; gap:7px; padding:7px 12px; border-bottom:1px solid #15181c; }
+.hxA .tag { font-size:8px; padding:1px 4px; border-radius:3px; border:1px solid #2a2f36; color:#8b9199; }
+
+/* =======================================================
+   B — CALM WORKSPACE
+   ======================================================= */
+.hxB { background:#faf9f7; color:#1c1a17; font-family:"Inter",system-ui,sans-serif; }
+.hxB .nav { width:150px; background:#f3f1ed; border-right:1px solid #e7e3db; padding:12px 9px; display:flex; flex-direction:column; gap:2px; }
+.hxB .brand { font-family:Georgia,"Signifier",serif; font-size:14px; margin:0 4px 12px; letter-spacing:-.01em; }
+.hxB .nl { padding:6px 9px; border-radius:7px; color:#6d675f; display:flex; align-items:center; gap:7px; }
+.hxB .nl.on { background:#fff; color:#1c1a17; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.05); }
+.hxB .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.hxB .top { padding:13px 16px 11px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid #eae6df; }
+.hxB h4 { font-family:Georgia,"Signifier",serif; font-size:19px; margin:0; font-weight:400; letter-spacing:-.02em; }
+.hxB .sub { color:#8a8379; font-size:10px; margin-top:2px; }
+.hxB .btn { background:#4338ca; color:#fff; border-radius:8px; padding:6px 12px; font-size:10.5px; font-weight:600; }
+.hxB .seg { display:inline-flex; background:#eeebe5; border-radius:8px; padding:2px; gap:2px; }
+.hxB .sg { padding:4px 10px; border-radius:6px; font-size:10px; color:#6d675f; }
+.hxB .sg.on { background:#fff; color:#1c1a17; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+.hxB .body { flex:1; display:flex; min-height:0; padding:12px 16px; gap:14px; }
+.hxB .queue { width:216px; flex:none; display:flex; flex-direction:column; gap:7px; }
+.hxB .card { background:#fff; border:1px solid #eae6df; border-radius:10px; padding:9px 10px; }
+.hxB .card.sel { border-color:#c7c2f0; box-shadow:0 0 0 3px rgba(67,56,202,.09); }
+.hxB .pill { display:inline-flex; align-items:center; gap:4px; font-size:8.5px; font-weight:650; padding:2px 7px; border-radius:99px; }
+.hxB .det { flex:1; background:#fff; border:1px solid #eae6df; border-radius:10px; padding:12px 14px; min-width:0; }
+.hxB .crumb { font-size:9.5px; color:#8a8379; margin-bottom:7px; }
+.hxB .crumb b { color:#4338ca; font-weight:600; }
+.hxB .kv { display:flex; gap:22px; margin-top:11px; padding-top:10px; border-top:1px solid #f0ede7; }
+.hxB .kv b { display:block; font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; color:#a09889; font-weight:600; margin-bottom:2px; }
+
+/* =======================================================
+   C — PIPELINE
+   ======================================================= */
+.hxC { background:#f5f7f9; color:#0f172a; font-family:"Inter",system-ui,sans-serif; }
+.hxC .nav { width:52px; background:#0f2e2b; display:flex; flex-direction:column; align-items:center; padding:10px 0; gap:4px; }
+.hxC .ic { width:32px; height:32px; border-radius:8px; display:grid; place-items:center; font-size:12px; color:#7fa8a2; }
+.hxC .ic.on { background:#0d9488; color:#fff; }
+.hxC .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.hxC .top { padding:9px 14px; background:#fff; border-bottom:1px solid #e3e8ee; display:flex; align-items:center; gap:12px; }
+.hxC .health { display:flex; height:7px; border-radius:99px; overflow:hidden; width:132px; }
+.hxC .hstat { display:flex; gap:11px; font-size:9.5px; color:#5b6675; }
+.hxC .hstat i { font-style:normal; font-weight:700; color:#0f172a; }
+.hxC .btn { margin-left:auto; background:#0d9488; color:#fff; border-radius:7px; padding:6px 11px; font-size:10.5px; font-weight:600; }
+.hxC .body { flex:1; display:flex; min-height:0; }
+.hxC .queue { width:196px; flex:none; border-right:1px solid #e3e8ee; background:#fff; display:flex; flex-direction:column; }
+.hxC .qh { padding:7px 11px; border-bottom:1px solid #eef2f6; font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#7a8797; }
+.hxC .row { padding:8px 11px 8px 9px; border-bottom:1px solid #f1f4f8; border-left:3px solid transparent; }
+.hxC .row.sel { background:#f0fdf9; border-left-color:#0d9488; }
+.hxC .det { flex:1; min-width:0; display:flex; flex-direction:column; }
+.hxC .pipe { background:#fff; border-bottom:1px solid #e3e8ee; padding:12px 16px 13px; }
+.hxC .stages { display:flex; align-items:center; margin-top:9px; }
+.hxC .stg { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; position:relative; }
+.hxC .stg::before { content:''; position:absolute; top:8px; left:-50%; width:100%; height:2px; background:#dde4ec; }
+.hxC .stg:first-child::before { display:none; }
+.hxC .stg.done::before { background:#0d9488; }
+.hxC .stg.fail::before { background:#e11d48; }
+.hxC .bub { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; font-size:9px; color:#fff; background:#c9d3de; z-index:1; }
+.hxC .stg.done .bub { background:#0d9488; }
+.hxC .stg.fail .bub { background:#e11d48; box-shadow:0 0 0 4px rgba(225,29,72,.13); }
+.hxC .stg span { font-size:8.5px; color:#7a8797; }
+.hxC .stg.done span, .hxC .stg.fail span { color:#0f172a; font-weight:600; }
+.hxC .cases { padding:11px 16px; overflow:hidden; }
+.hxC .cs { background:#fff; border:1px solid #e3e8ee; border-radius:8px; padding:8px 10px; display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.hxC .tag { font-size:8px; padding:1.5px 5px; border-radius:4px; background:#eef2f6; color:#5b6675; font-weight:600; }
+</style>
+
+<h2>Three UI directions for the Requests page</h2>
+<p class="subtitle">Same routes, same object model, same data — only the visual language and the layout of this page change. All three kill the five problems I found: stacked chrome, raw OS dropdowns, flat queue rows, monochrome, and four nested scrollbars. They differ in <b>who they optimise for</b>. Real content from your screenshots is used throughout. Click the one that appeals — you can click more than one.</p>
+
+<div class="options" data-multiselect>
+
+<!-- ============ A ============ -->
+<div class="option" data-choice="a" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">A</div>
+<div class="content">
+<h3>Console — dark, dense, built for speed</h3>
+<p class="subtitle" style="margin-bottom:10px">Linear / GitHub Actions territory. Nav shrinks to a 44px icon rail, all five chrome bands collapse into one command bar, and the queue becomes a real table you can scan in one pass. Status is a colour you read before you read any word.</p>
+
+<div class="hx hxA">
+  <div class="rail">
+    <div class="ic on">▤</div><div class="ic">▣</div><div class="ic">◈</div><div class="ic">◫</div><div class="ic">◴</div>
+    <div style="flex:1"></div><div class="ic">⚙</div>
+  </div>
+  <div class="main">
+    <div class="cmd">
+      <div class="search">⌕ Search requests, cases, runs<span class="kbd">⌘K</span></div>
+      <div class="chip act">● Failed · 4</div>
+      <div class="chip">My requests</div>
+      <div class="chip">aloha</div>
+      <div class="btn">+ New request</div>
+    </div>
+    <div class="body">
+      <div class="queue">
+        <div class="th"><div></div><div>Request</div><div>Title</div><div>Mode</div><div>Cases</div><div>Time</div></div>
+        <div class="row sel">
+          <div class="dot" style="background:#ff5c5c"></div>
+          <div class="mono" style="color:#7cbcff">79c94116</div>
+          <div class="ttl">Assume the menu · Transaction type pill rendering</div>
+          <div class="st" style="color:#ff5c5c">failed</div>
+          <div class="mono">1</div><div style="color:#767d87">10:33</div>
+        </div>
+        <div class="row">
+          <div class="dot" style="background:#f5a623; box-shadow:0 0 0 3px rgba(245,166,35,.18)"></div>
+          <div class="mono" style="color:#7cbcff">dd6326bc</div>
+          <div class="ttl">Go to qops-harness.lab.gend.vn/requests</div>
+          <div class="st" style="color:#f5a623">running</div>
+          <div class="mono">1</div><div style="color:#767d87">2:24</div>
+        </div>
+        <div class="row">
+          <div class="dot" style="background:#35c57f"></div>
+          <div class="mono" style="color:#7cbcff">d5633970</div>
+          <div class="ttl">Cash Forecast · historical flows totals</div>
+          <div class="st" style="color:#35c57f">passed</div>
+          <div class="mono">6</div><div style="color:#767d87">Yest</div>
+        </div>
+        <div class="row">
+          <div class="dot" style="background:#ff5c5c"></div>
+          <div class="mono" style="color:#7cbcff">cc1b86ea</div>
+          <div class="ttl">Assume the menu · Risk tab parameters</div>
+          <div class="st" style="color:#ff5c5c">failed</div>
+          <div class="mono">1</div><div style="color:#767d87">Yest</div>
+        </div>
+        <div class="row">
+          <div class="dot" style="background:#5d646d"></div>
+          <div class="mono" style="color:#7cbcff">df3f005b</div>
+          <div class="ttl">Click on Private → fund detail loads</div>
+          <div class="st" style="color:#8b9199">queued</div>
+          <div class="mono">3</div><div style="color:#767d87">Yest</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="dhead">
+          <div style="display:flex; align-items:center; gap:7px">
+            <span class="mono" style="color:#7cbcff; font-size:10px">#79c94116-ca3</span>
+            <span class="st" style="color:#ff5c5c; margin-left:auto">● failed</span>
+          </div>
+          <div style="margin-top:5px; font-size:11px; color:#e6e8ea">Verify Transaction Type Pill Rendering</div>
+          <div style="margin-top:4px; display:flex; gap:5px">
+            <span class="tag">single case</span><span class="tag">aloha</span><span class="tag">nguyenhoangly103</span>
+          </div>
+        </div>
+        <div class="tabs"><div class="tab">Info</div><div class="tab on">Execution</div><div class="tab">History</div></div>
+        <div class="step"><div class="dot" style="background:#35c57f"></div><div style="flex:1">Navigate to Workbench</div><span class="tag">auto</span></div>
+        <div class="step"><div class="dot" style="background:#35c57f"></div><div style="flex:1">Navigate to Cash Forecast</div><span class="tag" style="border-color:#3d4a5c; color:#7cbcff">ai</span></div>
+        <div class="step"><div class="dot" style="background:#35c57f"></div><div style="flex:1">Open Transaction Details</div><span class="tag" style="border-color:#3d4a5c; color:#7cbcff">ai</span></div>
+        <div class="step" style="background:#1a1013; box-shadow:inset 2px 0 0 #ff5c5c"><div class="dot" style="background:#ff5c5c"></div><div style="flex:1; color:#ffb4b4">Verify Transaction Type Pill</div><span class="tag" style="border-color:#3d4a5c; color:#7cbcff">ai</span></div>
+        <div style="padding:9px 12px; color:#8b9199; font-size:9.5px; border-top:1px solid #1c1f24">Expected pill "Dividend", found "—"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hx-meta">
+  <div><b>Best for</b>QA running the tool all day. Highest information density of the three — ~14 requests visible where you currently fit 4.</div>
+  <div><b>Colour</b>Near-black base, one electric blue for interaction only. Green / amber / red / grey are reserved strictly for status, so colour always means something.<div class="hx-swatches"><span class="hx-sw" style="background:#0b0c0e"></span><span class="hx-sw" style="background:#4da3ff"></span><span class="hx-sw" style="background:#35c57f"></span><span class="hx-sw" style="background:#f5a623"></span><span class="hx-sw" style="background:#ff5c5c"></span></div></div>
+  <div><b>Trade-off</b>Reads as an engineer's tool. Great for QA, less warm when you demo to a PO or a customer. Dark-first (a light mode still ships, but it's the second citizen).</div>
+  <div><b>Dev cost</b>Medium. Queue becomes a table — the biggest single piece of work. Everything else is token + component swaps.</div>
+</div>
+</div>
+</div>
+
+<!-- ============ B ============ -->
+<div class="option" data-choice="b" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">B</div>
+<div class="content">
+<h3>Calm Workspace — light, editorial, easy on newcomers</h3>
+<p class="subtitle" style="margin-bottom:10px">Notion / Stripe territory. Warm off-white paper, a serif display face for headings — you already have <span class="mono">Signifier</span> sitting unused in <span class="mono">tokens.css</span>. Dropdowns become segmented controls. Breadcrumb makes Request → Cases → Runs literally visible, which is theme T1 in your own review.</p>
+
+<div class="hx hxB">
+  <div class="nav">
+    <div class="brand">QOps <span style="color:#4338ca">Harness</span></div>
+    <div class="nl on">▤ Requests</div><div class="nl">▣ Test cases</div><div class="nl">◈ Test groups</div><div class="nl">◫ Knowledge</div><div class="nl">◴ Dashboards</div>
+    <div style="flex:1"></div>
+    <div class="nl" style="font-size:9.5px">⚙ Settings</div>
+  </div>
+  <div class="main">
+    <div class="top">
+      <div>
+        <h4>Requests</h4>
+        <div class="sub">6 in queue · 1 running · session <span class="mono">aloha-auth.json</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:9px">
+        <div class="seg"><div class="sg on">All</div><div class="sg">Mine</div><div class="sg">Failed</div></div>
+        <div class="btn">+ New request</div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="queue">
+        <div class="card sel">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span class="mono" style="font-size:9px; color:#8a8379">79c94116</span>
+            <span class="pill" style="background:#fdeaea; color:#b91c1c"><span class="dot" style="background:#dc2626"></span>Failed</span>
+          </div>
+          <div style="margin-top:4px; font-weight:600">Transaction type pill rendering</div>
+          <div style="margin-top:3px; color:#8a8379; font-size:9.5px">nguyenhoangly103 · 10:33 AM · 1 case</div>
+        </div>
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span class="mono" style="font-size:9px; color:#8a8379">dd6326bc</span>
+            <span class="pill" style="background:#fdf1dc; color:#92400e"><span class="dot" style="background:#b45309"></span>Running</span>
+          </div>
+          <div style="margin-top:4px; font-weight:600">Requests page smoke check</div>
+          <div style="margin-top:3px; color:#8a8379; font-size:9.5px">hakhoabinh · 2:24 elapsed · 1 case</div>
+        </div>
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span class="mono" style="font-size:9px; color:#8a8379">d5633970</span>
+            <span class="pill" style="background:#e7f6ec; color:#15803d"><span class="dot" style="background:#15803d"></span>Passed</span>
+          </div>
+          <div style="margin-top:4px; font-weight:600">Cash Forecast historical flows</div>
+          <div style="margin-top:3px; color:#8a8379; font-size:9.5px">nguyenhoangly103 · Yesterday · 6 cases</div>
+        </div>
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span class="mono" style="font-size:9px; color:#8a8379">df3f005b</span>
+            <span class="pill" style="background:#efedea; color:#6d675f"><span class="dot" style="background:#a09889"></span>Queued</span>
+          </div>
+          <div style="margin-top:4px; font-weight:600">Private fund detail loads</div>
+          <div style="margin-top:3px; color:#8a8379; font-size:9.5px">glzmaxdinh · Yesterday · 3 cases</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="crumb">Request <b>#79c94116</b> &nbsp;›&nbsp; 1 case &nbsp;›&nbsp; 4 runs</div>
+        <div style="font-family:Georgia,serif; font-size:15px; letter-spacing:-.01em">Verify Transaction Type Pill Rendering</div>
+        <div style="margin-top:5px; display:flex; gap:6px; align-items:center">
+          <span class="pill" style="background:#fdeaea; color:#b91c1c">Failed</span>
+          <span class="pill" style="background:#f2f0eb; color:#6d675f">Single test case</span>
+          <span class="pill" style="background:#eeecfb; color:#4338ca">AI fallback used</span>
+        </div>
+        <div class="kv">
+          <div><b>Created by</b>nguyenhoangly103</div>
+          <div><b>Created</b>Jul 10, 10:33 AM</div>
+          <div><b>Duration</b>2m 24s</div>
+        </div>
+        <div style="margin-top:11px; background:#fdf7f7; border:1px solid #f4dede; border-left:3px solid #dc2626; border-radius:7px; padding:9px 10px">
+          <div style="font-weight:600; color:#b91c1c">Step 4 failed — Verify Transaction Type Pill</div>
+          <div style="margin-top:3px; color:#7a736b; font-size:9.5px">Expected pill "Dividend", found "—". Steps 1–3 passed.</div>
+          <div style="margin-top:7px; display:flex; gap:6px">
+            <span style="background:#4338ca; color:#fff; border-radius:6px; padding:4px 9px; font-size:9.5px; font-weight:600">Retry</span>
+            <span style="border:1px solid #e0dcd4; border-radius:6px; padding:4px 9px; font-size:9.5px">Open case</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hx-meta">
+  <div><b>Best for</b>A mixed audience — QA plus PO, BA and stakeholders. This is the one that demos well and that a new joiner understands without training.</div>
+  <div><b>Colour</b>Warm paper neutrals with an indigo brand. Crucially, brand ≠ status, so the teal-green stops meaning two things at once.<div class="hx-swatches"><span class="hx-sw" style="background:#faf9f7"></span><span class="hx-sw" style="background:#4338ca"></span><span class="hx-sw" style="background:#15803d"></span><span class="hx-sw" style="background:#b45309"></span><span class="hx-sw" style="background:#dc2626"></span></div></div>
+  <div><b>Trade-off</b>Lowest density of the three — ~6 requests per screen. Power users scroll more. Drops your current OpenAI-teal identity for something less borrowed.</div>
+  <div><b>Dev cost</b>Low–medium. Mostly token changes plus one control library (segmented control, pill, card). Layout stays three-column.</div>
+</div>
+</div>
+</div>
+
+<!-- ============ C ============ -->
+<div class="option" data-choice="c" onclick="toggleSelect(this)" style="display:block">
+<div class="letter">C</div>
+<div class="content">
+<h3>Pipeline — status is the interface</h3>
+<p class="subtitle" style="margin-bottom:10px">CI/CD territory (Buildkite, CircleCI). The lifecycle your <span class="mono">History</span> tab currently hides in a text log becomes the headline: a stage bar showing exactly where a request is and where it broke. A health strip answers "is anything on fire" before you click anything. Keeps and modernises your existing teal.</p>
+
+<div class="hx hxC">
+  <div class="nav">
+    <div class="ic on">▤</div><div class="ic">▣</div><div class="ic">◈</div><div class="ic">◫</div><div class="ic">◴</div>
+    <div style="flex:1"></div><div class="ic">⚙</div>
+  </div>
+  <div class="main">
+    <div class="top">
+      <div style="font-weight:700; font-size:12px">Requests</div>
+      <div class="health">
+        <div style="flex:1; background:#f59e0b"></div><div style="flex:4; background:#e11d48"></div><div style="flex:1; background:#0d9488"></div><div style="flex:1; background:#cbd5e1"></div>
+      </div>
+      <div class="hstat"><span><i>1</i> running</span><span><i>4</i> failed</span><span><i>1</i> passed</span><span><i>1</i> queued</span></div>
+      <div style="font-size:9.5px; color:#7a8797; border-left:1px solid #e3e8ee; padding-left:12px">session <span class="mono">aloha-auth.json</span></div>
+      <div class="btn">+ New request</div>
+    </div>
+    <div class="body">
+      <div class="queue">
+        <div class="qh">Queue · 6</div>
+        <div class="row sel">
+          <div style="display:flex; align-items:center; gap:6px"><span class="mono" style="font-size:9px; color:#7a8797">79c94116</span><span style="margin-left:auto; font-size:8.5px; font-weight:700; color:#e11d48">FAILED · 4/4</span></div>
+          <div style="margin-top:3px; font-weight:600">Transaction type pill</div>
+          <div style="margin-top:2px; color:#7a8797; font-size:9px">nguyenhoangly103 · 10:33</div>
+        </div>
+        <div class="row" style="border-left-color:#f59e0b">
+          <div style="display:flex; align-items:center; gap:6px"><span class="mono" style="font-size:9px; color:#7a8797">dd6326bc</span><span style="margin-left:auto; font-size:8.5px; font-weight:700; color:#b45309">RUNNING · 2/5</span></div>
+          <div style="margin-top:3px; font-weight:600">Requests page smoke</div>
+          <div style="margin-top:2px; color:#7a8797; font-size:9px">hakhoabinh · 2:24</div>
+        </div>
+        <div class="row" style="border-left-color:#0d9488">
+          <div style="display:flex; align-items:center; gap:6px"><span class="mono" style="font-size:9px; color:#7a8797">d5633970</span><span style="margin-left:auto; font-size:8.5px; font-weight:700; color:#0f766e">PASSED · 6/6</span></div>
+          <div style="margin-top:3px; font-weight:600">Cash Forecast flows</div>
+          <div style="margin-top:2px; color:#7a8797; font-size:9px">nguyenhoangly103 · Yest</div>
+        </div>
+        <div class="row" style="border-left-color:#e11d48">
+          <div style="display:flex; align-items:center; gap:6px"><span class="mono" style="font-size:9px; color:#7a8797">cc1b86ea</span><span style="margin-left:auto; font-size:8.5px; font-weight:700; color:#e11d48">FAILED · 3/4</span></div>
+          <div style="margin-top:3px; font-weight:600">Risk tab parameters</div>
+          <div style="margin-top:2px; color:#7a8797; font-size:9px">nguyenhoangly103 · Yest</div>
+        </div>
+      </div>
+      <div class="det">
+        <div class="pipe">
+          <div style="display:flex; align-items:center; gap:8px">
+            <span style="font-weight:700; font-size:12px">Verify Transaction Type Pill Rendering</span>
+            <span class="tag" style="background:#fee2e6; color:#be123c">FAILED</span>
+            <span class="mono" style="margin-left:auto; font-size:9px; color:#7a8797">#79c94116-ca3 · 2m 24s</span>
+          </div>
+          <div class="stages">
+            <div class="stg done"><div class="bub">✓</div><span>Created</span></div>
+            <div class="stg done"><div class="bub">✓</div><span>Generated</span></div>
+            <div class="stg done"><div class="bub">✓</div><span>Reviewed</span></div>
+            <div class="stg done"><div class="bub">✓</div><span>Queued</span></div>
+            <div class="stg done"><div class="bub">✓</div><span>Running</span></div>
+            <div class="stg fail"><div class="bub">✕</div><span>Step 4 of 4</span></div>
+          </div>
+        </div>
+        <div class="cases">
+          <div style="font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#7a8797; margin-bottom:7px">1 case · 4 steps</div>
+          <div class="cs"><div class="dot" style="background:#0d9488"></div><div style="flex:1">Navigate to Workbench</div><span class="tag">auto</span><span style="color:#7a8797; font-size:9px">0.8s</span></div>
+          <div class="cs"><div class="dot" style="background:#0d9488"></div><div style="flex:1">Navigate to Cash Forecast Tab</div><span class="tag" style="background:#e0f2f1; color:#0f766e">ai</span><span style="color:#7a8797; font-size:9px">4.1s</span></div>
+          <div class="cs"><div class="dot" style="background:#0d9488"></div><div style="flex:1">Open Transaction Details Popup</div><span class="tag" style="background:#e0f2f1; color:#0f766e">ai</span><span style="color:#7a8797; font-size:9px">3.6s</span></div>
+          <div class="cs" style="border-color:#f7c9d1; background:#fff6f7"><div class="dot" style="background:#e11d48"></div><div style="flex:1; font-weight:600; color:#be123c">Verify Transaction Type Pill Rendering</div><span class="tag" style="background:#e0f2f1; color:#0f766e">ai</span><span style="color:#be123c; font-size:9px">failed</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hx-meta">
+  <div><b>Best for</b>Exactly the complaint "we can't tell where a request is or why it failed". It's the direction that fixes workflow, not just looks.</div>
+  <div><b>Colour</b>Cool slate base with your teal evolved to <span class="mono">#0d9488</span> — recognisably still Harness, no longer the OpenAI swatch. Status owns amber/rose.<div class="hx-swatches"><span class="hx-sw" style="background:#f5f7f9"></span><span class="hx-sw" style="background:#0d9488"></span><span class="hx-sw" style="background:#0f2e2b"></span><span class="hx-sw" style="background:#f59e0b"></span><span class="hx-sw" style="background:#e11d48"></span></div></div>
+  <div><b>Trade-off</b>The stage bar needs lifecycle data exposed per request. Your History tab already logs those events, but the API may need to surface them as a state — worth checking with the dev team before you propose it.</div>
+  <div><b>Dev cost</b>Medium–high. Two new components (stage bar, health strip) and possibly one API field. The most valuable and the most work.</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="section" style="margin-top:22px">
+<p class="subtitle">My recommendation: <b>C for the structure, B for the skin.</b> C is the only one that answers "runs smooth between our features", but its light, friendly surface treatment is B's. A is the right answer only if the daily users are almost entirely QA engineers. Tell me which parts pull at you and I'll build the hybrid properly.</p>
+</div>

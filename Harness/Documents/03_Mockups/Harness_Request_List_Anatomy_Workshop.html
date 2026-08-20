@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness &mdash; Requests list, element by element</title>
+<style>
+  :root { --pg:#fff; --tx:#111827; --tx2:#5b6472; --ln:rgba(17,24,39,.14); --cd:#fbfbfc; --ac:#5a3ff0;
+          --amb:#8a5300; --ambg:#fff8ec; --amln:#f0d5a8; --red:#a52a1f; --grn:#136c46; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#15171b; --tx:#e8eaed; --tx2:#9aa3af; --ln:rgba(232,234,237,.16); --cd:#1b1e23; --ac:#a595f7;
+            --amb:#e0b169; --ambg:#221c11; --amln:#4a3a1c; --red:#e88b80; --grn:#6fd3a4; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",system-ui,sans-serif;
+         font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1240px; margin:0 auto; padding:32px 20px 70px; }
+  h1 { font-size:28px; font-weight:650; letter-spacing:-.024em; margin:0 0 6px; }
+  h2 { font-size:20px; font-weight:640; letter-spacing:-.018em; margin:38px 0 5px; padding-bottom:7px; border-bottom:2px solid var(--ln); }
+  h3 { font-size:15px; font-weight:640; margin:26px 0 4px; }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 14px; }
+  b, strong { color:var(--tx); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  .banner { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:10px;
+            padding:11px 15px; margin:0 0 20px; font-size:13px; color:var(--tx2); }
+  .banner b { color:var(--tx); }
+  .flag { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:10px; padding:12px 15px;
+          margin-top:16px; font-size:12.5px; color:var(--tx2); }
+  .flag b.h { display:block; color:var(--tx); margin-bottom:3px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:12px; }
+  th,td { text-align:left; padding:9px 12px 9px 0; vertical-align:top; border-bottom:1px solid var(--ln); color:var(--tx2); }
+  th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; border-bottom:2px solid var(--ln); }
+  td b { color:var(--tx); }
+  .shotwrap { overflow-x:auto; margin-top:12px; padding-bottom:4px; }
+  .shot { border:1px solid var(--ln); border-radius:11px; overflow:hidden; box-shadow:0 8px 26px rgba(0,0,0,.13);
+          width:1180px; }
+
+  /* ---- numbered pins ---- */
+  .pin { display:inline-grid; place-items:center; width:15px; height:15px; border-radius:50%;
+         background:#de350b; color:#fff; font-size:9px; font-weight:800; line-height:1;
+         margin-right:5px; vertical-align:middle; flex:none; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .pinL { display:inline-grid; place-items:center; width:23px; height:23px; border-radius:50%;
+          background:#de350b; color:#fff; font-size:12px; font-weight:800; line-height:1; flex:none; }
+
+  /* ---- annotation cards ---- */
+  .zh { display:flex; align-items:baseline; gap:9px; font-size:11px; font-weight:700; letter-spacing:.07em;
+        text-transform:uppercase; color:var(--ac); margin-bottom:2px; }
+  .zh span { letter-spacing:0; text-transform:none; font-weight:400; font-size:12.5px; color:var(--tx2); }
+  .anno { border:1px solid var(--ln); border-radius:12px; background:var(--cd); padding:14px 16px 0; margin-top:11px; }
+  .ah { display:flex; align-items:center; gap:9px; padding-bottom:10px; border-bottom:1px solid var(--ln); }
+  .ah .nm { font-size:15px; font-weight:650; color:var(--tx); letter-spacing:-.01em; }
+  .ah .where { margin-left:auto; font-size:10.5px; color:var(--tx2); text-align:right;
+               font-family:"Fira Code",ui-monospace,Consolas,monospace; }
+  .fields { display:grid; grid-template-columns:1fr 1fr; gap:2px 26px; padding:12px 0 4px; }
+  .fld { padding-bottom:9px; }
+  .fld .lb { font-size:9.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--tx2);
+             margin-bottom:2px; }
+  .fld p { margin:0; font-size:13px; }
+  .full { grid-column:1 / -1; }
+  .opts { margin:2px 0 0; padding-left:17px; }
+  .opts li { font-size:13px; margin-bottom:3px; }
+  .ask { margin:6px -16px 0; padding:11px 16px; border-top:1px solid var(--amln); background:var(--ambg);
+         border-radius:0 0 11px 11px; font-size:13px; color:var(--tx2); }
+  .ask b.h { display:block; font-size:9.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+             color:var(--amb); margin-bottom:2px; }
+  .warn { display:inline-block; font-size:9px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+          padding:2px 7px; border-radius:3px; background:#fdeae7; color:#a52a1f; margin-left:2px; }
+  .newf { display:inline-block; font-size:9px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+          padding:2px 7px; border-radius:3px; background:#eceafe; color:#3b1f8f; margin-left:2px; }
+  @media (prefers-color-scheme: dark) {
+    .warn { background:#3a1c18; color:#e88b80; } .newf { background:#241d47; color:#c3b6fb; }
+    .ship { background:#15291f; color:#6fd3a4; }
+  }
+  .ship { display:inline-block; font-size:9px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
+          padding:2px 7px; border-radius:3px; background:#e4f6ed; color:#136c46; margin-left:2px; }
+  .chk { list-style:none; padding:0; margin:12px 0 0; }
+  .chk li { border:1px solid var(--ln); border-radius:9px; padding:10px 13px; margin-bottom:8px; font-size:13px; }
+  .chk li b { display:block; margin-bottom:1px; }
+  @media (max-width:700px) { .fields { grid-template-columns:1fr; } }
+
+  /* ===== app chrome (copied from Harness_Request_Navigation_Mockup.html) ===== */
+  .ui { display:flex; font-size:11px; line-height:1.45;
+        background:#f6f7f9; color:#1c2333; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .ui *, .ui *::before, .ui *::after { box-sizing:border-box; }
+  .ui .m { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+  .nav { width:190px; flex:none; background:#fff; border-right:1px solid #e6e9ee; display:flex; flex-direction:column;
+         opacity:.5; }
+  .brand { padding:12px 13px 10px; border-bottom:1px solid #e6e9ee; }
+  .brand b { font-size:13.5px; font-weight:700; color:#1a2433; letter-spacing:-.01em; }
+  .brand b i { font-style:normal; color:#1668d6; }
+  .brand span { display:block; font-size:9px; color:#8b95a3; margin-top:1px; }
+  .ni { padding:8px 13px; display:flex; align-items:center; gap:9px; font-size:11.5px; color:#2a3444; }
+  .ni.on { background:#e4eefc; color:#1668d6; font-weight:650; }
+  .ni.sub { padding-left:33px; }
+  .ni .ico { color:#8b95a3; font-size:11px; }
+  .ni.on .ico { color:#1668d6; }
+  .ns { padding:9px 13px; display:flex; align-items:center; gap:9px; font-size:10px; font-weight:700;
+        letter-spacing:.04em; text-transform:uppercase; color:#5f6b7a; }
+  .ns .ico { color:#8b95a3; font-size:11px; }
+  .ns em { margin-left:auto; font-style:normal; color:#9aa3b1; font-size:10px; }
+  .navtag { margin-top:auto; padding:9px 13px; font-size:9px; color:#8b95a3; border-top:1px solid #e6e9ee;
+            line-height:1.4; }
+  .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .top { background:#fff; border-bottom:1px solid #e3e6ec; padding:10px 15px; display:flex; align-items:center; gap:9px; }
+  .bar { background:#fff; border-bottom:1px solid #e3e6ec; padding:6px 15px; display:flex; gap:6px; align-items:center; }
+  .chip { border:1px solid #e3e6ec; background:#fbfcfd; border-radius:4px; padding:3px 8px; font-size:10px; color:#414b5e;
+          display:inline-flex; align-items:center; }
+  .btn { border-radius:4px; padding:5px 11px; font-size:10.5px; font-weight:500; display:inline-flex; align-items:center;
+         white-space:nowrap; }
+  .bp { background:#5a3ff0; color:#fff; }
+  .bs { background:#fff; border:1px solid #e3e6ec; color:#414b5e; }
+  .k { font-size:11px; font-weight:650; color:#5a3ff0; }
+  .lz { display:inline-block; font-size:8.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+        padding:1px 6px; border-radius:3px; }
+  .clamp2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.35; }
+  .lh { display:grid; grid-template-columns:88px 1fr 138px 66px 100px 118px 52px; gap:11px; padding:6px 15px;
+        font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496;
+        background:#fff; border-bottom:1px solid #e3e6ec; align-items:center; }
+  .lh > span { display:flex; align-items:center; }
+  .lr { display:grid; grid-template-columns:88px 1fr 138px 66px 100px 118px 52px; gap:11px; padding:9px 15px;
+        align-items:center; background:#fff; border-bottom:1px solid #f2f4f7; cursor:pointer; }
+  .lr.hov { background:#f5f3ff; box-shadow:inset 3px 0 0 #5a3ff0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>Workshop hand-out &mdash; the Requests list, explained element by element.</b>
+Every control on the proposed <span class="mono">/requests</span> page gets four things: what it is, what it is for, what
+options it could take, and the question the room needs to settle. <b>The left navigation panel is out of scope</b> and is
+greyed out below &mdash; nothing in this proposal changes it. Companion documents:
+<b>Harness_Request_Navigation_Mockup.html</b> (how the list connects to the detail page) and
+<b>Harness_Request_CaseFirst_Three_Designs.html</b> (what the detail page shows). Prepared by the Business Analyst, 20 August 2026.
+<br><br><b>Checked against the live system on 20 August 2026</b> &mdash; <span class="mono">qops-harness.lab.gend.vn/requests</span> and its
+<span class="mono">/openapi.json</span>. Controls that already ship are marked <span class="ship">already shipped</span>; controls that do not
+exist yet are marked <span class="newf">new field</span>. One proposed control was cut outright as a result &mdash; see Zone&nbsp;C.</div>
+
+<h1>Anatomy of the Requests list</h1>
+<p class="lead">This is Frame&nbsp;1 of the navigation mockup, pulled out and annotated. It is the page a QA lead opens first
+every morning, so everything on it should answer one of two questions: <b>is anything waiting on me?</b> and
+<b>what came out of the thing I submitted?</b> Sixteen elements are numbered below. Work through them in order;
+each one ends with an amber strip naming the decision we owe.</p>
+
+<div class="shotwrap">
+<div class="shot">
+<div class="ui" style="height:352px">
+
+  <div class="nav">
+    <div class="brand"><b>QOps <i>Harness</i></b><span>Web UI for test ops</span></div>
+    <div class="ni on"><span class="ico">&#9636;</span>Requests</div>
+    <div class="ns"><span class="ico">&#9636;</span>Test cases <em>&#8964;</em></div>
+    <div class="ni sub"><span class="ico">&#8801;</span>Failed</div>
+    <div class="ni sub"><span class="ico">&#8801;</span>All cases</div>
+    <div class="ni sub"><span class="ico">&#9701;</span>Executed history</div>
+    <div class="ns"><span class="ico">&#9880;</span>Test groups <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9707;</span>Knowledge <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9638;</span>Dashboards <em>&#8250;</em></div>
+    <div class="navtag">Left panel &mdash; unchanged<br>and out of scope today</div>
+  </div>
+
+  <div class="main">
+    <div class="top">
+      <div style="font-size:15px; font-weight:600; display:flex; align-items:center"><span class="pin">1</span>Requests</div>
+      <span style="font-size:10px; color:#7b8496; display:inline-flex; align-items:center"><span class="pin">2</span>24 &middot; 2 need you</span>
+      <span style="margin-left:auto" class="btn bs"><span class="pin">3</span>Configure columns</span>
+      <span class="btn bp"><span class="pin">4</span>New request</span>
+    </div>
+
+    <div class="bar">
+      <span class="chip" style="background:#eceafe; border-color:#c9c0fb; color:#5a3ff0"><span class="pin">5</span>Needs me &middot; 2</span>
+      <span class="chip"><span class="pin">6</span>Outcome &#8964;</span>
+      <span class="chip"><span class="pin">7</span>Author &#8964;</span>
+      <span class="chip"><span class="pin">8</span>Feature &#8964;</span>
+      <span style="margin-left:auto; font-size:10px; color:#7b8496; display:inline-flex; align-items:center"><span class="pin">9</span>Updated 30s ago</span>
+    </div>
+
+    <div style="flex:1; background:#fff">
+      <div class="lh">
+        <span><span class="pin">10</span>Request</span>
+        <span><span class="pin">11</span>Prompt</span>
+        <span><span class="pin">12</span>Outcome</span>
+        <span><span class="pin">13</span>Cases</span>
+        <span><span class="pin">14</span>Needs you</span>
+        <span><span class="pin">15</span>Author</span>
+        <span><span class="pin">16</span>Age</span>
+      </div>
+
+      <div class="lr hov">
+        <span class="k">REQ-1042</span>
+        <span class="clamp2">Project: aloha Go to workbench-app.lab.gend.vn Click on Risk tab Verify the Total Risk table is displayed Verify the Download Report button&hellip;</span>
+        <span style="color:#136c46; font-weight:650">15 cases created</span>
+        <span class="m">15</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 to review</span>
+        <span style="color:#7b8496">nguyenhoangly103</span>
+        <span class="m" style="color:#7b8496">2h</span>
+      </div>
+      <div class="lr">
+        <span class="k">REQ-1041</span>
+        <span class="clamp2">Project: harness Go to qops-harness.lab.gend.vn/requests Click button &lsquo;New request&rsquo; Validate the pop up is displayed and the first row shows&hellip;</span>
+        <span style="color:#0747a6; font-weight:650">Running &middot; 2 of 5</span>
+        <span class="m">5</span><span style="color:#7b8496">&mdash;</span>
+        <span style="color:#7b8496">hakhoabinh</span><span class="m" style="color:#7b8496">4m</span>
+      </div>
+      <div class="lr">
+        <span class="k">REQ-1040</span>
+        <span class="clamp2">Project: aloha Go to workbench-app.lab.gend.vn Click on Risk tab Click on Output subtab Validate that after reload, Tot&hellip;</span>
+        <span style="color:#a52a1f; font-weight:650">No cases produced</span>
+        <span class="m" style="color:#a52a1f">0</span>
+        <span class="lz" style="background:#fde9e7; color:#a52a1f">Fix &amp; retry</span>
+        <span style="color:#7b8496">hakhoabinh</span><span class="m" style="color:#a52a1f">3h 38m</span>
+      </div>
+      <div class="lr">
+        <span class="k">REQ-1038</span>
+        <span class="clamp2">Project: aloha Go to workbench-app.lab.gend.vn Click on Cash Forecast tab Click on Historical Flows subtab Validate the totals row&hellip;</span>
+        <span style="color:#136c46; font-weight:650">6 cases created</span>
+        <span class="m">6</span><span style="color:#7b8496">&mdash;</span>
+        <span style="color:#7b8496">glzmaxdinh</span><span class="m" style="color:#7b8496">1d</span>
+      </div>
+      <div class="lr">
+        <span class="k">REQ-1035</span>
+        <span class="clamp2">Project: aloha Go to workbench-app.lab.gend.vn Click on Private Fund Validate that the fund detail page loads and the Overview tab&hellip;</span>
+        <span style="color:#136c46; font-weight:650">4 cases created</span>
+        <span class="m">4</span>
+        <span class="lz" style="background:#fde9e7; color:#a52a1f">1 failing</span>
+        <span style="color:#7b8496">nguyenhoangly103</span><span class="m" style="color:#7b8496">2d</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<p style="margin-top:8px; font-size:12px">Each number sits on the control it describes. The left panel is deliberately faded &mdash; it stays exactly as it is in the live system.</p>
+
+<!-- ============================ ZONE A ============================ -->
+<h2>A &middot; The page header</h2>
+<div class="zh">Elements 1&ndash;4 <span>What the page is, and the two buttons that sit above everything else</span></div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">1</span><span class="nm">Page title &mdash; &ldquo;Requests&rdquo;</span><span class="where">header, left</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>The page heading. It names the object you are looking at: a <b>request</b> is one prompt somebody submitted in order to generate test cases.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>Orientation, and it is the anchor for the breadcrumb on the detail page (<span class="mono">&larr; Requests / REQ-1042</span>).</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li>Keep the plain noun <b>Requests</b> &mdash; matches the left nav item, so there is nothing to learn.</li>
+        <li>Rename to <b>Generation requests</b> or <b>Prompts</b> &mdash; more literal, but it breaks the match with the nav.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Does everyone in the room actually agree on what a &ldquo;request&rdquo; is? It is a <i>prompt</i>, and the thing of value is the <i>cases</i> it produces. If half the room hears &ldquo;request&rdquo; and thinks &ldquo;ticket&rdquo;, that mismatch will follow us through every other screen.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">2</span><span class="nm">The count &mdash; &ldquo;24 &middot; 2 need you&rdquo;</span><span class="where">header, beside the title</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>Two numbers: how many requests are in the list right now, and how many of those are waiting on a human decision.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>Tells you whether there is anything to do <b>before you read a single row</b>. On a quiet morning you read &ldquo;24 &middot; 0 need you&rdquo; and close the tab.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Scope of the first number:</b> all requests, or only those matching the active filters? Recommend it follows the filters, otherwise it contradicts what you can see.</li>
+        <li><b>Is &ldquo;2 need you&rdquo; clickable?</b> Clicking it could apply the <i>Needs me</i> filter &mdash; one gesture instead of two.</li>
+        <li><b>Does it also appear as a badge on the left nav</b> so you see it from any page? That would be the only change this proposal makes to the nav, so it needs its own yes.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Is &ldquo;needs <b>you</b>&rdquo; personal or team-wide? Harness has <b>no assignment concept today</b>, so &ldquo;you&rdquo; can only mean &ldquo;requests I submitted&rdquo;. A QA lead reviewing everybody&rsquo;s output would then always see zero. Settle this once, here &mdash; elements <b>5</b> and <b>14</b> both depend on the answer.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">3</span><span class="nm">Configure columns</span><span class="where">header, right &middot; secondary button</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>Opens a small panel to show, hide and reorder the columns of the list.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>The list serves two different people. A lead scans for blockers; an author checks one submission. Rather than argue about the default, let each person keep their own.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Scope of the saved layout:</b> per user (simplest) &middot; a team default that a user may override &middot; named, shareable presets (&ldquo;Triage&rdquo;, &ldquo;My work&rdquo;).</li>
+        <li><b>Locked columns:</b> Request almost certainly cannot be hidden. Prompt probably not either, since it is the only description that exists.</li>
+        <li><b>Drop it entirely for v1</b> and ship one agreed column set.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Do we build column configuration at all in the first release? Cutting it is cheap, and it forces a useful argument: if we cannot agree on one default column set in this room, that is a sign the page is trying to serve two jobs and may need two saved views instead.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">4</span><span class="nm">New request</span><span class="where">header, far right &middot; primary button</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>The primary action. Opens the creation dialog where you write the prompt and pick the request mode and session.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>It is the one thing most people come to this page to do, so it gets the only filled purple button on the screen.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Where the form lives:</b> keep today&rsquo;s modal, or a full page at <span class="mono">/requests/new</span>, which would be linkable and would survive an interruption.</li>
+        <li><b>Prefill:</b> &ldquo;Duplicate this request&rdquo; from a row, so a failed prompt can be edited rather than retyped.</li>
+        <li><b>Templates</b> per project or feature area, if prompts turn out to be highly repetitive &mdash; which the sample rows suggest they are.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Should <b>Fix &amp; retry</b> (element&nbsp;14) simply be <i>New request with the prompt prefilled</i>? That would give us one creation path instead of two, and it is the natural fix for a request that produced no cases.</div>
+</div>
+
+<!-- ============================ ZONE B ============================ -->
+<h2>B &middot; The filter bar</h2>
+<div class="zh">Elements 5&ndash;9 <span>Four chips and a freshness stamp. This row is what turns a 24-row list into a worklist</span></div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">5</span><span class="nm">Needs me</span><span class="where">filter bar &middot; toggle, shown active</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>A <b>toggle</b>, not a dropdown &mdash; the only one in the row. On means: show only requests that are waiting on a decision from me. It carries its own count.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>The highest-value control on the page. It collapses 24 rows to 2 and answers the morning question in one click.</p></div>
+    <div class="fld full"><div class="lb">Options / choices &mdash; what should count as &ldquo;needs me&rdquo;?</div>
+      <ul class="opts">
+        <li><b>a.</b> Cases were generated and are waiting to be accepted or rejected (&ldquo;3 to review&rdquo;).</li>
+        <li><b>b.</b> Generation produced nothing and the prompt needs fixing (&ldquo;Fix &amp; retry&rdquo;).</li>
+        <li><b>c.</b> A case from this request is failing when it runs (&ldquo;1 failing&rdquo;).</li>
+        <li><b>All three together</b> &mdash; simple, but then the chip means &ldquo;something is wrong or waiting&rdquo;, which is vague.</li>
+        <li><b>Split into two chips</b> &mdash; <i>Needs review</i> and <i>Needs fix</i>. More precise, more clutter.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Pick the definition, and pick the word. If the answer to element&nbsp;2 is that we have no assignment, then honestly this chip is <b>Needs someone</b>, not <b>Needs me</b> &mdash; and it should be labelled that way rather than quietly meaning something different from what it says.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">6</span><span class="nm">Outcome <span style="font-weight:400; color:var(--tx2)">(filter)</span> <span class="ship">partly shipped</span></span><span class="where">filter bar &middot; dropdown</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>Filters the list by <b>what the request produced</b> &mdash; not by its internal job status.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>Separates two questions we currently run together: <i>did the machine finish its job?</i> and <i>did it actually produce anything useful?</i></p></div>
+    <div class="fld full"><div class="lb">What already ships &mdash; <i>Filter by status</i></div>
+      <p style="margin:0 0 6px">The live page already has this dropdown. Its seven values are
+      <span class="mono">Successful &middot; Running &middot; Awaiting review &middot; Pending &middot; Rejected &middot; Duplicate &middot; Failed</span>,
+      plus <span class="mono">All statuses</span>. <b>So this is not a new filter.</b> What is proposed is a change of meaning, not a change of control.</p></div>
+    <div class="fld full"><div class="lb">Options / choices &mdash; status, or outcome?</div>
+      <ul class="opts">
+        <li><b>Keep the shipped status list.</b> Zero work. It reports the state of the <i>job</i>.</li>
+        <li><b>Re-derive it as Outcome</b> &mdash; <b>Cases created</b> &middot; <b>Running</b> &middot; <b>No cases produced</b> &mdash; computed from the output rather than from the job flag.</li>
+        <li><b>Show both</b>, keeping status for debugging and outcome for scanning. More honest, more clutter.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop &mdash; start from the shipped list, not a blank page</b>
+    The vocabulary already exists; the question is whether it is the <i>right</i> one. Here is the concrete failure it allows:
+    a request that produced <b>zero cases</b> can sit in the list reading <span class="mono">Awaiting review</span>, because the job
+    finished cleanly even though nothing came out of it. Status describes the machine; Outcome would describe the result.
+    Whatever we choose, the column (element&nbsp;12) and the header count (element&nbsp;2) must read from the same field as this filter.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">7</span><span class="nm">Author <span style="font-weight:400; color:var(--tx2)">(filter)</span> <span class="ship">already shipped</span></span><span class="where">filter bar &middot; dropdown</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>Filters by the person who submitted the request.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>Two jobs: &ldquo;show me only my own&rdquo; for an individual, and &ldquo;show me what this person is producing&rdquo; for a lead.</p></div>
+    <div class="fld full"><div class="lb">What already ships &mdash; <i>Filter by owner</i></div>
+      <p style="margin:0 0 6px">The live page has this dropdown with three entries &mdash; <span class="mono">My requests</span>
+      (and it is the <b>default</b>), <span class="mono">All requests</span>, and <span class="mono">By email&hellip;</span>. The queue card
+      already prints the author too. <b>&ldquo;Find my work&rdquo; is therefore solved.</b> The gap is narrower than the mockup implies.</p></div>
+    <div class="fld full"><div class="lb">Options / choices &mdash; what is still missing</div>
+      <ul class="opts">
+        <li><b>&ldquo;By email&hellip;&rdquo; means typing an address from memory.</b> There is no list of who has actually submitted, so a lead cannot browse the team.</li>
+        <li>Replace it with a <b>picker populated from real submitters</b> &mdash; short, accurate, no typing.</li>
+        <li>Single-select or multi-select? A lead may want two team members at once. Today it is single.</li>
+        <li>Show raw usernames, or display names if SSO gives us them (see element&nbsp;15).</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Given this already works, is anything here worth doing at all? The one real gap is
+    that <b>&ldquo;By email&hellip;&rdquo; requires knowing the address in advance</b> &mdash; fine for finding yourself, useless for reviewing a
+    teammate. Also: is <b>Author</b> the right word for a non-QA audience? The person wrote a prompt, so <b>Submitted by</b> may be
+    plainer. Whatever we pick, the filter and the column must use the same word.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">8</span><span class="nm">Feature <span style="font-weight:400; color:var(--tx2)">(filter)</span></span><span class="where">filter bar &middot; dropdown</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>Filters by the product area the request targets &mdash; <span class="mono">risk / dashboard</span>, <span class="mono">cash-forecast / historical-flows</span>, and so on.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>It is the bridge from &ldquo;requests&rdquo; back to &ldquo;the product&rdquo;. Coverage conversations happen by feature area, never by request.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Shape:</b> one flat list, or two levels (area, then sub-area) matching the <span class="mono">risk / dashboard</span> pattern.</li>
+        <li><b>Where the value comes from:</b> inherited from the generated cases, or chosen by the author when submitting. Inherited is automatic, but it means a request with no cases has no feature.</li>
+        <li>Free text, or a controlled list drawn from the Aloha taxonomy.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop &mdash; and this one has a known data problem <span class="warn">verify with dev</span></b>
+    Live feature values are being <b>cut off mid-word at roughly 47 characters</b> &mdash; for example <span class="mono">application-loads-without-redirect-loop-and-disp</span>. A truncated value cannot be a reliable filter key, because two different features can collapse to the same string. Confirm the real limit before we design a picker on top of it.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">9</span><span class="nm">Updated 30s ago</span><span class="where">filter bar, right</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>A freshness stamp for the whole list.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>Generation is asynchronous and can take minutes. Without this you cannot tell a quiet system from a stale page.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Auto-refresh on a timer</b> (say 30s) &middot; <b>a manual refresh button</b> &middot; <b>live push</b> from the server.</li>
+        <li><b>How new rows arrive:</b> inserted silently, or held behind a &ldquo;3 new requests &mdash; show&rdquo; bar.</li>
+        <li>Whether a row that changes underneath you is highlighted for a moment.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Silent insertion while somebody is mid-scan moves the rows under their cursor and is genuinely disorienting. Recommendation: refresh the counts live, but hold new <i>rows</i> behind a &ldquo;show new&rdquo; bar.</div>
+</div>
+
+<!-- ============================ ZONE C ============================ -->
+<h2>C &middot; The list itself</h2>
+<div class="zh">Elements 10&ndash;16 <span>One row is one request. Seven columns, then the behaviour of the row as a whole</span></div>
+
+<div class="flag" style="border-left-color:#a52a1f">
+<b class="h">Cut from this hand-out: the row checkbox &mdash; and why the cut matters</b>
+An earlier draft opened this zone with a <b>checkbox column</b> for selecting several requests at once. <b>It has been removed.</b>
+It was never observed in Harness &mdash; it was carried across from <b>Test cases &rsaquo; All cases</b>, which really does have bulk select.
+The live Requests queue is <b>single-select</b>; its own subtitle reads <i>&ldquo;select a row to inspect activity and open case review.&rdquo;</i>
+<br><br>
+The API settles it. Every request endpoint takes <b>one</b> id &mdash; <span class="mono">/retry</span>, <span class="mono">/archive</span>,
+<span class="mono">/void</span> &mdash; and there is <b>no delete endpoint for a request at all</b>; a request can only be archived or voided.
+The single <span class="mono">batch</span> route in the whole 141-route API belongs to the <i>case</i> catalog, which is exactly why All cases
+has bulk select and this page does not. <b>Every bulk action a checkbox implies would need new backend work.</b>
+<br><br>
+And the one bulk operation that genuinely exists needs no selection at all:
+<span class="mono">POST /api/quests/requeue-failed-duplicates</span> takes no id and acts on the whole collection. If we ever do want bulk here,
+<b>that shape &mdash; a button, not a checkbox &mdash; is the precedent to follow.</b>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">10</span><span class="nm">Request <span class="newf">new field</span></span><span class="where">column 1 &middot; the key</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>A short, human-readable key such as <span class="mono">REQ-1042</span>, styled purple. <b>The whole row is the click target</b> &mdash; the coloured key is simply what tells you the row is clickable.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>Something you can <b>say out loud in standup</b> and paste into Jira or Slack. This is what makes a request referable at all.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Sequential key per project</b> &mdash; <span class="mono">REQ-1042</span>. Readable, sortable, familiar from Jira. Needs a sequence generator.</li>
+        <li><b>Short hash</b> &mdash; <span class="mono">REQ-8f3a</span>. No sequence needed, but not sortable and harder to read aloud.</li>
+        <li><b>Keep the UUID fragment</b> as today &mdash; <span class="mono">#1ad3fee0-31d</span>. Zero work, and unusable in conversation.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>This is probably <b>the cheapest single improvement on the page</b>, and it is a dev decision rather than a design one. Today the list shows a UUID fragment that nobody can repeat from memory.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">11</span><span class="nm">Prompt</span><span class="where">column 2 &middot; flexible width, 2-line clamp</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>The raw text of the request, exactly as it was typed, clamped to two lines so that every row is the same height.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>It is the <b>only description that exists</b>. There is no title field on a request &mdash; not hidden, not empty: it does not exist.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Keep the raw prompt</b> &mdash; what is drawn above. Honest, and zero work.</li>
+        <li><b>Derive a title from the generated spec slug.</b> A slug like <span class="mono">risk-model-dashboard-total-risk-table-and-download-report-461dc2</span> is already produced and stored, just never shown. Three string operations &mdash; strip the six-character suffix, hyphens to spaces, capitalise &mdash; turn it into &ldquo;Risk model dashboard total risk table and download report&rdquo;. <b>No AI involved.</b></li>
+        <li><b>Have a model write a title.</b> Best reading, but a cost and a failure mode on every request.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop &mdash; and here is the honest consequence</b>
+    We provisionally chose to <b>keep the raw prompt</b>. The cost is that rows still look alike at a glance, because every prompt opens with the same <span class="mono">Project: aloha / Go to workbench-app.lab.gend.vn</span> boilerplate &mdash; look at the five rows above and see how far you get from the prompt alone. Differentiation then comes entirely from Outcome, Cases, Needs you and Age. If the room finds that unacceptable, the slug option is available and small.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">12</span><span class="nm">Outcome <span class="newf">new field</span></span><span class="where">column 3 &middot; 138px</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>A plain-language sentence about what came out: <b style="color:var(--grn)">15 cases created</b> &middot; <b style="color:#0747a6">Running &middot; 2 of 5</b> &middot; <b style="color:var(--red)">No cases produced</b>.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>Answers &ldquo;what did this produce?&rdquo; in one glance. Critically it is <b>computed from the output</b>, not read from a status flag &mdash; so a failed generation can never display as if it were waiting for review.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Colour:</b> green created &middot; blue running &middot; red none. Or no colour at all, leaving colour to the Needs you column alone.</li>
+        <li><b>Progress while running:</b> &ldquo;2 of 5&rdquo; as text, or a thin progress bar.</li>
+        <li>Whether it carries a timestamp (&ldquo;created 2h ago&rdquo;) or leaves that to Age.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Confirm that <b>Outcome is derived, never stored</b>. The moment somebody writes it into a status field it can drift out of step with reality, and we are back to today&rsquo;s problem &mdash; a request that says &ldquo;done&rdquo; while having produced nothing.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">13</span><span class="nm">Cases <span class="newf">new field</span></span><span class="where">column 4 &middot; 66px, numeric</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>The number of test cases this request produced. Set in a tabular-figures font so the digits line up down the column.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>It is the <b>sortable</b> version of Outcome. &ldquo;Show me everything that generated nothing&rdquo; is one click on this header.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>One number</b> (15) or a <b>breakdown</b> (15 total &middot; 12 ready &middot; 3 to review).</li>
+        <li>Whether <b>0</b> is styled as an error, as drawn, or left neutral because Outcome already says so.</li>
+        <li>Whether the number is itself a link into the detail page&rsquo;s Cases tab.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Cases and Outcome overlap &mdash; &ldquo;15 cases created&rdquo; next to &ldquo;15&rdquo; is saying the same thing twice. Keep both, because one reads and one sorts? Or drop one? Dropping Outcome loses the plain sentence; dropping Cases loses the sorting.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">14</span><span class="nm">Needs you <span class="newf">new field</span></span><span class="where">column 5 &middot; 100px</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>A small coloured label naming the action this row is waiting on: <b>3 to review</b>, <b>Fix &amp; retry</b>, <b>1 failing</b>, or an em dash when nothing is needed.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p><b>This is what a QA lead scans first.</b> It is deliberately a column rather than a badge on the row, so that it sorts, filters, and can be read straight down.</p></div>
+    <div class="fld full"><div class="lb">Options / choices &mdash; the value list</div>
+      <ul class="opts">
+        <li><b>n to review</b> &mdash; amber. Cases generated, waiting for accept or reject.</li>
+        <li><b>Fix &amp; retry</b> &mdash; red. Generation produced nothing; the prompt needs work.</li>
+        <li><b>n failing</b> &mdash; red. An accepted case is failing when it runs.</li>
+        <li><b>&mdash;</b> &mdash; nothing needed. Deliberately a dash rather than the word &ldquo;None&rdquo;, so the eye skips it.</li>
+        <li>Should clicking the value <b>jump straight to the right place</b>? &ldquo;1 failing&rdquo; could open <span class="mono">?tab=execution</span> directly.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Same unresolved question as elements&nbsp;2 and&nbsp;5: <b>who is &ldquo;you&rdquo;?</b> Also worth asking &mdash; can a row need <i>two</i> things at once, three cases to review <i>and</i> one failing? If yes, we need a rule for which one wins, or the column has to stack them.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">15</span><span class="nm">Author <span style="font-weight:400; color:var(--tx2)">(column)</span></span><span class="where">column 6 &middot; 118px</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>The username of whoever submitted the request &mdash; <span class="mono">nguyenhoangly103</span>, <span class="mono">hakhoabinh</span>, <span class="mono">glzmaxdinh</span>.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>Accountability, and the thing the Author filter (element&nbsp;7) acts on. It also tells you who to ask when a prompt is unclear.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Raw username</b> as drawn &mdash; accurate, but slow to scan and easy to confuse.</li>
+        <li><b>Display name</b> from SSO &mdash; much easier to read, <i>if</i> the identity provider gives us one.</li>
+        <li><b>Small avatar plus name</b>, or avatar only with the name on hover &mdash; saves roughly 90px of width.</li>
+        <li>Clicking the name applies the Author filter.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Do we have display names available from Google SSO? If we do, this is a small change with a real readability payoff. If we do not, the column stays as it is and we should not pretend otherwise.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">16</span><span class="nm">Age</span><span class="where">column 7 &middot; 52px, numeric</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>A relative time &mdash; <span class="mono">4m</span>, <span class="mono">2h</span>, <span class="mono">1d</span>, <span class="mono">5d</span> &mdash; turning red once it crosses a threshold.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>Finds things that have been sitting. <span class="mono" style="color:var(--red)">3h 38m</span> on a request that produced nothing is the signal that somebody submitted it and walked away.</p></div>
+    <div class="fld full"><div class="lb">Options / choices</div>
+      <ul class="opts">
+        <li><b>Age since created</b> &mdash; simple, but then a healthy finished request from last week also looks &ldquo;old&rdquo;.</li>
+        <li><b>Time since the last state change</b> &mdash; measures staleness rather than existence. More useful, slightly more work.</li>
+        <li><b>The red threshold:</b> what number, and does red mean &ldquo;old&rdquo; or &ldquo;stuck&rdquo;?</li>
+        <li>Exact timestamp on hover.</li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>Recommendation: use <b>time since last state change</b>, and only colour it red when the row <b>also has something in Needs you</b>. An old, finished, fully-accepted request is not a problem and should not be shouting.</div>
+</div>
+
+<div class="anno">
+  <div class="ah"><span class="pinL">&bull;</span><span class="nm">The row itself &mdash; hover and click</span><span class="where">behaviour, not a column</span></div>
+  <div class="fields">
+    <div class="fld"><div class="lb">What is it</div><p>Not a visible control, but the most-used interaction on the page. Hovering tints the row and draws a purple accent down its left edge; clicking anywhere on it opens the request.</p></div>
+    <div class="fld"><div class="lb">What it is for</div><p>A row that is clickable in only one small spot is one of the most common complaints about list UIs. Here the whole row is the target.</p></div>
+    <div class="fld full"><div class="lb">Options / choices &mdash; the full interaction set</div>
+      <ul class="opts">
+        <li><b>Click anywhere on the row</b> &rarr; navigate to <span class="mono">/requests/REQ-1042</span>. With no checkbox, the row has no dead zone &mdash; every pixel does the same thing.</li>
+        <li><b>&uarr; &darr; then Enter</b> &mdash; move through rows and open the focused one. QA working a backlog will use this constantly.</li>
+        <li><b>Middle-click or Ctrl/Cmd-click</b> &rarr; open in a new tab. Free once it is a real URL; impossible with a modal.</li>
+        <li><b>Esc or browser back</b> &rarr; return to the list with scroll position, filters and selection preserved.</li>
+        <li><b>Hover peek</b> &mdash; a small summary card without navigating. <i>Deliberately not designed.</i></li>
+      </ul></div>
+  </div>
+  <div class="ask"><b class="h">Decide in the workshop</b>The right-hand <b>preview pane is removed</b> in this proposal &mdash; that is what pays for the four new columns. Does the room want the quick glance back as a hover peek? Recommendation: <b>do not build it up front</b>; add it only if QA ask for it after living with the full detail page.</div>
+</div>
+
+<!-- ============================ DATA ============================ -->
+<h2>Where the data actually comes from</h2>
+<p class="lead">Verified against the live system and its <span class="mono">/openapi.json</span> on 20 August 2026. Two controls turned out to
+be <b>already shipped</b>, and one turned out to be <b>impossible without new backend endpoints</b>. The rest do not exist yet. That is not a design problem, and no amount of mockup fixes it &mdash;
+it is the honest gap between the screen and the system. Worth putting on the wall during the workshop so that nobody leaves
+thinking this is a week of front-end work.</p>
+<table>
+<thead><tr><th style="width:19%">Field</th><th style="width:20%">Status today</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td><b>Prompt</b></td><td>Exists and displayed</td><td>Currently truncated inside a ~250px column. The proposal widens it and clamps to two lines &mdash; the text itself is unchanged.</td></tr>
+<tr><td><b>Author</b></td><td>Exists and displayed</td><td>Raw username only, on the queue card. A display name depends on what SSO returns (element&nbsp;15).</td></tr>
+<tr><td><b>Author filter</b></td><td><b>Already shipped</b></td><td><i>Filter by owner</i> &mdash; <span class="mono">My requests</span> (default) / <span class="mono">All requests</span> / <span class="mono">By email&hellip;</span>. Not a new feature; see element&nbsp;7.</td></tr>
+<tr><td><b>Status filter</b></td><td><b>Already shipped</b></td><td>Seven values: Successful, Running, Awaiting review, Pending, Rejected, Duplicate, Failed. This is the raw job status, <b>not</b> Outcome &mdash; see element&nbsp;6.</td></tr>
+<tr><td><b>Age</b></td><td>Exists</td><td>The created timestamp is available. &ldquo;Time since last state change&rdquo; would need the state history (element&nbsp;16).</td></tr>
+<tr><td><b>Feature</b></td><td>Exists <span class="warn">but truncated</span></td><td>Values observed cut mid-word at roughly 47 characters. <b>Confirm the real limit with dev</b> before building a filter on it.</td></tr>
+<tr><td><b>Request key</b></td><td><b>Does not exist</b></td><td>Today a UUID fragment such as <span class="mono">#1ad3fee0-31d</span>. Needs a readable key scheme (element&nbsp;10).</td></tr>
+<tr><td><b>Outcome</b></td><td><b>Not built</b> &mdash; derived</td><td>Must be computed from the output, not read from the stored status flag above. Its definition is element&nbsp;6.</td></tr>
+<tr><td><b>Cases (count)</b></td><td>Partly available</td><td>The count exists per request but is not surfaced in the list.</td></tr>
+<tr><td><b>Bulk actions</b></td><td><b>Not possible</b> <span class="warn">API-blocked</span></td><td>Every request endpoint takes one id; there is no delete at all, and the only <span class="mono">batch</span> route belongs to the case catalog. The checkbox column was cut for this reason.</td></tr>
+<tr><td><b>Needs you</b></td><td><b>Does not exist</b></td><td>Cannot be built until the room answers &ldquo;who is you?&rdquo; (elements&nbsp;2,&nbsp;5,&nbsp;14).</td></tr>
+</tbody>
+</table>
+
+<!-- ============================ CLOSE ============================ -->
+<h2>Decisions to leave the room with</h2>
+<ul class="chk">
+<li><b>1 &middot; Who is &ldquo;you&rdquo;?</b> Personal, or anyone on the team. Blocks elements 2, 5 and 15 &mdash; nothing else can be specified until this is settled.</li>
+<li><b>2 &middot; Status, or Outcome?</b> A seven-value status filter already ships. Decide whether to keep it as-is, or re-derive it from the output so that a request producing zero cases can never read <span class="mono">Awaiting review</span>.</li>
+<li><b>3 &middot; Raw prompt, or a derived title?</b> If raw, everyone accepts that rows look alike and that Outcome / Cases / Needs you / Age do the differentiating.</li>
+<li><b>4 &middot; A readable request key.</b> Yes or no, and if yes, sequential or hash. Dev decision.</li>
+<li><b>5 &middot; Bulk actions &mdash; already answered, for the record.</b> Out. The API cannot do them, the checkbox column has been cut, and the one real bulk need is already served by a collection-level endpoint. Raise it again only with a dev estimate attached.</li>
+<li><b>6 &middot; Column configuration &mdash; in or out of v1?</b> If out, we must agree one default column set before we leave.</li>
+</ul>
+
+<div class="flag">
+<b class="h">What this hand-out does not cover</b>
+Only the list page is annotated here. <b>What happens after you click a row</b> &mdash; the request detail page, its
+Cases / Info / Execution / History tabs, the grouped case list and the accept-or-reject flow &mdash; is a separate
+conversation, covered in <b>Harness_Request_Navigation_Mockup.html</b> (Frames 2a, 2b and 3) and
+<b>Harness_Request_CaseFirst_Three_Designs.html</b>. If the room has appetite after these sixteen items, that is
+the natural next session.
+</div>
+
+<p class="lead" style="margin-top:22px; font-size:12.5px">Prepared by the Business Analyst, 20 August 2026.
+Source screen: Frame&nbsp;1 of <b>Harness_Request_Navigation_Mockup.html</b>, unchanged except for the numbered pins
+and the faded left panel.</p>
+
+</div>
+</body>
+</html>

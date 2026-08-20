@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness — Request list to detail, navigation</title>
+<style>
+  :root { --pg:#fff; --tx:#111827; --tx2:#5b6472; --ln:rgba(17,24,39,.14); --cd:#fbfbfc; --ac:#5a3ff0; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#15171b; --tx:#e8eaed; --tx2:#9aa3af; --ln:rgba(232,234,237,.16); --cd:#1b1e23; --ac:#a595f7; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",system-ui,sans-serif;
+         font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1240px; margin:0 auto; padding:32px 20px 70px; }
+  h1 { font-size:28px; font-weight:650; letter-spacing:-.024em; margin:0 0 6px; }
+  h2 { font-size:20px; font-weight:640; letter-spacing:-.018em; margin:34px 0 5px; padding-bottom:7px; border-bottom:2px solid var(--ln); }
+  h3 { font-size:15px; font-weight:640; margin:0 0 4px; }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 14px; }
+  b, strong { color:var(--tx); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  .banner { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:10px;
+            padding:11px 15px; margin:0 0 20px; font-size:13px; color:var(--tx2); }
+  .banner b { color:var(--tx); }
+  .shot { border:1px solid var(--ln); border-radius:11px; overflow:hidden; box-shadow:0 8px 26px rgba(0,0,0,.13);
+          margin-top:12px; position:relative; }
+  .frame { border:1px solid var(--ln); border-radius:14px; padding:18px 20px 20px; background:var(--cd);
+           position:relative; margin-top:30px; }
+  .ftag { position:absolute; top:-12px; left:20px; background:var(--ac); color:#fff; font-weight:700;
+          font-size:11.5px; padding:3px 12px; border-radius:99px; box-shadow:0 2px 8px rgba(0,0,0,.18); }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:12px; }
+  th,td { text-align:left; padding:9px 12px 9px 0; vertical-align:top; border-bottom:1px solid var(--ln); color:var(--tx2); }
+  th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; border-bottom:2px solid var(--ln); }
+  td b { color:var(--tx); }
+  .flag { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:10px; padding:12px 15px;
+          margin-top:16px; font-size:12.5px; color:var(--tx2); }
+  .flag b.h { display:block; color:var(--tx); margin-bottom:3px; }
+  .cal { position:absolute; width:21px; height:21px; border-radius:50%; background:#de350b; color:#fff;
+         font-size:11px; font-weight:800; display:grid; place-items:center; z-index:20; box-shadow:0 0 0 2.5px #fff; }
+  .notes { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:11px; margin-top:14px; }
+  .note { border:1px solid var(--ln); border-radius:9px; padding:10px 12px; font-size:12.5px; color:var(--tx2); }
+  .note b { color:var(--tx); display:block; margin-bottom:2px; }
+  .arrow { text-align:center; margin:14px 0 2px; }
+  .arrow div { display:inline-block; background:var(--ac); color:#fff; font-size:12px; font-weight:650;
+               padding:6px 16px; border-radius:99px; }
+  .urlmap { background:#0f1115; color:#c8d0da; border-radius:10px; padding:14px 16px; font-size:12.5px;
+            font-family:"Fira Code",ui-monospace,Consolas,monospace; line-height:1.9; margin-top:12px; overflow-x:auto; }
+  .urlmap b { color:#7ee0b4; font-weight:600; }
+  .urlmap i { color:#8b95a3; font-style:normal; }
+
+
+  .gh .chev { font-size:11px; color:#46505f; width:11px; display:inline-block; }
+  .gh .cnt2 { font-size:9.5px; color:#46505f; font-weight:600; }
+  .gh.closed { background:#f7f8fb; border-bottom:1px solid #eef0f4; }
+  .gh.closed b { color:#2a3444; }
+  /* card board — frame 2b */
+  .board { flex:1; display:grid; grid-template-columns:repeat(5,1fr); gap:9px; padding:12px 14px;
+           align-content:start; background:#f6f7f9; }
+  .bcol { min-width:0; }
+  .bch { display:flex; align-items:center; gap:6px; padding:0 2px 7px; }
+  .bch b { font-size:10.5px; color:#0f1720; font-weight:750; }
+  .bch .c2 { font-size:9.5px; color:#46505f; font-weight:600; }
+  .cd { background:#fff; border:1px solid #e3e6ec; border-radius:6px; padding:8px 9px; margin-bottom:7px; }
+  .cd.need { border-color:#f0d5a8; box-shadow:0 0 0 2px rgba(232,163,61,.12); }
+  .cnm { font-weight:600; font-size:10.5px; line-height:1.3; color:#1c2333; }
+  .cfn { font-size:9.5px; color:#5b6472; margin-top:3px; line-height:1.35; }
+  .cft { display:flex; align-items:center; gap:5px; margin-top:6px; }
+  .gapc { border:1px dashed #cdd4de; border-radius:6px; padding:10px 9px; text-align:center;
+          font-size:9.5px; color:#6b7683; background:#fbfcfd; }
+
+  /* ===== app chrome ===== */
+  .ui { display:flex; font-size:11px; line-height:1.45;
+        background:#f6f7f9; color:#1c2333; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .ui *, .ui *::before, .ui *::after { box-sizing:border-box; }
+  .ui .m { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+  /* left panel — unchanged from the live Harness system */
+  .nav { width:190px; flex:none; background:#fff; border-right:1px solid #e6e9ee; display:flex; flex-direction:column; }
+  .brand { padding:12px 13px 10px; border-bottom:1px solid #e6e9ee; }
+  .brand b { font-size:13.5px; font-weight:700; color:#1a2433; letter-spacing:-.01em; }
+  .brand b i { font-style:normal; color:#1668d6; }
+  .brand span { display:block; font-size:9px; color:#8b95a3; margin-top:1px; }
+  .ni { padding:8px 13px; display:flex; align-items:center; gap:9px; font-size:11.5px; color:#2a3444; }
+  .ni.on { background:#e4eefc; color:#1668d6; font-weight:650; }
+  .ni.sub { padding-left:33px; }
+  .ni .ico { color:#8b95a3; font-size:11px; }
+  .ni.on .ico { color:#1668d6; }
+  .ns { padding:9px 13px; display:flex; align-items:center; gap:9px; font-size:10px; font-weight:700;
+        letter-spacing:.04em; text-transform:uppercase; color:#5f6b7a; }
+  .ns .ico { color:#8b95a3; font-size:11px; }
+  .ns em { margin-left:auto; font-style:normal; color:#9aa3b1; font-size:10px; }
+  .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .top { background:#fff; border-bottom:1px solid #e3e6ec; padding:10px 15px; display:flex; align-items:center; gap:9px; }
+  .bar { background:#fff; border-bottom:1px solid #e3e6ec; padding:6px 15px; display:flex; gap:6px; align-items:center; }
+  .chip { border:1px solid #e3e6ec; background:#fbfcfd; border-radius:4px; padding:3px 8px; font-size:10px; color:#414b5e; }
+  .btn { border-radius:4px; padding:5px 11px; font-size:10.5px; font-weight:500; display:inline-block; white-space:nowrap; }
+  .bp { background:#5a3ff0; color:#fff; }
+  .bs { background:#fff; border:1px solid #e3e6ec; color:#414b5e; }
+  .k { font-size:11px; font-weight:650; color:#5a3ff0; }
+  .lz { display:inline-block; font-size:8.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+        padding:1px 6px; border-radius:3px; }
+  .tg { display:inline-block; font-size:9.5px; font-weight:600; padding:1px 6px; border-radius:3px; background:#e8ebf1; color:#333d4d; }
+
+  .clamp2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+             line-height:1.35; }
+
+  /* list */
+  .lh { display:grid; grid-template-columns:16px 78px 1fr 138px 60px 94px 116px 46px; gap:11px; padding:6px 15px;
+        font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496;
+        background:#fff; border-bottom:1px solid #e3e6ec; }
+  .lr { display:grid; grid-template-columns:16px 78px 1fr 138px 60px 94px 116px 46px; gap:11px; padding:9px 15px;
+        align-items:center; background:#fff; border-bottom:1px solid #f2f4f7; cursor:pointer; }
+  .lr.hov { background:#f5f3ff; box-shadow:inset 3px 0 0 #5a3ff0; }
+
+  /* detail */
+  .crumb { font-size:10.5px; color:#7b8496; }
+  .crumb b { color:#5a3ff0; font-weight:600; }
+  .dtabs { display:flex; gap:20px; padding:0 15px; background:#fff; border-bottom:1px solid #e3e6ec; }
+  .dtab { padding:8px 0; font-size:11.5px; color:#7b8496; }
+  .dtab.on { color:#5a3ff0; font-weight:650; box-shadow:inset 0 -2px 0 #5a3ff0; }
+  .dtab .n { font-size:9.5px; color:#7b8496; margin-left:3px; }
+  .gh { display:flex; align-items:center; gap:8px; padding:7px 15px; background:#f1f3f7; color:#0f1720;
+        border-bottom:1px solid #e3e6ec; font-size:11px; }
+  .gh b { color:#0f1720; font-weight:750; letter-spacing:.01em; }
+  .cs { display:grid; grid-template-columns:15px 20px 1fr 176px 68px; gap:10px; padding:7px 15px;
+        align-items:start; background:#fff; border-bottom:1px solid #f4f6f9; }
+  .cs.need { background:#fffdf7; box-shadow:inset 3px 0 0 #e8a33d; }
+  .nm { font-weight:600; font-size:10.5px; }
+  .fn { font-size:9.5px; color:#7b8496; margin-top:2px; }
+  .sd { width:13px; height:13px; border-radius:50%; display:grid; place-items:center; flex:none; }
+  .sd svg { width:7px; height:7px; stroke:#fff; stroke-width:3.6; fill:none; }
+  .card { background:#fff; border:1px solid #e3e6ec; border-radius:5px; padding:11px 13px; margin:11px 15px 0; }
+  .lb { font-size:8.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496; }
+
+  /* before/after strip */
+  .ba { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px; }
+  .ba > div { border:1px solid var(--ln); border-radius:9px; overflow:hidden; }
+  .ba .cap { padding:7px 11px; font-size:11px; font-weight:650; }
+  .old { background:#fff; padding:9px 11px; border-top:1px solid #e3e6ec; color:#1c2333; font-size:10.5px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>Navigation — request list to request detail.</b> How the case-first designs connect to the existing list. Four frames: the widened list, what happens on click, the detail page in two alternative layouts, and its supporting tabs. Recommendation is a <b>full page with its own URL</b> — not a popup or an overlay. <b>The left panel is unchanged from the live system</b> — Requests, Test cases (Failed / All cases / Executed history), Test groups, Knowledge, Dashboards. Nothing in this proposal requires a navigation change. Prepared by the Business Analyst, 19 August 2026.</div>
+
+<h1>From the list to the cases</h1>
+<p class="lead">The list stays. Clicking a row navigates to a real page, so the detail can be linked, shared, bookmarked and reached with the back button. The case-first designs (D1, D2 or D3) live on that page, under a <b>Cases</b> tab that opens by default.</p>
+
+<div class="urlmap">
+<b>/requests</b>                      <i>— the list</i><br>
+<b>/requests/REQ-1042</b>             <i>— detail, Cases tab (default)</i><br>
+<b>/requests/REQ-1042?tab=info</b>    <i>— the prompt and attributes</i><br>
+<b>/requests/REQ-1042?tab=execution</b> <i>— the run log</i><br>
+<b>/requests/REQ-1042?tab=history</b> <i>— lifecycle events</i>
+</div>
+
+<!-- ================= FRAME 1 ================= -->
+<div class="frame">
+<span class="ftag">Frame 1</span>
+<h3>The list, with the preview pane removed</h3>
+<p class="lead">Dropping the right-hand preview gives the list the full width. <b>The prompt still truncates exactly as it does today</b> — that is unchanged, and the full text is on the detail page. What the extra width buys is the columns that were never there: outcome, cases, and who is blocked.</p>
+
+<div class="shot">
+  <span class="cal" style="left:204px; top:74px">1</span>
+  <span class="cal" style="left:430px; top:74px">2</span>
+  <span class="cal" style="left:738px; top:74px">3</span>
+  <span class="cal" style="left:1100px; top:113px">4</span>
+
+<div class="ui" style="height:330px">
+  <div class="nav">
+    <div class="brand"><b>QOps <i>Harness</i></b><span>Web UI for test ops</span></div>
+    <div class="ni on"><span class="ico">&#9636;</span>Requests</div>
+    <div class="ns"><span class="ico">&#9636;</span>Test cases <em>&#8964;</em></div>
+    <div class="ni sub"><span class="ico">&#8801;</span>Failed</div>
+    <div class="ni sub"><span class="ico">&#8801;</span>All cases</div>
+    <div class="ni sub"><span class="ico">&#9701;</span>Executed history</div>
+    <div class="ns"><span class="ico">&#9880;</span>Test groups <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9707;</span>Knowledge <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9638;</span>Dashboards <em>&#8250;</em></div>
+  </div>
+  <div class="main">
+    <div class="top">
+      <div style="font-size:15px; font-weight:600">Requests</div>
+      <span style="font-size:10px; color:#7b8496">24 · 2 need you</span>
+      <span style="margin-left:auto" class="btn bs">Configure columns</span>
+      <span class="btn bp">New request</span>
+    </div>
+    <div class="bar">
+      <span class="chip" style="background:#eceafe; border-color:#c9c0fb; color:#5a3ff0">Needs me · 2</span>
+      <span class="chip">Outcome ⌄</span><span class="chip">Author ⌄</span><span class="chip">Feature ⌄</span>
+      <span style="margin-left:auto; font-size:10px; color:#7b8496">Updated 30s ago</span>
+    </div>
+
+    <div style="flex:1; background:#fff">
+      <div class="lh"><span></span><span>Request</span><span>Prompt</span><span>Outcome</span><span>Cases</span><span>Needs you</span><span>Author</span><span>Age</span></div>
+
+      <div class="lr hov">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1042</span>
+        <span class="clamp2">Project: aloha Go to workbench-app.lab.gend.vn Click on Risk tab Verify the Total Risk table is displayed Verify the Download Report button…</span>
+        <span style="color:#136c46; font-weight:650">15 cases created</span>
+        <span class="m">15</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 to review</span>
+        <span style="color:#7b8496">nguyenhoangly103</span>
+        <span class="m" style="color:#7b8496">2h</span>
+      </div>
+      <div class="lr">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1041</span>
+        <span class="clamp2">Project: harness Go to qops-harness.lab.gend.vn/requests Click button &lsquo;New request&rsquo; Validate the pop up is displayed and the first row shows…</span>
+        <span style="color:#0747a6; font-weight:650">Running · 2 of 5</span>
+        <span class="m">5</span><span style="color:#7b8496">—</span>
+        <span style="color:#7b8496">hakhoabinh</span><span class="m" style="color:#7b8496">4m</span>
+      </div>
+      <div class="lr">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1040</span>
+        <span class="clamp2">Project: aloha Go to workbench-app.lab.gend.vn Click on Risk tab Click on Output subtab Validate that after reload, Tot…</span>
+        <span style="color:#a52a1f; font-weight:650">No cases produced</span>
+        <span class="m" style="color:#a52a1f">0</span>
+        <span class="lz" style="background:#fde9e7; color:#a52a1f">Fix &amp; retry</span>
+        <span style="color:#7b8496">hakhoabinh</span><span class="m" style="color:#a52a1f">3h 38m</span>
+      </div>
+      <div class="lr">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1038</span>
+        <span class="clamp2">Project: aloha Go to workbench-app.lab.gend.vn Click on Cash Forecast tab Click on Historical Flows subtab Validate the totals row…</span>
+        <span style="color:#136c46; font-weight:650">6 cases created</span>
+        <span class="m">6</span><span style="color:#7b8496">—</span>
+        <span style="color:#7b8496">glzmaxdinh</span><span class="m" style="color:#7b8496">1d</span>
+      </div>
+      <div class="lr">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1035</span>
+        <span class="clamp2">Project: aloha Go to workbench-app.lab.gend.vn Click on Private Fund Validate that the fund detail page loads and the Overview tab…</span>
+        <span style="color:#136c46; font-weight:650">4 cases created</span>
+        <span class="m">4</span>
+        <span class="lz" style="background:#fde9e7; color:#a52a1f">1 failing</span>
+        <span style="color:#7b8496">nguyenhoangly103</span><span class="m" style="color:#7b8496">2d</span>
+      </div>
+      <div class="lr">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1031</span>
+        <span class="clamp2">Project: aloha Go to workbench-app.lab.gend.vn Open the Scenario Test tab Switch the selected fund Validate the scenario table…</span>
+        <span style="color:#136c46; font-weight:650">2 cases created</span>
+        <span class="m">2</span><span style="color:#7b8496">—</span>
+        <span style="color:#7b8496">hakhoabinh</span><span class="m" style="color:#7b8496">5d</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="notes">
+  <div class="note"><b>1 · The key is the visible link</b><span class="mono">REQ-1042</span> is styled as clickable, but <b>the whole row is the target</b>. A row clickable only in one small spot is a common frustration.</div>
+  <div class="note"><b>2 · The prompt is unchanged</b>Same raw text, same truncation as today — just a wider column and a two-line clamp so every row is the same height. The full prompt lives on the detail page.</div>
+  <div class="note"><b>3 · Outcome, not status</b>"15 cases created" · "No cases produced" — computed from output, so a failed generation can never display as awaiting review.</div>
+  <div class="note"><b>4 · "Needs you" is its own column</b>Sortable and filterable. This is what a QA lead scans first.</div>
+</div>
+
+<h3 style="margin-top:22px">What the extra width buys</h3>
+<p style="margin-bottom:2px">The prompt text is identical in both. Everything to the right of it is new.</p>
+<div class="ba">
+  <div>
+    <div class="cap" style="background:#fdeae7; color:#a52a1f">Today — 250px column</div>
+    <div class="old"><span class="mono" style="font-size:9.5px">#1ad3fee0-31d</span> &nbsp;<span style="font-size:9px; color:#7b8496">failed · 1 case</span><br>
+      <span style="font-weight:600">Project: aloha Go to workbench-app.lab.gend.vn Click on Risk tab Click on Output subtab Validate that after reload, Tot…</span></div>
+  </div>
+  <div>
+    <div class="cap" style="background:#e4f6ed; color:#136c46">Proposed — full width</div>
+    <div class="old"><span class="k">REQ-1040</span> &nbsp; <span style="font-weight:600">Risk tab › Output subtab — Total Risk weight</span><br>
+      <span style="color:#a52a1f; font-weight:650; font-size:10px">No cases produced</span> <span style="font-size:10px; color:#7b8496">· 0 cases · Fix &amp; retry · hakhoabinh · 3h 38m</span></div>
+  </div>
+</div>
+
+</div>
+
+<!-- ================= TRANSITION ================= -->
+<div class="arrow"><div>click the row  ·  or  ↑ ↓  then  Enter</div></div>
+
+<div class="flag" style="margin-top:10px">
+<b class="h">What happens on click</b>
+The browser <b>navigates</b> — <span class="mono">/requests</span> → <span class="mono">/requests/REQ-1042</span>. The URL changes, so the page can be bookmarked, pasted into Jira or Slack, and reopened later. <b>Browser back returns to the list</b> with scroll position, filters and selection preserved. <b>Esc</b> does the same.
+<br><br>
+The detail opens on the <b>Cases</b> tab. Info, Execution and History move here from the old right-hand pane — on this page the cases are the subject and those three are supporting evidence.
+</div>
+
+<!-- ================= FRAME 2 ================= -->
+<div class="frame">
+<span class="ftag">Frame 2a</span>
+<h3>The detail page — grouped list (design D1)</h3>
+<p class="lead">This is where D1, D2 or D3 lives. Shown here as D1 (grouped list), compressed. The breadcrumb and the tab row are the only new chrome.</p>
+
+<div class="shot">
+  <span class="cal" style="left:204px; top:20px">5</span>
+  <span class="cal" style="left:204px; top:100px">6</span>
+  <span class="cal" style="left:1100px; top:20px">7</span>
+
+<div class="ui" style="height:430px">
+  <div class="nav">
+    <div class="brand"><b>QOps <i>Harness</i></b><span>Web UI for test ops</span></div>
+    <div class="ni on"><span class="ico">&#9636;</span>Requests</div>
+    <div class="ns"><span class="ico">&#9636;</span>Test cases <em>&#8964;</em></div>
+    <div class="ni sub"><span class="ico">&#8801;</span>Failed</div>
+    <div class="ni sub"><span class="ico">&#8801;</span>All cases</div>
+    <div class="ni sub"><span class="ico">&#9701;</span>Executed history</div>
+    <div class="ns"><span class="ico">&#9880;</span>Test groups <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9707;</span>Knowledge <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9638;</span>Dashboards <em>&#8250;</em></div>
+  </div>
+  <div class="main">
+    <div class="top" style="display:block; padding-bottom:9px">
+      <div class="crumb">← <span style="color:#5a3ff0">Requests</span> &nbsp;/&nbsp; <b>REQ-1042</b></div>
+      <div style="display:flex; align-items:center; gap:9px; margin-top:4px">
+        <span style="font-size:15px; font-weight:600">Risk dashboard — Total Risk table &amp; download report</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 need you</span>
+        <span style="margin-left:auto" class="btn bs">Re-run</span>
+        <span class="btn bp">Accept all 12 ready</span>
+      </div>
+      <div style="font-size:9.5px; color:#7b8496; margin-top:3px">Test Feature · nguyenhoangly103 · 2h ago · all cases inherit <b>risk / dashboard</b></div>
+    </div>
+
+    <div class="dtabs">
+      <span class="dtab on">Cases <span class="n">15</span></span>
+      <span class="dtab">Info</span>
+      <span class="dtab">Execution</span>
+      <span class="dtab">History</span>
+    </div>
+
+    <div style="flex:1; background:#fff; overflow:hidden">
+      <div class="gh" style="background:#fffaf0"><span class="chev">&#8964;</span><b style="color:#8a5300">Needs your decision</b><span class="cnt2">3 cases</span></div>
+
+      <div class="cs need"><span class="m" style="color:#a4adbb; font-size:9.5px">10</span>
+        <span class="sd" style="background:#e8a33d"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/></svg></span>
+        <div><div class="nm">Verify NAV and Beta are numeric on Risk dashboard</div>
+        <div class="fn">Checks both headline risk metrics parse as numbers</div></div>
+        <div><span class="tg">risk · dashboard</span> <span class="tg" style="background:#eceafe; color:#3b1f8f">boundary</span></div>
+        <span class="btn" style="background:#fff3e0; border:1px solid #f0d5a8; color:#8a5300; font-weight:600">Extends</span></div>
+
+      <div class="cs need"><span class="m" style="color:#a4adbb; font-size:9.5px">01</span>
+        <span class="sd" style="background:#6554c0"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+        <div><div class="nm">Verify Total Risk table is displayed</div>
+        <div class="fn">Checks the dashboard renders its totals table on load</div></div>
+        <div><span class="tg">risk · dashboard</span> <span class="tg" style="background:#eceafe; color:#3b1f8f">positive</span></div>
+        <span class="btn" style="background:#fff3e0; border:1px solid #f0d5a8; color:#8a5300; font-weight:600">Duplicate</span></div>
+
+      <div class="gh"><span class="chev">&#8964;</span><b>Positive</b><span class="cnt2">4 ready</span>
+        <span style="margin-left:auto" class="btn bs">Accept group</span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">02</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify Download Report button is displayed</div>
+        <div class="fn">Checks the export control is present and enabled</div></div>
+        <div><span class="tg">risk · dashboard</span> <span class="tg" style="background:#eceafe; color:#3b1f8f">positive</span></div><span></span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">03</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify Risk tab opens from the Public Fund menu</div>
+        <div class="fn">Checks navigation into the Risk area works</div></div>
+        <div><span class="tg">risk · dashboard</span> <span class="tg" style="background:#eceafe; color:#3b1f8f">positive</span></div><span></span></div>
+
+      <div class="gh closed"><span class="chev">&#8250;</span><b>Negative</b><span class="cnt2">4 ready</span>
+        <span style="margin-left:auto" class="btn bs">Accept group</span></div>
+      <div class="gh closed"><span class="chev">&#8250;</span><b>Boundary</b><span class="cnt2">2 ready</span>
+        <span style="margin-left:auto" class="btn bs">Accept group</span></div>
+      <div class="gh closed"><span class="chev">&#8250;</span><b>Security</b><span class="cnt2">2 ready</span>
+        <span style="margin-left:auto" class="btn bs">Accept group</span></div>
+      <div class="gh closed"><span class="chev">&#8250;</span><b>Edge</b><span class="cnt2">1 ready</span>
+        <span style="margin-left:auto" class="btn bs">Accept group</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="notes">
+  <div class="note"><b>5 · Breadcrumb, not a close button</b>← Requests / REQ-1042. It is a page, so it behaves like one — back button, bookmarkable, shareable.</div>
+  <div class="note"><b>6 · Cases is the default tab</b>Your option 3, inverted. Rather than adding a fourth subtab, the cases become the first, and Info / Execution / History move here as supporting evidence.</div>
+  <div class="note"><b>7 · Batch actions live in the header</b>Accept all, Re-run. They apply to the whole request, so they sit above the tab row rather than inside a tab.</div>
+  <div class="note"><b>Groups collapse</b>Every category header is a disclosure &mdash; <span class="mono">&#8964;</span> open, <span class="mono">&#8250;</span> closed. Negative, Boundary, Security and Edge are shown collapsed here. Collapsed state is remembered per user, and <i>Needs your decision</i> always opens expanded.</div>
+</div>
+</div>
+
+<!-- ================= FRAME 3 ================= -->
+<div class="frame">
+<span class="ftag">Frame 2b</span>
+<h3>The same page &mdash; card board (design D2)</h3>
+<p class="lead">An alternative for the Cases tab. One column per category, the whole batch visible without scrolling, and the <i>shape</i> of what was generated readable at a glance &mdash; including what is thin or missing. Everything outside the tab content is identical to Frame 2a.</p>
+
+<div class="shot">
+<div class="ui" style="height:430px">
+  <div class="nav">
+    <div class="brand"><b>QOps <i>Harness</i></b><span>Web UI for test ops</span></div>
+    <div class="ni on"><span class="ico">&#9636;</span>Requests</div>
+    <div class="ns"><span class="ico">&#9636;</span>Test cases <em>&#8964;</em></div>
+    <div class="ni sub"><span class="ico">&#8801;</span>Failed</div>
+    <div class="ni sub"><span class="ico">&#8801;</span>All cases</div>
+    <div class="ni sub"><span class="ico">&#9701;</span>Executed history</div>
+    <div class="ns"><span class="ico">&#9880;</span>Test groups <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9707;</span>Knowledge <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9638;</span>Dashboards <em>&#8250;</em></div>
+  </div>
+  <div class="main">
+    <div class="top" style="display:block; padding-bottom:9px">
+      <div class="crumb">&larr; <span style="color:#5a3ff0">Requests</span> &nbsp;/&nbsp; <b>REQ-1042</b></div>
+      <div style="display:flex; align-items:center; gap:9px; margin-top:4px">
+        <span style="font-size:15px; font-weight:600">Risk model dashboard total risk table and download report</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 need you</span>
+        <span style="margin-left:auto" class="btn bs">Re-run</span>
+        <span class="btn bp">Accept all 12 ready</span>
+      </div>
+      <div style="font-size:9.5px; color:#5b6472; margin-top:3px"><b>15 cases</b> &middot; all inherit <b>risk / dashboard</b> &middot; nguyenhoangly103 &middot; 2h ago</div>
+    </div>
+
+    <div class="dtabs">
+      <span class="dtab on">Cases <span class="n">15</span></span>
+      <span class="dtab">Info</span>
+      <span class="dtab">Execution</span>
+      <span class="dtab">History</span>
+    </div>
+
+    <div class="board">
+      <div class="bcol">
+        <div class="bch"><b>Positive</b><span class="c2">5</span></div>
+        <div class="cd need">
+          <div class="cnm">Verify Total Risk table is displayed</div>
+          <div class="cfn">Renders its totals table on first load</div>
+          <div class="cft"><span class="lz" style="background:#eceafe; color:#3b1f8f">Duplicate</span><span class="tg">P1</span></div>
+        </div>
+        <div class="cd need">
+          <div class="cnm">Verify table renders 8 metric rows</div>
+          <div class="cfn">Expected metric set is complete</div>
+          <div class="cft"><span class="lz" style="background:#eceafe; color:#3b1f8f">Similar 91%</span></div>
+        </div>
+        <div class="cd">
+          <div class="cnm">Verify Download Report button is displayed</div>
+          <div class="cfn">Export control present and enabled</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P2</span></div>
+        </div>
+        <div class="cd">
+          <div class="cnm">Verify Risk tab opens from Public Fund</div>
+          <div class="cfn">Navigation into the Risk area works</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+        <div class="cd">
+          <div class="cnm">Verify values format to 2 decimals</div>
+          <div class="cfn">Numeric formatting is consistent</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P3</span></div>
+        </div>
+      </div>
+      <div class="bcol">
+        <div class="bch"><b>Negative</b><span class="c2">4</span></div>
+        <div class="cd">
+          <div class="cnm">Verify empty fund selection is rejected</div>
+          <div class="cfn">Error shown when no fund is chosen</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+        <div class="cd">
+          <div class="cnm">Verify Download disabled with no data</div>
+          <div class="cfn">Blocks an empty export</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P2</span></div>
+        </div>
+        <div class="cd">
+          <div class="cnm">Verify invalid date range is caught</div>
+          <div class="cfn">Date bounds enforced before build</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P2</span></div>
+        </div>
+        <div class="cd">
+          <div class="cnm">Verify unauthorised user is blocked</div>
+          <div class="cfn">Access control on the Risk area</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+      </div>
+      <div class="bcol">
+        <div class="bch"><b>Boundary</b><span class="c2">3</span></div>
+        <div class="cd need">
+          <div class="cnm">Verify NAV and Beta are numeric</div>
+          <div class="cfn">Both headline metrics parse as numbers</div>
+          <div class="cft"><span class="lz" style="background:#fff3e0; color:#8a5300">Extends 0042</span></div>
+        </div>
+        <div class="cd">
+          <div class="cnm">Verify single-holding fund renders</div>
+          <div class="cfn">Table works at minimum data</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P2</span></div>
+        </div>
+        <div class="cd">
+          <div class="cnm">Verify 500+ holdings, no truncation</div>
+          <div class="cfn">No rows dropped at high volume</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P3</span></div>
+        </div>
+      </div>
+      <div class="bcol">
+        <div class="bch"><b>Security</b><span class="c2">2</span></div>
+        <div class="cd">
+          <div class="cnm">Verify report URL is not guessable</div>
+          <div class="cfn">Links are tokenised, not sequential</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+        <div class="cd">
+          <div class="cnm">Verify expired session cannot download</div>
+          <div class="cfn">Export blocked after session lapse</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+      </div>
+      <div class="bcol">
+        <div class="bch"><b>Edge</b><span class="c2">1</span></div>
+        <div class="cd">
+          <div class="cnm">Verify recovery after network drop</div>
+          <div class="cfn">View reloads cleanly on reconnect</div>
+          <div class="cft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P3</span></div>
+        </div>
+        <div class="gapc">No performance cases generated</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="notes">
+  <div class="note"><b>Same chrome, different content</b>Breadcrumb, header, batch actions and the tab row are unchanged from Frame 2a. Only the Cases tab body differs, so the two can be a per-user view toggle rather than a one-off decision.</div>
+  <div class="note"><b>Coverage shape is the point</b>Five positive thinning to a single edge case, and a dashed placeholder where no performance cases were generated. That absence is a finding the list view states but does not show.</div>
+  <div class="note"><b>Cards needing a decision carry an amber ring</b>Duplicate, Similar and Extends are visible without opening anything.</div>
+  <div class="note"><b>Trade-off</b>Card width forces shorter names and purposes. If reading the full case name matters more than seeing the batch shape, Frame 2a is the better default.</div>
+</div>
+</div>
+
+<div class="frame">
+<span class="ftag">Frame 3</span>
+<h3>The same page — Info tab</h3>
+<p class="lead">The old right-hand pane content, now given full width. Nothing is lost by removing the preview; it simply moves here.</p>
+
+<div class="shot">
+<div class="ui" style="height:300px">
+  <div class="nav">
+    <div class="brand"><b>QOps <i>Harness</i></b><span>Web UI for test ops</span></div>
+    <div class="ni on"><span class="ico">&#9636;</span>Requests</div>
+    <div class="ns"><span class="ico">&#9636;</span>Test cases <em>&#8964;</em></div>
+    <div class="ni sub"><span class="ico">&#8801;</span>Failed</div>
+    <div class="ni sub"><span class="ico">&#8801;</span>All cases</div>
+    <div class="ni sub"><span class="ico">&#9701;</span>Executed history</div>
+    <div class="ns"><span class="ico">&#9880;</span>Test groups <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9707;</span>Knowledge <em>&#8250;</em></div>
+    <div class="ns"><span class="ico">&#9638;</span>Dashboards <em>&#8250;</em></div>
+  </div>
+  <div class="main">
+    <div class="top" style="display:block; padding-bottom:9px">
+      <div class="crumb">← <span style="color:#5a3ff0">Requests</span> &nbsp;/&nbsp; <b>REQ-1042</b></div>
+      <div style="display:flex; align-items:center; gap:9px; margin-top:4px">
+        <span style="font-size:15px; font-weight:600">Risk dashboard — Total Risk table &amp; download report</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 need you</span>
+        <span style="margin-left:auto" class="btn bs">Re-run</span>
+        <span class="btn bp">Accept all 12 ready</span>
+      </div>
+    </div>
+
+    <div class="dtabs">
+      <span class="dtab">Cases <span class="n">15</span></span>
+      <span class="dtab on">Info</span>
+      <span class="dtab">Execution</span>
+      <span class="dtab">History</span>
+    </div>
+
+    <div style="flex:1; background:#f6f7f9; overflow:hidden">
+      <div class="card">
+        <div class="lb">Prompt</div>
+        <div class="m" style="margin-top:5px; font-size:10.5px; color:#414b5e; line-height:1.7">
+          Project: aloha<br>Go to workbench-app.lab.gend.vn<br>Click on Risk tab<br>Verify the Total Risk table is displayed<br>Verify the Download Report button is displayed
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:11px 18px">
+          <div><div class="lb">Request mode</div><div style="font-size:11px; margin-top:2px">Test Feature</div></div>
+          <div><div class="lb">Session</div><div class="m" style="font-size:10px; margin-top:2px">aloha-auth.json</div></div>
+          <div><div class="lb">Author</div><div style="font-size:11px; margin-top:2px">nguyenhoangly103</div></div>
+          <div><div class="lb">Created</div><div style="font-size:11px; margin-top:2px">19 Aug, 09:14</div></div>
+          <div><div class="lb">Feature</div><div style="font-size:11px; margin-top:2px">risk / dashboard</div></div>
+          <div><div class="lb">Labels</div><div style="margin-top:2px"><span class="tg">fund:public</span> <span class="tg">env:lab</span></div></div>
+          <div><div class="lb">Duplicates found</div><div style="font-size:11px; margin-top:2px">3</div></div>
+          <div><div class="lb">Request ID</div><div class="m" style="font-size:9.5px; margin-top:2px; color:#7b8496">1ad3fee0-31d0-4e43…</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ================= SPEC ================= -->
+
+<h2>Interaction specification</h2>
+<table>
+<thead><tr><th style="width:24%">Action</th><th style="width:30%">Behaviour</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><b>Click anywhere on a row</b></td><td>Navigate to <span class="mono">/requests/REQ-1042</span></td><td>Whole row is the target; the key is only the visual affordance</td></tr>
+<tr><td><b>Click the checkbox</b></td><td>Select, do <b>not</b> navigate</td><td>Bulk actions need a way to select without leaving</td></tr>
+<tr><td><b>↑ ↓ then Enter</b></td><td>Move through rows, open the focused one</td><td>QA working a backlog will use this constantly</td></tr>
+<tr><td><b>Esc</b> or <b>browser back</b></td><td>Return to the list, restoring scroll, filters and selection</td><td>The most common complaint about detail pages is losing your place</td></tr>
+<tr><td><b>Middle-click / ⌘-click</b></td><td>Open in a new tab</td><td>Free once it is a real URL. Impossible with a modal</td></tr>
+<tr><td><b>Paste the URL in Jira</b></td><td>Opens the request detail on the Cases tab</td><td>The single strongest reason not to use a modal</td></tr>
+<tr><td><b>Switch tab</b></td><td>Updates <span class="mono">?tab=</span> so the tab is part of the link</td><td>Lets someone link straight to the execution log of a failure</td></tr>
+<tr><td><b>Accept / merge / extend a case</b></td><td>Updates in place; counts in the header and the nav badge update</td><td>Same case may be visible in Test Cases › Proposed — both must agree</td></tr>
+</tbody>
+</table>
+
+<h2>Two entry points, two questions</h2>
+<p class="lead">The same cases will be reachable from two places. That is fine, provided each answers a different question and a decision in one is instantly reflected in the other.</p>
+<table>
+<thead><tr><th style="width:26%">Entry point</th><th style="width:32%">Question it answers</th><th>Scope</th></tr></thead>
+<tbody>
+<tr><td><b>Requests › REQ-1042 › Cases</b></td><td>What did this request produce, and is the batch sound?</td><td>One request, all 15 cases together, batch context and shared labels</td></tr>
+<tr><td><b>Test cases › Proposed</b> <span class="lz" style="background:#fff3e0; color:#8a5300">not built yet</span></td><td>What needs my decision today, across everything?</td><td>All unreviewed cases from every request, mixed together. <b>Would slot in beside Failed / All cases / Executed history</b> if adopted — it is not in the current navigation and this proposal does not require it</td></tr>
+</tbody>
+</table>
+
+<h2>Why not a popup or an overlay</h2>
+<table>
+<thead><tr><th style="width:20%"></th><th style="width:26%">Modal / popup</th><th style="width:26%">Overlay drawer</th><th>Full page ✓</th></tr></thead>
+<tbody>
+<tr><td><b>Linkable</b></td><td>No</td><td>No</td><td><b>Yes</b></td></tr>
+<tr><td><b>Back button works</b></td><td>Inconsistent</td><td>Inconsistent</td><td><b>Yes</b></td></tr>
+<tr><td><b>Room for D2's five columns</b></td><td>Only if near full-screen</td><td>No</td><td><b>Yes</b></td></tr>
+<tr><td><b>Room for D3's expanded steps</b></td><td>Cramped</td><td>No</td><td><b>Yes</b></td></tr>
+<tr><td><b>Survives an interruption</b></td><td>Feels like losing work</td><td>Partly</td><td><b>Yes</b></td></tr>
+<tr><td><b>Right for the task</b></td><td>One short decision</td><td>A quick glance</td><td><b>A 5–10 minute working session</b></td></tr>
+</tbody>
+</table>
+
+<div class="flag">
+<b class="h">If you want to keep a preview as well</b>
+A middle option exists: keep the list full-width, and let <b>hover or a spacebar peek</b> show a small summary card — counts and the first few case names — without navigating. It gives the quick glance back without stealing the width. I would add it only if QA ask for it after using the full-page version, rather than building both up front.
+</div>
+
+<p class="lead" style="margin-top:22px; font-size:12.5px">Draft prepared by the Business Analyst, 19 August 2026. Frame 2 shows design D1; D2 and D3 slot into the same Cases tab unchanged. Companions: <b>Harness_Request_CaseFirst_Three_Designs.html</b> · <b>Harness_Request_UI_Matched_ABC.html</b>.</p>
+
+</div>
+</body>
+</html>

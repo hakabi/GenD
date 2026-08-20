@@ -1,0 +1,2793 @@
+{
+  "version": "0.9.5",
+  "status": "success",
+  "data": {
+    "status": "success",
+    "data": [
+      {
+        "fund_id": "52",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "53",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "54",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "55",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "56",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "57",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "58",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "60",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "61",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "62",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "63",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "64",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "65",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "67",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "78",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "79",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "80",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "81",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "82",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "83",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "85",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "88",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "89",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "90",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "91",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "92",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "93",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "94",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "95",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "68",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "69",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "70",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "71",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "72",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "73",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "133",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "134",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "135",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "136",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "184",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "185",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "186",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "187",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "188",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "189",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "190",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "191",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "192",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "193",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "195",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "196",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "197",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "198",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "200",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "201",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "203",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "204",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "205",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "206",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "209",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "210",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "211",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "160",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "161",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "162",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "163",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "164",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "165",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "166",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "167",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "168",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "169",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "170",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "171",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "172",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "213",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "173",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "214",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "174",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "175",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "215",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "176",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "216",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "177",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "217",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "107",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "218",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "219",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "108",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "220",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "109",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "221",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "110",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "222",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "111",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "212",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "223",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "112",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "113",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "224",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "114",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "225",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "115",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "226",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "116",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "227",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "118",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "119",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "120",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "121",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "122",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "123",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "124",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "125",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "229",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "230",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "231",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "232",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "233",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "235",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5305",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "236",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "178",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "179",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "180",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "181",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "182",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "143",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "144",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "145",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "96",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "97",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "98",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "137",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "99",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "138",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "100",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "139",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "103",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "140",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "104",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "141",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "105",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "142",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "106",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "126",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "127",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "129",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "146",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "130",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "147",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "131",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "148",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "132",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "150",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "151",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "153",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "154",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "155",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "156",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "157",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "158",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "86",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "14",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "23",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "25",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "28",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "31",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "32",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "33",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "34",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "36",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "37",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "38",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "39",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "40",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "41",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "42",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "43",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "44",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "47",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "48",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "74",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "75",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "76",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "49",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "237",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "238",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "239",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "240",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "243",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "244",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "245",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "246",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "247",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "248",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "249",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "250",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "251",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "252",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "253",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "254",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "255",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "256",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "257",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "258",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "259",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "260",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "261",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "263",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "264",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "265",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "266",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "267",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "268",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "269",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "272",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "273",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "274",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "275",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "276",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "277",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "278",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "279",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "280",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "282",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "283",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "284",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "285",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "286",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "287",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "288",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "289",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "290",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "292",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "294",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "295",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "296",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "297",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "298",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "299",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "301",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "302",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "303",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "304",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "305",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "306",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "307",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "308",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "309",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "310",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "311",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "312",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "314",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "319",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "320",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "321",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "323",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "324",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "325",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "326",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "327",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "328",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "329",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "315",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "330",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "331",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "316",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "332",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "333",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "334",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "335",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "336",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "337",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "339",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "340",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "341",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "342",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "343",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "344",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "345",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "346",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "348",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "349",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "350",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "351",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "352",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "353",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "355",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "356",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "357",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "358",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "359",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "360",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "362",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "363",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "364",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "365",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "366",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "367",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "183",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "368",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "369",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "372",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "370",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "373",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "374",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "375",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "376",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "377",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "378",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "379",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "380",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "381",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "383",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "384",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "386",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "387",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "389",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "390",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "391",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "392",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "393",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "394",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "395",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "396",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "398",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "400",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "401",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "402",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "403",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "404",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "405",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "406",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "407",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "408",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "409",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "410",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "411",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "413",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "415",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "416",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "426",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "417",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "418",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "427",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "419",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "428",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "420",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "429",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "422",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "430",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "423",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "431",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "424",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "432",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "434",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "425",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "435",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "436",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "437",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "438",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "439",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "440",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "441",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "442",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "443",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "444",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "445",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "446",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "447",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "262",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "449",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "463",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "488",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "489",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "743",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "494",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "497",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "500",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "530",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "557",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "561",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "565",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "566",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "604",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "617",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "621",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "629",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "648",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "458",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "459",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "465",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "466",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "467",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "471",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "473",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "477",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "493",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "507",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "509",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "511",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "512",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "513",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "518",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "519",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "552",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "574",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "579",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "582",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "625",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "631",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "632",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "659",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "661",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "656",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "492",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "586",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "451",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "452",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "454",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "456",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "460",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "474",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "482",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "484",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "485",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "496",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "498",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "499",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "501",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "514",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "516",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "520",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "521",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "534",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "536",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "538",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "551",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "554",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "559",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "575",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "577",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "578",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "583",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "584",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "585",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "592",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "593",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "594",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "595",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "596",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "597",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "598",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "599",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "615",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "620",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "622",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "399",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "727",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "728",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "729",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "730",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "744",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "745",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "746",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "747",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "764",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "3134",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "3212",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "3213",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "3214",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "3967",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "3968",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4081",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4082",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4296",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4297",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "371",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4298",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "635",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "636",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "638",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "652",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "653",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "654",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "658",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "663",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "664",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "665",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "666",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "667",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "668",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "669",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "670",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "671",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "672",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "673",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "674",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "675",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "681",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "724",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "448",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5364",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5365",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "19779",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "19780",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20123",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20124",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20125",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20126",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20128",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20407",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20408",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20416",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4300",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20417",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20502",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4301",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20604",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4302",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20605",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4304",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "453",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20606",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4305",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20749",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20607",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4306",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20608",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20750",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4307",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20742",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20756",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4323",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20757",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20758",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21673",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21674",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21682",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21683",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21696",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21768",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21775",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21779",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21780",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "21781",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "22890",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "22891",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "22969",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "23000",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "23020",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "23025",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4991",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4992",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4993",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4994",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4995",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4996",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4997",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5007",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5009",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5010",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5276",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5277",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5360",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5361",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "5363",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "614",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24852",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24860",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24870",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24881",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24882",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24885",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24887",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24890",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24910",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24939",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26837",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24940",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "25533",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "25536",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26838",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "25551",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26867",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26274",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26868",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27451",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26275",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27452",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26280",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26770",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27534",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27543",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26828",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27549",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26831",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27550",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27551",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27552",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27553",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27554",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27555",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27556",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27557",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27560",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27590",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "27603",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "28549",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "28550",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "28573",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "28578",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26835",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "28579",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "28582",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "29230",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "29246",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30153",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30185",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30186",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30187",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30733",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30746",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30751",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30752",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30753",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30781",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30782",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "30783",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "31437",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "31464",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "31469",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "31472",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "35766",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "726",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "35774",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "35777",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "35808",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "35875",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "35884",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "36538",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "36539",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "36540",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "36810",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "36813",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "36861",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "36862",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "37652",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "37653",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "38688",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "38689",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "38881",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "38904",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "38905",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "39696",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "39865",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "39887",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "40099",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "23026",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "24850",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "26836",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "40103",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "4299",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "40236",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "40239",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "41097",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "41098",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "41099",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "41100",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "41258",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "41582",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "41813",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "44662",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "44663",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "44664",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "44665",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "44680",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "45040",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "45982",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "45983",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "46600",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "20748",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "46602",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "46603",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "46697",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "46698",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "46699",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "47091",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "47092",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "47097",
+        "real_return": 0.0
+      },
+      {
+        "fund_id": "48200",
+        "real_return": 0.0
+      }
+    ],
+    "total_funds": 695,
+    "run_mode": "indirect",
+    "as_of_date": "2026-08-07"
+  },
+  "timestamp": "2026-08-07T06:00:14.075252"
+}

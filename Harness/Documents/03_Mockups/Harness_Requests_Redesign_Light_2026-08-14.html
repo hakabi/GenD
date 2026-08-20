@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness — Requests page redesign (light theme, 3 directions)</title>
+<style>
+/* ============================================================
+   Palette inherited from QOps_Harness/css/tokens.css (light).
+   Nothing invented except one neutral "slate" for queued state.
+   ============================================================ */
+:root{
+  --bg:#ffffff;
+  --surface:#f5f5f5;
+  --surface-warm:#fafafa;
+  --fg:#0d0d0d;
+  --fg-2:#1a1a1a;
+  --muted:#6e6e6e;
+  --meta:#9b9b9b;
+  --border:#e5e5e5;
+  --border-soft:#ededed;
+  --accent:#10a37f;
+  --accent-on:#ffffff;
+  --accent-hover:#0a7a5e;
+  --accent-soft:rgba(16,163,127,.12);
+  --danger:#ef4146;
+  --danger-soft:rgba(239,65,70,.10);
+  --warn:#f5a623;
+  --warn-soft:rgba(245,166,35,.14);
+  --slate:#8a8f98;
+  --slate-soft:rgba(138,143,152,.12);
+  --btn-primary-bg:#0d0d0d;
+  --btn-primary-fg:#ffffff;
+  --shadow-soft:0 2px 8px rgba(13,13,13,.08);
+  --shadow-dialog:0 24px 48px rgba(13,13,13,.12),0 8px 16px rgba(13,13,13,.06);
+  --elev-raised:0 4px 16px rgba(13,13,13,.06);
+  --font-body:"Söhne","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"Söhne Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+  --radius-sm:12px;
+  --radius-md:16px;
+  --radius-pill:9999px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--surface-warm);
+  color:var(--fg);
+  font-family:var(--font-body);
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- review document chrome ---------- */
+.doc{max-width:1320px;margin:0 auto;padding:40px 28px 96px}
+.doc-head{max-width:760px}
+.doc-eyebrow{
+  font-size:11px;letter-spacing:.10em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin:0 0 10px;
+}
+.doc-head h1{
+  font-size:31px;line-height:1.2;margin:0 0 12px;letter-spacing:-.02em;
+  text-wrap:balance;font-weight:600;
+}
+.doc-lede{font-size:16px;color:var(--muted);margin:0 0 18px}
+.doc-meta{
+  display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--meta);
+  font-family:var(--font-mono);margin:0 0 40px;
+}
+.doc-meta span{
+  border:1px solid var(--border);background:var(--bg);
+  border-radius:var(--radius-pill);padding:3px 11px;
+}
+
+.doc-h2{
+  font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;margin:0 0 16px;display:flex;align-items:center;gap:12px;
+}
+.doc-h2::after{content:"";flex:1;height:1px;background:var(--border)}
+
+/* diagnosis */
+/* 6 items in 3 columns = exactly 2 full rows, no orphan cells */
+.diag{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);border-radius:var(--radius-md);
+  overflow:hidden;margin:0 0 48px}
+@media (max-width:1000px){.diag{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:660px){.diag{grid-template-columns:1fr}}
+.diag-cell{background:var(--bg);padding:18px 20px}
+.diag-n{font-family:var(--font-mono);font-size:11px;color:var(--danger);font-weight:700;
+  letter-spacing:.06em}
+.diag-t{font-size:14.5px;font-weight:600;margin:6px 0 5px;line-height:1.35}
+.diag-d{font-size:13px;color:var(--muted);line-height:1.55;margin:0}
+.diag-d code{font-family:var(--font-mono);font-size:11.5px;background:var(--surface);
+  border:1px solid var(--border-soft);border-radius:5px;padding:1px 5px;color:var(--fg-2);
+  overflow-wrap:anywhere}
+
+/* sticky switcher */
+.switch-wrap{position:sticky;top:0;z-index:60;background:var(--surface-warm);
+  padding:14px 0 16px;margin:0 0 26px;border-bottom:1px solid var(--border)}
+.switch{display:flex;gap:6px;flex-wrap:wrap;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius-pill);padding:5px;width:max-content;max-width:100%;
+  box-shadow:var(--shadow-soft)}
+.switch button{
+  border-radius:var(--radius-pill);padding:8px 16px;font-size:13px;font-weight:500;
+  color:var(--muted);white-space:nowrap;transition:background 150ms,color 150ms;
+}
+.switch button:hover{color:var(--fg)}
+.switch button[aria-selected="true"]{background:var(--fg);color:var(--bg);font-weight:600}
+.switch .sw-tag{font-family:var(--font-mono);font-size:11px;opacity:.55;margin-right:6px}
+
+/* option panels */
+.panel[hidden]{display:none}
+.opt-head{max-width:820px;margin:0 0 22px}
+.opt-kicker{font-family:var(--font-mono);font-size:11.5px;color:var(--accent);
+  letter-spacing:.06em;font-weight:600;text-transform:uppercase}
+.opt-head h2{font-size:25px;margin:8px 0 10px;letter-spacing:-.015em;font-weight:600;
+  text-wrap:balance}
+.opt-principle{font-size:15.5px;color:var(--fg-2);margin:0 0 8px;line-height:1.55}
+.opt-principle b{color:var(--accent);font-weight:600}
+.opt-for{font-size:13.5px;color:var(--muted);margin:0}
+
+/* the mockup canvas */
+.screen{
+  border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg);
+  overflow:hidden;box-shadow:var(--elev-raised);margin:0 0 22px;
+}
+.screen-bar{
+  display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--surface);
+  border-bottom:1px solid var(--border);
+}
+.screen-dot{width:9px;height:9px;border-radius:50%;background:#d8d8d8;flex:none}
+.screen-url{
+  font-family:var(--font-mono);font-size:11.5px;color:var(--meta);margin-left:8px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.screen-scroll{overflow-x:auto}
+.screen-inner{min-width:1080px}
+
+/* trade-off strip */
+.tradeoff{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;
+  background:var(--border);border:1px solid var(--border);border-radius:var(--radius-md);
+  overflow:hidden;margin:0 0 10px}
+.to-cell{background:var(--bg);padding:16px 18px}
+.to-h{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;
+  margin:0 0 8px;display:flex;align-items:center;gap:6px}
+.to-h.win{color:var(--accent)}
+.to-h.cost{color:var(--warn)}
+.to-h.eff{color:var(--muted)}
+.to-cell ul{margin:0;padding:0 0 0 17px;font-size:13px;color:var(--muted);line-height:1.6}
+.to-cell li{margin:0 0 5px}
+.to-cell li b{color:var(--fg-2);font-weight:600}
+
+/* ============================================================
+   MOCKUP INTERNALS  (mk-)  — these emulate the Harness shell
+   ============================================================ */
+.mk{display:flex;font-size:13px;color:var(--fg);min-height:600px}
+.mk-side{width:186px;flex:none;border-right:1px solid var(--border);background:var(--surface-warm);
+  padding:16px 12px;display:flex;flex-direction:column;gap:2px}
+.mk-brand{font-size:15px;font-weight:600;padding:0 8px 4px;letter-spacing:-.01em}
+.mk-brand span{color:var(--accent)}
+.mk-brand small{display:block;font-size:10.5px;color:var(--meta);font-weight:400;
+  letter-spacing:0;margin-top:1px}
+.mk-nav{display:flex;flex-direction:column;gap:1px;margin-top:14px}
+.mk-nav a{padding:7px 10px;border-radius:9px;color:var(--muted);font-size:13px;
+  display:flex;align-items:center;gap:8px;text-decoration:none}
+.mk-nav a.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.mk-nav .ico{width:14px;text-align:center;opacity:.75;font-size:12px}
+.mk-side-foot{margin-top:auto;font-size:11.5px;color:var(--meta);padding:10px 8px 0;
+  border-top:1px solid var(--border)}
+
+.mk-main{flex:1;min-width:0;display:flex;flex-direction:column}
+
+/* unified command bar (shared by all 3 options) */
+.mk-bar{
+  display:flex;align-items:center;gap:12px;padding:14px 20px;
+  border-bottom:1px solid var(--border);background:var(--bg);flex-wrap:wrap;
+}
+.mk-bar h1{font-size:17px;font-weight:600;margin:0;letter-spacing:-.01em}
+.mk-bar .grow{flex:1}
+.mk-search{
+  display:flex;align-items:center;gap:7px;border:1px solid var(--border);
+  background:var(--surface-warm);border-radius:var(--radius-pill);padding:6px 13px;
+  color:var(--meta);font-size:12.5px;min-width:210px;
+}
+.mk-chip{
+  display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);
+  background:var(--bg);border-radius:var(--radius-pill);padding:5px 12px;font-size:12px;
+  color:var(--muted);white-space:nowrap;
+}
+.mk-chip b{color:var(--fg-2);font-weight:600}
+.mk-chip.live{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.mk-btn{
+  border:1px solid var(--border);background:var(--bg);border-radius:var(--radius-pill);
+  padding:7px 14px;font-size:12.5px;color:var(--fg-2);font-weight:500;white-space:nowrap;
+}
+.mk-btn:hover{background:var(--surface)}
+.mk-btn.primary{background:var(--btn-primary-bg);color:var(--btn-primary-fg);border-color:var(--btn-primary-bg)}
+.mk-btn.primary:hover{background:#1a1a1a}
+.mk-btn.accent{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
+.mk-btn.sm{padding:5px 11px;font-size:12px}
+
+/* status pills — one vocabulary everywhere */
+.pill{
+  display:inline-flex;align-items:center;gap:5px;border-radius:var(--radius-pill);
+  padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.02em;white-space:nowrap;
+  border:1px solid transparent;
+}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.pill.ok{color:var(--accent);background:var(--accent-soft);border-color:rgba(16,163,127,.25)}
+.pill.fail{color:var(--danger);background:var(--danger-soft);border-color:rgba(239,65,70,.22)}
+.pill.review{color:#a06a05;background:var(--warn-soft);border-color:rgba(245,166,35,.35)}
+.pill.run{color:var(--accent);background:var(--accent-soft);border-color:rgba(16,163,127,.25)}
+.pill.run::before{animation:pulse 1.4s ease-in-out infinite}
+.pill.queued{color:#5f646c;background:var(--slate-soft);border-color:rgba(138,143,152,.28)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+.mono{font-family:var(--font-mono)}
+.req-id{font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--accent);
+  letter-spacing:-.01em}
+
+/* object-model breadcrumb — the T1 fix, shared by all options */
+.mk-omodel{
+  display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted);
+  padding:9px 20px;background:var(--surface-warm);border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.mk-omodel .node{display:inline-flex;align-items:center;gap:6px;color:var(--fg-2);
+  font-weight:500}
+.mk-omodel .node b{font-family:var(--font-mono);font-size:11.5px;color:var(--accent)}
+.mk-omodel .arrow{color:var(--meta);font-size:11px}
+.mk-omodel .verb{font-size:11px;color:var(--meta);font-style:italic}
+
+/* ---------- OPTION A : timeline ---------- */
+.a-wrap{display:flex;flex:1;min-height:0}
+.a-queue{width:268px;flex:none;border-right:1px solid var(--border);background:var(--surface-warm);
+  display:flex;flex-direction:column}
+.a-qhead{padding:13px 15px 10px;display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid var(--border)}
+.a-qhead .lbl{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:600}
+.a-qhead .n{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--meta)}
+.a-seg{display:flex;gap:4px;padding:10px 12px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.a-seg button{border-radius:var(--radius-pill);padding:4px 11px;font-size:11.5px;color:var(--muted);
+  border:1px solid var(--border);background:var(--bg)}
+.a-seg button.on{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:600}
+.a-seg .cnt{font-family:var(--font-mono);font-size:10px;opacity:.7;margin-left:4px}
+.a-list{overflow:auto;padding:8px}
+.a-card{
+  border:1px solid var(--border);background:var(--bg);border-radius:var(--radius-sm);
+  padding:11px 12px;margin-bottom:7px;cursor:pointer;transition:border-color 150ms;
+}
+.a-card:hover{border-color:var(--slate)}
+.a-card.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.a-card .r1{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.a-card .r1 .pill{margin-left:auto}
+.a-card .ttl{font-size:13px;font-weight:600;line-height:1.35;margin:0 0 6px;color:var(--fg);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.a-card .r2{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--meta)}
+.a-card .r2 .who{color:var(--muted)}
+.a-av{width:17px;height:17px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;
+  flex:none;letter-spacing:0}
+
+.a-detail{flex:1;min-width:0;overflow:auto;padding:22px 26px 30px;background:var(--bg)}
+
+/* the single status truth */
+.a-verdict{
+  border:1px solid rgba(239,65,70,.25);background:var(--danger-soft);
+  border-radius:var(--radius-md);padding:18px 20px;margin:0 0 22px;
+}
+.a-verdict .vtop{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.a-verdict h2{font-size:19px;margin:0;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.a-verdict .vsub{font-size:13.5px;color:var(--muted);margin:5px 0 0;line-height:1.55}
+.a-verdict .vsub b{color:var(--fg-2);font-weight:600}
+.a-verdict .vacts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.a-tech{font-size:12px;color:var(--muted);margin-left:auto}
+.a-tech summary{cursor:pointer;list-style:none;color:var(--muted);font-size:12px;
+  text-decoration:underline;text-underline-offset:3px}
+.a-tech summary::-webkit-details-marker{display:none}
+.a-tech pre{
+  font-family:var(--font-mono);font-size:11px;line-height:1.55;background:var(--bg);
+  border:1px solid var(--border);border-radius:9px;padding:11px;margin:9px 0 0;
+  overflow-x:auto;color:var(--muted);white-space:pre-wrap;word-break:break-all;max-width:520px;
+}
+
+.a-ask{border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-warm);
+  padding:15px 18px;margin:0 0 22px}
+.a-ask .lbl{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;margin-bottom:8px}
+.a-ask p{margin:0;font-size:13px;line-height:1.6;color:var(--fg-2);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.a-ask .more{font-size:12px;color:var(--accent);margin-top:7px;display:inline-block;font-weight:500}
+
+.a-secttl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;margin:0 0 13px;display:flex;align-items:center;gap:9px}
+.a-secttl .n{font-family:var(--font-mono);color:var(--meta);font-size:11px}
+
+/* timeline spine */
+.tl{position:relative;padding-left:26px;margin:0 0 26px}
+.tl::before{content:"";position:absolute;left:8px;top:9px;bottom:9px;width:2px;
+  background:var(--border)}
+.tl-node{position:relative;margin-bottom:6px}
+.tl-node::before{
+  content:"";position:absolute;left:-22px;top:13px;width:10px;height:10px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--slate);z-index:1;
+}
+.tl-node.done::before{background:var(--accent);border-color:var(--accent)}
+.tl-node.bad::before{background:var(--danger);border-color:var(--danger)}
+.tl-node.human::before{background:var(--warn);border-color:var(--warn)}
+.tl-row{
+  display:flex;align-items:center;gap:10px;padding:9px 13px;border:1px solid var(--border);
+  border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;
+}
+.tl-row:hover{background:var(--surface-warm)}
+.tl-node.bad .tl-row{border-color:rgba(239,65,70,.3);background:var(--danger-soft)}
+.tl-node.human .tl-row{border-color:rgba(245,166,35,.35);background:var(--warn-soft)}
+.tl-t{font-size:13.5px;font-weight:600;color:var(--fg)}
+.tl-by{font-size:11.5px;color:var(--meta);display:flex;align-items:center;gap:5px}
+.tl-tag{font-size:9.5px;font-weight:700;letter-spacing:.05em;border-radius:4px;padding:1px 5px;
+  border:1px solid var(--border);color:var(--muted);background:var(--surface)}
+.tl-tag.ai{color:var(--accent);border-color:rgba(16,163,127,.3);background:var(--accent-soft)}
+.tl-tag.you{color:#a06a05;border-color:rgba(245,166,35,.35);background:var(--warn-soft)}
+.tl-time{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--meta);
+  display:flex;align-items:center;gap:9px}
+.tl-body{
+  font-size:12.5px;color:var(--muted);line-height:1.6;padding:11px 13px 4px 13px;
+  border-left:2px solid var(--border);margin:7px 0 4px 6px;
+}
+.tl-body[hidden]{display:none}
+.tl-body .k{font-family:var(--font-mono);font-size:11px;color:var(--meta)}
+
+/* produced cases */
+.a-case{
+  display:flex;align-items:center;gap:11px;padding:12px 14px;border:1px solid var(--border);
+  border-radius:var(--radius-sm);background:var(--bg);margin-bottom:7px;
+}
+.a-case:hover{border-color:var(--slate)}
+.a-case .cn{font-size:13.5px;font-weight:600;color:var(--fg)}
+.a-case .cm{font-size:11.5px;color:var(--meta);font-family:var(--font-mono);margin-top:2px}
+.a-case .go{margin-left:auto;font-size:12px;color:var(--accent);font-weight:500;white-space:nowrap}
+
+/* ---------- OPTION B : worklist ---------- */
+.b-filters{display:flex;align-items:center;gap:7px;padding:11px 20px;flex-wrap:wrap;
+  border-bottom:1px solid var(--border);background:var(--bg)}
+.b-filters button{border:1px solid var(--border);background:var(--bg);border-radius:var(--radius-pill);
+  padding:5px 13px;font-size:12.5px;color:var(--muted);display:inline-flex;align-items:center;gap:7px}
+.b-filters button:hover{background:var(--surface)}
+.b-filters button.on{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:600}
+.b-filters .cnt{font-family:var(--font-mono);font-size:10.5px;border-radius:var(--radius-pill);
+  background:var(--surface);color:var(--muted);padding:0 6px;min-width:19px;text-align:center}
+.b-filters button.on .cnt{background:rgba(255,255,255,.2);color:#fff}
+.b-filters button.alert{border-color:rgba(245,166,35,.45);color:#a06a05;background:var(--warn-soft)}
+.b-filters button.alert .cnt{background:rgba(245,166,35,.25);color:#8a5a04}
+
+.b-tablewrap{flex:1;overflow:auto}
+table.b-t{width:100%;border-collapse:collapse;font-size:13px}
+table.b-t th{
+  text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;padding:10px 14px;border-bottom:1px solid var(--border);
+  background:var(--surface-warm);position:sticky;top:0;z-index:2;white-space:nowrap;
+}
+table.b-t td{padding:11px 14px;border-bottom:1px solid var(--border-soft);vertical-align:middle}
+table.b-t tbody tr{cursor:pointer}
+table.b-t tbody tr:hover{background:var(--surface-warm)}
+table.b-t tbody tr.on{background:var(--accent-soft)}
+table.b-t tbody tr.on td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+.b-ttl{font-weight:600;color:var(--fg);display:block;line-height:1.35;max-width:330px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.b-sub{font-size:11.5px;color:var(--meta);margin-top:2px;display:flex;gap:7px;align-items:center}
+.b-num{font-family:var(--font-mono);font-size:12px;font-variant-numeric:tabular-nums;
+  white-space:nowrap}
+.b-num .p{color:var(--accent);font-weight:600}
+.b-num .f{color:var(--danger);font-weight:600}
+.b-num .z{color:var(--meta)}
+.b-owner{display:flex;align-items:center;gap:7px;white-space:nowrap;font-size:12.5px;
+  color:var(--muted)}
+.b-prog{height:4px;border-radius:2px;background:var(--border);width:74px;overflow:hidden;
+  margin-top:5px}
+.b-prog i{display:block;height:100%;background:var(--accent);border-radius:2px}
+
+/* drawer */
+.b-shell{flex:1;display:flex;min-height:0;position:relative}
+.b-drawer{
+  width:392px;flex:none;border-left:1px solid var(--border);background:var(--bg);
+  padding:20px 22px;overflow:auto;
+}
+.b-dtop{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.b-drawer h2{font-size:17px;margin:6px 0 4px;font-weight:600;line-height:1.35;letter-spacing:-.01em}
+.b-dmeta{font-size:12px;color:var(--meta);margin:0 0 16px;display:flex;gap:7px;
+  align-items:center;flex-wrap:wrap}
+.b-block{border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 15px;
+  margin-bottom:12px;background:var(--surface-warm)}
+.b-block .h{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;margin-bottom:8px}
+.b-block p{margin:0;font-size:12.5px;line-height:1.6;color:var(--fg-2)}
+.b-step{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:5px 0;color:var(--muted)}
+.b-step .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--accent)}
+.b-step .dot.bad{background:var(--danger)}
+.b-step .dot.idle{background:var(--border)}
+.b-step .t{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--meta)}
+.b-step.now{color:var(--fg);font-weight:600}
+.b-bulk{display:flex;align-items:center;gap:9px;padding:10px 20px;background:var(--fg);
+  color:var(--bg);font-size:12.5px}
+.b-bulk .mk-btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.24);color:#fff}
+.b-bulk .x{margin-left:auto;opacity:.6;font-size:12px}
+
+/* ---------- OPTION C : pipeline ---------- */
+.c-board{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);
+  overflow:hidden;min-height:0}
+.c-col{background:var(--surface-warm);display:flex;flex-direction:column;min-width:0}
+.c-colhead{padding:13px 14px 11px;border-bottom:1px solid var(--border);background:var(--bg)}
+.c-ct{display:flex;align-items:center;gap:8px}
+.c-ct .name{font-size:13px;font-weight:600;letter-spacing:-.01em}
+.c-ct .n{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--meta);
+  background:var(--surface);border-radius:var(--radius-pill);padding:1px 8px}
+.c-ct .stage-dot{width:8px;height:8px;border-radius:50%;flex:none}
+.c-cd{font-size:11.5px;color:var(--meta);margin-top:5px;line-height:1.45}
+.c-col.act .c-colhead{background:var(--warn-soft);border-bottom-color:rgba(245,166,35,.35)}
+.c-col.act .c-ct .n{background:rgba(245,166,35,.25);color:#8a5a04;font-weight:600}
+.c-cards{padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px;flex:1}
+.c-card{border:1px solid var(--border);background:var(--bg);border-radius:var(--radius-sm);
+  padding:11px 12px;cursor:pointer;transition:border-color 150ms,transform 150ms}
+.c-card:hover{border-color:var(--slate);transform:translateY(-1px)}
+.c-card.hot{border-color:rgba(245,166,35,.5);box-shadow:0 0 0 1px rgba(245,166,35,.25)}
+.c-card .r1{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.c-card .ttl{font-size:12.5px;font-weight:600;line-height:1.4;margin:0 0 8px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c-card .r2{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--meta)}
+.c-mode{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  border-radius:4px;padding:1px 5px;background:var(--surface);color:var(--muted);
+  border:1px solid var(--border-soft)}
+.c-cta{margin-top:9px;width:100%;border-radius:9px;padding:6px;font-size:12px;font-weight:600;
+  background:var(--warn);color:#2b1a00;border:none}
+.c-cta:hover{background:#e59a1f}
+.c-steps{display:flex;gap:3px;margin-top:8px}
+.c-steps i{height:3px;flex:1;border-radius:2px;background:var(--border)}
+.c-steps i.on{background:var(--accent)}
+.c-steps i.bad{background:var(--danger)}
+.c-empty{font-size:12px;color:var(--meta);text-align:center;padding:22px 10px;line-height:1.5}
+
+/* ---------- NEW REQUEST dialog ---------- */
+.d-stage{background:var(--surface);padding:26px;display:flex;justify-content:center}
+.d-dialog{width:100%;max-width:880px;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius-md);box-shadow:var(--shadow-dialog);overflow:hidden}
+.d-head{padding:20px 24px 16px;border-bottom:1px solid var(--border)}
+.d-steps{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.d-stp{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--meta)}
+.d-stp .b{width:18px;height:18px;border-radius:50%;border:1px solid var(--border);
+  display:inline-flex;align-items:center;justify-content:center;font-size:10px;
+  font-family:var(--font-mono)}
+.d-stp.on{color:var(--fg);font-weight:600}
+.d-stp.on .b{background:var(--accent);border-color:var(--accent);color:#fff}
+.d-steps .sep{flex:1;height:1px;background:var(--border);max-width:34px}
+.d-head h2{font-size:21px;margin:0 0 5px;font-weight:600;letter-spacing:-.015em}
+.d-head p{margin:0;font-size:13.5px;color:var(--muted)}
+.d-body{padding:22px 24px}
+.d-q{font-size:14.5px;font-weight:600;margin:0 0 3px;letter-spacing:-.01em}
+.d-qh{font-size:12.5px;color:var(--muted);margin:0 0 12px}
+.d-modes{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:24px}
+.d-mode{border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 14px;
+  text-align:left;background:var(--bg);transition:border-color 150ms}
+.d-mode:hover{border-color:var(--slate)}
+.d-mode.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-soft)}
+.d-mode .mt{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:7px}
+.d-mode .md{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+.d-mode .ic{font-size:14px;opacity:.85}
+.d-toggle{display:inline-flex;border:1px solid var(--border);border-radius:var(--radius-pill);
+  overflow:hidden;margin-bottom:14px;background:var(--bg)}
+.d-toggle button{padding:9px 18px;font-size:12.5px;color:var(--muted)}
+.d-toggle button.on{background:var(--accent);color:#fff;font-weight:600}
+.d-outcome{
+  border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--surface-warm);
+  border-radius:var(--radius-sm);padding:13px 15px;margin-bottom:24px;
+}
+.d-outcome .ol{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);
+  font-weight:700;margin-bottom:6px}
+.d-outcome p{margin:0;font-size:13px;line-height:1.6;color:var(--fg-2)}
+.d-outcome b{font-weight:600}
+.d-rule{margin-top:9px;font-size:12.5px;color:#8a5a04;background:var(--warn-soft);
+  border:1px solid rgba(245,166,35,.3);border-radius:9px;padding:9px 11px;line-height:1.5}
+.d-rule[hidden]{display:none}
+.d-field{margin-bottom:16px}
+.d-lbl{font-size:12.5px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.d-lbl .req{font-size:10px;color:var(--danger);font-weight:700;letter-spacing:.04em}
+.d-ta{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;
+  font-size:13.5px;min-height:92px;resize:vertical;background:var(--bg);line-height:1.6;
+  font-family:var(--font-body)}
+.d-ta:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(16,163,127,.12)}
+.d-hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+.d-hint a{color:var(--accent);font-weight:500}
+.d-adv{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-warm);
+  overflow:hidden}
+.d-adv summary{padding:12px 15px;font-size:13px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:9px;list-style:none}
+.d-adv summary::-webkit-details-marker{display:none}
+.d-adv summary::before{content:"▸";color:var(--meta);font-size:11px;transition:transform 150ms}
+.d-adv[open] summary::before{transform:rotate(90deg)}
+.d-adv summary .df{margin-left:auto;font-size:11.5px;color:var(--meta);font-weight:400;
+  font-family:var(--font-mono)}
+.d-advbody{padding:0 15px 15px;border-top:1px solid var(--border);display:grid;
+  grid-template-columns:repeat(2,1fr);gap:13px;padding-top:14px}
+.d-mini{font-size:12px}
+.d-mini .k{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;margin-bottom:5px}
+.d-mini .v{border:1px solid var(--border);background:var(--bg);border-radius:9px;padding:8px 11px;
+  color:var(--fg-2);display:flex;align-items:center;gap:7px;font-size:12.5px}
+.d-mini .v .tag{margin-left:auto;font-size:10px;color:var(--meta);font-family:var(--font-mono)}
+.d-foot{display:flex;align-items:center;gap:10px;padding:15px 24px;border-top:1px solid var(--border);
+  background:var(--surface-warm)}
+.d-foot .grow{flex:1}
+.d-ready{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.d-ready .ck{color:var(--accent);font-weight:700}
+
+/* annotations for the "today" panel */
+.anno{
+  display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;
+  border-radius:50%;background:var(--danger);color:#fff;font-size:11px;font-weight:700;
+  font-family:var(--font-mono);flex:none;vertical-align:middle;margin-right:7px;
+}
+.anno-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:11px;
+  margin:0 0 10px}
+.anno-item{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);
+  line-height:1.55;border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px 14px;background:var(--bg)}
+.anno-item b{color:var(--fg-2);font-weight:600}
+.anno-item code{font-family:var(--font-mono);font-size:11px;background:var(--surface);
+  border-radius:5px;padding:1px 5px;overflow-wrap:anywhere}
+
+/* today's cramped shell, reproduced */
+.t-rows{padding:0}
+.t-row{padding:11px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;
+  gap:11px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.t-row .g{flex:1}
+.t-sel{border:1px solid var(--border);border-radius:7px;padding:5px 10px;font-size:12px;
+  background:var(--bg);color:var(--fg-2)}
+.t-session{background:var(--surface-warm)}
+.t-body{display:flex;flex:1;min-height:0}
+.t-q{width:250px;flex:none;border-right:1px solid var(--border);padding:13px;overflow:auto}
+.t-card{border:1px solid var(--border);border-radius:10px;padding:10px 11px;margin-bottom:8px;
+  background:var(--bg)}
+.t-card.on{border-color:var(--accent);background:var(--accent-soft)}
+.t-card .r1{display:flex;align-items:center;gap:6px;font-size:11.5px;margin-bottom:5px}
+.t-card .h{font-family:var(--font-mono);font-size:11.5px;color:var(--fg-2)}
+.t-card .st{color:var(--danger);font-family:var(--font-mono);font-size:11px}
+.t-card .cs{margin-left:auto;font-size:10.5px;color:var(--meta)}
+.t-card .tx{font-size:12px;color:var(--fg-2);line-height:1.4;margin-bottom:6px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.t-card .m{font-size:10.5px;color:var(--meta)}
+.t-d{flex:1;padding:16px 20px;overflow:auto;min-width:0}
+.t-dh{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.t-dh h2{font-size:16px;margin:0;font-weight:600}
+.t-dh .bad{margin-left:auto;font-family:var(--font-mono);font-size:10px;font-weight:700;
+  color:var(--danger);background:var(--danger-soft);border-radius:4px;padding:2px 7px}
+.t-chips{display:flex;gap:6px;margin-bottom:13px;flex-wrap:wrap}
+.t-chips span{font-family:var(--font-mono);font-size:11px;color:var(--muted);background:var(--surface);
+  border-radius:6px;padding:2px 8px}
+.t-tabs{display:flex;gap:18px;border-bottom:1px solid var(--border);margin-bottom:15px}
+.t-tabs span{font-size:13px;color:var(--muted);padding:0 0 8px}
+.t-tabs span.on{color:var(--fg);font-weight:600;box-shadow:inset 0 -2px 0 var(--accent)}
+.t-block{border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:11px}
+.t-block .k{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--meta);
+  margin-bottom:3px}
+.t-block .v{font-size:12.5px;color:var(--fg-2)}
+.t-block .v.mono{font-family:var(--font-mono);font-size:11.5px;line-height:1.55;
+  overflow-wrap:anywhere}
+
+/* recommendation */
+.rec{border:1px solid var(--accent);background:var(--accent-soft);border-radius:var(--radius-md);
+  padding:22px 24px;margin:44px 0 0}
+.rec h3{margin:0 0 10px;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.rec p{margin:0 0 11px;font-size:14px;color:var(--fg-2);line-height:1.65;max-width:75ch}
+.rec p:last-child{margin-bottom:0}
+.rec b{font-weight:600}
+.rec .why{font-size:13.5px;color:var(--muted)}
+
+.cmp{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 12px;
+  border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+.cmp th{text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;padding:11px 15px;background:var(--surface-warm);
+  border-bottom:1px solid var(--border)}
+.cmp td{padding:12px 15px;border-bottom:1px solid var(--border-soft);vertical-align:top;
+  color:var(--muted);line-height:1.55}
+.cmp tr:last-child td{border-bottom:none}
+.cmp td:first-child{color:var(--fg);font-weight:600;white-space:nowrap}
+.cmp .yes{color:var(--accent);font-weight:600}
+.cmp .no{color:var(--meta)}
+.cmp-wrap{overflow-x:auto;margin-bottom:8px}
+
+@media (max-width:820px){
+  .doc{padding:26px 16px 60px}
+  .doc-head h1{font-size:25px}
+  .d-modes,.d-advbody{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header class="doc-head">
+    <p class="doc-eyebrow">QOps Harness · Requests page · light theme</p>
+    <h1>Three ways to make the Requests page explain itself</h1>
+    <p class="doc-lede">
+      Each direction below is a different <em>organizing principle</em>, not a different coat of paint.
+      They share one set of fixes and then diverge on the question they answer first.
+      Built on the real <code style="font-family:var(--font-mono);font-size:13px">tokens.css</code> light palette so any of them
+      can be implemented without new design decisions.
+    </p>
+    <div class="doc-meta">
+      <span>14 Aug 2026</span>
+      <span>observed live · qops-harness.lab.gend.vn</span>
+      <span>accent #10a37f</span>
+      <span>Epic QG-138</span>
+    </div>
+  </header>
+
+  <h2 class="doc-h2">What actually makes it feel messy</h2>
+  <div class="diag">
+    <div class="diag-cell">
+      <div class="diag-n">01</div>
+      <div class="diag-t">A request has no human name</div>
+      <p class="diag-d">Identity is <code>#b52a8284-ee3</code> — you can't say it in standup or remember it.
+        The title falls back to the prompt's first line, capped at 72 chars. Measured on the live queue:
+        <b>20 requests, 5 distinct openings</b>, because the informative part sits after the URL.</p>
+    </div>
+    <div class="diag-cell">
+      <div class="diag-n">02</div>
+      <div class="diag-t">Status is told four times, and disagrees</div>
+      <p class="diag-d">Header badge <b>FAILED</b>, chips row, Info → Status <code>failed</code>, and
+        "Next step" claiming <em>"Request is still processing"</em> — all on one screen. Live, today.</p>
+    </div>
+    <div class="diag-cell">
+      <div class="diag-n">03</div>
+      <div class="diag-t">The page never states its own model</div>
+      <p class="diag-d">A Request <em>proposes</em> Cases which <em>produce</em> Runs. That sentence appears
+        nowhere, which is why "which request does this result belong to" keeps coming back.</p>
+    </div>
+    <div class="diag-cell">
+      <div class="diag-n">04</div>
+      <div class="diag-t">Chrome outranks content</div>
+      <p class="diag-d">Title, New request, <code>Show 20</code>, Refresh, then a full-width band showing
+        <code>data/sessions/harness/session-harness-login.json</code> — four rows before the first request.</p>
+    </div>
+    <div class="diag-cell">
+      <div class="diag-n">05</div>
+      <div class="diag-t">Internals leak into the reader's face</div>
+      <p class="diag-d"><code>crew_phase_a_draft_intents</code>, "CREW TASK", "Direct test", and a raw
+        <code>branch_checkout_failed</code> git error. None of it is actionable for a QA reader.</p>
+    </div>
+    <div class="diag-cell">
+      <div class="diag-n">06</div>
+      <div class="diag-t">The best explainer is the most hidden</div>
+      <p class="diag-d">History → Lifecycle already tells the story cleanly — created, confirmed, executed,
+        failed. It sits in the third tab, behind two noisier ones.</p>
+    </div>
+  </div>
+
+  <div class="switch-wrap">
+    <div class="switch" role="tablist" aria-label="Design directions">
+      <button role="tab" aria-selected="false" data-p="today"><span class="sw-tag">00</span>Today</button>
+      <button role="tab" aria-selected="true"  data-p="a"><span class="sw-tag">A</span>Timeline</button>
+      <button role="tab" aria-selected="false" data-p="b"><span class="sw-tag">B</span>Worklist</button>
+      <button role="tab" aria-selected="false" data-p="c"><span class="sw-tag">C</span>Pipeline</button>
+      <button role="tab" aria-selected="false" data-p="nr"><span class="sw-tag">★</span>New request</button>
+    </div>
+  </div>
+
+  <!-- ================= TODAY ================= -->
+  <section class="panel" id="p-today" hidden>
+    <div class="opt-head">
+      <div class="opt-kicker">Baseline · what ships today</div>
+      <h2>The current page, annotated</h2>
+      <p class="opt-principle">Organizing principle: <b>none stated</b> — the layout mirrors the backend's
+        shape rather than the reader's question.</p>
+      <p class="opt-for">Reproduced from the live page on 14 Aug so the comparison is honest.</p>
+    </div>
+
+    <div class="screen">
+      <div class="screen-bar"><i class="screen-dot"></i><i class="screen-dot"></i><i class="screen-dot"></i>
+        <span class="screen-url">qops-harness.lab.gend.vn/requests</span></div>
+      <div class="screen-scroll"><div class="screen-inner">
+        <div class="mk">
+          <aside class="mk-side">
+            <div class="mk-brand"><span>QOps</span> Harness<small>Web UI for test ops</small></div>
+            <nav class="mk-nav">
+              <a href="#" class="on"><i class="ico">▤</i>Requests</a>
+              <a href="#"><i class="ico">▢</i>Test cases</a>
+              <a href="#"><i class="ico">▦</i>Test groups</a>
+              <a href="#"><i class="ico">◈</i>Knowledge</a>
+              <a href="#"><i class="ico">◔</i>Dashboards</a>
+            </nav>
+            <div class="mk-side-foot">harness · hakhoabinh@gmail.…</div>
+          </aside>
+          <div class="mk-main">
+            <div class="t-rows">
+              <div class="t-row">
+                <div><div style="font-size:17px;font-weight:600;color:var(--fg)">Requests</div>
+                  <div style="font-size:12px;color:var(--muted)">Test request queue — select a row to inspect activity.</div></div>
+                <div class="g"></div>
+                <button class="mk-btn primary">＋ New request</button>
+              </div>
+              <div class="t-row"><span>Show</span><span class="t-sel">20 ▾</span><div class="g"></div>
+                <span class="t-sel">⟳ Refresh</span></div>
+              <div class="t-row t-session">
+                <span style="font-size:10.5px;letter-spacing:.07em;font-weight:600">SESSION</span>
+                <span class="mono" style="font-size:11.5px">data/sessions/harness/session-harness-login.json</span>
+                <span style="font-size:11px">harness · default · saved 8/12/2026, 10:52:44&nbsp;AM</span>
+                <div class="g"></div>
+                <span class="t-sel">⭱ Upload</span>
+                <span class="t-sel">session-harness-login.json ▾</span>
+                <span class="t-sel">↺ Use default</span>
+              </div>
+            </div>
+            <div class="t-body">
+              <div class="t-q">
+                <div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px;display:flex">
+                  Queue <span style="margin-left:auto;font-family:var(--font-mono)">20</span></div>
+                <div class="t-sel" style="display:block;margin-bottom:7px">All requests ▾</div>
+                <div class="t-sel" style="display:block;margin-bottom:7px">All statuses ▾</div>
+                <div class="t-sel" style="display:block;margin-bottom:12px;color:var(--meta)">⌕ Search requests…</div>
+                <div class="t-card on">
+                  <div class="r1"><span class="h">#b52a8284-ee3</span><span>⧉</span>
+                    <span class="st">failed</span><span class="cs">1 case</span></div>
+                  <div class="tx">Project: harness Go to qops-harness.lab.gend.vn Click on (+)…</div>
+                  <div class="m">glzmaxdinh · Web · Aug 11, 06:37 PM</div>
+                </div>
+                <div class="t-card">
+                  <div class="r1"><span class="h">#ef05fb7b-ed3</span><span>⧉</span>
+                    <span class="st">failed</span><span class="cs">1 case</span></div>
+                  <div class="tx">Go to https://qops-harness.lab.gend.vn/requests Clic…</div>
+                  <div class="m">nguyenhoangly103 · Web · Aug 11, 04:54 PM</div>
+                </div>
+                <div class="t-card">
+                  <div class="r1"><span class="h">#0dcb1350-16c</span><span>⧉</span>
+                    <span class="st">failed</span><span class="cs">1 case</span></div>
+                  <div class="tx">Go to https://qops-harness.lab.gend.vn/requests Clic…</div>
+                  <div class="m">nguyenhoangly103 · Web · Aug 11, 03:46 PM</div>
+                </div>
+              </div>
+              <div class="t-d">
+                <div class="t-dh"><h2>Project: harness</h2><span class="bad">FAILED</span></div>
+                <div class="t-chips"><span>#b52a8284-ee3</span><span>Single test case</span>
+                  <span>1 test case</span><span>0:49</span></div>
+                <div class="t-tabs"><span class="on">Info</span><span>Execution</span><span>History</span></div>
+                <div class="t-block"><div class="k">Status</div><div class="v">failed</div></div>
+                <div class="t-block"><div class="k">Linked test cases</div>
+                  <div class="v" style="font-weight:600;margin-bottom:4px">Direct test</div>
+                  <div class="v mono" style="color:var(--muted)">Case 1 (Direct test) failed: Commit &amp; open PR failed:
+                    branch_checkout_failed: error: The following untracked working tree files would be
+                    overwritten by checkout: test-cases/harness/verify-assistant-textbox-returns-an-answer-when-/…</div></div>
+                <div class="t-block" style="border-color:rgba(245,166,35,.4);background:var(--warn-soft)">
+                  <div class="k">Next step</div>
+                  <div class="v">Request is still processing — watch Execution for live progress.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="anno-list">
+      <div class="anno-item"><span class="anno">1</span><div>Four stacked control rows before content. <b>Session</b> — a set-once value — owns a full-width band.</div></div>
+      <div class="anno-item"><span class="anno">2</span><div>The title is the prompt's <b>first line</b>, hard-capped at 72 characters. Measured across the 20 requests in the queue: <b>18 of 20 open with</b> <code>Go to https://qops-harness.lab.gend.vn/</code> — so only <b>5 distinct values</b> exist in the first 40 characters you actually read.</div></div>
+      <div class="anno-item"><span class="anno">3</span><div><b>FAILED</b> in the header vs <em>"still processing"</em> at the bottom. Two truths, one screen.</div></div>
+      <div class="anno-item"><span class="anno">4</span><div>The case is called <code>Direct test</code> and the failure is a raw git error. Neither tells QA what broke or what to do.</div></div>
+    </div>
+  </section>
+
+  <!-- ================= OPTION A ================= -->
+  <section class="panel" id="p-a">
+    <div class="opt-head">
+      <div class="opt-kicker">Direction A</div>
+      <h2>Timeline — read the request as a story</h2>
+      <p class="opt-principle">Organizing principle: <b>the request's journey through time</b>. The three tabs
+        collapse into one scrolling narrative, and the verdict comes first.</p>
+      <p class="opt-for">Best for someone who opens a request and asks <em>"what happened, and what do I do now?"</em></p>
+    </div>
+
+    <div class="screen">
+      <div class="screen-bar"><i class="screen-dot"></i><i class="screen-dot"></i><i class="screen-dot"></i>
+        <span class="screen-url">qops-harness.lab.gend.vn/requests/REQ-1042</span></div>
+      <div class="screen-scroll"><div class="screen-inner">
+        <div class="mk">
+          <aside class="mk-side">
+            <div class="mk-brand"><span>QOps</span> Harness<small>Web UI for test ops</small></div>
+            <nav class="mk-nav">
+              <a href="#" class="on"><i class="ico">▤</i>Requests</a>
+              <a href="#"><i class="ico">▢</i>Test cases</a>
+              <a href="#"><i class="ico">▦</i>Test groups</a>
+              <a href="#"><i class="ico">◈</i>Knowledge</a>
+              <a href="#"><i class="ico">◔</i>Dashboards</a>
+            </nav>
+            <div class="mk-side-foot">harness · hakhoabinh@gmail.…</div>
+          </aside>
+          <div class="mk-main">
+            <div class="mk-bar">
+              <h1>Requests</h1>
+              <div class="mk-search">⌕ Search requests, cases, people…</div>
+              <div class="grow"></div>
+              <span class="mk-chip" title="Session — the saved Aloha login used to run these tests">
+                🔑 Session <b>harness-login</b></span>
+              <button class="mk-btn">⟳ Updated 30s ago</button>
+              <button class="mk-btn primary">＋ New request</button>
+            </div>
+
+            <div class="mk-omodel">
+              <span class="node">Request <b>REQ-1042</b></span>
+              <span class="arrow">→</span><span class="verb">proposes</span>
+              <span class="node">1 case</span>
+              <span class="arrow">→</span><span class="verb">produces</span>
+              <span class="node">1 run</span>
+              <span style="margin-left:auto;font-size:11.5px" class="mono">#b52a8284-ee3 ⧉</span>
+            </div>
+
+            <div class="a-wrap">
+              <aside class="a-queue">
+                <div class="a-qhead"><span class="lbl">Queue</span><span class="n">20</span></div>
+                <div class="a-seg">
+                  <button class="on">All<span class="cnt">20</span></button>
+                  <button>Mine<span class="cnt">4</span></button>
+                  <button>Needs me<span class="cnt">2</span></button>
+                </div>
+                <div class="a-list">
+                  <div class="a-card on">
+                    <div class="r1"><span class="req-id">REQ-1042</span><span class="pill fail">Failed</span></div>
+                    <p class="ttl">Assistant textbox returns an answer on Public Fund rating</p>
+                    <div class="r2"><span class="a-av">MD</span><span class="who">Minh Đinh</span>
+                      <span>·</span><span>1 case</span><span>·</span><span>3d</span></div>
+                  </div>
+                  <div class="a-card">
+                    <div class="r1"><span class="req-id">REQ-1041</span><span class="pill review">Needs review</span></div>
+                    <p class="ttl">Cash Forecast — Historical Flows tab loads with 12-month range</p>
+                    <div class="r2"><span class="a-av">LY</span><span class="who">Ly Nguyễn</span>
+                      <span>·</span><span>6 cases</span><span>·</span><span>3d</span></div>
+                  </div>
+                  <div class="a-card">
+                    <div class="r1"><span class="req-id">REQ-1040</span><span class="pill run">Running</span></div>
+                    <p class="ttl">Risk tab — Scenario Testing subtab parameter validation</p>
+                    <div class="r2"><span class="a-av">LY</span><span class="who">Ly Nguyễn</span>
+                      <span>·</span><span>4 cases</span><span>·</span><span>3d</span></div>
+                  </div>
+                  <div class="a-card">
+                    <div class="r1"><span class="req-id">REQ-1039</span><span class="pill ok">Passed</span></div>
+                    <p class="ttl">Total Endowment page renders NAV and Beta columns</p>
+                    <div class="r2"><span class="a-av">MD</span><span class="who">Minh Đinh</span>
+                      <span>·</span><span>3 cases</span><span>·</span><span>4d</span></div>
+                  </div>
+                </div>
+              </aside>
+
+              <div class="a-detail">
+                <div class="a-verdict">
+                  <div class="vtop">
+                    <div>
+                      <h2>Failed while saving the test — the app was never at fault</h2>
+                      <p class="vsub">Harness built and ran the test successfully, then couldn't commit it to the
+                        repository because <b>two files with the same name already exist</b> from an earlier run.
+                        Nothing about Aloha was tested incorrectly. Retry after the duplicate files are removed.</p>
+                    </div>
+                    <span class="pill fail" style="margin-left:auto;flex:none">Failed</span>
+                  </div>
+                  <div class="vacts">
+                    <button class="mk-btn accent sm">↺ Retry from this step</button>
+                    <button class="mk-btn sm">Open the produced case</button>
+                    <button class="mk-btn sm">Report to dev</button>
+                    <details class="a-tech">
+                      <summary>Technical detail</summary>
+                      <pre>branch_checkout_failed: error: The following untracked
+working tree files would be overwritten by checkout:
+  test-cases/harness/verify-assistant-textbox-…-29e241.json
+  tests/playwright/harness/generated/…-29e241.spec.ts
+Please move or remove them before you switch branches.
+Aborting</pre>
+                    </details>
+                  </div>
+                </div>
+
+                <div class="a-ask">
+                  <div class="lbl">What was asked</div>
+                  <p>Project: harness · Go to qops-harness.lab.gend.vn · Click on (+) 'New request' button ·
+                    Enter text into the field whose placeholder is 'e.g. Write tests for the checkout coupon
+                    flow on mobile…' · Project: aloha · Go to aloha.conceptia.com · Click on Public Fund tab ·
+                    Expand the categories line · Click on the Fund · Validate that the Rating dialog appears ·
+                    Click 'Send' · Verify the textbox 'ASSISTANT' returns an answer</p>
+                  <span class="more">Show full request ▾</span>
+                </div>
+
+                <div class="a-secttl">Timeline <span class="n">6 steps · 0:49 total</span></div>
+                <div class="tl">
+                  <div class="tl-node done">
+                    <div class="tl-row" data-tl>
+                      <span class="tl-t">Request created</span>
+                      <span class="tl-by"><span class="a-av">MD</span>Minh Đinh</span>
+                      <span class="tl-tag you">You</span>
+                      <span class="tl-time">Aug 11, 18:37 <span>▾</span></span>
+                    </div>
+                    <div class="tl-body" hidden>Submitted from the web dialog in mode
+                      <span class="k">Single test case</span>, targeting project <span class="k">harness</span>.</div>
+                  </div>
+                  <div class="tl-node done">
+                    <div class="tl-row" data-tl>
+                      <span class="tl-t">Harness drafted what to test</span>
+                      <span class="tl-tag ai">AI</span>
+                      <span class="tl-time">1:06 <span class="pill ok">Done</span> <span>▾</span></span>
+                    </div>
+                    <div class="tl-body" hidden>Read your request plus 2 knowledge files, then proposed
+                      <b>1 test case</b>: “Assistant textbox returns an answer when clicking Send on a Public
+                      Fund rating dialog.” <span class="k">crew_phase_a_draft_intents</span> — shown only here,
+                      not in the headline.</div>
+                  </div>
+                  <div class="tl-node done">
+                    <div class="tl-row" data-tl>
+                      <span class="tl-t">Harness wrote the steps</span>
+                      <span class="tl-tag ai">AI</span>
+                      <span class="tl-time">0:31 <span class="pill ok">Done</span> <span>▾</span></span>
+                    </div>
+                    <div class="tl-body" hidden>Turned the case into 11 Playwright steps and checked it isn't a
+                      duplicate of an existing case. <span class="k">crew_phase_a_build</span></div>
+                  </div>
+                  <div class="tl-node human">
+                    <div class="tl-row" data-tl>
+                      <span class="tl-t">You confirmed the proposed case</span>
+                      <span class="tl-by"><span class="a-av">MD</span>Minh Đinh</span>
+                      <span class="tl-tag you">You</span>
+                      <span class="tl-time">Aug 12, 06:29 <span>▾</span></span>
+                    </div>
+                    <div class="tl-body" hidden>This is the one point where a human decides. Until you confirm,
+                      nothing runs against Aloha.</div>
+                  </div>
+                  <div class="tl-node done">
+                    <div class="tl-row" data-tl>
+                      <span class="tl-t">Ran the test against Aloha</span>
+                      <span class="tl-tag ai">AI</span>
+                      <span class="tl-time">0:48 <span class="pill ok">Passed</span> <span>▾</span></span>
+                    </div>
+                    <div class="tl-body" hidden>All 11 steps executed. The ASSISTANT textbox returned an answer —
+                      <b>the behaviour under test was correct.</b></div>
+                  </div>
+                  <div class="tl-node bad">
+                    <div class="tl-row" data-tl>
+                      <span class="tl-t">Saving the test to the repository</span>
+                      <span class="tl-tag">System</span>
+                      <span class="tl-time">0:02 <span class="pill fail">Failed</span> <span>▾</span></span>
+                    </div>
+                    <div class="tl-body" hidden>Two files from a previous attempt already occupy the target
+                      filenames, so the commit was aborted. Fix once and retry — the run itself does not need
+                      repeating.</div>
+                  </div>
+                </div>
+
+                <div class="a-secttl">Test cases this request produced <span class="n">1</span></div>
+                <div class="a-case">
+                  <div>
+                    <div class="cn">Assistant textbox returns an answer on Public Fund rating</div>
+                    <div class="cm">aloha / public-fund / rating-dialog · 11 steps</div>
+                  </div>
+                  <span class="pill ok">Ran and passed</span>
+                  <span class="go">Open case →</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="tradeoff">
+      <div class="to-cell"><div class="to-h win">✓ What it wins</div><ul>
+        <li>Kills the four-place status contradiction — <b>one verdict, at the top</b>, in a sentence.</li>
+        <li>Tabs disappear; nothing important is one click away any more.</li>
+        <li>The <b>human checkpoint</b> ("You confirmed") is visible in the same spine as the AI steps, so the workflow teaches itself.</li>
+        <li>Raw logs move behind <b>Technical detail</b> — present for devs, silent for QA.</li>
+      </ul></div>
+      <div class="to-cell"><div class="to-h cost">△ What it costs</div><ul>
+        <li>Long requests (20+ cases) make a <b>very tall page</b>; needs collapsing by default.</li>
+        <li>Comparing two requests means switching back and forth — no side-by-side.</li>
+        <li>The plain-language verdict needs a <b>mapping table</b> from error code to human sentence; someone must own it.</li>
+      </ul></div>
+      <div class="to-cell"><div class="to-h eff">⚙ Build shape</div><ul>
+        <li>Reuses the existing two-pane skeleton — the queue barely changes.</li>
+        <li>Main work is <b>merging three tab payloads</b> into one ordered feed. The data already exists in History → Lifecycle.</li>
+        <li>Medium effort, highest clarity gain per hour.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ================= OPTION B ================= -->
+  <section class="panel" id="p-b" hidden>
+    <div class="opt-head">
+      <div class="opt-kicker">Direction B</div>
+      <h2>Worklist — the queue as something you triage</h2>
+      <p class="opt-principle">Organizing principle: <b>comparison across requests</b>. The narrow card column
+        becomes a full-width table you can scan, sort and act on in bulk.</p>
+      <p class="opt-for">Best for the QA who has 20 requests and asks <em>"which ones need me today?"</em></p>
+    </div>
+
+    <div class="screen">
+      <div class="screen-bar"><i class="screen-dot"></i><i class="screen-dot"></i><i class="screen-dot"></i>
+        <span class="screen-url">qops-harness.lab.gend.vn/requests</span></div>
+      <div class="screen-scroll"><div class="screen-inner">
+        <div class="mk">
+          <aside class="mk-side">
+            <div class="mk-brand"><span>QOps</span> Harness<small>Web UI for test ops</small></div>
+            <nav class="mk-nav">
+              <a href="#" class="on"><i class="ico">▤</i>Requests</a>
+              <a href="#"><i class="ico">▢</i>Test cases</a>
+              <a href="#"><i class="ico">▦</i>Test groups</a>
+              <a href="#"><i class="ico">◈</i>Knowledge</a>
+              <a href="#"><i class="ico">◔</i>Dashboards</a>
+            </nav>
+            <div class="mk-side-foot">harness · hakhoabinh@gmail.…</div>
+          </aside>
+          <div class="mk-main">
+            <div class="mk-bar">
+              <h1>Requests</h1>
+              <div class="mk-search">⌕ Search requests, cases, people…</div>
+              <div class="grow"></div>
+              <span class="mk-chip">🔑 Session <b>harness-login</b></span>
+              <button class="mk-btn">⟳ Updated 30s ago</button>
+              <button class="mk-btn primary">＋ New request</button>
+            </div>
+            <div class="b-filters">
+              <button class="on">All <span class="cnt">20</span></button>
+              <button>Mine <span class="cnt">4</span></button>
+              <button class="alert">⚑ Needs review <span class="cnt">2</span></button>
+              <button>Running <span class="cnt">1</span></button>
+              <button>Failed <span class="cnt">9</span></button>
+              <button>Passed <span class="cnt">8</span></button>
+              <div class="grow" style="flex:1"></div>
+              <button>Mode ▾</button>
+              <button>Last 7 days ▾</button>
+            </div>
+            <div class="b-bulk">
+              <span><b>2 selected</b></span>
+              <button class="mk-btn sm">↺ Retry</button>
+              <button class="mk-btn sm">▶ Run again</button>
+              <button class="mk-btn sm">⤓ Export log</button>
+              <span class="x">✕ Clear</span>
+            </div>
+            <div class="b-shell">
+              <div class="b-tablewrap">
+                <table class="b-t">
+                  <thead><tr>
+                    <th style="width:26px"><input type="checkbox" aria-label="Select all"></th>
+                    <th>Request</th><th>Mode</th><th>Status</th><th>Cases</th><th>Owner</th><th>Updated</th>
+                  </tr></thead>
+                  <tbody>
+                    <tr class="on" data-brow>
+                      <td><input type="checkbox" checked aria-label="Select REQ-1042"></td>
+                      <td><span class="b-ttl">Assistant textbox returns an answer on Public Fund rating</span>
+                        <span class="b-sub"><span class="req-id">REQ-1042</span> · saving to repo failed</span></td>
+                      <td><span class="c-mode">Single</span></td>
+                      <td><span class="pill fail">Failed</span></td>
+                      <td class="b-num"><span class="p">1</span> ✓ <span class="z">/</span> <span class="f">0</span> ✗</td>
+                      <td><div class="b-owner"><span class="a-av">MD</span>Minh Đinh</div></td>
+                      <td class="b-num" style="color:var(--muted)">3d ago</td>
+                    </tr>
+                    <tr data-brow>
+                      <td><input type="checkbox" checked aria-label="Select REQ-1041"></td>
+                      <td><span class="b-ttl">Cash Forecast — Historical Flows tab loads with 12-month range</span>
+                        <span class="b-sub"><span class="req-id">REQ-1041</span> · 6 cases waiting for your confirmation</span></td>
+                      <td><span class="c-mode">New feature</span></td>
+                      <td><span class="pill review">Needs review</span></td>
+                      <td class="b-num"><span class="z">— proposed 6</span></td>
+                      <td><div class="b-owner"><span class="a-av">LY</span>Ly Nguyễn</div></td>
+                      <td class="b-num" style="color:var(--muted)">3d ago</td>
+                    </tr>
+                    <tr data-brow>
+                      <td><input type="checkbox" aria-label="Select REQ-1040"></td>
+                      <td><span class="b-ttl">Risk tab — Scenario Testing subtab parameter validation</span>
+                        <span class="b-sub"><span class="req-id">REQ-1040</span> · step 4 of 6 · building steps</span>
+                        <div class="b-prog"><i style="width:62%"></i></div></td>
+                      <td><span class="c-mode">Existing</span></td>
+                      <td><span class="pill run">Running</span></td>
+                      <td class="b-num"><span class="z">— of 4</span></td>
+                      <td><div class="b-owner"><span class="a-av">LY</span>Ly Nguyễn</div></td>
+                      <td class="b-num" style="color:var(--muted)">2m ago</td>
+                    </tr>
+                    <tr data-brow>
+                      <td><input type="checkbox" aria-label="Select REQ-1039"></td>
+                      <td><span class="b-ttl">Total Endowment page renders NAV and Beta columns</span>
+                        <span class="b-sub"><span class="req-id">REQ-1039</span> · all cases passed</span></td>
+                      <td><span class="c-mode">Existing</span></td>
+                      <td><span class="pill ok">Passed</span></td>
+                      <td class="b-num"><span class="p">3</span> ✓ <span class="z">/</span> <span class="f">0</span> ✗</td>
+                      <td><div class="b-owner"><span class="a-av">MD</span>Minh Đinh</div></td>
+                      <td class="b-num" style="color:var(--muted)">4d ago</td>
+                    </tr>
+                    <tr data-brow>
+                      <td><input type="checkbox" aria-label="Select REQ-1038"></td>
+                      <td><span class="b-ttl">Pipeline page — stage filter keeps selection after refresh</span>
+                        <span class="b-sub"><span class="req-id">REQ-1038</span> · 1 of 4 cases failed</span></td>
+                      <td><span class="c-mode">Bug ticket</span></td>
+                      <td><span class="pill fail">Failed</span></td>
+                      <td class="b-num"><span class="p">3</span> ✓ <span class="z">/</span> <span class="f">1</span> ✗</td>
+                      <td><div class="b-owner"><span class="a-av">MD</span>Minh Đinh</div></td>
+                      <td class="b-num" style="color:var(--muted)">4d ago</td>
+                    </tr>
+                    <tr data-brow>
+                      <td><input type="checkbox" aria-label="Select REQ-1037"></td>
+                      <td><span class="b-ttl">Private Fund — rating dialog opens from the fund row</span>
+                        <span class="b-sub"><span class="req-id">REQ-1037</span> · queued behind 1 request</span></td>
+                      <td><span class="c-mode">Single</span></td>
+                      <td><span class="pill queued">Queued</span></td>
+                      <td class="b-num"><span class="z">— of 1</span></td>
+                      <td><div class="b-owner"><span class="a-av">LY</span>Ly Nguyễn</div></td>
+                      <td class="b-num" style="color:var(--muted)">5d ago</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <aside class="b-drawer">
+                <div class="b-dtop"><span class="req-id">REQ-1042</span><span class="pill fail">Failed</span>
+                  <span style="margin-left:auto;color:var(--meta);font-size:13px">✕</span></div>
+                <h2>Assistant textbox returns an answer on Public Fund rating</h2>
+                <p class="b-dmeta"><span class="a-av">MD</span> Minh Đinh · Single test case · 0:49 ·
+                  <span class="mono">#b52a8284-ee3</span></p>
+
+                <div class="b-block" style="border-color:rgba(239,65,70,.25);background:var(--danger-soft)">
+                  <div class="h" style="color:var(--danger)">Why it failed</div>
+                  <p>The test <b>ran and passed</b>. Harness then failed to save it because two files from an
+                    earlier attempt already use the same names. Aloha is not at fault.</p>
+                  <div style="display:flex;gap:7px;margin-top:11px;flex-wrap:wrap">
+                    <button class="mk-btn accent sm">↺ Retry from this step</button>
+                    <button class="mk-btn sm">Technical detail</button>
+                  </div>
+                </div>
+
+                <div class="b-block">
+                  <div class="h">Progress</div>
+                  <div class="b-step"><i class="dot"></i>Request created<span class="t">18:37</span></div>
+                  <div class="b-step"><i class="dot"></i>Drafted what to test <span class="tl-tag ai">AI</span><span class="t">1:06</span></div>
+                  <div class="b-step"><i class="dot"></i>Wrote the steps <span class="tl-tag ai">AI</span><span class="t">0:31</span></div>
+                  <div class="b-step"><i class="dot"></i>You confirmed<span class="t">06:29</span></div>
+                  <div class="b-step"><i class="dot"></i>Ran against Aloha<span class="t">0:48</span></div>
+                  <div class="b-step now"><i class="dot bad"></i>Saving to repository<span class="t">0:02</span></div>
+                </div>
+
+                <div class="b-block">
+                  <div class="h">Produced 1 test case</div>
+                  <div class="a-case" style="margin:0;background:var(--bg)">
+                    <div><div class="cn" style="font-size:12.5px">Assistant textbox returns an answer…</div>
+                      <div class="cm">aloha / public-fund / rating-dialog</div></div>
+                    <span class="go">Open →</span>
+                  </div>
+                </div>
+
+                <div class="b-block">
+                  <div class="h">What was asked</div>
+                  <p style="color:var(--muted)">Project: harness · Go to qops-harness.lab.gend.vn · Click (+)
+                    New request · … · Verify the textbox 'ASSISTANT' returns an answer</p>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="tradeoff">
+      <div class="to-cell"><div class="to-h win">✓ What it wins</div><ul>
+        <li>You can finally <b>compare</b> requests — owner, mode, pass/fail counts line up in columns.</li>
+        <li><b>Bulk actions</b>: retry nine failed requests without opening nine pages.</li>
+        <li>Filter chips carry <b>counts</b>, so "2 need review" is visible before you click anything.</li>
+        <li>Closest fit to the open tickets QG-141 (identity, filters) and #5 log export.</li>
+      </ul></div>
+      <div class="to-cell"><div class="to-h cost">△ What it costs</div><ul>
+        <li>Denser and more "enterprise" — <b>less friendly to a first-timer</b> than A, which was your stated priority.</li>
+        <li>The drawer is narrower than today's detail pane, so long output still needs a full page.</li>
+        <li>Table columns need a real decision on <b>what a row means</b> when a request has 6 cases with mixed results.</li>
+      </ul></div>
+      <div class="to-cell"><div class="to-h eff">⚙ Build shape</div><ul>
+        <li>Biggest structural change of the three — the queue component is <b>replaced</b>, not restyled.</li>
+        <li>Needs sorting, selection state and bulk endpoints that don't exist yet.</li>
+        <li>Highest effort; highest ceiling once the catalog grows past a few hundred requests.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ================= OPTION C ================= -->
+  <section class="panel" id="p-c" hidden>
+    <div class="opt-head">
+      <div class="opt-kicker">Direction C</div>
+      <h2>Pipeline — the workflow becomes the layout</h2>
+      <p class="opt-principle">Organizing principle: <b>the lifecycle stage</b>. Requests sit in the column that
+        matches where they are, so the process is legible before you read a single card.</p>
+      <p class="opt-for">Best for the newcomer who asks <em>"how does this thing even work, and what's stuck on me?"</em></p>
+    </div>
+
+    <div class="screen">
+      <div class="screen-bar"><i class="screen-dot"></i><i class="screen-dot"></i><i class="screen-dot"></i>
+        <span class="screen-url">qops-harness.lab.gend.vn/requests</span></div>
+      <div class="screen-scroll"><div class="screen-inner">
+        <div class="mk">
+          <aside class="mk-side">
+            <div class="mk-brand"><span>QOps</span> Harness<small>Web UI for test ops</small></div>
+            <nav class="mk-nav">
+              <a href="#" class="on"><i class="ico">▤</i>Requests</a>
+              <a href="#"><i class="ico">▢</i>Test cases</a>
+              <a href="#"><i class="ico">▦</i>Test groups</a>
+              <a href="#"><i class="ico">◈</i>Knowledge</a>
+              <a href="#"><i class="ico">◔</i>Dashboards</a>
+            </nav>
+            <div class="mk-side-foot">harness · hakhoabinh@gmail.…</div>
+          </aside>
+          <div class="mk-main">
+            <div class="mk-bar">
+              <h1>Requests</h1>
+              <div class="mk-search">⌕ Search requests, cases, people…</div>
+              <div class="grow"></div>
+              <span class="mk-chip live">● 1 running</span>
+              <span class="mk-chip">🔑 Session <b>harness-login</b></span>
+              <button class="mk-btn primary">＋ New request</button>
+            </div>
+            <div class="mk-omodel">
+              <span class="node">A <b>Request</b></span><span class="arrow">→</span>
+              <span class="verb">proposes</span><span class="node"><b>Test cases</b></span>
+              <span class="arrow">→</span><span class="verb">which produce</span>
+              <span class="node"><b>Runs</b></span>
+              <span style="color:var(--meta);margin-left:10px">Every request moves left to right through these four stages.</span>
+            </div>
+
+            <div class="c-board">
+              <div class="c-col">
+                <div class="c-colhead">
+                  <div class="c-ct"><i class="stage-dot" style="background:var(--slate)"></i>
+                    <span class="name">Harness is thinking</span><span class="n">3</span></div>
+                  <div class="c-cd">AI is drafting cases and writing steps. Nothing has touched Aloha yet.</div>
+                </div>
+                <div class="c-cards">
+                  <div class="c-card">
+                    <div class="r1"><span class="req-id">REQ-1043</span><span class="c-mode">New feature</span></div>
+                    <p class="ttl">Scenario Test tab — save and reload a saved scenario</p>
+                    <div class="c-steps"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+                    <div class="r2" style="margin-top:7px"><span class="a-av">LY</span>Ly Nguyễn · drafting cases</div>
+                  </div>
+                  <div class="c-card">
+                    <div class="r1"><span class="req-id">REQ-1040</span><span class="c-mode">Existing</span></div>
+                    <p class="ttl">Risk tab — Scenario Testing subtab parameter validation</p>
+                    <div class="c-steps"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+                    <div class="r2" style="margin-top:7px"><span class="a-av">LY</span>Ly Nguyễn · writing steps</div>
+                  </div>
+                  <div class="c-card">
+                    <div class="r1"><span class="req-id">REQ-1037</span><span class="c-mode">Single</span></div>
+                    <p class="ttl">Private Fund — rating dialog opens from the fund row</p>
+                    <div class="c-steps"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+                    <div class="r2" style="margin-top:7px"><span class="a-av">LY</span>Ly Nguyễn · queued</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="c-col act">
+                <div class="c-colhead">
+                  <div class="c-ct"><i class="stage-dot" style="background:var(--warn)"></i>
+                    <span class="name">Waiting for a person</span><span class="n">2</span></div>
+                  <div class="c-cd">Harness has proposed cases and stopped. <b>Nothing runs until you confirm.</b></div>
+                </div>
+                <div class="c-cards">
+                  <div class="c-card hot">
+                    <div class="r1"><span class="req-id">REQ-1041</span><span class="c-mode">New feature</span></div>
+                    <p class="ttl">Cash Forecast — Historical Flows tab loads with 12-month range</p>
+                    <div class="r2"><span class="a-av">LY</span>Ly Nguyễn · 6 cases proposed · 3d waiting</div>
+                    <button class="c-cta">Review 6 cases →</button>
+                  </div>
+                  <div class="c-card hot">
+                    <div class="r1"><span class="req-id">REQ-1036</span><span class="c-mode">Bug ticket</span></div>
+                    <p class="ttl">Public Fund — expanding a category collapses its sibling</p>
+                    <div class="r2"><span class="a-av">MD</span>Minh Đinh · 2 cases proposed · 5d waiting</div>
+                    <button class="c-cta">Review 2 cases →</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="c-col">
+                <div class="c-colhead">
+                  <div class="c-ct"><i class="stage-dot" style="background:var(--accent)"></i>
+                    <span class="name">Running on Aloha</span><span class="n">1</span></div>
+                  <div class="c-cd">Confirmed cases are executing against the target app right now.</div>
+                </div>
+                <div class="c-cards">
+                  <div class="c-card">
+                    <div class="r1"><span class="req-id">REQ-1044</span><span class="c-mode">Existing</span>
+                      <span class="pill run" style="margin-left:auto">Live</span></div>
+                    <p class="ttl">Public Page — fund list sorts by 1-year return</p>
+                    <div class="c-steps"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+                    <div class="r2" style="margin-top:7px">case 3 of 5 · 1:12 elapsed</div>
+                  </div>
+                  <div class="c-empty" style="padding:14px 6px">Runs appear here for a few minutes,<br>then move to Finished.</div>
+                </div>
+              </div>
+
+              <div class="c-col">
+                <div class="c-colhead">
+                  <div class="c-ct"><i class="stage-dot" style="background:var(--fg)"></i>
+                    <span class="name">Finished</span><span class="n">14</span></div>
+                  <div class="c-cd">Done for now. Failures stay at the top until someone retries or files them.</div>
+                </div>
+                <div class="c-cards">
+                  <div class="c-card" style="border-color:rgba(239,65,70,.3)">
+                    <div class="r1"><span class="req-id">REQ-1042</span><span class="pill fail" style="margin-left:auto">Failed</span></div>
+                    <p class="ttl">Assistant textbox returns an answer on Public Fund rating</p>
+                    <div class="r2">Test passed — <b style="color:var(--danger)">saving to repo failed</b></div>
+                  </div>
+                  <div class="c-card" style="border-color:rgba(239,65,70,.3)">
+                    <div class="r1"><span class="req-id">REQ-1038</span><span class="pill fail" style="margin-left:auto">Failed</span></div>
+                    <p class="ttl">Pipeline page — stage filter keeps selection after refresh</p>
+                    <div class="r2">3 of 4 cases passed · 1 real failure</div>
+                  </div>
+                  <div class="c-card">
+                    <div class="r1"><span class="req-id">REQ-1039</span><span class="pill ok" style="margin-left:auto">Passed</span></div>
+                    <p class="ttl">Total Endowment page renders NAV and Beta columns</p>
+                    <div class="r2">3 of 3 cases passed · 4d ago</div>
+                  </div>
+                  <div class="c-empty">11 more · <span style="color:var(--accent);font-weight:600">Show all</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="tradeoff">
+      <div class="to-cell"><div class="to-h win">✓ What it wins</div><ul>
+        <li>The lifecycle is <b>taught by the layout</b> — a new QA/BA understands Harness before reading a card. This is the strongest answer to "nhìn vào là hiểu liền".</li>
+        <li><b>"Waiting for a person"</b> gets its own amber column, so the human gate can never be missed. Directly answers QG-150.</li>
+        <li>Answers "where is my request right now" without opening anything.</li>
+      </ul></div>
+      <div class="to-cell"><div class="to-h cost">△ What it costs</div><ul>
+        <li>Board columns get <b>unbalanced fast</b> — "Finished" grows forever while the others hold 2–3 cards.</li>
+        <li>Weakest for <b>finding a specific old request</b>; needs search and a "Finished" overflow page to compensate.</li>
+        <li>Four columns need real width — awkward under about 1200px, poor on a laptop split-screen.</li>
+      </ul></div>
+      <div class="to-cell"><div class="to-h eff">⚙ Build shape</div><ul>
+        <li>New board component, but it reads from the <b>same status field</b> that already drives the filter dropdown.</li>
+        <li>Detail still opens in a panel or page, so A's detail design can be reused underneath.</li>
+        <li>Medium effort; best paired with A rather than chosen against it.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ================= NEW REQUEST ================= -->
+  <section class="panel" id="p-nr" hidden>
+    <div class="opt-head">
+      <div class="opt-kicker">Shared across all three directions</div>
+      <h2>New request — split the one question that was really two</h2>
+      <p class="opt-principle">Today's single <em>Request mode</em> dropdown mixes <b>what you're testing</b> with
+        <b>whether it runs</b>, which is why "Execute Feature" has no home in the UI.</p>
+      <p class="opt-for">Click the mode cards and the run toggle — the outcome line rewrites itself.</p>
+    </div>
+
+    <div class="screen">
+      <div class="screen-bar"><i class="screen-dot"></i><i class="screen-dot"></i><i class="screen-dot"></i>
+        <span class="screen-url">qops-harness.lab.gend.vn/requests · new</span></div>
+      <div class="d-stage">
+        <div class="d-dialog">
+          <div class="d-head">
+            <div class="d-steps">
+              <span class="d-stp on"><i class="b">1</i>Describe</span><i class="sep"></i>
+              <span class="d-stp"><i class="b">2</i>Review proposed cases</span><i class="sep"></i>
+              <span class="d-stp"><i class="b">3</i>Run</span>
+            </div>
+            <h2>What do you want to test?</h2>
+            <p>Answer two questions and Harness does the rest. You can change everything before anything runs.</p>
+          </div>
+
+          <div class="d-body">
+            <p class="d-q">1 · What are you testing?</p>
+            <p class="d-qh">This decides how many cases Harness proposes.</p>
+            <div class="d-modes" id="d-modes">
+              <button class="d-mode on" data-mode="single" data-cases="exactly 1 test case">
+                <span class="mt"><i class="ic">◎</i>One specific case</span>
+                <span class="md">You already know the exact scenario. Harness writes and checks that single test.</span>
+              </button>
+              <button class="d-mode" data-mode="new" data-cases="around 5–8 test cases">
+                <span class="mt"><i class="ic">✦</i>A new feature</span>
+                <span class="md">Describe the feature. Harness proposes a set — positive, negative, boundary, security.</span>
+              </button>
+              <button class="d-mode" data-mode="existing" data-cases="around 3–6 test cases">
+                <span class="mt"><i class="ic">↻</i>A feature that already exists</span>
+                <span class="md">Re-cover something already built, reusing what's in the catalog and Knowledge.</span>
+              </button>
+              <button class="d-mode" data-mode="bug" data-cases="1–2 test cases">
+                <span class="mt"><i class="ic">⚠</i>A bug ticket</span>
+                <span class="md">Paste a Jira URL. Harness writes a test that reproduces the reported bug.</span>
+              </button>
+            </div>
+
+            <p class="d-q">2 · What should Harness do with them?</p>
+            <p class="d-qh">The step that has no control today — so nobody can tell whether a mode runs or just proposes.</p>
+            <div class="d-toggle" id="d-toggle">
+              <button class="on" data-run="propose">Propose only — I'll review first</button>
+              <button data-run="run">Propose and run immediately</button>
+            </div>
+
+            <div class="d-outcome">
+              <div class="ol">What will happen</div>
+              <p id="d-outcome-text">Harness will propose <b>exactly 1 test case</b> and then <b>stop and wait for you</b>.
+                Nothing touches Aloha until you press Confirm on the review screen.</p>
+              <div class="d-rule" id="d-rule" hidden>
+                <b>Expected to fail on the first run.</b> A bug-ticket test reproduces a bug that isn't fixed yet,
+                so a red result here is the correct outcome — not a problem with your test.
+              </div>
+            </div>
+
+            <div class="d-field">
+              <div class="d-lbl">Describe it in your own words <span class="req">REQUIRED</span></div>
+              <textarea class="d-ta" placeholder="e.g. On the Public Fund tab, open a fund's Rating dialog, click Send, and check the ASSISTANT box returns an answer."></textarea>
+              <p class="d-hint">Vietnamese or English both work. Cases are generated using your
+                <a href="#">Knowledge base</a> — 2 files are attached for <b>harness</b>.</p>
+            </div>
+
+            <details class="d-adv">
+              <summary>Advanced <span class="df">all defaults are fine · session, environment, knowledge, labels</span></summary>
+              <div class="d-advbody">
+                <div class="d-mini"><div class="k">Target app</div>
+                  <div class="v">harness <span class="tag">default</span></div></div>
+                <div class="d-mini"><div class="k">Environment</div>
+                  <div class="v">Platform default <span class="tag">sandbox</span></div></div>
+                <div class="d-mini"><div class="k">Session — the saved login used to reach the app</div>
+                  <div class="v">harness-login <span class="tag">default</span></div></div>
+                <div class="d-mini"><div class="k">Knowledge files sent to the AI</div>
+                  <div class="v">2 of 2 selected <span class="tag">default</span></div></div>
+                <div class="d-mini"><div class="k">Feature — folder the test lands in</div>
+                  <div class="v" style="color:var(--meta)">auto-detected <span class="tag">optional</span></div></div>
+                <div class="d-mini"><div class="k">Labels</div>
+                  <div class="v" style="color:var(--meta)">none <span class="tag">optional</span></div></div>
+              </div>
+            </details>
+          </div>
+
+          <div class="d-foot">
+            <span class="d-ready"><span class="ck">✓</span> Ready — 1 required field left</span>
+            <div class="grow"></div>
+            <button class="mk-btn">Cancel</button>
+            <button class="mk-btn primary" id="d-cta">Propose cases →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tradeoff">
+      <div class="to-cell"><div class="to-h win">✓ What it wins</div><ul>
+        <li>Fixes the review's <b>#1 High severity</b> finding: mode labels now match the documented functions.</li>
+        <li>"Execute Feature" finally has a home — it's the <b>run toggle</b>, not a fifth dropdown entry.</li>
+        <li>The <b>Test-Bug "fails first"</b> rule appears exactly when it's relevant, so a red result stops looking like a defect.</li>
+        <li>Session, environment and knowledge drop into <b>Advanced</b>, where set-once settings belong.</li>
+      </ul></div>
+      <div class="to-cell"><div class="to-h cost">△ What it costs</div><ul>
+        <li>Two questions take more vertical space than one dropdown; the dialog grows.</li>
+        <li>The "what will happen" counts (<b>5–8 cases</b>) are estimates — if they're wrong often, trust erodes.</li>
+        <li>Loses the chat-first feel. Chat can stay as an <b>optional assist</b>, but it's no longer the only door in.</li>
+      </ul></div>
+      <div class="to-cell"><div class="to-h eff">⚙ Build shape</div><ul>
+        <li>Same payload as today — mode plus a new <b>run-now boolean</b>.</li>
+        <li>Mostly a front-end rearrangement of fields that already exist.</li>
+        <li>Lowest effort of everything here, and it's the screen a new QA/BA meets first.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <h2 class="doc-h2" style="margin-top:48px">Side by side</h2>
+  <div class="cmp-wrap">
+  <table class="cmp">
+    <thead><tr><th>Question the user has</th><th>A · Timeline</th><th>B · Worklist</th><th>C · Pipeline</th></tr></thead>
+    <tbody>
+      <tr><td>What happened to this request?</td>
+        <td class="yes">Best — one verdict, then the story</td>
+        <td>Good — drawer summary</td><td class="no">Needs opening a card</td></tr>
+      <tr><td>Which of my 20 requests need me?</td>
+        <td class="no">Scan the card column</td><td class="yes">Best — sort, filter, bulk act</td>
+        <td>Good — the amber column</td></tr>
+      <tr><td>How does Harness actually work?</td>
+        <td>Good — the spine teaches it</td><td class="no">Not addressed</td>
+        <td class="yes">Best — the layout is the process</td></tr>
+      <tr><td>Where's the human checkpoint?</td>
+        <td>In the timeline</td><td>A filter chip with a count</td>
+        <td class="yes">Its own column, impossible to miss</td></tr>
+      <tr><td>Scales past ~300 requests</td>
+        <td>Fine</td><td class="yes">Best</td><td class="no">Board gets lopsided</td></tr>
+      <tr><td>Build effort</td><td>Medium</td><td>High</td><td>Medium</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="rec">
+    <h3>If you want my recommendation</h3>
+    <p><b>Ship the New request redesign first</b>, on its own. It's the cheapest change here, it fixes the
+      highest-severity finding in your own UX review, and it's the screen a QA or BA from another team meets
+      before anything else — which is exactly the "hiểu liền" goal.</p>
+    <p><b>Then take A as the detail and C as the list.</b> They aren't really competitors: A redesigns what you
+      see <em>inside</em> one request, C redesigns how you see <em>all</em> requests. Together they answer both
+      halves of the confusion, and C's cards can open straight into A's timeline.</p>
+    <p class="why">B is the right answer later — when the queue passes a few hundred requests and triage speed
+      starts to matter more than comprehension. Its table is worth building then, not now, because density is
+      the opposite of the goal you set for this round.</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* panel switcher */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.switch button'));
+  tabs.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      tabs.forEach(function(b){
+        b.setAttribute('aria-selected', String(b === btn));
+        var p = document.getElementById('p-' + b.dataset.p);
+        if (p) p.hidden = (b !== btn);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  /* option A — expandable timeline nodes */
+  document.querySelectorAll('[data-tl]').forEach(function(row){
+    row.addEventListener('click', function(){
+      var body = row.nextElementSibling;
+      if (body && body.classList.contains('tl-body')) body.hidden = !body.hidden;
+    });
+  });
+
+  /* option A — queue selection */
+  document.querySelectorAll('.a-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      document.querySelectorAll('.a-card').forEach(function(c){ c.classList.remove('on'); });
+      card.classList.add('on');
+    });
+  });
+
+  /* option B — row selection */
+  document.querySelectorAll('[data-brow]').forEach(function(row){
+    row.addEventListener('click', function(e){
+      if (e.target && e.target.type === 'checkbox') return;
+      document.querySelectorAll('[data-brow]').forEach(function(r){ r.classList.remove('on'); });
+      row.classList.add('on');
+    });
+  });
+
+  /* new-request dialog — live outcome sentence */
+  var modeBtns   = Array.prototype.slice.call(document.querySelectorAll('#d-modes .d-mode'));
+  var runBtns    = Array.prototype.slice.call(document.querySelectorAll('#d-toggle button'));
+  var outcomeEl  = document.getElementById('d-outcome-text');
+  var ruleEl     = document.getElementById('d-rule');
+  var ctaEl      = document.getElementById('d-cta');
+
+  function render(){
+    var mode = modeBtns.filter(function(b){ return b.classList.contains('on'); })[0];
+    var run  = runBtns.filter(function(b){ return b.classList.contains('on'); })[0];
+    if (!mode || !run) return;
+
+    var cases  = mode.dataset.cases;
+    var isRun  = run.dataset.run === 'run';
+    var isBug  = mode.dataset.mode === 'bug';
+
+    outcomeEl.innerHTML = isRun
+      ? 'Harness will propose <b>' + cases + '</b> and <b>run them against Aloha straight away</b>. ' +
+        'You will see results without another confirmation step.'
+      : 'Harness will propose <b>' + cases + '</b> and then <b>stop and wait for you</b>. ' +
+        'Nothing touches Aloha until you press Confirm on the review screen.';
+
+    ruleEl.hidden = !isBug;
+    ctaEl.textContent = isRun ? 'Propose and run →' : 'Propose cases →';
+  }
+
+  modeBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      modeBtns.forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      render();
+    });
+  });
+  runBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      runBtns.forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

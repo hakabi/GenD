@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness — test case workflow as it runs today</title>
+<style>
+  :root { --pg:#fff; --tx:#111827; --tx2:#5b6472; --ln:rgba(17,24,39,.14); --cd:#fbfbfc; --ac:#5a3ff0;
+          --ok:#137a52; --okb:#e4f6ed; --bad:#a52a1f; --badb:#fdeae7; --warn:#8a5300; --warnb:#fff3e0;
+          --auto:#0747a6; --autob:#e4eefc; --ai:#5b3bb5; --aib:#efeafd; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#15171b; --tx:#e8eaed; --tx2:#9aa3af; --ln:rgba(232,234,237,.16); --cd:#1b1e23; --ac:#a595f7; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",system-ui,sans-serif;
+         font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1240px; margin:0 auto; padding:32px 20px 70px; }
+  h1 { font-size:28px; font-weight:650; letter-spacing:-.024em; margin:0 0 6px; }
+  h2 { font-size:20px; font-weight:640; letter-spacing:-.018em; margin:38px 0 5px; padding-bottom:7px; border-bottom:2px solid var(--ln); }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 14px; }
+  b, strong { color:var(--tx); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  .banner { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:10px;
+            padding:11px 15px; margin:0 0 20px; font-size:13px; color:var(--tx2); }
+  .banner b { color:var(--tx); }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:12px; }
+  th,td { text-align:left; padding:9px 12px 9px 0; vertical-align:top; border-bottom:1px solid var(--ln); color:var(--tx2); }
+  th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; border-bottom:2px solid var(--ln); }
+  td b { color:var(--tx); }
+  .flag { border:1px solid var(--ln); border-left:3px solid #c2352f; border-radius:10px; padding:12px 15px;
+          margin-top:16px; font-size:12.5px; color:var(--tx2); }
+  .flag b.h { display:block; color:var(--tx); margin-bottom:3px; }
+  .g { display:inline-grid; place-items:center; width:19px; height:19px; border-radius:50%;
+       background:#c2352f; color:#fff; font-size:10.5px; font-weight:800; flex:none; vertical-align:middle; }
+
+  /* ================= SWIMLANES ================= */
+  .scroll { overflow-x:auto; border:1px solid var(--ln); border-radius:12px; background:#fbfcfd; margin-top:14px; }
+  @media (prefers-color-scheme: dark) { .scroll { background:#1b1e23; } }
+  .lanes { min-width:1120px; display:grid; grid-template-columns:118px repeat(6,1fr); }
+  .ph { padding:9px 8px; text-align:center; font-size:10px; font-weight:800; letter-spacing:.08em;
+        text-transform:uppercase; color:#5b6472; background:#eef0f4; border-bottom:1px solid #dfe3ea; }
+  .ph.first { background:transparent; border-bottom:1px solid #dfe3ea; }
+  .lane { padding:10px 8px; font-size:11px; font-weight:700; color:#2b3444; background:#f4f6f9;
+          border-bottom:1px solid #e6e9ef; border-right:1px solid #dfe3ea; display:flex; align-items:center; }
+  .lane small { display:block; font-weight:500; color:#7b8496; font-size:9.5px; margin-top:1px; }
+  .cell { padding:9px 7px; border-bottom:1px solid #e6e9ef; border-right:1px solid #eef0f4; min-height:74px; }
+  .n { border-radius:7px; padding:6px 8px; font-size:10.5px; line-height:1.35; margin-bottom:5px;
+       border:1px solid #dfe3ea; background:#fff; color:#1c2333; }
+  .n b { display:block; font-size:10.5px; margin-bottom:1px; }
+  .n small { display:block; color:#7b8496; font-size:9.5px; }
+  .n.auto { background:var(--autob); border-color:#c3d8f5; }
+  .n.ai { background:var(--aib); border-color:#d5cbf7; }
+  .n.human { background:#fff; border-color:#cfd5df; box-shadow:inset 3px 0 0 #5a3ff0; }
+  .n.ok { background:var(--okb); border-color:#b8e5cf; }
+  .n.bad { background:var(--badb); border-color:#f4c5bd; }
+  .n.wait { background:var(--warnb); border-color:#f3d9ae; }
+  .br { font-size:9px; font-weight:700; letter-spacing:.03em; padding:2px 0 4px; color:#7b8496; }
+  .cell.idle { background:repeating-linear-gradient(135deg,transparent,transparent 7px,rgba(123,132,150,.055) 7px,rgba(123,132,150,.055) 14px); }
+  .cell.idle .pass { min-height:56px; display:flex; align-items:center; }
+  .cell.idle .pass::before { content:""; flex:1; border-top:1px dashed #c9d0da; }
+  .br.y { color:var(--ok); }
+  .br.n { color:var(--bad); }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:11px; font-size:11.5px; color:var(--tx2); align-items:center; }
+  .sw { display:inline-block; width:20px; height:12px; border-radius:3px; vertical-align:middle; margin-right:5px; border:1px solid #dfe3ea; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>Test case workflow — as it runs today.</b> Swimlanes by actor, from a written prompt to a settled result, including the failure and review branches. Drawn from the live system on <b>18 August 2026</b> (<span class="mono">qops-harness.lab.gend.vn</span>) plus the classification plan and release log. <b>Red markers</b> flag points where the flow currently stalls or misreports. This is the <b>as-is</b> flow — the intended Gate A–E design is in <span class="mono">Harness_TestCaseFactory_Workflow_Mockup.html</span>.</div>
+
+<h1>From prompt to result — what actually happens</h1>
+<p class="lead">Six phases, five actors. The happy path runs left to right along the top two lanes. Everything below is a branch — and today most volume ends in the branches, not the happy path.</p>
+
+<div class="scroll">
+<div class="lanes">
+
+  <!-- header -->
+  <div class="ph first"></div>
+  <div class="ph">1 · Submit</div>
+  <div class="ph">2 · Generate</div>
+  <div class="ph">3 · Review</div>
+  <div class="ph">4 · Execute</div>
+  <div class="ph">5 · Triage</div>
+  <div class="ph">6 · Settled</div>
+
+  <!-- QA AUTHOR -->
+  <div class="lane">QA author<small>writes &amp; decides</small></div>
+  <div class="cell">
+    <div class="n human"><b>Write prompt</b><small>Project, target URL, steps in plain English</small></div>
+    <div class="n human"><b>Pick mode + session</b><small>Single case / Test Feature · <span class="mono">aloha-auth.json</span></small></div>
+    <div class="br">submits →</div>
+  </div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell">
+    <div class="n human"><b>Review drafted cases</b><small>Add · Edit · Delete · Confirm</small></div>
+    <div class="br y">confirm → execute</div>
+    <div class="br n">delete → case dropped</div>
+    <div class="n wait"><b>…or nothing happens</b> <span class="g">4</span><small>No timeout, no nudge. Observed sitting 3h 38m</small></div>
+  </div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell">
+    <div class="n human"><b>Assign a Reason</b><small>App bug · Test script · New feature + notes</small></div>
+    <div class="n bad"><b>Or leave it</b> <span class="g">8</span><small><b>86 of 87</b> failures sit at “Needs triage”</small></div>
+  </div>
+  <div class="cell">
+    <div class="n human"><b>Re-run from history</b><small>Executed history → Re-run, choose session</small></div>
+  </div>
+
+  <!-- PLATFORM -->
+  <div class="lane">Harness platform<small>orchestrates</small></div>
+  <div class="cell">
+    <div class="n auto"><b>Accept &amp; queue</b><small>Assigns hash ID <span class="mono">#3ae938b9-e89</span></small></div>
+    <div class="n bad"><b>Validation is nominal</b> <span class="g">1</span><small>Only checks the prompt is not blank</small></div>
+  </div>
+  <div class="cell">
+    <div class="n auto"><b>Load session, start run</b><small>Logged as “Quest started”</small></div>
+    <div class="n auto"><b>Classify</b><small>Writes <span class="mono">feature</span> + <span class="mono">labels[]</span></small></div>
+    <div class="n bad"><b>Classification inert</b> <span class="g">6</span><small><span class="mono">category</span>=default on all 313; 203 feature values</small></div>
+  </div>
+  <div class="cell">
+    <div class="n auto"><b>Dedupe check</b><small>Vector/ANN index (Spec 039)</small></div>
+    <div class="n bad"><b>Result invisible</b> <span class="g">5</span><small>Surfaces only as a batch counter afterwards</small></div>
+  </div>
+  <div class="cell">
+    <div class="n auto"><b>Write case + spec</b><small><span class="mono">test-cases/…json</span> · <span class="mono">…spec.ts</span></small></div>
+    <div class="n auto"><b>Queue the run</b><small>Child run started · Phase B <span class="g">3</span></small></div>
+  </div>
+  <div class="cell">
+    <div class="n auto"><b>Batch summary</b><small>“0 successful, 0 duplicate, 1 failed, 0 rejected”</small></div>
+  </div>
+  <div class="cell">
+    <div class="n ok"><b>Case in catalog</b><small>with <span class="mono">last_run</span> + run ID</small></div>
+  </div>
+
+  <!-- AI -->
+  <div class="lane">AI generator<small>drafts the tests</small></div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell">
+    <div class="n ai"><b>Draft structured intents</b><small><span class="mono">crew_phase_a_draft_intents</span></small></div>
+    <div class="n ai"><b>Build test steps</b><small><span class="mono">crew_phase_a_build</span></small></div>
+    <div class="br y">✓ steps built → review</div>
+    <div class="n bad"><b>✕ generation fails</b> <span class="g">2</span><small>Status still reads <span class="mono">awaiting_review</span></small></div>
+  </div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell">
+    <div class="n ai"><b>AI fallback</b><small>Used when Playwright can’t resolve a selector</small></div>
+  </div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell idle"><div class="pass"></div></div>
+
+  <!-- PLAYWRIGHT -->
+  <div class="lane">Playwright runner<small>executes</small></div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell">
+    <div class="n auto"><b>Run the spec</b><small>Step by step, with timings</small></div>
+    <div class="br y">✓ all assertions pass → <b>passed</b></div>
+    <div class="n bad"><b>✕ exits non-zero</b> <span class="g">7</span><small>Reports <span class="mono">exit 1</span>. No failing assertion, no screenshot</small></div>
+  </div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell">
+    <div class="n bad"><b>Keeps failing</b> <span class="g">9</span><small>No mute or flaky state to stop it</small></div>
+  </div>
+
+  <!-- DEV -->
+  <div class="lane">Developer<small>receives defects</small></div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell idle"><div class="pass"></div></div>
+  <div class="cell">
+    <div class="n human"><b>Fix the product</b><small>Only if reason = App bug</small></div>
+    <div class="n bad"><b>Rarely reached</b> <span class="g">10</span><small><b>0</b> failures labelled App bug today</small></div>
+  </div>
+  <div class="cell">
+    <div class="n ok"><b>Re-run confirms fix</b><small>—</small></div>
+  </div>
+
+</div>
+</div>
+
+<div class="legend">
+  <span><span class="sw" style="background:#fff; box-shadow:inset 3px 0 0 #5a3ff0"></span>Human action</span>
+  <span><span class="sw" style="background:var(--autob); border-color:#c3d8f5"></span>Platform, automatic</span>
+  <span><span class="sw" style="background:var(--aib); border-color:#d5cbf7"></span>AI step</span>
+  <span><span class="sw" style="background:var(--okb); border-color:#b8e5cf"></span>Healthy outcome</span>
+  <span><span class="sw" style="background:var(--warnb); border-color:#f3d9ae"></span>Waiting</span>
+  <span><span class="sw" style="background:var(--badb); border-color:#f4c5bd"></span>Where it breaks today</span>
+  <span><span class="sw" style="background:repeating-linear-gradient(135deg,transparent,transparent 4px,rgba(123,132,150,.14) 4px,rgba(123,132,150,.14) 8px); border-color:#c9d0da"></span>Actor not involved in this phase</span>
+  <span><span class="g">n</span> gap, see register below</span>
+</div>
+
+<!-- ================= BRANCHES ================= -->
+<h2>Every branch, and where it leads</h2>
+<p class="lead">Eleven decision points. The right-hand column is what happens in practice, not in principle.</p>
+
+<table>
+<thead><tr><th style="width:15%">Phase</th><th style="width:22%">Decision point</th><th style="width:26%">Outcomes</th><th>Where it actually goes today</th></tr></thead>
+<tbody>
+<tr><td><b>Submit</b></td><td>Is the prompt usable?</td><td>Accept · reject</td><td>Effectively always accepted. A malformed prompt is only discovered after generation or a failed run <span class="g">1</span></td></tr>
+<tr><td><b>Generate</b></td><td>Could the AI draft steps?</td><td>Steps built · generation failed</td><td>On failure the request still reports <span class="mono">awaiting_review</span> and waits forever <span class="g">2</span></td></tr>
+<tr><td><b>Generate</b></td><td>Path assist available?</td><td>Use it · fall back to legacy build</td><td>Falls back silently with a warning in the log; user sees nothing</td></tr>
+<tr><td><b>Generate</b></td><td>Confident enough to classify?</td><td>Apply labels · queue for human labelling</td><td>Neither. <span class="mono">category</span> is <span class="mono">default</span> on every case <span class="g">6</span></td></tr>
+<tr><td><b>Review</b></td><td>Is this a duplicate of an existing case?</td><td>New · duplicate · near-duplicate</td><td>Detected but not shown at review — appears only as a count in the batch summary <span class="g">5</span></td></tr>
+<tr><td><b>Review</b></td><td>Does QA accept the drafted cases?</td><td>Confirm · edit · delete · do nothing</td><td>No merge or extend verb exists. “Do nothing” has no timeout <span class="g">4</span></td></tr>
+<tr><td><b>Execute</b></td><td>Can Playwright resolve the step?</td><td>Native · AI fallback</td><td>Works, but fallback usage is counted and the counters read <span class="mono">0</span> with telemetry <span class="mono">Incomplete</span></td></tr>
+<tr><td><b>Execute</b></td><td>Did the assertions pass?</td><td>Passed · failed</td><td>Failure gives <span class="mono">exit 1</span> only — which assertion broke is not captured <span class="g">7</span></td></tr>
+<tr><td><b>Execute</b></td><td>Batch composition</td><td>successful · duplicate · failed · rejected</td><td>Mixes creation outcomes with execution outcomes in one sentence</td></tr>
+<tr><td><b>Triage</b></td><td>Why did it fail?</td><td>App bug · Test script · New feature · unlabelled</td><td><b>86 of 87 unlabelled.</b> The loop does not close <span class="g">8</span></td></tr>
+<tr><td><b>Settled</b></td><td>A case fails repeatedly</td><td>Fix · mute · accept as flaky</td><td>Only “fix”. No mute or flaky state, so it keeps failing every batch <span class="g">9</span></td></tr>
+</tbody>
+</table>
+
+<!-- ================= GAPS ================= -->
+<h2>Gap register</h2>
+<p class="lead">Each marker on the diagram. Evidence is from the live system unless noted.</p>
+
+<table>
+<thead><tr><th style="width:34px"></th><th style="width:26%">Gap</th><th style="width:30%">Evidence</th><th>Effect on the workflow</th></tr></thead>
+<tbody>
+<tr><td><span class="g">1</span></td><td><b>No real intake validation</b></td><td>Open Items D1 — no check beyond “prompt is not blank”</td><td>Errors surface at the most expensive point instead of the cheapest</td></tr>
+<tr><td><span class="g">2</span></td><td><b>Generation failure reports the wrong state</b></td><td><span class="mono">#3ae938b9-e89</span>: setup FAILED, header still says <span class="mono">AWAITING_REVIEW</span>, waiting 3h 38m</td><td><b>The most damaging gap.</b> Work silently stops and nobody is told</td></tr>
+<tr><td><span class="g">3</span></td><td><b>Internal vocabulary reaches users</b></td><td><span class="mono">Quest started</span>, <span class="mono">crew_phase_a_build</span>, <span class="mono">Child run</span>, <span class="mono">Phase B</span>; raw <span class="mono">no such table: tenants</span></td><td>Users cannot tell a platform fault from their own mistake</td></tr>
+<tr><td><span class="g">4</span></td><td><b>“Awaiting review” has no owner or deadline</b></td><td>Observed 3h 38m with no assignee and no nudge</td><td>Requests stall indefinitely; nothing escalates</td></tr>
+<tr><td><span class="g">5</span></td><td><b>Duplicate detection is invisible at the moment of decision</b></td><td>Result appears only in “0 successful, 0 duplicate, 1 failed, 0 rejected”</td><td>QA cannot act on a duplicate while reviewing — the one moment it matters</td></tr>
+<tr><td><span class="g">6</span></td><td><b>Classification does nothing</b></td><td><span class="mono">category</span>=<span class="mono">default</span> on all 313; 203 distinct feature values; Triage column reads <span class="mono">unlabeled</span> throughout</td><td>Grouping, coverage and label-scoped dedupe all rest on this. Blocks most proposed UI</td></tr>
+<tr><td><span class="g">7</span></td><td><b>Failure output stops one level too high</b></td><td><span class="mono">RETURN CODE 1</span>, <span class="mono">FAILED STEP —</span>, “No screenshot captured”</td><td>A Pass cannot be trusted and a Fail cannot be diagnosed. QG-139 #6</td></tr>
+<tr><td><span class="g">8</span></td><td><b>Triage taxonomy built but unused</b></td><td>87 failing · 0 App bug · 1 Test script · 0 New feature · <b>86 Needs triage</b></td><td>Failures accumulate without ever becoming defects or fixes</td></tr>
+<tr><td><span class="g">9</span></td><td><b>No mute or flaky state</b></td><td>No such field on a case</td><td>A known-broken case pollutes every subsequent batch</td></tr>
+<tr><td><span class="g">10</span></td><td><b>The developer lane is almost never entered</b></td><td>0 failures labelled App bug</td><td>The loop from test failure to product fix is not closing at all</td></tr>
+</tbody>
+</table>
+
+<!-- ================= VOCAB ================= -->
+<h2>What the system says vs what it means</h2>
+<p class="lead">Status vocabulary observed live. The collisions in the right-hand column are the root of most confusion.</p>
+
+<table>
+<thead><tr><th style="width:22%">Shown to the user</th><th style="width:20%">Where</th><th>What it can actually mean</th></tr></thead>
+<tbody>
+<tr><td><span class="mono">awaiting_review</span> / <span class="mono">AWAITING_REVIEW</span></td><td>Request queue &amp; header</td><td>Cases are drafted and waiting for a person — <b>or</b> generation failed and nothing exists to review <span class="g">2</span></td></tr>
+<tr><td><span class="mono">failed</span></td><td>Request queue</td><td>Generation failed · execution failed · the batch produced nothing usable. Three different owners, one word</td></tr>
+<tr><td><span class="mono">unlabeled</span></td><td>Triage column, all rows</td><td>Nobody has triaged it — not that it needs no triage</td></tr>
+<tr><td><span class="mono">default</span></td><td><span class="mono">category</span> on every case</td><td>Not “this is the default category” but “classification never ran”</td></tr>
+<tr><td><span class="mono">Direct test</span></td><td>Case name</td><td>The generated spec has a real descriptive name; it just is not displayed</td></tr>
+<tr><td><span class="mono">exit 1</span></td><td>Run detail</td><td>Something failed. Which assertion, and whether the app or the test is at fault, is not recorded</td></tr>
+<tr><td><span class="mono">Telemetry: Incomplete</span></td><td>Run detail</td><td>AI, Automation and AI-fallback counters were not populated for this run</td></tr>
+</tbody>
+</table>
+
+<div class="flag">
+<b class="h">Reading the diagram as a whole</b>
+The happy path — prompt in, cases out, run, pass — works. <b>Every branch off it either loses information or loses the work entirely.</b> Generation failure disguises itself as a review request <span class="g">2</span>; duplicates are detected but not shown when they could be acted on <span class="g">5</span>; failures are recorded without the one fact that would explain them <span class="g">7</span>; and the triage step that should close the loop is skipped in 86 of 87 cases <span class="g">8</span>.
+<br><br>
+<b>The cheapest high-value fixes are all in the branches, not the path:</b> make <span class="g">2</span> impossible by deriving status from what was produced, populate the failing step for <span class="g">7</span>, and find out why <span class="g">8</span> never happens. None of the three requires a new screen.
+</div>
+
+<p class="lead" style="margin-top:22px; font-size:12.5px">Draft prepared by the Business Analyst, 18 August 2026. Observed on <span class="mono">qops-harness.lab.gend.vn</span>; supporting detail from the classification plan, release log and Open Items. Companion: <b>Harness_TestCaseFactory_Workflow_Mockup.html</b> for the intended Gate A–E design.</p>
+
+</div>
+</body>
+</html>

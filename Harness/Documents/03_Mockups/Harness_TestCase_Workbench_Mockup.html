@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness — Test Case Review Workbench</title>
+<style>
+  :root { --pg:#fff; --tx:#172b4d; --tx2:#6b778c; --ln:#dfe1e6; --cd:#fafbfc; --ac:#0052cc; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#1d2125; --tx:#b6c2cf; --tx2:#9fadbc; --ln:#38414a; --cd:#22272b; --ac:#579dff; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",system-ui,sans-serif;
+         font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1180px; margin:0 auto; padding:32px 24px 70px; }
+  h1 { font-size:28px; font-weight:600; letter-spacing:-.02em; margin:0 0 6px; }
+  h2 { font-size:19px; font-weight:600; margin:36px 0 5px; padding-bottom:7px; border-bottom:2px solid var(--ln); }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 16px; }
+  b, strong { color:var(--tx); }
+  .banner { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:4px;
+            padding:11px 15px; margin:0 0 20px; font-size:13px; color:var(--tx2); }
+  .banner b { color:var(--tx); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  .shot { border:1px solid var(--ln); border-radius:6px; overflow:hidden; box-shadow:0 8px 26px rgba(0,0,0,.14); margin-top:10px; }
+  .note { border:1px solid var(--ln); border-left:3px solid #ff991f; border-radius:4px; padding:11px 14px;
+          font-size:12.5px; color:var(--tx2); margin:16px 0; }
+  .note b { display:block; margin-bottom:3px; color:var(--tx); }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin:10px 0 4px; }
+  th, td { text-align:left; padding:9px 12px 9px 0; vertical-align:top; border-bottom:1px solid var(--ln); color:var(--tx2); }
+  th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; border-bottom:2px solid var(--ln); }
+  td b { color:var(--tx); }
+  .n { display:inline-grid; place-items:center; width:21px; height:21px; border-radius:50%;
+       background:#de350b; color:#fff; font-size:11.5px; font-weight:700; flex:none; }
+
+  /* ============== APP ============== */
+  .ui { display:flex; min-height:660px; font-size:11.5px; line-height:1.45;
+        background:#f4f5f7; color:#172b4d; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .ui *, .ui *::before, .ui *::after { box-sizing:border-box; }
+  .ui .m { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+  .lz { display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+        padding:1px 5px; border-radius:3px; line-height:1.5; }
+  .btn { border-radius:3px; padding:5px 11px; font-size:11px; font-weight:500; display:inline-block; white-space:nowrap; }
+  .bp { background:#0052cc; color:#fff; }
+  .bs { background:#f4f5f7; color:#42526e; border:1px solid #dfe1e6; }
+  .bw { background:#fff; color:#42526e; border:1px solid #dfe1e6; }
+  .bd { background:#fff; color:#bf2600; border:1px solid #f0b6ab; }
+
+  /* callout markers pinned to their host element */
+  .host { position:relative; }
+  .cal { position:absolute; left:-11px; top:-11px; width:22px; height:22px; border-radius:50%;
+         background:#de350b; color:#fff; font-size:12px; font-weight:700;
+         display:grid; place-items:center; z-index:30; box-shadow:0 0 0 2.5px #fff, 0 1px 3px rgba(0,0,0,.3); }
+
+  /* nav */
+  .nav { width:180px; flex:none; background:#fff; border-right:1px solid #dfe1e6; padding:11px 8px; display:flex; flex-direction:column; }
+  .brand { display:flex; align-items:center; gap:8px; padding:2px 8px 13px; }
+  .mk { width:24px; height:24px; border-radius:3px; background:#0052cc; color:#fff; display:grid; place-items:center; font-weight:700; font-size:12px; }
+  .grp { font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c; padding:11px 8px 4px; }
+  .nl { padding:6px 8px; border-radius:3px; color:#42526e; display:flex; align-items:center; gap:8px; }
+  .nl.on { background:#deebff; color:#0052cc; font-weight:600; }
+  .nl .ct { margin-left:auto; font-size:9.5px; color:#6b778c; }
+  .nl .amber { margin-left:auto; background:#fffae6; color:#974f0c; font-size:9px; font-weight:700; padding:0 5px; border-radius:8px; }
+
+  /* main */
+  .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .top { background:#fff; border-bottom:1px solid #dfe1e6; padding:12px 16px; display:flex; align-items:center; gap:10px; }
+  .top h5 { margin:0; font-size:19px; font-weight:600; }
+  .segs { display:inline-flex; border:1px solid #dfe1e6; border-radius:3px; overflow:hidden; margin-left:6px; }
+  .seg { padding:5px 11px; font-size:11px; color:#42526e; background:#fafbfc; border-right:1px solid #dfe1e6; }
+  .seg:last-child { border-right:none; }
+  .seg.on { background:#0052cc; color:#fff; font-weight:600; }
+  .body { flex:1; display:flex; min-height:0; }
+
+  /* inbox */
+  .q { width:250px; flex:none; background:#fff; border-right:1px solid #dfe1e6; }
+  .qh { padding:7px 13px; font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c; border-bottom:1px solid #dfe1e6; display:flex; }
+  .row { padding:9px 13px; border-bottom:1px solid #f4f5f7; border-left:3px solid transparent; }
+  .row.sel { background:#deebff; border-left-color:#0052cc; }
+  .key { font-size:10.5px; font-weight:600; color:#0052cc; }
+  .rowtitle { margin-top:3px; font-weight:600; }
+  .rowmeta { margin-top:3px; font-size:10px; color:#6b778c; }
+  .needs { font-weight:700; color:#974f0c; }
+
+  /* detail */
+  .det { flex:1; min-width:0; padding:13px 16px; overflow:hidden; }
+
+  /* timeline spine */
+  .spine { background:#fff; border:1px solid #dfe1e6; border-radius:3px; padding:10px 14px; }
+  .stages { display:flex; align-items:center; gap:0; }
+  .stg { display:flex; align-items:center; gap:7px; padding-right:14px; }
+  .stg .dot { width:14px; height:14px; border-radius:50%; display:grid; place-items:center; flex:none; }
+  .stg .dot svg { width:8px; height:8px; stroke:#fff; stroke-width:3.4; fill:none; }
+  .stg .lbl { font-size:10.5px; color:#6b778c; white-space:nowrap; }
+  .stg.done .dot { background:#00875a; }
+  .stg.now .dot { background:#0052cc; box-shadow:0 0 0 4px rgba(0,82,204,.15); }
+  .stg.now .lbl { color:#0052cc; font-weight:700; }
+  .stg.todo .dot { background:#dfe1e6; }
+  .conn { flex:1; height:2px; background:#dfe1e6; min-width:16px; margin-right:14px; }
+  .conn.done { background:#00875a; }
+
+  /* family header */
+  .fam { background:#fff; border:1px solid #dfe1e6; border-radius:3px; padding:11px 14px; margin-top:13px; }
+  .famtitle { font-size:14px; font-weight:600; }
+  .chips { margin-top:6px; display:flex; gap:5px; flex-wrap:wrap; }
+  .chip { background:#f4f5f7; color:#42526e; font-size:10px; padding:2px 7px; border-radius:3px; }
+  .chip.inherit { background:#eae6ff; color:#403294; }
+
+  /* decision band */
+  .band { margin-top:16px; }
+  .bandhead { display:flex; align-items:center; gap:8px; padding:0 2px 7px; }
+  .bandtitle { font-size:12.5px; font-weight:700; }
+  .card { background:#fff; border:1px solid #dfe1e6; border-radius:3px; margin-bottom:9px; }
+  .card.warn { border-left:3px solid #ff991f; }
+  .card.dupe { border-left:3px solid #6554c0; }
+  .cardtop { padding:10px 13px 9px; }
+  .cardrow { display:flex; align-items:flex-start; gap:9px; }
+  .cardtitle { font-weight:600; font-size:12.5px; flex:1; }
+  .collide { margin-top:7px; background:#fafbfc; border:1px solid #dfe1e6; border-radius:3px; padding:8px 10px; }
+  .collide .cl { font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c; }
+  .diff { display:grid; grid-template-columns:64px 1fr; gap:3px 9px; margin-top:5px; font-size:11px; }
+  .diff .k { color:#6b778c; }
+  .same { color:#42526e; }
+  .added { color:#006644; font-weight:600; }
+  .acts { padding:8px 13px; border-top:1px solid #f4f5f7; display:flex; gap:6px; align-items:center; }
+  .hint { margin-left:auto; font-size:10px; color:#6b778c; }
+
+  /* ready band */
+  .ready { background:#fff; border:1px solid #dfe1e6; border-radius:3px; }
+  .readyhead { padding:10px 13px; display:flex; align-items:center; gap:9px; border-bottom:1px solid #f4f5f7; }
+  .catrow { padding:7px 13px; display:flex; align-items:center; gap:9px; border-bottom:1px solid #f4f5f7; }
+  .catrow:last-child { border-bottom:none; }
+  .catname { width:82px; font-weight:600; font-size:11.5px; }
+  .bar { flex:1; height:7px; background:#f4f5f7; border-radius:99px; overflow:hidden; }
+  .bar i { display:block; height:100%; background:#00875a; }
+  .gap { background:#fffae6; color:#974f0c; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>Proposal — Test Case Review Workbench.</b> A redesign of the Requests page so that the test cases produced by a request, and the decisions required on them, are the primary content. Submitted for approval. The interface uses the Jira-aligned light theme from the UI style guide; all data shown is illustrative.</div>
+
+<h1>Test Case Review Workbench</h1>
+<p class="lead">The Requests page becomes a <b>review inbox</b>. It opens on the decisions waiting to be made, and the test cases produced by each request are shown as the main content. The numbered markers correspond to the explanation table below.</p>
+
+<div class="shot">
+<div class="ui">
+
+  <div class="nav">
+    <div class="brand"><div class="mk">Q</div><div><div style="font-weight:600; font-size:13px">QOps Harness</div><div style="font-size:9.5px; color:#6b778c">Test operations</div></div></div>
+    <div class="grp">Work</div>
+    <div class="nl on host"><span class="cal">1</span>Review <span class="amber">3</span></div>
+    <div class="nl">Test cases <span class="ct">313</span></div>
+    <div class="nl">Test groups</div>
+    <div class="nl">Runs</div>
+    <div class="grp">Context</div>
+    <div class="nl">Knowledge</div>
+    <div class="nl">Dashboards</div>
+    <div style="flex:1"></div>
+    <div style="border-top:1px solid #dfe1e6; padding:9px 8px 2px">
+      <div style="font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c">Session</div>
+      <div class="m" style="font-size:10px; color:#0052cc; margin-top:2px">aloha-auth.json</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="top">
+      <h5>Review</h5>
+      <span class="lz" style="background:#fffae6; color:#974f0c">3 need you</span>
+      <div class="segs host"><span class="cal">2</span>
+        <span class="seg on">Needs me</span><span class="seg">Running</span><span class="seg">Settled</span>
+      </div>
+      <span style="margin-left:auto" class="btn bp">New request</span>
+    </div>
+
+    <div class="body">
+
+      <!-- ============ INBOX ============ -->
+      <div class="q">
+        <div class="qh"><span>Waiting on you · 3</span></div>
+
+        <div class="row sel host"><span class="cal">3</span>
+          <div style="display:flex; align-items:center"><span class="key">REQ-1042</span>
+            <span class="lz" style="background:#fffae6; color:#974f0c; margin-left:auto">Review</span></div>
+          <div class="rowtitle">Risk dashboard — Total Risk table &amp; download</div>
+          <div class="rowmeta"><span class="needs">3 need you</span> · 12 ready · 15 cases</div>
+          <div class="rowmeta">nguyenhoangly103 · waiting 2h 14m</div>
+        </div>
+
+        <div class="row">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1040</span>
+            <span class="lz" style="background:#fffae6; color:#974f0c; margin-left:auto">Review</span></div>
+          <div class="rowtitle">Cash Forecast — historical flows totals</div>
+          <div class="rowmeta"><span class="needs">1 needs you</span> · 5 ready · 6 cases</div>
+          <div class="rowmeta">glzmaxdinh · waiting 5h</div>
+        </div>
+
+        <div class="row">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1037</span>
+            <span class="lz" style="background:#ffebe6; color:#bf2600; margin-left:auto">Low confidence</span></div>
+          <div class="rowtitle">Pipeline page — fund stage transitions</div>
+          <div class="rowmeta"><span class="needs">Needs labelling</span> · classifier 0.61</div>
+          <div class="rowmeta">hakhoabinh · waiting 1d</div>
+        </div>
+
+        <div class="qh" style="border-top:1px solid #dfe1e6"><span>Elsewhere</span></div>
+        <div class="row" style="opacity:.72">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1041</span>
+            <span class="lz" style="background:#deebff; color:#0747a6; margin-left:auto">Running 2/5</span></div>
+          <div class="rowtitle">Requests page smoke check</div>
+          <div class="rowmeta">No action needed</div>
+        </div>
+        <div class="row" style="opacity:.72">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1038</span>
+            <span class="lz" style="background:#e3fcef; color:#006644; margin-left:auto">Settled</span></div>
+          <div class="rowtitle">Cash Forecast historical flows</div>
+          <div class="rowmeta">6 cases created · 0 duplicates</div>
+        </div>
+      </div>
+
+      <!-- ============ DETAIL ============ -->
+      <div class="det">
+
+        <div class="spine host"><span class="cal">4</span>
+          <div class="stages">
+            <div class="stg done"><span class="dot"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span class="lbl">Created 10:33</span></div>
+            <div class="conn done"></div>
+            <div class="stg done"><span class="dot"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span class="lbl">Classified · risk/dashboard 0.94</span></div>
+            <div class="conn done"></div>
+            <div class="stg done"><span class="dot"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span><span class="lbl">15 cases generated</span></div>
+            <div class="conn"></div>
+            <div class="stg now"><span class="dot"></span><span class="lbl">Review</span></div>
+            <div class="conn"></div>
+            <div class="stg todo"><span class="dot"></span><span class="lbl">Execute</span></div>
+          </div>
+        </div>
+
+        <div class="fam host"><span class="cal">5</span>
+          <div style="display:flex; align-items:flex-start; gap:9px">
+            <div style="flex:1">
+              <div class="famtitle">Risk dashboard — Total Risk table &amp; download report</div>
+              <div style="margin-top:3px; font-size:10.5px; color:#6b778c">
+                <span class="m" style="color:#0052cc">REQ-1042</span> · Test Feature mode · nguyenhoangly103 · 10:33
+              </div>
+            </div>
+            <span class="btn bw">View prompt</span>
+          </div>
+          <div class="chips">
+            <span class="chip inherit">feature: risk/dashboard</span>
+            <span class="chip inherit">fund:public</span>
+            <span class="chip inherit">env:lab</span>
+            <span class="chip inherit">metric:risk</span>
+            <span class="chip inherit">pri:P1</span>
+            <span class="chip" style="background:#fff; border:1px solid #dfe1e6">inherited by all 15 cases</span>
+          </div>
+        </div>
+
+        <!-- ===== DECISION BAND ===== -->
+        <div class="band">
+          <div class="bandhead host"><span class="cal">6</span>
+            <span class="bandtitle" style="color:#974f0c">3 need your decision</span>
+            <span style="font-size:10.5px; color:#6b778c">Resolve these before the batch can run</span>
+          </div>
+
+          <div class="card warn host"><span class="cal">7</span>
+            <div class="cardtop">
+              <div class="cardrow">
+                <span class="lz" style="background:#fffae6; color:#974f0c">Extends existing</span>
+                <div class="cardtitle">Verify NAV and Beta are numeric on Risk dashboard</div>
+                <span class="chip">boundary</span>
+              </div>
+              <div class="collide">
+                <div class="cl">Overlaps <span class="m" style="color:#0052cc">RISK-0042</span> — "Verify NAV is numeric on Risk dashboard"</div>
+                <div class="diff">
+                  <span class="k">Same</span><span class="same">Navigate to Risk tab · assert NAV is numeric</span>
+                  <span class="k">New here</span><span class="added">+ assert Beta is numeric</span>
+                </div>
+              </div>
+            </div>
+            <div class="acts">
+              <span class="btn bp">Extend RISK-0042</span>
+              <span class="btn bs">Keep both…</span>
+              <span class="btn bd">Reject</span>
+              <span class="hint">Extending adds the Beta assertion to the existing case. No new case is created.</span>
+            </div>
+          </div>
+
+          <div class="card dupe">
+            <div class="cardtop">
+              <div class="cardrow">
+                <span class="lz" style="background:#eae6ff; color:#403294">Exact duplicate</span>
+                <div class="cardtitle">Verify Total Risk table is displayed</div>
+                <span class="chip">positive</span>
+              </div>
+              <div class="collide">
+                <div class="cl">Identical to <span class="m" style="color:#0052cc">RISK-0031</span> — created 6 Aug by nguyenhoangly103</div>
+                <div class="diff">
+                  <span class="k">Same</span><span class="same">Every step and assertion matches</span>
+                  <span class="k">Last run</span><span class="same">Passed, 2 days ago</span>
+                </div>
+              </div>
+            </div>
+            <div class="acts">
+              <span class="btn bp">Merge — don't create</span>
+              <span class="btn bs">Keep both…</span>
+              <span class="hint">Merging links this request to RISK-0031 so provenance is kept.</span>
+            </div>
+          </div>
+
+          <div class="card dupe host"><span class="cal">8</span>
+            <div class="cardtop">
+              <div class="cardrow">
+                <span class="lz" style="background:#eae6ff; color:#403294">Similar · 91%</span>
+                <div class="cardtitle">Check the Total Risk table renders correctly</div>
+                <span class="chip">positive</span>
+              </div>
+              <div class="collide">
+                <div class="cl">Similar to <span class="m" style="color:#0052cc">RISK-0031</span> — "Verify Total Risk table is displayed"</div>
+                <div class="diff">
+                  <span class="k">Same</span><span class="same">Navigation and assertion target</span>
+                  <span class="k">Differs</span><span class="same">Wording only — no behavioural difference detected</span>
+                </div>
+              </div>
+            </div>
+            <div class="acts">
+              <span class="btn bp">Merge</span>
+              <span class="btn bs">Keep both…</span>
+              <span class="btn bd">Reject</span>
+              <span class="hint">"Keep both" requires a one-line reason, recorded on the case.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== READY BAND ===== -->
+        <div class="band">
+          <div class="bandhead">
+            <span class="bandtitle" style="color:#006644">12 ready to create</span>
+            <span style="font-size:10.5px; color:#6b778c">No conflicts found</span>
+          </div>
+          <div class="ready">
+            <div class="readyhead host"><span class="cal">9</span>
+              <span style="font-weight:600; font-size:11.5px">By category</span>
+              <span style="margin-left:auto" class="btn bp">Accept all 12</span>
+              <span class="btn bs">Review individually</span>
+            </div>
+            <div class="catrow"><span class="catname">Positive</span><span class="bar"><i style="width:100%"></i></span><span class="m" style="width:26px; text-align:right">5</span></div>
+            <div class="catrow"><span class="catname">Negative</span><span class="bar"><i style="width:80%"></i></span><span class="m" style="width:26px; text-align:right">4</span></div>
+            <div class="catrow"><span class="catname">Boundary</span><span class="bar"><i style="width:40%"></i></span><span class="m" style="width:26px; text-align:right">2</span></div>
+            <div class="catrow"><span class="catname">Security</span><span class="bar"><i style="width:20%"></i></span><span class="m" style="width:26px; text-align:right">1</span></div>
+            <div class="catrow gap host"><span class="cal">10</span><span class="catname">Performance</span><span style="flex:1; font-size:11px">None generated — is that expected for this feature?</span><span class="m" style="width:26px; text-align:right">0</span></div>
+            <div class="catrow gap"><span class="catname">Edge</span><span style="flex:1; font-size:11px">None generated</span><span class="m" style="width:26px; text-align:right">0</span></div>
+          </div>
+        </div>
+
+        <div class="host" style="margin-top:16px; display:flex; align-items:center; gap:9px; padding:11px 14px; background:#fff; border:1px solid #dfe1e6; border-radius:3px">
+          <span class="cal">11</span>
+          <div style="flex:1; font-size:11.5px"><b>Confirm and run</b> — creates 12 cases, extends 1, merges 2. <span style="color:#974f0c">Blocked until the 3 decisions above are made.</span></div>
+          <span class="btn" style="background:#f4f5f7; color:#a5adba; border:1px solid #dfe1e6">Confirm and run</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ================= EXPLANATION ================= -->
+<h2>What each number improves</h2>
+<p class="lead">Each marker on the interface above corresponds to one row here.</p>
+
+<table>
+<thead><tr><th style="width:34px"></th><th style="width:22%">Element</th><th style="width:30%">Today</th><th>The improvement</th></tr></thead>
+<tbody>
+
+<tr><td><span class="n">1</span></td>
+<td><b>"Review" replaces "Requests" in the sidebar, with a count of items awaiting action</b></td>
+<td>The sidebar shows "Requests" with no indication that anything needs attention. Users must open the page to find out.</td>
+<td>The count is visible from any screen, so pending review work is never missed. The name states what the page is for.</td></tr>
+
+<tr><td><span class="n">2</span></td>
+<td><b>Three states: Needs me · Running · Settled</b></td>
+<td>Two dropdown filters (request type and status) that must be set manually on each visit.</td>
+<td>One click each. The default view shows only work requiring a decision, so the page opens on the task rather than on a list to be filtered.</td></tr>
+
+<tr><td><span class="n">3</span></td>
+<td><b>Queue rows lead with the decision required</b></td>
+<td>Rows show a truncated prompt, an author and a timestamp. Every row reads almost identically, and the number of test cases is not shown.</td>
+<td>Each row states <b>3 need you · 12 ready · 15 cases</b> and how long it has been waiting. The queue becomes scannable and prioritisable at a glance.</td></tr>
+
+<tr><td><span class="n">4</span></td>
+<td><b>Lifecycle shown as a single-line spine</b></td>
+<td>Progress is spread across the Info, Execution and History tabs, and must be reconstructed by the reader.</td>
+<td>One line shows where the request has reached and what happened at each stage. Completed stages collapse to a timestamp; the current stage expands into the work below, so the lifecycle frames the content instead of competing with it.</td></tr>
+
+<tr><td><span class="n">5</span></td>
+<td><b>Shared classification shown once, at family level</b></td>
+<td>Not displayed. Labels and feature are not visible during review.</td>
+<td>All generated cases inherit the same feature and labels; only the test category differs. Showing them once, marked <i>inherited by all 15 cases</i>, makes the classification reviewable without repeating it fifteen times.</td></tr>
+
+<tr><td><span class="n">6</span></td>
+<td><b>Cases needing a decision are separated and placed first</b></td>
+<td>All generated cases appear in one undifferentiated list, in generation order.</td>
+<td>The few cases requiring human judgement are lifted to the top and expanded. The rest are collapsed. Review time is spent only where it is needed.</td></tr>
+
+<tr><td><span class="n">7</span></td>
+<td><b>"Extend existing" — a resolution for overlapping cases</b></td>
+<td>No such action exists. A case that is a superset of an existing one can only be accepted (creating a near-duplicate) or deleted (losing the new assertion).</td>
+<td>The existing case is updated with the new assertion instead of a near-twin being created. This is the most common form of overlap and the main contributor to catalog growth.</td></tr>
+
+<tr><td><span class="n">8</span></td>
+<td><b>Every conflict shows a comparison and its own resolution options</b></td>
+<td>A conflict is reported as an outcome count after the batch completes. What it collided with, and how it differed, is not shown.</td>
+<td>The colliding case is named and the difference is set out line by line, with the resolutions appropriate to that conflict type. The reviewer can decide without leaving the page or opening the catalog.</td></tr>
+
+<tr><td><span class="n">9</span></td>
+<td><b>Cases without conflicts grouped by category, with a single bulk action</b></td>
+<td>Each case must be reviewed individually regardless of whether anything is in question.</td>
+<td>Twelve unambiguous cases become one row and one click, with the option to open them individually. Review effort scales with the number of problems, not the number of cases.</td></tr>
+
+<tr><td><span class="n">10</span></td>
+<td><b>Missing categories shown as gaps</b></td>
+<td>Categories with no generated cases are simply absent, so their absence is invisible.</td>
+<td>An empty category is stated explicitly, prompting the reviewer to confirm whether the omission is correct. Coverage gaps are caught at review rather than discovered later.</td></tr>
+
+<tr><td><span class="n">11</span></td>
+<td><b>Confirmation summarises the outcome and is blocked until decisions are complete</b></td>
+<td>"Confirm and process" is available at all times and gives no summary of what will happen.</td>
+<td>The action states exactly what it will do — <i>creates 12, extends 1, merges 2</i> — and stays disabled until every conflict is resolved, preventing a batch from running in an undecided state.</td></tr>
+
+</tbody>
+</table>
+
+<h2>Not included in this proposal</h2>
+<table>
+<thead><tr><th style="width:26%">Item</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td><b>Comparing two requests side by side</b></td><td>Excluded pending confirmation of demand.</td></tr>
+<tr><td><b>Live monitoring of a running batch</b></td><td>Excluded. "Running" is provided as a filter; completion is already reported through the notification area.</td></tr>
+<tr><td><b>The original prompt text</b></td><td>Available behind <i>View prompt</i>. It is the input that produced the cases, not the subject of the review.</td></tr>
+<tr><td><b>Changes to generation, classification or execution</b></td><td>Out of scope. This proposal covers the review interface only.</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<b>Implementation note — marker 7 requires backend support</b>
+<b>Extend existing</b> modifies a test case that has already been approved. It requires version history on the case, an audit entry recording who extended it and from which request, and invalidation of the case's previous run result, since the case has changed. These requirements are specified in the accompanying plan document and should be confirmed with the development team as part of approval.
+</div>
+
+<p class="lead" style="margin-top:24px; font-size:12.5px">Prepared by the Business Analyst, 14 August 2026. Companion document: <b>Harness_TestCase_Workbench_Plan.md</b> (<span class="mono">Documents/00_Active/</span>).</p>
+
+</div>
+</body>
+</html>

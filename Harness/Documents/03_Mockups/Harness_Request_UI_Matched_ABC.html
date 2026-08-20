@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness — Request page matched to test-case directions A / B / C</title>
+<style>
+  :root { --pg:#fff; --tx:#111827; --tx2:#5b6472; --ln:rgba(17,24,39,.14); --cd:#fbfbfc; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#15171b; --tx:#e8eaed; --tx2:#9aa3af; --ln:rgba(232,234,237,.16); --cd:#1b1e23; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; font-size:15px; line-height:1.6;
+         -webkit-font-smoothing:antialiased; }
+  .page { max-width:1220px; margin:0 auto; padding:32px 22px 70px; }
+  h1 { font-size:28px; font-weight:660; letter-spacing:-.024em; margin:0 0 6px; }
+  h2 { font-size:20px; font-weight:650; letter-spacing:-.018em; margin:0 0 4px; }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 14px; }
+  b, strong { color:var(--tx); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  .banner { border:1px solid var(--ln); border-left:3px solid #5a3ff0; border-radius:10px;
+            padding:11px 15px; margin:0 0 20px; font-size:13px; color:var(--tx2); }
+  .banner b { color:var(--tx); }
+  .block { border:1px solid var(--ln); border-radius:15px; padding:20px 22px 22px; background:var(--cd);
+           position:relative; margin-top:34px; }
+  .tag { position:absolute; top:-12px; left:20px; color:#fff; font-weight:700;
+         font-size:12px; padding:3px 13px; border-radius:99px; box-shadow:0 2px 8px rgba(0,0,0,.18); }
+  .shot { border:1px solid var(--ln); border-radius:11px; overflow:hidden; box-shadow:0 8px 26px rgba(0,0,0,.13); margin-top:12px; }
+  .meta { display:flex; gap:20px; flex-wrap:wrap; font-size:12.5px; margin-top:14px; }
+  .meta div { flex:1; min-width:190px; }
+  .meta b { display:block; font-size:10px; letter-spacing:.09em; text-transform:uppercase; opacity:.55; margin-bottom:3px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:12px; }
+  th,td { text-align:left; padding:9px 12px 9px 0; vertical-align:top; border-bottom:1px solid var(--ln); color:var(--tx2); }
+  th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; border-bottom:2px solid var(--ln); }
+  td b { color:var(--tx); }
+  .flag { border:1px solid var(--ln); border-left:3px solid #c2352f; border-radius:10px; padding:12px 15px;
+          margin-top:18px; font-size:12.5px; color:var(--tx2); }
+  .flag b.h { display:block; color:var(--tx); margin-bottom:3px; }
+
+  .ui { display:flex; height:470px; font-size:11px; line-height:1.45; }
+  .ui *, .ui *::before, .ui *::after { box-sizing:border-box; }
+  .ui .m { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+
+  /* ============================================================
+     A — FAMILIAR (teal, rounded, light)
+     ============================================================ */
+  .A { background:#fafafa; color:#0d0d0d; font-family:"Inter",system-ui,sans-serif; }
+  .A .nav { width:152px; flex:none; background:#fff; border-right:1px solid #ededed; padding:12px 9px; display:flex; flex-direction:column; gap:2px; }
+  .A .bn { font-size:13px; font-weight:600; padding:0 5px 11px; }
+  .A .bn i { font-style:normal; color:#10a37f; }
+  .A .nl { padding:6px 9px; border-radius:10px; color:#3a3a3a; display:flex; align-items:center; gap:7px; }
+  .A .nl.on { background:#e7f6f1; color:#0a7a5e; font-weight:600; }
+  .A .nl .c { margin-left:auto; font-size:9.5px; color:#9b9b9b; }
+  .A .nl .b { margin-left:auto; background:#fff4e0; color:#8a5a00; font-size:9px; font-weight:700; padding:0 5px; border-radius:99px; }
+  .A .nl.sub { padding-left:20px; font-size:10.5px; }
+  .A .main { flex:1; display:flex; min-width:0; }
+  .A .list { width:286px; flex:none; background:#fff; border-right:1px solid #ededed; display:flex; flex-direction:column; }
+  .A .top { padding:11px 13px; border-bottom:1px solid #ededed; }
+  .A .seg { display:inline-flex; background:#f2f2f2; border-radius:10px; padding:2px; gap:2px; }
+  .A .sg { padding:4px 10px; border-radius:8px; font-size:10.5px; color:#6e6e6e; }
+  .A .sg.on { background:#fff; color:#0d0d0d; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.08); }
+  .A .row { padding:9px 12px; border-bottom:1px solid #f5f5f5; border-left:3px solid transparent; }
+  .A .row.sel { background:#f4fbf9; border-left-color:#10a37f; }
+  .A .k { font-size:10px; font-weight:600; color:#0a7a5e; }
+  .A .pill { display:inline-block; font-size:8.5px; font-weight:700; padding:1px 7px; border-radius:99px; }
+  .A .det { flex:1; min-width:0; padding:12px 15px; overflow:hidden; }
+  .A .card { background:#fff; border:1px solid #ededed; border-radius:12px; padding:11px 13px; margin-top:10px; }
+  .A .tabs { display:flex; gap:16px; border-bottom:1px solid #ededed; margin-top:10px; }
+  .A .tab { padding:6px 0; font-size:11px; color:#6e6e6e; }
+  .A .tab.on { color:#0d0d0d; font-weight:600; box-shadow:inset 0 -2px 0 #10a37f; }
+  .A .btn { border-radius:9px; padding:5px 11px; font-size:10.5px; font-weight:600; display:inline-block; }
+  .A .bp { background:#10a37f; color:#fff; }
+  .A .bs { background:#fff; border:1px solid #e5e5e5; color:#3a3a3a; }
+
+  /* ============================================================
+     B — REPOSITORY (violet, dense table)
+     ============================================================ */
+  .B { background:#f6f7f9; color:#1c2333; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .B .nav { width:166px; flex:none; background:#fff; border-right:1px solid #e3e6ec; padding:10px 7px; display:flex; flex-direction:column; }
+  .B .bn { font-weight:650; font-size:12.5px; padding:2px 8px 10px; }
+  .B .grp { font-size:9px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#7b8496; padding:9px 8px 3px; }
+  .B .nl { padding:5px 8px; border-radius:4px; color:#414b5e; display:flex; align-items:center; gap:7px; }
+  .B .nl.on { background:#eceafe; color:#5a3ff0; font-weight:600; }
+  .B .nl .c { margin-left:auto; font-size:9.5px; color:#7b8496; }
+  .B .nl .w { margin-left:auto; background:#fff3e0; color:#8a5300; font-size:9px; font-weight:700; padding:0 5px; border-radius:99px; }
+  .B .nl.sub { padding-left:20px; font-size:10.5px; }
+  .B .main { flex:1; display:flex; flex-direction:column; min-width:0; position:relative; }
+  .B .top { background:#fff; border-bottom:1px solid #e3e6ec; padding:10px 14px; display:flex; align-items:center; gap:9px; }
+  .B .bar { background:#fff; border-bottom:1px solid #e3e6ec; padding:6px 14px; display:flex; gap:6px; align-items:center; }
+  .B .chip { border:1px solid #e3e6ec; background:#fbfcfd; border-radius:4px; padding:3px 8px; font-size:10px; color:#414b5e; }
+  .B .btn { border-radius:4px; padding:5px 11px; font-size:10.5px; font-weight:500; display:inline-block; }
+  .B .bp { background:#5a3ff0; color:#fff; }
+  .B .bs { background:#fff; border:1px solid #e3e6ec; color:#414b5e; }
+  .B .rh { display:grid; grid-template-columns:16px 68px 1fr 84px 62px 92px 54px; gap:9px; padding:6px 14px;
+           font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496; border-bottom:1px solid #e3e6ec; }
+  .B .r { display:grid; grid-template-columns:16px 68px 1fr 84px 62px 92px 54px; gap:9px; padding:7px 14px;
+          align-items:center; border-bottom:1px solid #f2f4f7; }
+  .B .r.sel { background:#f5f3ff; }
+  .B .k { font-size:10px; font-weight:600; color:#5a3ff0; }
+  .B .lz { display:inline-block; font-size:8.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; padding:1px 5px; border-radius:3px; }
+  .B .panel { position:absolute; right:0; top:0; bottom:0; width:376px; background:#fff; border-left:1px solid #d7dbe3;
+              box-shadow:-8px 0 22px rgba(20,28,45,.10); padding:12px 15px; overflow:hidden; }
+  .B .pt { display:flex; gap:14px; border-bottom:2px solid #e3e6ec; margin-top:10px; }
+  .B .pt span { padding:5px 0; font-size:10.5px; color:#7b8496; }
+  .B .pt span.on { color:#5a3ff0; font-weight:600; box-shadow:inset 0 -2px 0 #5a3ff0; }
+  .B .pf { display:grid; grid-template-columns:1fr 1fr; gap:9px 14px; margin-top:11px; }
+  .B .pl { font-size:8.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496; }
+  .B .pv { border:1px solid #e3e6ec; border-radius:4px; padding:3px 7px; font-size:10.5px; margin-top:2px; }
+
+  /* ============================================================
+     C — COVERAGE (mint light, contribution + trust)
+     ============================================================ */
+  .C { background:#f7f8fa; color:#10151c; font-family:"Inter",system-ui,sans-serif; }
+  .C .nav { width:58px; flex:none; background:#fff; border-right:1px solid #e6e9ee; padding:10px 0; display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .C .ic { width:36px; height:32px; border-radius:9px; display:grid; place-items:center; color:#8b95a3; font-size:13px; }
+  .C .ic.on { background:#e3f7ec; color:#0b7a52; }
+  .C .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .C .top { padding:12px 16px; border-bottom:1px solid #e6e9ee; display:flex; align-items:center; gap:11px; background:#fff; }
+  .C .h { font-size:15px; font-weight:650; letter-spacing:-.02em; }
+  .C .sub { font-size:10px; color:#6b7683; }
+  .C .btn { border-radius:8px; padding:6px 12px; font-size:10.5px; font-weight:650; }
+  .C .bp { background:#0b7a52; color:#fff; }
+  .C .bs { border:1px solid #dbe0e6; color:#414b57; background:#fff; }
+  .C .body { flex:1; display:flex; min-height:0; }
+  .C .subs { width:236px; flex:none; background:#fff; border-right:1px solid #e6e9ee; }
+  .C .sh { padding:7px 12px; font-size:9px; letter-spacing:.11em; text-transform:uppercase; color:#8b95a3; border-bottom:1px solid #e6e9ee; }
+  .C .row { padding:9px 12px; border-bottom:1px solid #f1f3f5; border-left:3px solid transparent; }
+  .C .row.sel { background:#f2fbf7; border-left-color:#0b7a52; }
+  .C .k { font-size:10px; font-weight:650; color:#0b7a52; }
+  .C .pill { display:inline-block; font-size:8.5px; font-weight:700; padding:1px 7px; border-radius:99px; }
+  .C .mid { flex:1; padding:13px 16px; min-width:0; overflow:hidden; }
+  .C .lbl { font-size:9px; letter-spacing:.11em; text-transform:uppercase; color:#8b95a3; margin-bottom:7px; }
+  .C table.cov { width:100%; border-collapse:separate; border-spacing:3px; }
+  .C table.cov th { font-size:8.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:#6b7683; padding:0 0 3px; text-align:center; border:none; }
+  .C table.cov th.f { text-align:left; width:118px; }
+  .C table.cov td { padding:0; border:none; }
+  .C .cell { height:29px; border-radius:7px; display:grid; place-items:center; font-size:10.5px; font-weight:650;
+             font-variant-numeric:tabular-nums; position:relative; }
+  .C .c0 { background:#eef1f5; color:#96a1ae; box-shadow:inset 0 0 0 1px #dce2e9; }
+  .C .c1 { background:#e3f7ec; color:#0b7a52; }
+  .C .c2 { background:#bcecd4; color:#14603f; }
+  .C .c3 { background:#86dcb4; color:#0b4b31; }
+  .C .add { position:absolute; top:-4px; right:-4px; background:#0b7a52; color:#fff; font-size:8px; font-weight:800; padding:0 4px; border-radius:99px; }
+  .C .fname { font-size:10px; color:#2b333d; padding-right:6px; }
+  .C .drawer { width:262px; flex:none; border-left:1px solid #e6e9ee; background:#fff; padding:12px 14px; overflow:hidden; }
+  .C .trust { background:#fbfcfd; border:1px solid #e6e9ee; border-radius:10px; padding:10px 11px; margin-top:9px; }
+  .C .tr { display:flex; align-items:center; gap:7px; padding:4px 0; font-size:10px; color:#414b57; }
+  .C .dot { width:7px; height:7px; border-radius:50%; flex:none; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>DRAFT — Request page, matched one-to-one with the test-case directions.</b> Each design below inherits both the <b>visual language</b> and the <b>organising idea</b> of its test-case counterpart, so a chosen direction gives you a consistent pair of screens. Same content throughout. The earlier file <span class="mono">Harness_Request_UI_Three_Directions.html</span> is unchanged and asks a different question — <i>what is a request?</i> — rather than <i>which style?</i>. Prepared by the Business Analyst, 18 August 2026.</div>
+
+<h1>Request page — matched to A, B and C</h1>
+<p class="lead">All three assume case review lives in a <b>Proposed</b> tab under Test Cases, and all three replace the single word <span class="mono">failed</span> with outcomes that say what happened. What differs is the shape each inherits from its counterpart.</p>
+
+<!-- ================================================== A -->
+<div class="block">
+<span class="tag" style="background:#10a37f">A</span>
+<h2>Request-A — the familiar list</h2>
+<p class="lead">Inherits direction A's teal-on-light styling, rounded corners and three-column shape, plus its organising idea: <b>one list, switched between two modes</b>. Requests are grouped in the sidebar the same way test cases are grouped by feature.</p>
+
+<div class="shot">
+<div class="ui A">
+  <div class="nav">
+    <div class="bn">QOps <i>Harness</i></div>
+    <div class="nl on">Requests <span class="b">2</span></div>
+    <div class="nl">Test cases <span class="c">313</span></div>
+    <div class="nl sub">Proposed <span class="b">3</span></div>
+    <div class="nl sub">Failed <span class="c">87</span></div>
+    <div class="nl sub">Executed history</div>
+    <div class="nl">Test groups</div>
+    <div class="nl">Knowledge</div>
+    <div class="nl">Dashboard</div>
+    <div style="flex:1"></div>
+    <div style="border-top:1px solid #ededed; padding:9px 6px 2px">
+      <div style="font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#9b9b9b">Session</div>
+      <div class="m" style="font-size:9.5px; color:#0a7a5e; margin-top:2px">aloha-auth.json</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="list">
+      <div class="top">
+        <div class="seg"><span class="sg on">Needs me · 2</span><span class="sg">All · 24</span></div>
+        <div style="margin-top:8px; border:1px solid #e5e5e5; border-radius:9px; padding:4px 8px; font-size:10px; color:#9b9b9b">Search requests…</div>
+      </div>
+
+      <div class="row sel">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1042</span>
+          <span class="pill" style="background:#fff4e0; color:#8a5a00; margin-left:auto">3 to review</span></div>
+        <div style="margin-top:3px; font-weight:600">Risk dashboard — Total Risk table</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#9b9b9b">15 cases created · 2h ago</div>
+      </div>
+      <div class="row">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1040</span>
+          <span class="pill" style="background:#fdeaea; color:#c2352f; margin-left:auto">Stuck</span></div>
+        <div style="margin-top:3px; font-weight:600">Risk tab › Output subtab</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#c2352f">No cases produced · 3h 38m</div>
+      </div>
+      <div class="row">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1041</span>
+          <span class="pill" style="background:#e6f0fd; color:#0747a6; margin-left:auto">Running</span></div>
+        <div style="margin-top:3px; font-weight:600">Requests page smoke check</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#9b9b9b">Executing 2 of 5 · 4m</div>
+      </div>
+      <div class="row">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1038</span>
+          <span class="pill" style="background:#e7f6f1; color:#0a7a5e; margin-left:auto">Complete</span></div>
+        <div style="margin-top:3px; font-weight:600">Cash Forecast — historical flows</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#9b9b9b">6 cases created · yesterday</div>
+      </div>
+      <div class="row">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1035</span>
+          <span class="pill" style="background:#e7f6f1; color:#0a7a5e; margin-left:auto">Complete</span></div>
+        <div style="margin-top:3px; font-weight:600">Public Fund navigation</div>
+        <div style="margin-top:2px; font-size:9.5px; color:#9b9b9b">4 cases · 1 failing · 2d</div>
+      </div>
+    </div>
+
+    <div class="det">
+      <div style="display:flex; align-items:flex-start; gap:8px">
+        <div style="flex:1">
+          <div style="font-size:13.5px; font-weight:650">Risk dashboard — Total Risk table</div>
+          <div style="margin-top:3px; font-size:10px; color:#6e6e6e"><span class="m" style="color:#0a7a5e">REQ-1042</span> · Test Feature · nguyenhoangly103 · 2h ago</div>
+        </div>
+        <span class="btn bs">Re-run</span>
+      </div>
+
+      <div class="card" style="border-color:#bfe6d9; background:#f4fbf9">
+        <div style="font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#0a7a5e; font-weight:700">What it produced</div>
+        <div style="margin-top:5px; display:flex; align-items:baseline; gap:6px">
+          <span style="font-size:21px; font-weight:700; letter-spacing:-.02em; color:#0a7a5e">15</span>
+          <span style="font-size:11px">cases in <b>risk / dashboard</b></span>
+        </div>
+        <div style="margin-top:7px; display:flex; gap:5px">
+          <span class="pill" style="background:#e7f6f1; color:#0a7a5e">12 accepted</span>
+          <span class="pill" style="background:#fff4e0; color:#8a5a00">3 to review</span>
+        </div>
+        <div style="margin-top:9px"><span class="btn bp">Review the 3 →</span></div>
+      </div>
+
+      <div class="tabs"><span class="tab on">Info</span><span class="tab">Execution</span><span class="tab">History</span></div>
+
+      <div class="card">
+        <div style="font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:#9b9b9b">Prompt</div>
+        <div class="m" style="margin-top:5px; font-size:10px; color:#3a3a3a; line-height:1.6">
+          Project: aloha<br>Go to workbench-app.lab.gend.vn<br>Click on Risk tab<br>Verify Total Risk table is displayed
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>Inherits from A</b>Teal accent, 10–12px radius, nav → list → detail, and the segmented switch between "needs me" and "everything".</div>
+  <div><b>Organising idea</b>One list, two modes. A request row and a test-case row look and behave the same way.</div>
+  <div><b>Strength</b>Nothing to learn. It is the page QA already use, with outcomes replacing raw status enums.</div>
+  <div><b>Weakness</b>Inherits A's ceiling too — a linear list that does not scale past a few dozen requests, and no way to sort or compare.</div>
+</div>
+</div>
+
+<!-- ================================================== B -->
+<div class="block">
+<span class="tag" style="background:#5a3ff0">B</span>
+<h2>Request-B — the governed table</h2>
+<p class="lead">Inherits direction B's dense table, filter chips, bulk actions and side panel. A request becomes <b>a row with governed columns</b> — mode, outcome, cases produced, stage — sortable and filterable exactly like a test case.</p>
+
+<div class="shot">
+<div class="ui B">
+  <div class="nav">
+    <div class="bn">QOps Harness</div>
+    <div class="grp">Tests</div>
+    <div class="nl">Repository <span class="c">313</span></div>
+    <div class="nl sub">Proposed <span class="w">3</span></div>
+    <div class="nl sub">Failed <span class="c">87</span></div>
+    <div class="nl sub">Executed history</div>
+    <div class="grp">Input</div>
+    <div class="nl on">Requests <span class="w">2</span></div>
+    <div class="nl">Knowledge</div>
+    <div class="grp">Insight</div>
+    <div class="nl">Dashboards</div>
+  </div>
+
+  <div class="main">
+    <div class="top">
+      <div style="font-size:15px; font-weight:600">Requests</div>
+      <span style="font-size:10px; color:#7b8496">24 total · 2 need you</span>
+      <span style="margin-left:auto" class="btn bs">Configure columns</span>
+      <span class="btn bp">New request</span>
+    </div>
+    <div class="bar">
+      <span class="chip" style="background:#eceafe; border-color:#c9c0fb; color:#5a3ff0">Needs me · 2</span>
+      <span class="chip">Outcome ⌄</span><span class="chip">Mode ⌄</span><span class="chip">Author ⌄</span><span class="chip">Feature ⌄</span>
+      <span style="margin-left:auto; font-size:10px; color:#7b8496">Save as view</span>
+    </div>
+
+    <div style="background:#fff; flex:1">
+      <div class="rh"><span></span><span>Key</span><span>Prompt</span><span>Mode</span><span>Cases</span><span>Outcome</span><span>Age</span></div>
+
+      <div class="r sel">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1042</span><span style="font-weight:600">Risk dashboard — Total Risk table</span>
+        <span style="color:#7b8496">Feature</span><span class="m">15</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 to review</span>
+        <span class="m" style="color:#7b8496">2h</span>
+      </div>
+      <div class="r">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1040</span><span style="font-weight:600">Risk tab › Output subtab</span>
+        <span style="color:#7b8496">Single</span><span class="m" style="color:#a52a1f">0</span>
+        <span class="lz" style="background:#fde9e7; color:#a52a1f">Stuck</span>
+        <span class="m" style="color:#a52a1f">3h 38m</span>
+      </div>
+      <div class="r">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1041</span><span>Requests page smoke check</span>
+        <span style="color:#7b8496">Feature</span><span class="m">5</span>
+        <span class="lz" style="background:#deebff; color:#0747a6">Executing 2/5</span>
+        <span class="m" style="color:#7b8496">4m</span>
+      </div>
+      <div class="r">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1038</span><span>Cash Forecast — historical flows</span>
+        <span style="color:#7b8496">Feature</span><span class="m">6</span>
+        <span class="lz" style="background:#e2f7ec; color:#136c46">Complete</span>
+        <span class="m" style="color:#7b8496">1d</span>
+      </div>
+      <div class="r">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1035</span><span>Public Fund navigation</span>
+        <span style="color:#7b8496">Single</span><span class="m">4</span>
+        <span class="lz" style="background:#e2f7ec; color:#136c46">Complete</span>
+        <span class="m" style="color:#7b8496">2d</span>
+      </div>
+      <div class="r" style="opacity:.6">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">REQ-1031</span><span>Scenario test — fund switch</span>
+        <span style="color:#7b8496">Bug ticket</span><span class="m">2</span>
+        <span class="lz" style="background:#eef0f4; color:#5c6579">Superseded</span>
+        <span class="m" style="color:#7b8496">5d</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex; align-items:center; gap:8px">
+        <span class="k">REQ-1042</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 to review</span>
+      </div>
+      <div style="font-size:13px; font-weight:600; margin-top:3px">Risk dashboard — Total Risk table</div>
+      <div class="pt"><span class="on">Properties</span><span>Cases 15</span><span>Activity</span></div>
+      <div class="pf">
+        <div><div class="pl">Mode</div><div class="pv">Test Feature</div></div>
+        <div><div class="pl">Author</div><div class="pv">nguyenhoangly103</div></div>
+        <div><div class="pl">Feature</div><div class="pv">risk / dashboard</div></div>
+        <div><div class="pl">Session</div><div class="pv m" style="font-size:9.5px">aloha-auth.json</div></div>
+        <div><div class="pl">Cases produced</div><div class="pv">15</div></div>
+        <div><div class="pl">Duplicates found</div><div class="pv">3</div></div>
+      </div>
+      <div style="margin-top:12px; background:#fbfcfd; border:1px solid #e3e6ec; border-radius:5px; padding:9px 11px">
+        <div style="font-size:8.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496">Outcome</div>
+        <div style="margin-top:5px; font-size:11px; color:#414b5e">12 accepted · <b>3 awaiting review</b> · 0 rejected</div>
+        <div style="margin-top:8px; display:flex; gap:5px">
+          <span class="btn bp">Open the 3 in Proposed</span><span class="btn bs">Re-run</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>Inherits from B</b>Violet accent, 4px radius, dense sortable table, filter chips, Configure columns, bulk select, side panel with tabs.</div>
+  <div><b>Organising idea</b>A request is a governed row. The same filter-and-sort muscle memory works on both pages.</div>
+  <div><b>Strength</b>Scales, and lets a QA lead ask real questions — which modes produce the most duplicates, whose requests stall, which features are being requested repeatedly.</div>
+  <div><b>Weakness</b>Requires request-level fields that do not exist yet (mode, cases produced, duplicates found) before the columns have anything to show.</div>
+</div>
+</div>
+
+<!-- ================================================== C -->
+<div class="block">
+<span class="tag" style="background:#0b7a52">C</span>
+<h2>Request-C — the contribution view</h2>
+<p class="lead">Inherits direction C's mint palette, coverage matrix and Trust panel. A request is judged by <b>what it added to coverage</b>: the matrix shows which feature × category cells it filled, and the panel shows how far the result can be trusted.</p>
+
+<div class="shot">
+<div class="ui C">
+  <div class="nav">
+    <div class="ic">▦</div><div class="ic">☰</div><div class="ic on">✎</div><div class="ic">⟳</div><div class="ic">◫</div>
+    <div style="flex:1"></div><div class="ic">⚙</div>
+  </div>
+  <div class="main">
+    <div class="top">
+      <div>
+        <div class="h">Requests — coverage contribution</div>
+        <div class="sub">24 submitted · 2 need you · 313 cases in catalog</div>
+      </div>
+      <span style="margin-left:auto" class="btn bs">Filter</span>
+      <span class="btn bp">+ New request</span>
+    </div>
+    <div class="body">
+
+      <div class="subs">
+        <div class="sh">Submissions</div>
+        <div class="row sel">
+          <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1042</span>
+            <span class="pill" style="background:#fdf2d9; color:#92610a; margin-left:auto">3 to review</span></div>
+          <div style="margin-top:3px; font-weight:600">Risk dashboard</div>
+          <div style="margin-top:2px; font-size:9.5px; color:#0b7a52">+15 cases · filled 2 gaps</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1040</span>
+            <span class="pill" style="background:#fde8e8; color:#b42318; margin-left:auto">Stuck</span></div>
+          <div style="margin-top:3px; font-weight:600">Risk tab › Output</div>
+          <div style="margin-top:2px; font-size:9.5px; color:#b42318">contributed nothing · 3h 38m</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1038</span>
+            <span class="pill" style="background:#e3f7ec; color:#0b7a52; margin-left:auto">Complete</span></div>
+          <div style="margin-top:3px; font-weight:600">Cash Forecast flows</div>
+          <div style="margin-top:2px; font-size:9.5px; color:#6b7683">+6 cases · filled 1 gap</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1035</span>
+            <span class="pill" style="background:#e3f7ec; color:#0b7a52; margin-left:auto">Complete</span></div>
+          <div style="margin-top:3px; font-weight:600">Public Fund nav</div>
+          <div style="margin-top:2px; font-size:9.5px; color:#6b7683">+4 cases · no new gaps</div>
+        </div>
+      </div>
+
+      <div class="mid">
+        <div class="lbl">What REQ-1042 contributed — green badge marks a cell it filled</div>
+        <table class="cov">
+          <tr><th class="f">Feature</th><th>Pos</th><th>Neg</th><th>Bound</th><th>Sec</th><th>Perf</th><th>Edge</th></tr>
+          <tr>
+            <td class="fname">risk / dashboard</td>
+            <td><div class="cell c3">12<span class="add">+5</span></div></td>
+            <td><div class="cell c2">8<span class="add">+4</span></div></td>
+            <td><div class="cell c1">4<span class="add">+3</span></div></td>
+            <td><div class="cell c1">3<span class="add">+2</span></div></td>
+            <td><div class="cell c0">0<span class="add">+1</span></div></td>
+            <td><div class="cell c0">0</div></td>
+          </tr>
+          <tr>
+            <td class="fname">risk / parameters</td>
+            <td><div class="cell c3">11</div></td><td><div class="cell c2">7</div></td>
+            <td><div class="cell c2">6</div></td><td><div class="cell c0">0</div></td>
+            <td><div class="cell c0">0</div></td><td><div class="cell c1">4</div></td>
+          </tr>
+          <tr>
+            <td class="fname">cash-forecast</td>
+            <td><div class="cell c2">9</div></td><td><div class="cell c1">5</div></td>
+            <td><div class="cell c1">4</div></td><td><div class="cell c0">0</div></td>
+            <td><div class="cell c1">2</div></td><td><div class="cell c1">2</div></td>
+          </tr>
+        </table>
+
+        <div style="margin-top:13px; background:#fff; border:1px solid #e6e9ee; border-radius:10px; padding:11px 13px">
+          <div class="lbl" style="margin-bottom:5px">Net effect</div>
+          <div style="font-size:11px; color:#414b57">
+            Filled <b style="color:#0b7a52">1 empty cell</b> (performance) and deepened four thin ones.
+            <b>Edge remains empty</b> for this feature — consider a follow-up request.
+          </div>
+          <div style="margin-top:9px"><span class="btn bs">Request cases for the edge gap</span></div>
+        </div>
+      </div>
+
+      <div class="drawer">
+        <div class="lbl">Trust in this batch</div>
+        <div class="trust">
+          <div class="tr"><span class="dot" style="background:#92610a"></span>3 of 15 need human review</div>
+          <div class="tr"><span class="dot" style="background:#92610a"></span>AI fallback used on 9 steps</div>
+          <div class="tr"><span class="dot" style="background:#0b7a52"></span>Classifier confidence 0.94</div>
+          <div class="tr"><span class="dot" style="background:#0b7a52"></span>Generation clean — no retries</div>
+        </div>
+
+        <div class="lbl" style="margin-top:13px">Compared with REQ-1040</div>
+        <div class="trust" style="border-color:#f5c2c0; background:#fef7f7">
+          <div style="font-size:10.5px; font-weight:650; color:#b42318">Contributed nothing</div>
+          <div style="margin-top:4px; font-size:10px; color:#414b57">Generation stopped before any case was written. No review is pending.</div>
+          <div style="margin-top:8px; display:flex; gap:5px">
+            <span class="btn bp" style="padding:4px 9px; font-size:9.5px">Retry</span>
+            <span class="btn bs" style="padding:4px 9px; font-size:9.5px">Why?</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>Inherits from C</b>Mint accent, coverage matrix, heat cells, Trust panel, and navigation by what is missing rather than what exists.</div>
+  <div><b>Organising idea</b>A request is measured by its contribution. "15 cases" is less interesting than "filled the performance gap and left edge empty".</div>
+  <div><b>Strength</b>The only one that closes the loop — a completed request immediately suggests the next one. It also makes a failed request legible: <i>contributed nothing</i>.</div>
+  <div><b>Weakness</b>Same blocker as C. Needs a clean feature axis and a populated category axis, neither of which exists today. Also weakest for "find that request from last Tuesday".</div>
+</div>
+</div>
+
+<!-- ================================================== COMPARE -->
+<h2 style="margin-top:40px">Comparison</h2>
+<table>
+<thead><tr><th style="width:20%"></th><th style="width:27%">Request-A</th><th style="width:27%">Request-B</th><th>Request-C</th></tr></thead>
+<tbody>
+<tr><td><b>Pairs with</b></td><td>Test case A · Familiar</td><td>Test case B · Repository</td><td>Test case C · Coverage</td></tr>
+<tr><td><b>A request is</b></td><td>A row in a familiar list</td><td>A governed record</td><td>A contribution to coverage</td></tr>
+<tr><td><b>Row leads with</b></td><td>Outcome pill + case count</td><td>Sortable columns</td><td>Cases added and gaps filled</td></tr>
+<tr><td><b>Handles the stuck request</b></td><td>"Stuck · No cases produced"</td><td>Outcome column reads <b>Stuck</b>, cases <b>0</b></td><td>"Contributed nothing"</td></tr>
+<tr><td><b>Answers "what next?"</b></td><td>No</td><td>No</td><td><b>Yes</b> — suggests the follow-up request</td></tr>
+<tr><td><b>Scales past ~50 requests</b></td><td>No</td><td><b>Yes</b></td><td>Partly</td></tr>
+<tr><td><b>New backend fields needed</b></td><td>Outcome only</td><td>Outcome, mode, cases produced, duplicates found</td><td>All of B's, plus coverage deltas</td></tr>
+<tr><td><b>Buildable today</b></td><td><b>Yes</b></td><td>Yes, once request fields exist</td><td>No — blocked on classification</td></tr>
+</tbody>
+</table>
+
+<div class="flag">
+<b class="h">The rule all three share, and the reason it matters</b>
+Every design replaces the single word <span class="mono">failed</span> with outcomes that name what happened, and derives that outcome <b>from what was produced</b> rather than from an internal state field.
+<br><br>
+On the live system today, request <span class="mono">#3ae938b9-e89</span> displays <span class="mono">AWAITING_REVIEW</span> after <b>3h 38m</b>, while its generation phase actually failed and no cases exist. In all three designs above the same request reads <b>Stuck</b> / <b>0 cases</b> / <b>contributed nothing</b> — because the outcome is computed from the absence of output, not asserted by a status field that was never updated.
+</div>
+
+<p class="lead" style="margin-top:22px; font-size:12.5px">Draft prepared by the Business Analyst, 18 August 2026. Illustrative data; the live observation is real. Companions: <b>Harness_TestCase_UI_Three_Directions.html</b> · <b>Harness_Request_UI_Three_Directions.html</b> (different question, still current).</p>
+
+</div>
+</body>
+</html>

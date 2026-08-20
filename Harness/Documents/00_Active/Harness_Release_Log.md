@@ -1,7 +1,7 @@
 # Harness — Release Log & Change Tracking
 
 **Owner:** BA · **Source:** Teams → *KS Investment Front Office Application Project* → **QOps Harness** channel
-**Captured:** 7 August 2026 (auto) · **Covers:** 31 Jul – 6 Aug 2026
+**Captured:** 11 August 2026 (auto) · **Covers:** 31 Jul – 11 Aug 2026
 **Deploy cards posted by:** Workflows bot (template used by the PO) · **Host user:** `QuanPLA`
 
 > **Purpose.** Harness ships several times a day. QA test against a moving target, and our
@@ -37,6 +37,17 @@ Deploys go to two targets: **`sandboxes`** (frequent, most changes land here fir
 
 *Auto-flagged from release notes only. Nothing here is verified; none of it changes any §4 watch-list status.*
 
+- [ ] `4a63dd0` - "fix(harness): fail Commit & open PR on fatal finalize warnings" - may relate to §9 decision 1 (request validation — block vs warn). Not verified.
+- [ ] `2a764e2` - "docs(dox): record environment vault override order for Playwright runs" - may relate to §9 decision 4 (Environment enum). Not verified.
+- [ ] `2a764e2` - "docs(harness): document environment vault > process env > .env precedence" - may relate to §9 decision 4 (Environment enum). Not verified.
+- [ ] `2a764e2` - "fix(ui): clarify Environments vault overrides process env and .env" - may relate to §9 decision 4 (Environment enum). Not verified.
+- [ ] `2a764e2` - "fix(scaffold): load Playwright dotenv with override false" - may relate to §9 decision 4 (Environment enum). Not verified.
+- [ ] `9933d4f` - "fix(path-assist): honor crawl environment override without MD slug" - may relate to §9 decision 4 (Environment enum). Not verified.
+- [ ] `7f97a06` - "chore(compose): add pgvector Postgres for QOps Sitegraph" - may relate to §8 row D3 (vector/ANN index). Not verified.
+- [ ] `7f97a06` - "fix(sitegraph): harden graph nav, errors, and embedder wiring" - may relate to §8 row D3 (vector/ANN index). Not verified.
+- [ ] `7f97a06` - "fix(queue): sync group case status after coalescing onto active job" - may relate to §8 row D2 (group membership) and §8 row D7 (group runs). Not verified.
+- [ ] `7f97a06` - "fix(queue): retarget group run jobs onto already-active case runs" - may relate to §8 row D7 (group manual runs). Not verified.
+- [ ] `7f97a06` - "feat: sitegraph graph DTO helpers and environments API" - may relate to §9 decision 4 (Environment enum). Not verified.
 - [ ] `48335c5` - "fix(042): rename Dashboard copy to Trends & taxonomy" - may relate to §8 row D4 / §9 decision 5 (Phase A taxonomy). Not verified.
 - [ ] `48335c5` - "feat(042): Feature & label aggregate API" - may relate to §8 row D9 (Feature/Labels values) and §8 row D8 (distinct-value baseline). Not verified.
 - [ ] `48335c5` - "feat(042): Feature & label dashboard UI and filters" - may relate to §8 row D1 (Cases filtering / CaseFilterBar) and §8 row D9 (Feature/Labels values). Not verified.
@@ -123,6 +134,76 @@ Three deploys between 12:01 and 12:29 all reworking how the New Request dialog r
 ---
 
 ## 3. Release log — newest first
+
+### 11 August 2026 (Tue)
+
+**`4a63dd0` → `gend`** · started 09:40 · completed 09:45
+
+- **New:** (none)
+- **Update:** `docs(dox)` document fail-closed Finalize and no side-load to main
+- **Fix:** `fix(harness)` fail Commit & open PR on fatal finalize warnings
+
+### 10 August 2026 (Mon)
+
+**`2a764e2` → `gend`** · started 22:00 · completed 22:06
+
+- **New:** (none)
+- **Update:** `docs(dox)` record environment vault override order for Playwright runs · `docs(harness)` document environment vault > process env > .env precedence · `refactor(deploy)` drop Moneta target from hyperagent; keep local/gend
+- **Fix:** `fix(ui)` clarify Environments vault overrides process env and .env · `fix(scaffold)` load Playwright dotenv with override false
+
+### 9 August 2026 (Sun)
+
+**`9933d4f` → `gend`** · started 19:07 · completed 19:14
+
+- **New:**
+  - `feat(host)` install Sitegraph gateway at Backend and crawl startup
+  - `feat(api)` add host-bound Sitegraph session and URL gateway
+  - `feat(path-assist)` Task A expand Task B with zero-hop skip
+  - `feat(crawl)` Sitegraph preflight and upsert status fields
+  - `feat(crawl)` upsert Sitegraph and hard-stop locator JSON
+  - `feat(sitegraph)` MD-only crawl knowledge and client factory
+- **Update:** `docs(dox)` document harness Sitegraph host-gateway boundary · `chore(harness)` drop `qops-sitegraph` package dependency · `refactor(harness)` route Sitegraph I/O through `api.sitegraph` gateway · `docs(048)` sync crawl-to-sitegraph plan artifacts and DOX · `docs(services)` note crawl-to-sitegraph contracts
+- **Fix:** `fix(path-assist)` honor crawl environment override without MD slug · `fix(path-assist)` probe Sitegraph before Task A and fix edge lookup · `fix(knowledge)` discover legacy MD+locator bundles without front matter · `fix(path-assist)` fall back to legacy when Task B fails · `fix(crawl)` attach `element_id` on click edges for locator hints
+
+> First appearance of a **Spec 048** reference (`docs(048)` crawl-to-sitegraph) — release notes only;
+> no conclusion drawn about its scope.
+
+### 8 August 2026 (Sat)
+
+**`6282a90` → `gend`** · started 20:00, restarted 20:14 · completed 20:19
+
+- **New:** add the code test generator agent · `feat(mcp)` expose Sitegraph tools on Harness MCP
+- **Update:** (none)
+- **Fix:** `test(deploy)` lock nested `.venv` excludes in gend sync
+
+**`7f97a06` → `gend`** · started 18:29 · completed 18:48
+
+- **New:**
+  - `feat` Knowledge Sitegraph force-graph view with filters and tooltips
+  - `feat` sitegraph graph DTO helpers and environments API
+  - `feat(queue)` add Settings Queue tab for unified active list
+  - `feat(queue)` add Settings queue management HTTP APIs
+  - `feat(queue)` list unified active queue items by `queue_seq`
+- **Update:** `chore` scaffold sitegraph graph view deps and stubs · `chore(docker)` install `qops_sitegraph` in harness image · `chore(compose)` add pgvector Postgres for QOps Sitegraph · `docs` note faster local startup and capped LLM preflight probes · `docs(local)` correct React island mount path for Compose · `docs(044)` mark queue management tasks done and update DOX
+- **Fix:** `fix(shell)` keep Knowledge subgroups expanded from URL after file clicks · `fix(knowledge)` remove New project UI and retire `POST /api/knowledge/projects` · `fix(docker)` lengthen HEALTHCHECK start-period for slow boots · `fix(docker)` skip duplicate lifespan LLM preflight after entrypoint · `fix(llm)` cap preflight chat `max_tokens` for connectivity probes · `fix(sitegraph)` harden graph nav, errors, and embedder wiring · `fix(local)` mount `qops_backend` src so host UI builds reach Compose · `fix(queue)` clear orphan `case_rerun` parents on stuck retry · `fix(queue)` guard reorder against running rows and clear UI errors · `fix(queue)` sync group case status after coalescing onto active job · `fix(queue)` retarget group run jobs onto already-active case runs · `fix(queue)` report skipped already-active cases in batch API · `fix(queue)` skip re-enqueue when case run already active
+
+> ⚠️ Two "deploy started" cards for the same commit `6282a90` (20:00 and 20:14) with no completion between.
+> Transcribed as posted; no conclusion drawn about why.
+>
+> First appearance of a **Sitegraph** stream and of a **Spec 044** reference (`docs(044)` queue management)
+> — release notes only; no conclusion drawn about their scope.
+
+### 7 August 2026 (Fri)
+
+**`55104f9` → `gend`** · started 18:50 — no completion card captured
+
+**`eacd2bb` → `gend`** · started 12:08 · completed 12:16 — *card headed "release notes ok" but carries no release notes*
+
+**`0efef72` → `gend`** · started 11:06 · completed 11:28 — *card headed "release notes ok" but carries no release notes*
+
+> Both completed cards on this date are headed *"(release notes ok)"* yet contain only `Target` and `Commit`
+> — no New / Update / Fix section at all, unlike the `3c8937c` card below which states its notes were skipped.
+> Transcribed exactly as posted; no release notes inferred. Nothing from this date could be assessed for §2.
 
 ### 6 August 2026 (Thu)
 
@@ -319,6 +400,10 @@ Seven distinct values exist for Risk alone (`risk-dashboard`, `risk-history`, `r
 
 | Date | Change |
 |---|---|
+| 2026-08-11 | Auto-update: added 2 deploys (`2a764e2`, `4a63dd0`) |
+| 2026-08-10 | Auto-update: added 1 deploy (`9933d4f`) |
+| 2026-08-09 | Auto-update: added 2 deploys (`7f97a06`, `6282a90`) |
+| 2026-08-08 | Auto-update: added 3 deploys (`0efef72`, `eacd2bb`, `55104f9`) |
 | 2026-08-07 | Auto-update: added 2 deploys (`48335c5`, `3c8937c`) |
 | 2026-08-06 | Auto-update: added 3 deploys (`2536aea`, `e57dd3f`, `e57dd3f`) |
 | 2026-08-05 | Auto-update: added 2 deploys (`2148711`, `2148711`) |

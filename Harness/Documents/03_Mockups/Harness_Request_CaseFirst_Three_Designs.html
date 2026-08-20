@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness — Request page, case-first designs</title>
+<style>
+  :root { --pg:#fff; --tx:#111827; --tx2:#5b6472; --ln:rgba(17,24,39,.14); --cd:#fbfbfc; --ac:#5a3ff0; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#15171b; --tx:#e8eaed; --tx2:#9aa3af; --ln:rgba(232,234,237,.16); --cd:#1b1e23; --ac:#a595f7; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",system-ui,sans-serif;
+         font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1240px; margin:0 auto; padding:32px 20px 70px; }
+  h1 { font-size:28px; font-weight:650; letter-spacing:-.024em; margin:0 0 6px; }
+  h2 { font-size:20px; font-weight:640; letter-spacing:-.018em; margin:0 0 4px; }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 14px; }
+  b, strong { color:var(--tx); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  .banner { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:10px;
+            padding:11px 15px; margin:0 0 20px; font-size:13px; color:var(--tx2); }
+  .banner b { color:var(--tx); }
+  .block { border:1px solid var(--ln); border-radius:15px; padding:20px 22px 22px; background:var(--cd);
+           position:relative; margin-top:34px; }
+  .tag { position:absolute; top:-12px; left:20px; background:var(--ac); color:#fff; font-weight:700;
+         font-size:12px; padding:3px 13px; border-radius:99px; box-shadow:0 2px 8px rgba(0,0,0,.18); }
+  .shot { border:1px solid var(--ln); border-radius:11px; overflow:hidden; box-shadow:0 8px 26px rgba(0,0,0,.13); margin-top:12px; }
+  .meta { display:flex; gap:20px; flex-wrap:wrap; font-size:12.5px; margin-top:14px; }
+  .meta div { flex:1; min-width:190px; }
+  .meta b { display:block; font-size:10px; letter-spacing:.09em; text-transform:uppercase; opacity:.55; margin-bottom:3px; }
+  table.cmp { width:100%; border-collapse:collapse; font-size:13px; margin-top:12px; }
+  table.cmp th, table.cmp td { text-align:left; padding:9px 12px 9px 0; vertical-align:top;
+        border-bottom:1px solid var(--ln); color:var(--tx2); }
+  table.cmp th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; border-bottom:2px solid var(--ln); }
+  table.cmp td b { color:var(--tx); }
+  .flag { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:10px; padding:12px 15px;
+          margin-top:18px; font-size:12.5px; color:var(--tx2); }
+  .flag b.h { display:block; color:var(--tx); margin-bottom:3px; }
+
+  /* ============ shared app chrome ============ */
+  .ui { display:flex; font-size:11px; line-height:1.45;
+        background:#f6f7f9; color:#1c2333; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .ui *, .ui *::before, .ui *::after { box-sizing:border-box; }
+  .ui .m { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+  .nav { width:150px; flex:none; background:#fff; border-right:1px solid #e3e6ec; padding:10px 7px; display:flex; flex-direction:column; }
+  .bn { font-weight:650; font-size:12.5px; padding:2px 8px 10px; }
+  .grp { font-size:9px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#7b8496; padding:9px 8px 3px; }
+  .nl { padding:5px 8px; border-radius:4px; color:#414b5e; display:flex; align-items:center; gap:7px; }
+  .nl.on { background:#eceafe; color:#5a3ff0; font-weight:600; }
+  .nl .c { margin-left:auto; font-size:9.5px; color:#7b8496; }
+  .nl .w { margin-left:auto; background:#fff3e0; color:#8a5300; font-size:9px; font-weight:700; padding:0 5px; border-radius:99px; }
+  .nl.sub { padding-left:19px; font-size:10.5px; }
+  .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .btn { border-radius:4px; padding:5px 11px; font-size:10.5px; font-weight:500; display:inline-block; white-space:nowrap; }
+  .bp { background:#5a3ff0; color:#fff; }
+  .bs { background:#fff; border:1px solid #e3e6ec; color:#414b5e; }
+  .bw { background:#fff3e0; border:1px solid #f0d5a8; color:#8a5300; font-weight:600; }
+  .k { font-size:10px; font-weight:600; color:#5a3ff0; }
+  .lz { display:inline-block; font-size:8.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+        padding:1px 6px; border-radius:3px; }
+  .tg { display:inline-block; font-size:9px; padding:1px 6px; border-radius:3px; background:#f0f2f6; color:#5c6579; }
+  .tg.cat { background:#eceafe; color:#5b3bb5; }
+
+  /* request header — small on purpose, in all three */
+  .rhead { background:#fff; border-bottom:1px solid #e3e6ec; padding:11px 15px; }
+  .rrow { display:flex; align-items:center; gap:9px; }
+  .rprompt { font-size:9.5px; color:#7b8496; margin-top:4px; }
+  .counts { display:flex; gap:6px; margin-top:8px; }
+  .cnt { border:1px solid #e3e6ec; border-radius:5px; padding:4px 9px; background:#fbfcfd; }
+  .cnt b { display:block; font-size:15px; font-weight:700; letter-spacing:-.02em; line-height:1.1; }
+  .cnt span { font-size:9px; color:#7b8496; }
+
+  /* status dot */
+  .sd { width:13px; height:13px; border-radius:50%; display:grid; place-items:center; flex:none; }
+  .sd svg { width:7px; height:7px; stroke:#fff; stroke-width:3.6; fill:none; }
+
+  /* ============ D1 — grouped list ============ */
+  .d1 .body { flex:1; background:#fff; overflow:hidden; }
+  .d1 .gh { display:flex; align-items:center; gap:8px; padding:7px 15px; background:#f8f9fb;
+            border-top:1px solid #e3e6ec; border-bottom:1px solid #eef0f4; }
+  .d1 .gh b { font-size:10.5px; }
+  .d1 .gh .n { font-size:9.5px; color:#7b8496; }
+  .d1 .cs { display:grid; grid-template-columns:15px 22px 1fr 190px 74px; gap:10px; padding:8px 15px;
+            align-items:start; border-bottom:1px solid #f4f6f9; }
+  .d1 .cs.need { background:#fffdf7; box-shadow:inset 3px 0 0 #e8a33d; }
+  .d1 .nm { font-weight:600; font-size:11px; }
+  .d1 .fn { font-size:10px; color:#7b8496; margin-top:2px; }
+  .d1 .tags { display:flex; gap:4px; flex-wrap:wrap; padding-top:1px; }
+
+  /* ============ D2 — card board ============ */
+  .d2 .board { flex:1; display:grid; grid-template-columns:repeat(5,1fr); gap:9px; padding:12px 14px; align-content:start; }
+  .d2 .col { min-width:0; }
+  .d2 .ch { display:flex; align-items:center; gap:6px; padding:0 2px 7px; }
+  .d2 .ch b { font-size:10.5px; }
+  .d2 .ch span { font-size:9.5px; color:#7b8496; }
+  .d2 .cd { background:#fff; border:1px solid #e3e6ec; border-radius:6px; padding:8px 9px; margin-bottom:7px; }
+  .d2 .cd.need { border-color:#f0d5a8; box-shadow:0 0 0 2px rgba(232,163,61,.12); }
+  .d2 .cd .nm { font-weight:600; font-size:10.5px; line-height:1.3; }
+  .d2 .cd .fn { font-size:9.5px; color:#7b8496; margin-top:3px; line-height:1.35; }
+  .d2 .cd .ft { display:flex; align-items:center; gap:5px; margin-top:6px; }
+
+  /* ============ D3 — expandable sheet ============ */
+  .d3 .th { display:grid; grid-template-columns:22px 15px 1fr 210px 92px 60px 54px; gap:10px; padding:6px 15px;
+            font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496;
+            background:#fff; border-bottom:1px solid #e3e6ec; }
+  .d3 .tr { display:grid; grid-template-columns:22px 15px 1fr 210px 92px 60px 54px; gap:10px; padding:7px 15px;
+            align-items:center; background:#fff; border-bottom:1px solid #f4f6f9; }
+  .d3 .tr.need { background:#fffdf7; box-shadow:inset 3px 0 0 #e8a33d; }
+  .d3 .tr.open { background:#f5f3ff; }
+  .d3 .exp { background:#fbfcfd; border-bottom:1px solid #e3e6ec; padding:10px 15px 12px 62px; }
+  .d3 .st { display:grid; grid-template-columns:34px 1fr 1fr; gap:9px; padding:4px 0; border-bottom:1px solid #eef0f4; font-size:10px; }
+  .d3 .st:last-child { border-bottom:none; }
+  .d3 .stl { font-size:8.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#7b8496; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>DRAFT — Request page, case-first.</b> Three ways to show <b>the test cases a request produced</b>. In all three the request itself shrinks to a header strip and the cases become the page. Every case shows its <b>name</b>, <b>what it verifies in plain words</b>, and its <b>area and type</b>. Same request throughout — 15 cases, 3 needing a decision — so the three compare directly. Prepared by the Business Analyst, 18 August 2026.</div>
+
+<h1>What a request produced</h1>
+<p class="lead">The earlier request mockups treated a request as the subject and the cases as a count. These invert it. Nothing here compares one request with another — the only question is <i>what came out of this one, and what do I do about it?</i></p>
+
+<!-- ============================================== D1 -->
+<div class="block">
+<span class="tag">D1</span>
+<h2>Grouped list — cases sorted by type</h2>
+<p class="lead">All 15 cases in one continuous list, grouped by test category. Cases needing a decision are pulled to a group at the top and marked with an amber rail. Reads top to bottom like a manifest of what was delivered.</p>
+
+<div class="shot">
+<div class="ui d1" style="height:700px">
+  <div class="nav">
+    <div class="bn">QOps Harness</div>
+    <div class="grp">Tests</div>
+    <div class="nl">Repository <span class="c">313</span></div>
+    <div class="nl sub">Proposed <span class="w">3</span></div>
+    <div class="nl sub">Failed <span class="c">87</span></div>
+    <div class="grp">Input</div>
+    <div class="nl on">Requests <span class="w">2</span></div>
+    <div class="nl">Knowledge</div>
+  </div>
+
+  <div class="main">
+    <div class="rhead">
+      <div class="rrow">
+        <span class="k">REQ-1042</span>
+        <span style="font-size:13px; font-weight:600">Risk dashboard — Total Risk table &amp; download report</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 need you</span>
+        <span style="margin-left:auto" class="btn bs">View prompt</span>
+        <span class="btn bp">Accept all 12 ready</span>
+      </div>
+      <div class="rprompt">Test Feature · nguyenhoangly103 · 2h ago · all cases inherit <b>risk / dashboard</b> · <span class="m">fund:public</span> <span class="m">env:lab</span></div>
+      <div class="counts">
+        <div class="cnt"><b>15</b><span>cases produced</span></div>
+        <div class="cnt"><b style="color:#8a5300">3</b><span>need a decision</span></div>
+        <div class="cnt"><b style="color:#136c46">12</b><span>ready to create</span></div>
+        <div class="cnt"><b>6</b><span>categories covered</span></div>
+      </div>
+    </div>
+
+    <div class="body">
+
+      <div class="gh" style="background:#fffaf0"><b style="color:#8a5300">Needs your decision</b><span class="n">3 cases</span></div>
+
+      <div class="cs need">
+        <span class="m" style="color:#a4adbb; font-size:9.5px">10</span>
+        <span class="sd" style="background:#e8a33d"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/></svg></span>
+        <div>
+          <div class="nm">Verify NAV and Beta are numeric on Risk dashboard</div>
+          <div class="fn">Checks that both headline risk metrics parse as numbers, not blanks or text</div>
+        </div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">boundary</span><span class="tg">P1</span></div>
+        <span class="btn bw">Extends 0042</span>
+      </div>
+
+      <div class="cs need">
+        <span class="m" style="color:#a4adbb; font-size:9.5px">01</span>
+        <span class="sd" style="background:#6554c0"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+        <div>
+          <div class="nm">Verify Total Risk table is displayed</div>
+          <div class="fn">Checks the Risk dashboard renders its totals table on first load</div>
+        </div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">positive</span><span class="tg">P1</span></div>
+        <span class="btn bw">Duplicate</span>
+      </div>
+
+      <div class="cs need">
+        <span class="m" style="color:#a4adbb; font-size:9.5px">04</span>
+        <span class="sd" style="background:#6554c0"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+        <div>
+          <div class="nm">Verify Total Risk table renders 8 metric rows</div>
+          <div class="fn">Checks the expected metric set is complete and none are dropped</div>
+        </div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">positive</span><span class="tg">P2</span></div>
+        <span class="btn bw">Similar 91%</span>
+      </div>
+
+      <div class="gh"><b>Positive</b><span class="n">4 ready</span><span style="margin-left:auto" class="btn bs" style="font-size:9.5px">Accept group</span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">02</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify Download Report button is displayed</div>
+        <div class="fn">Checks the export control is present and enabled on the dashboard</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">positive</span><span class="tg">P2</span></div><span></span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">03</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify Risk tab opens from the Public Fund menu</div>
+        <div class="fn">Checks navigation into the Risk area works from the fund menu</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">positive</span><span class="tg">P1</span></div><span></span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">05</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify risk values format to two decimal places</div>
+        <div class="fn">Checks numeric display formatting is consistent across the table</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">positive</span><span class="tg">P3</span></div><span></span></div>
+
+      <div class="gh"><b>Negative</b><span class="n">4 ready</span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">06</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify Risk tab rejects an empty fund selection</div>
+        <div class="fn">Checks an error appears when no fund has been chosen</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">negative</span><span class="tg">P1</span></div><span></span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">07</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify Download Report is disabled when there is no data</div>
+        <div class="fn">Checks the export control blocks an empty export</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">negative</span><span class="tg">P2</span></div><span></span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">08</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify an invalid date range shows a validation message</div>
+        <div class="fn">Checks date bounds are enforced before the report is built</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">negative</span><span class="tg">P2</span></div><span></span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">09</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify an unauthorised user cannot open the Risk tab</div>
+        <div class="fn">Checks access control is enforced on the Risk area</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">negative</span><span class="tg">P1</span></div><span></span></div>
+
+      <div class="gh"><b>Boundary</b><span class="n">2 ready</span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">11</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify Total Risk handles a single-holding fund</div>
+        <div class="fn">Checks the table still renders with the minimum possible data</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">boundary</span><span class="tg">P2</span></div><span></span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">12</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify Total Risk handles 500+ holdings without truncation</div>
+        <div class="fn">Checks no rows are dropped at high volume</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">boundary</span><span class="tg">P3</span></div><span></span></div>
+
+      <div class="gh"><b>Security</b><span class="n">2 ready</span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">13</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify the Risk report URL is not guessable</div>
+        <div class="fn">Checks report links are tokenised rather than sequential</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">security</span><span class="tg">P1</span></div><span></span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">14</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify an expired session cannot download the report</div>
+        <div class="fn">Checks export is blocked once the session has lapsed</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">security</span><span class="tg">P1</span></div><span></span></div>
+
+      <div class="gh"><b>Edge</b><span class="n">1 ready</span></div>
+
+      <div class="cs"><span class="m" style="color:#a4adbb; font-size:9.5px">15</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <div><div class="nm">Verify the Risk tab recovers after a network drop</div>
+        <div class="fn">Checks the view reloads cleanly once connectivity returns</div></div>
+        <div class="tags"><span class="tg">risk · dashboard</span><span class="tg cat">edge</span><span class="tg">P3</span></div><span></span></div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>Shows cases as</b>A grouped manifest, read top to bottom.</div>
+  <div><b>Strength</b>Every case name and purpose is fully readable — nothing truncated, nothing hidden. Group headers double as bulk-accept targets.</div>
+  <div><b>Weakness</b>Tallest of the three. Fifteen cases fill the viewport, so the request header scrolls away unless it is pinned.</div>
+  <div><b>Best when</b>The batch is the thing you are working through, one case at a time.</div>
+</div>
+</div>
+
+<!-- ============================================== D2 -->
+<div class="block">
+<span class="tag">D2</span>
+<h2>Card board — the whole batch at a glance</h2>
+<p class="lead">Cases become cards, one column per category. The entire batch is visible without scrolling, and the shape of the coverage is immediately legible — five positive, four negative, thinning out to a single edge case. Cards needing a decision carry an amber ring.</p>
+
+<div class="shot">
+<div class="ui d2" style="height:520px">
+  <div class="nav">
+    <div class="bn">QOps Harness</div>
+    <div class="grp">Tests</div>
+    <div class="nl">Repository <span class="c">313</span></div>
+    <div class="nl sub">Proposed <span class="w">3</span></div>
+    <div class="nl sub">Failed <span class="c">87</span></div>
+    <div class="grp">Input</div>
+    <div class="nl on">Requests <span class="w">2</span></div>
+    <div class="nl">Knowledge</div>
+  </div>
+
+  <div class="main">
+    <div class="rhead">
+      <div class="rrow">
+        <span class="k">REQ-1042</span>
+        <span style="font-size:13px; font-weight:600">Risk dashboard — Total Risk table &amp; download report</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 need you</span>
+        <span style="margin-left:auto" class="btn bs">View prompt</span>
+        <span class="btn bp">Accept all 12 ready</span>
+      </div>
+      <div class="rprompt"><b>15 cases</b> · all inherit <b>risk / dashboard</b> · nguyenhoangly103 · 2h ago</div>
+    </div>
+
+    <div class="board">
+      <div class="col">
+        <div class="ch"><b>Positive</b><span>5</span></div>
+        <div class="cd need">
+          <div class="nm">Verify Total Risk table is displayed</div>
+          <div class="fn">Renders its totals table on first load</div>
+          <div class="ft"><span class="lz" style="background:#efeafd; color:#5b3bb5">Duplicate</span><span class="tg">P1</span></div>
+        </div>
+        <div class="cd need">
+          <div class="nm">Verify table renders 8 metric rows</div>
+          <div class="fn">Expected metric set is complete</div>
+          <div class="ft"><span class="lz" style="background:#efeafd; color:#5b3bb5">Similar 91%</span></div>
+        </div>
+        <div class="cd">
+          <div class="nm">Verify Download Report button is displayed</div>
+          <div class="fn">Export control present and enabled</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P2</span></div>
+        </div>
+        <div class="cd">
+          <div class="nm">Verify Risk tab opens from Public Fund</div>
+          <div class="fn">Navigation into the Risk area works</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+        <div class="cd">
+          <div class="nm">Verify values format to 2 decimals</div>
+          <div class="fn">Numeric formatting is consistent</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P3</span></div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="ch"><b>Negative</b><span>4</span></div>
+        <div class="cd">
+          <div class="nm">Verify empty fund selection is rejected</div>
+          <div class="fn">Error shown when no fund is chosen</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+        <div class="cd">
+          <div class="nm">Verify Download disabled with no data</div>
+          <div class="fn">Blocks an empty export</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P2</span></div>
+        </div>
+        <div class="cd">
+          <div class="nm">Verify invalid date range is caught</div>
+          <div class="fn">Date bounds enforced before build</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P2</span></div>
+        </div>
+        <div class="cd">
+          <div class="nm">Verify unauthorised user is blocked</div>
+          <div class="fn">Access control on the Risk area</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="ch"><b>Boundary</b><span>3</span></div>
+        <div class="cd need">
+          <div class="nm">Verify NAV and Beta are numeric</div>
+          <div class="fn">Both headline metrics parse as numbers</div>
+          <div class="ft"><span class="lz" style="background:#fff3e0; color:#8a5300">Extends 0042</span></div>
+        </div>
+        <div class="cd">
+          <div class="nm">Verify single-holding fund renders</div>
+          <div class="fn">Table works at minimum data</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P2</span></div>
+        </div>
+        <div class="cd">
+          <div class="nm">Verify 500+ holdings, no truncation</div>
+          <div class="fn">No rows dropped at high volume</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P3</span></div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="ch"><b>Security</b><span>2</span></div>
+        <div class="cd">
+          <div class="nm">Verify report URL is not guessable</div>
+          <div class="fn">Links are tokenised, not sequential</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+        <div class="cd">
+          <div class="nm">Verify expired session cannot download</div>
+          <div class="fn">Export blocked after session lapse</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P1</span></div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="ch"><b>Edge</b><span>1</span></div>
+        <div class="cd">
+          <div class="nm">Verify recovery after network drop</div>
+          <div class="fn">View reloads cleanly on reconnect</div>
+          <div class="ft"><span class="sd" style="background:#2fa06a; width:11px; height:11px"></span><span class="tg">P3</span></div>
+        </div>
+        <div style="border:1px dashed #d3d8e2; border-radius:6px; padding:10px 9px; text-align:center;
+                    font-size:9.5px; color:#8b95a3; background:#fbfcfd">
+          No performance cases generated
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>Shows cases as</b>Cards in columns, one column per test category.</div>
+  <div><b>Strength</b>The whole batch fits on one screen, and the <i>shape</i> of what was generated is instantly readable — including what is thin or missing.</div>
+  <div><b>Weakness</b>Card width forces shorter names and purposes. The full case name may need a hover or a click to read in full.</div>
+  <div><b>Best when</b>Judging the batch as a whole — did this request cover the feature sensibly?</div>
+</div>
+</div>
+
+<!-- ============================================== D3 -->
+<div class="block">
+<span class="tag">D3</span>
+<h2>Expandable sheet — cases with their steps in place</h2>
+<p class="lead">A dense table where any case expands in place to reveal <b>its actual steps and expected results</b>. Answers the question the other two cannot: <i>does this generated case actually test what its name claims?</i> — without leaving the request.</p>
+
+<div class="shot">
+<div class="ui d3" style="height:640px">
+  <div class="nav">
+    <div class="bn">QOps Harness</div>
+    <div class="grp">Tests</div>
+    <div class="nl">Repository <span class="c">313</span></div>
+    <div class="nl sub">Proposed <span class="w">3</span></div>
+    <div class="nl sub">Failed <span class="c">87</span></div>
+    <div class="grp">Input</div>
+    <div class="nl on">Requests <span class="w">2</span></div>
+    <div class="nl">Knowledge</div>
+  </div>
+
+  <div class="main">
+    <div class="rhead">
+      <div class="rrow">
+        <span class="k">REQ-1042</span>
+        <span style="font-size:13px; font-weight:600">Risk dashboard — Total Risk table &amp; download report</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">3 need you</span>
+        <span style="margin-left:auto" class="btn bs">Expand all</span>
+        <span class="btn bp">Accept all 12 ready</span>
+      </div>
+      <div class="rprompt"><b>15 cases</b> · 62 steps total · all inherit <b>risk / dashboard</b> · 2h ago</div>
+    </div>
+
+    <div style="flex:1; overflow:hidden">
+      <div class="th"><span>#</span><span></span><span>Case name</span><span>What it verifies</span><span>Type</span><span>Steps</span><span></span></div>
+
+      <div class="tr need"><span class="m" style="color:#a4adbb">10</span>
+        <span class="sd" style="background:#e8a33d"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01"/></svg></span>
+        <span style="font-weight:600">Verify NAV and Beta are numeric on Risk dashboard</span>
+        <span style="color:#7b8496">Both headline metrics parse as numbers</span>
+        <span class="tg cat">boundary</span><span class="m" style="color:#7b8496">5</span>
+        <span class="btn bw" style="font-size:9px; padding:3px 7px">Extends</span></div>
+
+      <div class="tr need"><span class="m" style="color:#a4adbb">01</span>
+        <span class="sd" style="background:#6554c0"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+        <span style="font-weight:600">Verify Total Risk table is displayed</span>
+        <span style="color:#7b8496">Dashboard renders its totals table on load</span>
+        <span class="tg cat">positive</span><span class="m" style="color:#7b8496">3</span>
+        <span class="btn bw" style="font-size:9px; padding:3px 7px">Duplicate</span></div>
+
+      <div class="tr need open"><span class="m" style="color:#5a3ff0">04</span>
+        <span class="sd" style="background:#6554c0"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+        <span style="font-weight:600">Verify Total Risk table renders 8 metric rows</span>
+        <span style="color:#7b8496">Expected metric set is complete</span>
+        <span class="tg cat">positive</span><span class="m" style="color:#5a3ff0">4 ⌃</span>
+        <span class="btn bw" style="font-size:9px; padding:3px 7px">Similar</span></div>
+
+      <div class="exp">
+        <div class="stl" style="margin-bottom:5px">Generated steps — check these before accepting</div>
+        <div class="st"><span class="m" style="color:#7b8496">01</span><span>Navigate to workbench-app.lab.gend.vn</span><span style="color:#7b8496">Page loads without a redirect loop</span></div>
+        <div class="st"><span class="m" style="color:#7b8496">02</span><span>Open the Risk tab from the Public Fund menu</span><span style="color:#7b8496">Risk Model Dashboard is displayed</span></div>
+        <div class="st"><span class="m" style="color:#7b8496">03</span><span>Locate the Total Risk table</span><span style="color:#7b8496">Table is present below the header</span></div>
+        <div class="st"><span class="m" style="color:#7b8496">04</span><span>Count the metric rows</span><span style="color:#7b8496">Exactly 8 rows are rendered</span></div>
+        <div style="margin-top:9px; background:#fff; border:1px solid #e3e6ec; border-left:3px solid #6554c0; border-radius:5px; padding:8px 10px">
+          <div style="font-size:10.5px; font-weight:600; color:#5b3bb5">91% similar to RISK-0055 — “Verify Total Risk table row count”</div>
+          <div style="margin-top:3px; font-size:10px; color:#414b5e">Same navigation and target. Differs only in wording and in asserting a fixed count of 8.</div>
+          <div style="margin-top:8px; display:flex; gap:5px">
+            <span class="btn bp">Merge into RISK-0055</span><span class="btn bs">Keep both…</span><span class="btn bs">Reject</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">02</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify Download Report button is displayed</span>
+        <span style="color:#7b8496">Export control is present and enabled</span>
+        <span class="tg cat">positive</span><span class="m" style="color:#7b8496">3 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">03</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify Risk tab opens from the Public Fund menu</span>
+        <span style="color:#7b8496">Navigation into the Risk area works</span>
+        <span class="tg cat">positive</span><span class="m" style="color:#7b8496">3 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">05</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify risk values format to two decimal places</span>
+        <span style="color:#7b8496">Numeric formatting is consistent</span>
+        <span class="tg cat">positive</span><span class="m" style="color:#7b8496">4 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">06</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify Risk tab rejects an empty fund selection</span>
+        <span style="color:#7b8496">Error appears when no fund is chosen</span>
+        <span class="tg cat">negative</span><span class="m" style="color:#7b8496">4 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">07</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify Download Report is disabled when there is no data</span>
+        <span style="color:#7b8496">Export control blocks an empty export</span>
+        <span class="tg cat">negative</span><span class="m" style="color:#7b8496">4 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">08</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify an invalid date range shows a validation message</span>
+        <span style="color:#7b8496">Date bounds are enforced before build</span>
+        <span class="tg cat">negative</span><span class="m" style="color:#7b8496">5 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">09</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify an unauthorised user cannot open the Risk tab</span>
+        <span style="color:#7b8496">Access control is enforced</span>
+        <span class="tg cat">negative</span><span class="m" style="color:#7b8496">4 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">11</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify Total Risk handles a single-holding fund</span>
+        <span style="color:#7b8496">Table renders at minimum data</span>
+        <span class="tg cat">boundary</span><span class="m" style="color:#7b8496">4 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">12</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify Total Risk handles 500+ holdings without truncation</span>
+        <span style="color:#7b8496">No rows dropped at high volume</span>
+        <span class="tg cat">boundary</span><span class="m" style="color:#7b8496">5 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">13</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify the Risk report URL is not guessable</span>
+        <span style="color:#7b8496">Report links are tokenised</span>
+        <span class="tg cat">security</span><span class="m" style="color:#7b8496">4 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">14</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify an expired session cannot download the report</span>
+        <span style="color:#7b8496">Export blocked once session lapses</span>
+        <span class="tg cat">security</span><span class="m" style="color:#7b8496">5 ⌄</span><span></span></div>
+
+      <div class="tr"><span class="m" style="color:#a4adbb">15</span>
+        <span class="sd" style="background:#2fa06a"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+        <span>Verify the Risk tab recovers after a network drop</span>
+        <span style="color:#7b8496">View reloads cleanly on reconnect</span>
+        <span class="tg cat">edge</span><span class="m" style="color:#7b8496">5 ⌄</span><span></span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>Shows cases as</b>Table rows that open in place to reveal steps and expected results.</div>
+  <div><b>Strength</b>The only one that lets QA verify a generated case is <i>correct</i>, not just plausible. Conflict resolution appears inside the expanded row, next to the evidence.</div>
+  <div><b>Weakness</b>Densest and least friendly to a newcomer. Purpose text has to be short to fit the column.</div>
+  <div><b>Best when</b>The generator is not fully trusted — which, given AI fallback usage, is the current situation.</div>
+</div>
+</div>
+
+<!-- ============================================== COMPARE -->
+<h2 style="margin-top:40px">Comparison</h2>
+<table class="cmp">
+<thead><tr><th style="width:21%"></th><th style="width:26%">D1 · Grouped list</th><th style="width:26%">D2 · Card board</th><th>D3 · Expandable sheet</th></tr></thead>
+<tbody>
+<tr><td><b>Case name</b></td><td>Full, never truncated</td><td>Shortened to fit the card</td><td>Full</td></tr>
+<tr><td><b>What it verifies</b></td><td>Full sentence</td><td>Short phrase</td><td>Short phrase</td></tr>
+<tr><td><b>Area &amp; type</b></td><td>Tags on every row</td><td>Column position + priority tag</td><td>Type column</td></tr>
+<tr><td><b>All 15 without scrolling</b></td><td>No</td><td><b>Yes</b></td><td>Nearly</td></tr>
+<tr><td><b>See the coverage shape</b></td><td>Via group counts</td><td><b>Immediately</b></td><td>No</td></tr>
+<tr><td><b>Verify a case is correct</b></td><td>No — must open it</td><td>No</td><td><b>Yes — steps in place</b></td></tr>
+<tr><td><b>Resolve a conflict</b></td><td>Button on the row</td><td>Badge on the card</td><td><b>Inside the expanded row, with the diff</b></td></tr>
+<tr><td><b>Bulk accept</b></td><td>Per group or all</td><td>All</td><td>All</td></tr>
+<tr><td><b>Build cost</b></td><td>Low</td><td>Low–medium</td><td>Medium</td></tr>
+</tbody>
+</table>
+
+<div class="flag">
+<b class="h">What all three change</b>
+The request stops being the subject. It shrinks to a header strip — key, one-line prompt, counts — and <b>the cases occupy the page</b>. Every case carries its name, a plain-language statement of what it checks, and its area and type, so a QA reader can judge the batch without opening anything.
+<br><br>
+<b>A note on the shared labels.</b> All 15 cases inherit the same <span class="mono">feature</span> and <span class="mono">labels[]</span> — only <span class="mono">category</span> differs between siblings. That is why the inherited set is stated once in the header and only the category appears per row. Repeating identical tags fifteen times would add noise without adding information.
+</div>
+
+<div class="flag" style="border-left-color:#c2352f">
+<b class="h">Dependency, unchanged</b>
+Grouping by category is the backbone of all three designs. As measured on the live system, <span class="mono">category</span> is <span class="mono">default</span> on all 313 cases. <b>Until classification runs, D1 has one group, D2 has one column, and D3 has one value in its Type column.</b> The plain-language "what it verifies" line is also new — nothing generates it today.
+</div>
+
+<p class="lead" style="margin-top:22px; font-size:12.5px">Draft prepared by the Business Analyst, 18 August 2026. Illustrative case data modelled on request <span class="mono">#c1017339-45b</span> and the Aloha risk taxonomy. Earlier request mockups remain unchanged: <b>Harness_Request_UI_Three_Directions.html</b> · <b>Harness_Request_UI_Matched_ABC.html</b>.</p>
+
+</div>
+</body>
+</html>

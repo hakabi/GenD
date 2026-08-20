@@ -55,6 +55,20 @@ did not reproduce it; check whether **X** / Esc / navigation skip the reset.
 Once a request row is selected there is no way to deselect it; the detail pane always shows something.
 Minor alone, but a stale selection makes it hard to tell whether the pane reflects a current action or a leftover.
 
+### BUG-3 — Step generation fails permanently when a request asks to *report* a value
+**Priority:** High · **Component:** Requests → step generation (`build_steps_task`) · **Epic:** QG-138 · **Status:** ✅ Filed as [QG-161](https://gendvn.atlassian.net/browse/QG-161)
+
+Found 18 Aug on `qops-harness.lab.gend.vn` (request `#732e3daa`). Full ticket text:
+[`BUG-3_Step_Generation_Report_Value.md`](./BUG-3_Step_Generation_Report_Value.md).
+
+A request ending in *"Report the Weight number of Total Fad"* fails `build_steps_task` guardrail validation on
+all 6 retries (`Invalid steps JSON: Extra data: line 5 column 1 (char 105)`) and produces a `BUILD_FAILED` case
+with zero steps. Deleting **only** that final line makes the identical prompt build 4 correct steps — the step
+schema `{title, navigate, checks[]}` has no field for returning a value.
+
+*Impact:* any "validate X, then report Y" request is unbuildable, and the failure reads as success — the
+request ends `awaiting_review`, not `failed`, with **Confirm and process** enabled on an empty case.
+
 ---
 
 ## 3. Small fixes noticed, not yet raised

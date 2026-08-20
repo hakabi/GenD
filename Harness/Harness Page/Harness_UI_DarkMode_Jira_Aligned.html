@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness UI — Dark mode, Jira-aligned</title>
+<style>
+  :root { --pg:#fff; --tx:#172b4d; --tx2:#6b778c; --ln:#dfe1e6; --cd:#fafbfc; --ac:#0052cc; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#1d2125; --tx:#b6c2cf; --tx2:#9fadbc; --ln:#38414a; --cd:#22272b; --ac:#579dff; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",system-ui,sans-serif;
+         font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1120px; margin:0 auto; padding:34px 26px 70px; }
+  h1 { font-size:29px; font-weight:600; letter-spacing:-.02em; margin:0 0 6px; }
+  h2 { font-size:20px; font-weight:600; margin:38px 0 5px; padding-bottom:7px; border-bottom:2px solid var(--ln); }
+  h3 { font-size:14.5px; font-weight:600; margin:22px 0 6px; }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 16px; }
+  b, strong { color:var(--tx); }
+  .banner { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:4px;
+            padding:11px 15px; margin:0 0 22px; font-size:13px; color:var(--tx2); }
+  .banner b { color:var(--tx); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin:10px 0 4px; }
+  th, td { text-align:left; padding:7px 10px 7px 0; vertical-align:top; border-bottom:1px solid var(--ln); color:var(--tx2); }
+  th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; border-bottom:2px solid var(--ln); }
+  td b { color:var(--tx); }
+  .sw { display:inline-block; width:34px; height:20px; border-radius:3px; border:1px solid rgba(128,128,128,.35);
+        vertical-align:middle; margin-right:8px; }
+  .note { border:1px solid var(--ln); border-left:3px solid #ff991f; border-radius:4px; padding:10px 13px;
+          font-size:12.5px; color:var(--tx2); margin:12px 0; }
+  .note b { display:block; margin-bottom:2px; color:var(--tx); }
+  .tagline { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.09em;
+             text-transform:uppercase; padding:3px 9px; border-radius:4px; margin-bottom:9px; }
+  .shot { border:1px solid var(--ln); border-radius:6px; overflow:hidden; box-shadow:0 8px 26px rgba(0,0,0,.22); }
+  .pair { display:grid; grid-template-columns:1fr; gap:22px; }
+
+  /* ===================== shared UI frame ===================== */
+  .ui { display:flex; height:430px; font-size:11px; line-height:1.45; }
+  .ui *, .ui *::before, .ui *::after { box-sizing:border-box; }
+  .ui .m { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+  .ui .lz { display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+            padding:1px 5px; border-radius:3px; line-height:1.5; }
+
+  /* ===================== LIGHT ===================== */
+  .lt { background:#f4f5f7; color:#172b4d; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .lt .nav { width:184px; flex:none; background:#fff; border-right:1px solid #dfe1e6; padding:11px 8px; display:flex; flex-direction:column; }
+  .lt .brand { display:flex; align-items:center; gap:8px; padding:2px 8px 13px; }
+  .lt .mk { width:24px; height:24px; border-radius:3px; background:#0052cc; color:#fff; display:grid; place-items:center; font-weight:700; font-size:12px; }
+  .lt .bn { font-weight:600; font-size:13px; line-height:1.15; }
+  .lt .bs { font-size:9.5px; color:#6b778c; }
+  .lt .grp { font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c; padding:11px 8px 4px; }
+  .lt .nl { padding:6px 8px; border-radius:3px; color:#42526e; display:flex; align-items:center; gap:9px; }
+  .lt .nl.on { background:#deebff; color:#0052cc; font-weight:600; }
+  .lt .ct { margin-left:auto; font-size:9.5px; color:#6b778c; }
+  .lt .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .lt .top { background:#fff; border-bottom:1px solid #dfe1e6; padding:12px 16px 0; }
+  .lt h5 { margin:0; font-size:19px; font-weight:600; }
+  .lt .btn { margin-left:auto; background:#0052cc; color:#fff; border-radius:3px; padding:7px 13px; font-size:11px; font-weight:500; }
+  .lt .ctl { border:1px solid #dfe1e6; background:#fafbfc; border-radius:3px; padding:5px 10px; font-size:11px; color:#42526e; }
+  .lt .q { width:238px; flex:none; background:#fff; border-right:1px solid #dfe1e6; }
+  .lt .qh { padding:7px 13px; font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c; border-bottom:1px solid #dfe1e6; }
+  .lt .row { padding:9px 13px; border-bottom:1px solid #f4f5f7; }
+  .lt .row.sel { background:#deebff; box-shadow:inset 3px 0 0 #0052cc; }
+  .lt .key { font-size:10.5px; font-weight:600; color:#0052cc; }
+  .lt .det { flex:1; min-width:0; padding:13px 16px; }
+  .lt .tabs { display:flex; gap:19px; border-bottom:2px solid #dfe1e6; margin-top:11px; }
+  .lt .tab { padding:6px 0; color:#6b778c; font-size:11.5px; }
+  .lt .tab.on { color:#0052cc; box-shadow:inset 0 -2px 0 #0052cc; font-weight:600; }
+  .lt .panel { background:#fff; border:1px solid #dfe1e6; border-radius:3px; padding:12px 14px; margin-top:11px; }
+  .lt .k { font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c; }
+
+  /* ===================== DARK ===================== */
+  .dk { background:#161a1d; color:#b6c2cf; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .dk .nav { width:184px; flex:none; background:#1d2125; border-right:1px solid #38414a; padding:11px 8px; display:flex; flex-direction:column; }
+  .dk .brand { display:flex; align-items:center; gap:8px; padding:2px 8px 13px; }
+  .dk .mk { width:24px; height:24px; border-radius:3px; background:#0c66e4; color:#fff; display:grid; place-items:center; font-weight:700; font-size:12px; }
+  .dk .bn { font-weight:600; font-size:13px; line-height:1.15; color:#dee4ea; }
+  .dk .bs { font-size:9.5px; color:#8c9bab; }
+  .dk .grp { font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#8c9bab; padding:11px 8px 4px; }
+  .dk .nl { padding:6px 8px; border-radius:3px; color:#9fadbc; display:flex; align-items:center; gap:9px; }
+  .dk .nl.on { background:#1c2b41; color:#579dff; font-weight:600; }
+  .dk .ct { margin-left:auto; font-size:9.5px; color:#8c9bab; }
+  .dk .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .dk .top { background:#1d2125; border-bottom:1px solid #38414a; padding:12px 16px 0; }
+  .dk h5 { margin:0; font-size:19px; font-weight:600; color:#dee4ea; }
+  .dk .btn { margin-left:auto; background:#0c66e4; color:#fff; border-radius:3px; padding:7px 13px; font-size:11px; font-weight:500; }
+  .dk .ctl { border:1px solid #454f59; background:#22272b; border-radius:3px; padding:5px 10px; font-size:11px; color:#9fadbc; }
+  .dk .q { width:238px; flex:none; background:#1d2125; border-right:1px solid #38414a; }
+  .dk .qh { padding:7px 13px; font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#8c9bab; border-bottom:1px solid #38414a; }
+  .dk .row { padding:9px 13px; border-bottom:1px solid #22272b; }
+  .dk .row.sel { background:#1c2b41; box-shadow:inset 3px 0 0 #579dff; }
+  .dk .key { font-size:10.5px; font-weight:600; color:#579dff; }
+  .dk .det { flex:1; min-width:0; padding:13px 16px; }
+  .dk .tabs { display:flex; gap:19px; border-bottom:2px solid #38414a; margin-top:11px; }
+  .dk .tab { padding:6px 0; color:#9fadbc; font-size:11.5px; }
+  .dk .tab.on { color:#579dff; box-shadow:inset 0 -2px 0 #579dff; font-weight:600; }
+  .dk .panel { background:#22272b; border:1px solid #38414a; border-radius:3px; padding:12px 14px; margin-top:11px; }
+  .dk .k { font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#8c9bab; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>Harness Requests page — Jira-aligned, light and dark.</b> Same screen, same request, same data, same component set. Only the token values change. Prepared by the BA, 14 August 2026, to accompany the style guide. <b>Harness already ships a dark theme</b> (<span class="mono">theme.js</span>, Day/Night/System) — this specifies what it becomes.</div>
+
+<h1>Dark mode, Jira-aligned</h1>
+<p class="lead">Dark mode is not the light theme inverted. Six things change deliberately, and each one is a rule the dev team can follow without judgement calls. The two screens below are the same markup driven by two token sets.</p>
+
+<div class="pair">
+
+<div>
+<span class="tagline" style="background:#deebff; color:#0052cc">Light — for reference</span>
+<div class="shot">
+<div class="ui lt">
+  <div class="nav">
+    <div class="brand"><div class="mk">Q</div><div><div class="bn">QOps Harness</div><div class="bs">Test operations</div></div></div>
+    <div class="grp">Work</div>
+    <div class="nl on">Requests <span class="ct">6</span></div>
+    <div class="nl">Test cases <span class="ct">313</span></div>
+    <div class="nl">Test groups</div>
+    <div class="grp">Context</div>
+    <div class="nl">Knowledge</div>
+    <div class="nl">Dashboards</div>
+    <div style="flex:1"></div>
+    <div style="border-top:1px solid #dfe1e6; padding:9px 8px 2px">
+      <div style="font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#6b778c">Session</div>
+      <div class="m" style="font-size:10px; color:#0052cc; margin-top:2px">aloha-auth.json</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="top">
+      <div style="display:flex; align-items:center; gap:10px">
+        <h5>Requests</h5>
+        <span class="lz" style="background:#deebff; color:#0747a6">6 active</span>
+        <span class="btn">Create request</span>
+      </div>
+      <div style="display:flex; gap:7px; padding:11px 0 10px">
+        <span class="ctl">My requests ▾</span><span class="ctl">All statuses ▾</span>
+        <span class="ctl" style="flex:1; max-width:200px; color:#7a869a">Search requests…</span>
+      </div>
+    </div>
+    <div style="flex:1; display:flex; min-height:0">
+      <div class="q">
+        <div class="qh">Queue · newest first</div>
+        <div class="row sel">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1042</span><span class="lz" style="background:#ffebe6; color:#bf2600; margin-left:auto">Failed</span></div>
+          <div style="margin-top:3px; font-weight:600">Verify transaction type pill rendering</div>
+          <div style="margin-top:2px; font-size:10px; color:#6b778c">nguyenhoangly103 · 10:33 · 1 case</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1041</span><span class="lz" style="background:#deebff; color:#0747a6; margin-left:auto">In progress</span></div>
+          <div style="margin-top:3px; font-weight:600">Requests page smoke check</div>
+          <div style="margin-top:2px; font-size:10px; color:#6b778c">hakhoabinh · 2:24 elapsed</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1038</span><span class="lz" style="background:#e3fcef; color:#006644; margin-left:auto">Passed</span></div>
+          <div style="margin-top:3px; font-weight:600">Cash Forecast historical flows</div>
+          <div style="margin-top:2px; font-size:10px; color:#6b778c">nguyenhoangly103 · Yesterday · 6 cases</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1030</span><span class="lz" style="background:#dfe1e6; color:#42526e; margin-left:auto">Queued</span></div>
+          <div style="margin-top:3px; font-weight:600">Private fund detail loads</div>
+          <div style="margin-top:2px; font-size:10px; color:#6b778c">glzmaxdinh · Yesterday · 3 cases</div>
+        </div>
+      </div>
+      <div class="det">
+        <div style="font-size:10.5px; color:#6b778c">Requests / <span class="key">REQ-1042</span></div>
+        <div style="display:flex; align-items:center; gap:9px; margin-top:3px">
+          <div style="font-size:16px; font-weight:600">Verify Transaction Type Pill Rendering</div>
+          <span class="lz" style="background:#ffebe6; color:#bf2600">Failed</span>
+        </div>
+        <div class="tabs"><div class="tab on">Details</div><div class="tab">Execution</div><div class="tab">History</div></div>
+        <div class="panel">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:11px 22px">
+            <div><div class="k">Status</div><div style="margin-top:1px">Failed at step 4 of 4</div></div>
+            <div><div class="k">Request mode</div><div style="margin-top:1px">Single test case</div></div>
+            <div><div class="k">Duration</div><div class="m" style="margin-top:1px">2m 24s</div></div>
+            <div><div class="k">Created by</div><div style="margin-top:1px">nguyenhoangly103</div></div>
+          </div>
+        </div>
+        <div class="panel" style="border-left:3px solid #de350b">
+          <div style="font-weight:600; color:#bf2600">Step 4 failed — pill did not render</div>
+          <div style="margin-top:3px; color:#42526e">Expected <span class="m">"Dividend"</span>, found <span class="m">"—"</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<div>
+<span class="tagline" style="background:#1c2b41; color:#579dff">Dark — proposed</span>
+<div class="shot">
+<div class="ui dk">
+  <div class="nav">
+    <div class="brand"><div class="mk">Q</div><div><div class="bn">QOps Harness</div><div class="bs">Test operations</div></div></div>
+    <div class="grp">Work</div>
+    <div class="nl on">Requests <span class="ct">6</span></div>
+    <div class="nl">Test cases <span class="ct">313</span></div>
+    <div class="nl">Test groups</div>
+    <div class="grp">Context</div>
+    <div class="nl">Knowledge</div>
+    <div class="nl">Dashboards</div>
+    <div style="flex:1"></div>
+    <div style="border-top:1px solid #38414a; padding:9px 8px 2px">
+      <div style="font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#8c9bab">Session</div>
+      <div class="m" style="font-size:10px; color:#579dff; margin-top:2px">aloha-auth.json</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="top">
+      <div style="display:flex; align-items:center; gap:10px">
+        <h5>Requests</h5>
+        <span class="lz" style="background:#1c2b41; color:#85b8ff">6 active</span>
+        <span class="btn">Create request</span>
+      </div>
+      <div style="display:flex; gap:7px; padding:11px 0 10px">
+        <span class="ctl">My requests ▾</span><span class="ctl">All statuses ▾</span>
+        <span class="ctl" style="flex:1; max-width:200px; color:#738496">Search requests…</span>
+      </div>
+    </div>
+    <div style="flex:1; display:flex; min-height:0">
+      <div class="q">
+        <div class="qh">Queue · newest first</div>
+        <div class="row sel">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1042</span><span class="lz" style="background:#42221f; color:#fd9891; margin-left:auto">Failed</span></div>
+          <div style="margin-top:3px; font-weight:600; color:#dee4ea">Verify transaction type pill rendering</div>
+          <div style="margin-top:2px; font-size:10px; color:#8c9bab">nguyenhoangly103 · 10:33 · 1 case</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1041</span><span class="lz" style="background:#1c2b41; color:#85b8ff; margin-left:auto">In progress</span></div>
+          <div style="margin-top:3px; font-weight:600; color:#dee4ea">Requests page smoke check</div>
+          <div style="margin-top:2px; font-size:10px; color:#8c9bab">hakhoabinh · 2:24 elapsed</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1038</span><span class="lz" style="background:#1c3329; color:#7ee2b8; margin-left:auto">Passed</span></div>
+          <div style="margin-top:3px; font-weight:600; color:#dee4ea">Cash Forecast historical flows</div>
+          <div style="margin-top:2px; font-size:10px; color:#8c9bab">nguyenhoangly103 · Yesterday · 6 cases</div>
+        </div>
+        <div class="row">
+          <div style="display:flex; align-items:center"><span class="key">REQ-1030</span><span class="lz" style="background:#2c333a; color:#9fadbc; margin-left:auto">Queued</span></div>
+          <div style="margin-top:3px; font-weight:600; color:#dee4ea">Private fund detail loads</div>
+          <div style="margin-top:2px; font-size:10px; color:#8c9bab">glzmaxdinh · Yesterday · 3 cases</div>
+        </div>
+      </div>
+      <div class="det">
+        <div style="font-size:10.5px; color:#8c9bab">Requests / <span class="key">REQ-1042</span></div>
+        <div style="display:flex; align-items:center; gap:9px; margin-top:3px">
+          <div style="font-size:16px; font-weight:600; color:#dee4ea">Verify Transaction Type Pill Rendering</div>
+          <span class="lz" style="background:#42221f; color:#fd9891">Failed</span>
+        </div>
+        <div class="tabs"><div class="tab on">Details</div><div class="tab">Execution</div><div class="tab">History</div></div>
+        <div class="panel">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:11px 22px">
+            <div><div class="k">Status</div><div style="margin-top:1px">Failed at step 4 of 4</div></div>
+            <div><div class="k">Request mode</div><div style="margin-top:1px">Single test case</div></div>
+            <div><div class="k">Duration</div><div class="m" style="margin-top:1px">2m 24s</div></div>
+            <div><div class="k">Created by</div><div style="margin-top:1px">nguyenhoangly103</div></div>
+          </div>
+        </div>
+        <div class="panel" style="border-left:3px solid #ae2e24; background:#2a2223">
+          <div style="font-weight:600; color:#fd9891">Step 4 failed — pill did not render</div>
+          <div style="margin-top:3px; color:#9fadbc">Expected <span class="m">"Dividend"</span>, found <span class="m">"—"</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+</div>
+
+<h2>The six rules that make it work</h2>
+<p class="lead">Each of these is a decision the dev team would otherwise have to make per screen. Written down, they become mechanical.</p>
+
+<table>
+<thead><tr><th style="width:26%">Rule</th><th style="width:36%">What it means</th><th>Why — and what breaks without it</th></tr></thead>
+<tbody>
+<tr><td><b>1 · Never invert</b></td><td>Dark mode is its own token set, not <span class="mono">filter: invert()</span> or swapped values</td><td>Inversion turns brand blue into orange and makes the failure red unreadable. Every value below was chosen, not derived</td></tr>
+<tr><td><b>2 · Elevation is lighter, not shadowed</b></td><td>Base <span class="mono">#161A1D</span> → sidebar/header <span class="mono">#1D2125</span> → panels <span class="mono">#22272B</span> → overlays <span class="mono">#282E33</span></td><td>Shadows are invisible on a dark ground. Depth has to come from surfaces getting <em>lighter</em> as they come forward — the opposite instinct to light mode</td></tr>
+<tr><td><b>3 · Brand blue lightens for text</b></td><td>Links and keys move <span class="mono">#0052CC → #579DFF</span>. The button <em>fill</em> stays a strong <span class="mono">#0C66E4</span></td><td><span class="mono">#0052CC</span> text on <span class="mono">#1D2125</span> is around 2:1 — it fails outright. But a filled button needs a saturated blue to hold white text</td></tr>
+<tr><td><b>4 · Status colours flip their structure</b></td><td>Light = pale background + dark text. Dark = <em>dark</em> background + <em>pale</em> text</td><td>Keeping the light backgrounds would put six glowing pastel blocks on a dark page. The meaning stays; the construction reverses</td></tr>
+<tr><td><b>5 · No pure black, no pure white</b></td><td>Darkest surface is <span class="mono">#161A1D</span>, brightest text <span class="mono">#DEE4EA</span></td><td>Pure white on pure black smears on OLED and causes eye strain over a long session — and QA sit in this tool all day</td></tr>
+<tr><td><b>6 · Re-test contrast independently</b></td><td>Dark mode gets its own accessibility pass. A passing light pair proves nothing about its dark counterpart</td><td>This is the most commonly skipped step, and it is why most dark modes have unreadable secondary text</td></tr>
+</tbody>
+</table>
+
+<h2>Dark token set</h2>
+
+<h3>Surfaces — the elevation ladder</h3>
+<table>
+<thead><tr><th style="width:120px">Swatch</th><th style="width:200px">Token</th><th style="width:110px">Value</th><th>Use for</th></tr></thead>
+<tbody>
+<tr><td><span class="sw" style="background:#161A1D"></span></td><td><b>--surface-sunken</b></td><td class="mono">#161A1D</td><td>App background, furthest back</td></tr>
+<tr><td><span class="sw" style="background:#1D2125"></span></td><td><b>--surface</b></td><td class="mono">#1D2125</td><td>Sidebar, page header, list background</td></tr>
+<tr><td><span class="sw" style="background:#22272B"></span></td><td><b>--surface-raised</b></td><td class="mono">#22272B</td><td>Panels, cards, inputs</td></tr>
+<tr><td><span class="sw" style="background:#282E33"></span></td><td><b>--surface-overlay</b></td><td class="mono">#282E33</td><td>Dropdowns, dialogs, popovers</td></tr>
+<tr><td><span class="sw" style="background:#2C333A"></span></td><td><b>--surface-hover</b></td><td class="mono">#2C333A</td><td>Row and nav hover</td></tr>
+</tbody>
+</table>
+
+<h3>Text and border</h3>
+<table>
+<thead><tr><th style="width:120px">Swatch</th><th style="width:200px">Token</th><th style="width:110px">Value</th><th>Use for</th></tr></thead>
+<tbody>
+<tr><td><span class="sw" style="background:#DEE4EA"></span></td><td><b>--text-bold</b></td><td class="mono">#DEE4EA</td><td>Headings and row titles — the brightest thing on screen</td></tr>
+<tr><td><span class="sw" style="background:#B6C2CF"></span></td><td><b>--text</b></td><td class="mono">#B6C2CF</td><td>Body text</td></tr>
+<tr><td><span class="sw" style="background:#9FADBC"></span></td><td><b>--text-subtle</b></td><td class="mono">#9FADBC</td><td>Secondary text</td></tr>
+<tr><td><span class="sw" style="background:#8C9BAB"></span></td><td><b>--text-muted</b></td><td class="mono">#8C9BAB</td><td>Metadata, timestamps, field labels</td></tr>
+<tr><td><span class="sw" style="background:#738496"></span></td><td><b>--text-disabled</b></td><td class="mono">#738496</td><td>Disabled only</td></tr>
+<tr><td><span class="sw" style="background:#38414A"></span></td><td><b>--border</b></td><td class="mono">#38414A</td><td>Dividers and panel borders</td></tr>
+<tr><td><span class="sw" style="background:#454F59"></span></td><td><b>--border-input</b></td><td class="mono">#454F59</td><td>Input and select borders — deliberately brighter, so fields stay findable</td></tr>
+</tbody>
+</table>
+
+<h3>Brand</h3>
+<table>
+<thead><tr><th style="width:120px">Swatch</th><th style="width:200px">Token</th><th style="width:110px">Value</th><th>Light equivalent</th></tr></thead>
+<tbody>
+<tr><td><span class="sw" style="background:#579DFF"></span></td><td><b>--brand-text</b></td><td class="mono">#579DFF</td><td class="mono">#0052CC</td></tr>
+<tr><td><span class="sw" style="background:#0C66E4"></span></td><td><b>--brand-bold</b> (button fill)</td><td class="mono">#0C66E4</td><td class="mono">#0052CC</td></tr>
+<tr><td><span class="sw" style="background:#1C2B41"></span></td><td><b>--brand-subtle</b> (selected row)</td><td class="mono">#1C2B41</td><td class="mono">#DEEBFF</td></tr>
+</tbody>
+</table>
+
+<h3>Status — dark lozenges</h3>
+<table>
+<thead><tr><th style="width:150px">State</th><th style="width:130px">Lozenge</th><th style="width:190px">Background / text</th><th>Light equivalent</th></tr></thead>
+<tbody>
+<tr><td><b>Queued</b></td><td><span class="lz" style="background:#2c333a; color:#9fadbc; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:2px 5px; border-radius:3px">Queued</span></td><td class="mono">#2C333A / #9FADBC</td><td class="mono">#DFE1E6 / #42526E</td></tr>
+<tr><td><b>Running</b></td><td><span class="lz" style="background:#1c2b41; color:#85b8ff; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:2px 5px; border-radius:3px">In progress</span></td><td class="mono">#1C2B41 / #85B8FF</td><td class="mono">#DEEBFF / #0747A6</td></tr>
+<tr><td><b>Awaiting review</b></td><td><span class="lz" style="background:#332e1b; color:#f5cd47; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:2px 5px; border-radius:3px">Awaiting review</span></td><td class="mono">#332E1B / #F5CD47</td><td class="mono">#FFFAE6 / #974F0C</td></tr>
+<tr><td><b>Passed</b></td><td><span class="lz" style="background:#1c3329; color:#7ee2b8; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:2px 5px; border-radius:3px">Passed</span></td><td class="mono">#1C3329 / #7EE2B8</td><td class="mono">#E3FCEF / #006644</td></tr>
+<tr><td><b>Failed</b></td><td><span class="lz" style="background:#42221f; color:#fd9891; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:2px 5px; border-radius:3px">Failed</span></td><td class="mono">#42221F / #FD9891</td><td class="mono">#FFEBE6 / #BF2600</td></tr>
+<tr><td><b>Duplicate / AI</b></td><td><span class="lz" style="background:#2b273f; color:#b8acf6; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:2px 5px; border-radius:3px">Duplicate</span></td><td class="mono">#2B273F / #B8ACF6</td><td class="mono">#EAE6FF / #403294</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<b>Everything else is shared</b>
+Typography, spacing, the 3px radius, the component set and the accessibility rules are identical across both themes. <b>Only colour tokens change.</b> That is the whole point of building the two together — one component set, two value sets, no forked code.
+</div>
+
+<h2>What this means for the existing dark theme</h2>
+<p class="lead">Harness already has a dark theme in <span class="mono">tokens.css</span> under <span class="mono">[data-theme="dark"]</span>, and <span class="mono">theme.js</span> already handles Day / Night / System. <b>The switching machinery is done — only the values change.</b></p>
+
+<table>
+<thead><tr><th style="width:190px">Current dark token</th><th style="width:130px">Current value</th><th style="width:130px">Becomes</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td class="mono">--bg</td><td class="mono">#141414</td><td class="mono">#161A1D</td><td>Neutral grey → the slightly blue-cast grey Atlassian uses; it sits better under blue accents</td></tr>
+<tr><td class="mono">--surface</td><td class="mono">#1c1c1c</td><td class="mono">#22272B</td><td>Now part of a defined four-step elevation ladder rather than a single value</td></tr>
+<tr><td class="mono">--fg</td><td class="mono">#ececec</td><td class="mono">#B6C2CF</td><td>Current value is close to pure white — too bright for all-day use</td></tr>
+<tr><td class="mono">--muted</td><td class="mono">#9b9b9b</td><td class="mono">#9FADBC</td><td>Roughly equivalent; gains the blue cast for consistency</td></tr>
+<tr><td class="mono">--border</td><td class="mono">#2e2e2e</td><td class="mono">#38414A</td><td>Current borders are nearly invisible against <span class="mono">#1c1c1c</span></td></tr>
+<tr><td class="mono">--accent</td><td class="mono">#10a37f</td><td class="mono">#579DFF</td><td>Same change as light mode — frees green to mean "passed"</td></tr>
+<tr><td class="mono">--danger</td><td class="mono">#f2555a</td><td class="mono">#FD9891</td><td>Current red is saturated enough to vibrate against dark grey</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<b>The scheduling consequence — worth raising with the PO</b>
+Because the theme switcher already exists, dark mode is <b>not a separate project</b>. It is a second column in the same token file, written at the same time as the light one. Doing them together costs very little more than doing light alone. Doing dark <em>later</em> roughly doubles the work, because every component has to be revisited and re-tested. This should be stated in phase 1 of the rollout plan, not discovered in phase 4.
+</div>
+
+<div class="note" style="border-left-color:#0052cc">
+<b>Verify before implementing</b>
+These are Atlassian's dark-theme values as recorded by the BA, and should be checked against <span class="mono">atlassian.design</span> before they go into code. The <em>rules</em> above hold regardless of whether individual hex codes have moved — and every pair still needs its own contrast check, per rule 6.
+</div>
+
+<p class="lead" style="margin-top:26px; font-size:12.5px">Prepared by the BA to accompany <b>Harness_UI_Style_Guide_Jira_Aligned.html</b> / <b>.md</b>. Static mockup, not working software.</p>
+
+</div>
+</body>
+</html>

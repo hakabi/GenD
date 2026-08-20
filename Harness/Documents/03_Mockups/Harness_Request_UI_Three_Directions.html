@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness — Request page, three directions</title>
+<style>
+  :root { --pg:#fff; --tx:#111827; --tx2:#5b6472; --ln:rgba(17,24,39,.14); --cd:#fbfbfc; --ac:#5a3ff0; }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg:#15171b; --tx:#e8eaed; --tx2:#9aa3af; --ln:rgba(232,234,237,.16); --cd:#1b1e23; --ac:#a595f7; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--pg); color:var(--tx);
+         font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",system-ui,sans-serif;
+         font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1220px; margin:0 auto; padding:32px 22px 70px; }
+  h1 { font-size:28px; font-weight:650; letter-spacing:-.024em; margin:0 0 6px; }
+  h2 { font-size:20px; font-weight:640; letter-spacing:-.018em; margin:0 0 4px; }
+  h3 { font-size:15px; font-weight:640; margin:0 0 3px; }
+  p, li { font-size:13.5px; color:var(--tx2); }
+  p.lead { font-size:14px; margin:0 0 14px; }
+  b, strong { color:var(--tx); }
+  .banner { border:1px solid var(--ln); border-left:3px solid var(--ac); border-radius:10px;
+            padding:11px 15px; margin:0 0 20px; font-size:13px; color:var(--tx2); }
+  .banner b { color:var(--tx); }
+  .mono { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-size:.88em; }
+  .block { border:1px solid var(--ln); border-radius:15px; padding:20px 22px 22px; background:var(--cd);
+           position:relative; margin-top:34px; }
+  .tag { position:absolute; top:-12px; left:20px; background:var(--ac); color:#fff; font-weight:700;
+         font-size:12px; padding:3px 13px; border-radius:99px; box-shadow:0 2px 8px rgba(0,0,0,.18); }
+  .shot { border:1px solid var(--ln); border-radius:11px; overflow:hidden; box-shadow:0 8px 26px rgba(0,0,0,.13); margin-top:12px; }
+  .meta { display:flex; gap:20px; flex-wrap:wrap; font-size:12.5px; margin-top:14px; }
+  .meta div { flex:1; min-width:190px; }
+  .meta b { display:block; font-size:10px; letter-spacing:.09em; text-transform:uppercase; opacity:.55; margin-bottom:3px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:12px; }
+  th,td { text-align:left; padding:8px 11px 8px 0; vertical-align:top; border-bottom:1px solid var(--ln); color:var(--tx2); }
+  th { font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; border-bottom:2px solid var(--ln); }
+  td b { color:var(--tx); }
+  .flag { border:1px solid var(--ln); border-left:3px solid #c2352f; border-radius:10px; padding:12px 15px;
+          margin-top:16px; font-size:12.5px; color:var(--tx2); }
+  .flag b.h { display:block; color:var(--tx); margin-bottom:3px; }
+
+  /* ===== shared frame — direction B visual language ===== */
+  .ui { display:flex; height:494px; font-size:11px; line-height:1.45;
+        background:#f6f7f9; color:#1c2333; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .ui *, .ui *::before, .ui *::after { box-sizing:border-box; }
+  .ui .m { font-family:"Fira Code",ui-monospace,Consolas,monospace; font-variant-numeric:tabular-nums; }
+  .lz { display:inline-block; font-size:8.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+        padding:1px 6px; border-radius:3px; }
+  .btn { border-radius:4px; padding:5px 11px; font-size:10.5px; font-weight:500; display:inline-block; white-space:nowrap; }
+  .bp { background:#5a3ff0; color:#fff; }
+  .bs { background:#fff; border:1px solid #e3e6ec; color:#414b5e; }
+  .nav { width:166px; flex:none; background:#fff; border-right:1px solid #e3e6ec; padding:10px 7px; display:flex; flex-direction:column; }
+  .brand { font-weight:650; font-size:12.5px; padding:2px 8px 10px; }
+  .grp { font-size:9px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:#7b8496; padding:9px 8px 3px; }
+  .nl { padding:5px 8px; border-radius:4px; color:#414b5e; display:flex; align-items:center; gap:7px; }
+  .nl.on { background:#eceafe; color:#5a3ff0; font-weight:600; }
+  .nl .c { margin-left:auto; font-size:9.5px; color:#7b8496; }
+  .nl .w { margin-left:auto; background:#fff3e0; color:#8a5300; font-size:9px; font-weight:700; padding:0 5px; border-radius:99px; }
+  .nl.sub { padding-left:20px; font-size:10.5px; }
+  .main { flex:1; display:flex; flex-direction:column; min-width:0; position:relative; }
+  .top { background:#fff; border-bottom:1px solid #e3e6ec; padding:10px 14px; display:flex; align-items:center; gap:9px; }
+  .bar { background:#fff; border-bottom:1px solid #e3e6ec; padding:6px 14px; display:flex; gap:6px; align-items:center; }
+  .chip { border:1px solid #e3e6ec; background:#fbfcfd; border-radius:4px; padding:3px 8px; font-size:10px; color:#414b5e; }
+  .k { font-size:10px; font-weight:600; color:#5a3ff0; }
+  .panel { position:absolute; right:0; top:0; bottom:0; width:400px; background:#fff; border-left:1px solid #d7dbe3;
+           box-shadow:-8px 0 22px rgba(20,28,45,.10); padding:12px 15px; overflow:hidden; }
+  .card { background:#fff; border:1px solid #e3e6ec; border-radius:5px; padding:10px 12px; margin-top:10px; }
+
+  /* R1 receipt table */
+  .r1h { display:grid; grid-template-columns:66px 1fr 152px 84px 62px; gap:10px; padding:6px 14px;
+         font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496; border-bottom:1px solid #e3e6ec; }
+  .r1 { display:grid; grid-template-columns:66px 1fr 152px 84px 62px; gap:10px; padding:9px 14px;
+        align-items:center; border-bottom:1px solid #f2f4f7; }
+  .r1.sel { background:#f5f3ff; }
+  .out { font-weight:650; }
+
+  /* R2 stage bar */
+  .stg { display:flex; align-items:center; gap:3px; }
+  .sd { width:13px; height:5px; border-radius:2px; background:#dfe3ea; }
+  .sd.ok { background:#2fa06a; }
+  .sd.bad { background:#d3453b; }
+  .sd.now { background:#5a3ff0; }
+  .r2h { display:grid; grid-template-columns:66px 1fr 96px 118px 58px; gap:10px; padding:6px 14px;
+         font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496; border-bottom:1px solid #e3e6ec; }
+  .r2 { display:grid; grid-template-columns:66px 1fr 96px 118px 58px; gap:10px; padding:9px 14px;
+        align-items:center; border-bottom:1px solid #f2f4f7; }
+  .r2.sel { background:#f5f3ff; }
+  .bigstage { display:flex; align-items:center; margin-top:9px; }
+  .bs2 { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; position:relative; }
+  .bs2::before { content:''; position:absolute; top:8px; right:50%; width:100%; height:2px; background:#dfe3ea; }
+  .bs2:first-child::before { display:none; }
+  .bs2.done::before { background:#2fa06a; }
+  .bs2 .b { width:17px; height:17px; border-radius:50%; background:#dfe3ea; z-index:1; display:grid; place-items:center; color:#fff; font-size:9px; font-weight:700; }
+  .bs2.done .b { background:#2fa06a; }
+  .bs2.bad .b { background:#d3453b; box-shadow:0 0 0 4px rgba(211,69,59,.16); }
+  .bs2 span { font-size:8.5px; color:#7b8496; text-align:center; }
+  .bs2.bad span { color:#a52a1f; font-weight:650; }
+
+  /* R3 catalog */
+  .r3h { display:grid; grid-template-columns:16px 74px 1fr 92px 74px 62px; gap:9px; padding:6px 14px;
+         font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496; border-bottom:1px solid #e3e6ec; }
+  .r3 { display:grid; grid-template-columns:16px 74px 1fr 92px 74px 62px; gap:9px; padding:7px 14px;
+        align-items:center; border-bottom:1px solid #f2f4f7; }
+  .r3.sel { background:#f5f3ff; }
+  .pop { position:absolute; right:12px; top:44px; width:290px; background:#fff; border:1px solid #d7dbe3;
+         border-radius:6px; box-shadow:0 10px 28px rgba(20,28,45,.16); padding:10px 12px; z-index:5; }
+  .pr { padding:7px 0; border-bottom:1px solid #f2f4f7; }
+  .pr:last-child { border-bottom:none; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="banner"><b>DRAFT — three directions for the Request page.</b> All three use the visual language of test-case direction <b>B</b> so the two pages read as one product, and all three assume <b>case review moves to a fourth Test Cases tab</b>. They differ in <b>what a request is treated as</b>: a delivery, a process, or a filter. Prepared by the Business Analyst, 18 August 2026. Not agreed, not scheduled.</div>
+
+<h1>Request page — three directions</h1>
+<p class="lead">The Requests page is the last screen still on the old build. While Test Cases was rebuilt into Failed / All cases / Executed history, Requests kept its 2024-era shape: stacked chrome bands, native dropdowns, hash identifiers and identically-truncated titles.</p>
+
+<div class="flag">
+<b class="h">What the live page does today — observed 18 August 2026</b>
+Request <span class="mono">#3ae938b9-e89</span> displays the status <b><span class="mono">AWAITING_REVIEW</span></b> and a waiting time of <b>3:38:19</b>. Opening Execution shows the truth: <b>Draft structured intents</b> and <b>Build test steps</b> both <b>FAILED</b>, and the raw cause is printed verbatim — <span class="mono">Database error: (code: 1) no such table: tenants</span>. Its one case, <i>Direct test</i>, is <span class="mono">PENDING</span> with no steps.
+<br><br>
+<b>The headline status is telling QA the opposite of the truth.</b> There is nothing to review, and nobody is coming. Every design below is judged first on whether it makes that impossible.
+</div>
+
+<div class="flag" style="border-left-color:#8a5300">
+<b class="h">One word, three meanings</b>
+The queue shows <span class="mono">failed</span> for a request whose <b>generation</b> failed, for one whose <b>execution</b> failed, and it shows <span class="mono">awaiting_review</span> for one that produced nothing at all. These need different people and different next actions. This is the same finding as the run-verdict vocabulary on the test-case side, and it is the single largest fix available on this page.
+</div>
+
+<!-- =========================================================== R1 -->
+<div class="block">
+<span class="tag">R1</span>
+<h2>Receipt — a request is a delivery</h2>
+<p class="lead">The queue leads with <b>what came out</b>, not what is happening inside. Every row answers one question: <i>did I get test cases, and do any need me?</i> Process detail still exists, but it is secondary and collapsed. Closest in shape to today's page, so the smallest change.</p>
+
+<div class="shot">
+<div class="ui">
+  <div class="nav">
+    <div class="brand">QOps Harness</div>
+    <div class="grp">Tests</div>
+    <div class="nl">Repository <span class="c">313</span></div>
+    <div class="nl sub">Proposed <span class="w">3</span></div>
+    <div class="nl sub">Failed <span class="c">87</span></div>
+    <div class="nl sub">Executed history</div>
+    <div class="grp">Input</div>
+    <div class="nl on">Requests <span class="c">5</span></div>
+    <div class="nl">Knowledge</div>
+    <div class="grp">Insight</div>
+    <div class="nl">Dashboards</div>
+    <div style="flex:1"></div>
+    <div style="border-top:1px solid #e3e6ec; padding:8px 8px 2px">
+      <div style="font-size:8.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496">Session</div>
+      <div class="m" style="font-size:9.5px; color:#5a3ff0; margin-top:2px">aloha-auth.json</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="top">
+      <div style="font-size:15px; font-weight:600">Requests</div>
+      <span style="font-size:10px; color:#7b8496">what each prompt produced</span>
+      <span style="margin-left:auto" class="btn bp">New request</span>
+    </div>
+    <div class="bar">
+      <span class="chip" style="background:#eceafe; border-color:#c9c0fb; color:#5a3ff0">Mine · 5</span>
+      <span class="chip">Outcome ⌄</span><span class="chip">Project: aloha ⌄</span>
+      <span style="margin-left:auto; font-size:10px; color:#7b8496">Updated 30s ago</span>
+    </div>
+
+    <div style="background:#fff; flex:1">
+      <div class="r1h"><span>Request</span><span>Prompt</span><span>Outcome</span><span>Needs you</span><span>Updated</span></div>
+
+      <div class="r1 sel">
+        <span class="k">REQ-1042</span>
+        <span>Risk dashboard — Total Risk table &amp; download report</span>
+        <span class="out" style="color:#136c46">15 cases created</span>
+        <span><span class="lz" style="background:#fff3e0; color:#8a5300">3 to review</span></span>
+        <span class="m" style="color:#7b8496">2h</span>
+      </div>
+
+      <div class="r1">
+        <span class="k">REQ-1041</span>
+        <span>Requests page smoke check</span>
+        <span class="out" style="color:#0747a6">Running · 2 of 5</span>
+        <span style="color:#7b8496">—</span>
+        <span class="m" style="color:#7b8496">4m</span>
+      </div>
+
+      <div class="r1">
+        <span class="k">REQ-1040</span>
+        <span>Risk tab › Output subtab — Total Risk weight</span>
+        <span class="out" style="color:#a52a1f">No cases produced</span>
+        <span><span class="lz" style="background:#fde9e7; color:#a52a1f">Fix &amp; retry</span></span>
+        <span class="m" style="color:#7b8496">3h</span>
+      </div>
+
+      <div class="r1">
+        <span class="k">REQ-1038</span>
+        <span>Cash Forecast — historical flows totals</span>
+        <span class="out" style="color:#136c46">6 cases created</span>
+        <span style="color:#7b8496">—</span>
+        <span class="m" style="color:#7b8496">1d</span>
+      </div>
+
+      <div class="r1">
+        <span class="k">REQ-1035</span>
+        <span>Public Fund navigation</span>
+        <span class="out" style="color:#136c46">4 cases created</span>
+        <span><span class="lz" style="background:#fde9e7; color:#a52a1f">1 failing</span></span>
+        <span class="m" style="color:#7b8496">2d</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex; align-items:center; gap:8px">
+        <span class="k">REQ-1042</span>
+        <span class="lz" style="background:#e2f7ec; color:#136c46">Delivered</span>
+      </div>
+      <div style="font-size:13px; font-weight:600; margin-top:3px">Risk dashboard — Total Risk table &amp; download report</div>
+      <div style="font-size:10px; color:#7b8496; margin-top:2px">nguyenhoangly103 · 2h ago · Test Feature mode</div>
+
+      <div class="card" style="border-color:#c9c0fb; background:#f9f8ff">
+        <div style="font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496">What it produced</div>
+        <div style="margin-top:6px; display:flex; align-items:baseline; gap:6px">
+          <span style="font-size:22px; font-weight:700; letter-spacing:-.02em">15</span>
+          <span style="font-size:11px">test cases in <b>risk / dashboard</b></span>
+        </div>
+        <div style="margin-top:7px; display:flex; gap:5px; flex-wrap:wrap">
+          <span class="lz" style="background:#e2f7ec; color:#136c46">12 accepted</span>
+          <span class="lz" style="background:#fff3e0; color:#8a5300">3 awaiting review</span>
+        </div>
+        <div style="margin-top:9px; display:flex; gap:6px">
+          <span class="btn bp">Review the 3 →</span>
+          <span class="btn bs">See all 15 in catalog</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496">Prompt</div>
+        <div class="m" style="margin-top:5px; font-size:10px; color:#414b5e; line-height:1.6">
+          Project: aloha<br>Go to workbench-app.lab.gend.vn<br>Click on Risk tab<br>Verify Total Risk table is displayed<br>Verify Download Report button is displayed
+        </div>
+      </div>
+
+      <div class="card" style="display:flex; align-items:center; gap:8px">
+        <span style="font-size:11px; color:#414b5e">Activity — 7 steps, all clean</span>
+        <span style="margin-left:auto" class="btn bs">Show</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>A request is…</b>A delivery. The row is a receipt for what arrived.</div>
+  <div><b>Fixes the live bug by</b>Replacing status with outcome. "No cases produced" cannot be confused with "awaiting review" — there is no state that claims a review is pending when nothing was made.</div>
+  <div><b>Best for</b>Everyday use. A QA lead can scan five rows and know exactly where to spend the next ten minutes.</div>
+  <div><b>Weakness</b>Diagnosing <i>why</i> generation failed still means opening the panel and expanding Activity. It optimises for the healthy path.</div>
+</div>
+</div>
+
+<!-- =========================================================== R2 -->
+<div class="block">
+<span class="tag">R2</span>
+<h2>Diagnostic — a request is a process that can break</h2>
+<p class="lead">Built for the situation actually on screen today: generation failing silently. Every row carries a five-segment stage bar, and the detail leads with <b>where it stopped and why, in plain language</b>, with the raw error tucked behind a disclosure. Retry is offered from the stage that broke, not from the beginning.</p>
+
+<div class="shot">
+<div class="ui">
+  <div class="nav">
+    <div class="brand">QOps Harness</div>
+    <div class="grp">Tests</div>
+    <div class="nl">Repository <span class="c">313</span></div>
+    <div class="nl sub">Proposed <span class="w">3</span></div>
+    <div class="nl sub">Failed <span class="c">87</span></div>
+    <div class="nl sub">Executed history</div>
+    <div class="grp">Input</div>
+    <div class="nl on">Requests <span class="w">2</span></div>
+    <div class="nl">Knowledge</div>
+    <div class="grp">Insight</div>
+    <div class="nl">Dashboards</div>
+  </div>
+
+  <div class="main">
+    <div class="top">
+      <div style="font-size:15px; font-weight:600">Requests</div>
+      <span class="lz" style="background:#fde9e7; color:#a52a1f">2 stuck</span>
+      <span style="margin-left:auto" class="btn bp">New request</span>
+    </div>
+    <div class="bar">
+      <span class="chip" style="background:#fde9e7; border-color:#f3c4bf; color:#a52a1f">Stuck · 2</span>
+      <span class="chip">Running · 1</span><span class="chip">Done · 2</span>
+      <span style="margin-left:auto; font-size:10px; color:#7b8496">Stage ⌄</span>
+    </div>
+
+    <div style="background:#fff; flex:1">
+      <div class="r2h"><span>Request</span><span>Prompt</span><span>Stage</span><span>State</span><span>Age</span></div>
+
+      <div class="r2 sel">
+        <span class="k">REQ-1040</span>
+        <span>Risk tab › Output subtab — Total Risk weight</span>
+        <span class="stg"><i class="sd ok"></i><i class="sd bad"></i><i class="sd"></i><i class="sd"></i><i class="sd"></i></span>
+        <span><span class="lz" style="background:#fde9e7; color:#a52a1f">Stuck · generating</span></span>
+        <span class="m" style="color:#a52a1f">3h 38m</span>
+      </div>
+      <div class="r2">
+        <span class="k">REQ-1039</span>
+        <span>Scenario test — fund switch</span>
+        <span class="stg"><i class="sd ok"></i><i class="sd bad"></i><i class="sd"></i><i class="sd"></i><i class="sd"></i></span>
+        <span><span class="lz" style="background:#fde9e7; color:#a52a1f">Stuck · generating</span></span>
+        <span class="m" style="color:#a52a1f">3h 41m</span>
+      </div>
+      <div class="r2">
+        <span class="k">REQ-1042</span>
+        <span>Risk dashboard — Total Risk table</span>
+        <span class="stg"><i class="sd ok"></i><i class="sd ok"></i><i class="sd ok"></i><i class="sd now"></i><i class="sd"></i></span>
+        <span><span class="lz" style="background:#fff3e0; color:#8a5300">Waiting on you</span></span>
+        <span class="m" style="color:#7b8496">2h</span>
+      </div>
+      <div class="r2">
+        <span class="k">REQ-1041</span>
+        <span>Requests page smoke check</span>
+        <span class="stg"><i class="sd ok"></i><i class="sd ok"></i><i class="sd ok"></i><i class="sd ok"></i><i class="sd now"></i></span>
+        <span><span class="lz" style="background:#deebff; color:#0747a6">Executing 2/5</span></span>
+        <span class="m" style="color:#7b8496">4m</span>
+      </div>
+      <div class="r2">
+        <span class="k">REQ-1038</span>
+        <span>Cash Forecast — historical flows</span>
+        <span class="stg"><i class="sd ok"></i><i class="sd ok"></i><i class="sd ok"></i><i class="sd ok"></i><i class="sd ok"></i></span>
+        <span><span class="lz" style="background:#e2f7ec; color:#136c46">Complete · 6 cases</span></span>
+        <span class="m" style="color:#7b8496">1d</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex; align-items:center; gap:8px">
+        <span class="k">REQ-1040</span>
+        <span class="lz" style="background:#fde9e7; color:#a52a1f">Stuck 3h 38m</span>
+      </div>
+      <div style="font-size:13px; font-weight:600; margin-top:3px">Risk tab › Output subtab — Total Risk weight</div>
+
+      <div class="bigstage">
+        <div class="bs2 done"><span class="b">✓</span><span>Queued</span></div>
+        <div class="bs2 bad"><span class="b">✕</span><span>Generating</span></div>
+        <div class="bs2"><span class="b"></span><span>Review</span></div>
+        <div class="bs2"><span class="b"></span><span>Execute</span></div>
+        <div class="bs2"><span class="b"></span><span>Done</span></div>
+      </div>
+
+      <div class="card" style="border-left:3px solid #d3453b">
+        <div style="font-weight:650; color:#a52a1f; font-size:11.5px">Stopped while generating test steps</div>
+        <div style="margin-top:5px; font-size:11px; color:#414b5e">
+          Harness could not build steps for this prompt. <b>No test cases were created</b>, and no review is pending — this request is not waiting on a person.
+        </div>
+        <div style="margin-top:7px; font-size:11px; color:#414b5e">
+          <b>Likely cause:</b> a platform fault, not a problem with the prompt. The generator lost its database connection partway through.
+        </div>
+        <div style="margin-top:8px; display:flex; gap:6px; align-items:center">
+          <span class="btn bp">Retry from generating</span>
+          <span class="btn bs">Edit prompt</span>
+          <span style="margin-left:auto; font-size:10px; color:#5a3ff0">Technical detail ⌄</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496">Also affected</div>
+        <div style="margin-top:5px; font-size:11px; color:#414b5e">
+          <b>REQ-1039</b> stopped at the same stage, 3 minutes earlier. Likely the same fault.
+        </div>
+        <div style="margin-top:7px"><span class="btn bs">Retry both</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>A request is…</b>A process with stages that can each succeed or fail.</div>
+  <div><b>Fixes the live bug by</b>Making "stuck" a first-class state distinct from "waiting on you", and stating in words that no review is pending. The stage bar shows failure at a glance, from the list.</div>
+  <div><b>Best for</b>Periods when generation is unreliable — which, on the evidence of today, is now. It also clusters related failures: two requests broke at the same stage minutes apart.</div>
+  <div><b>Weakness</b>Optimised for breakage. When everything works, the stage bars are five green dashes and the page carries less information than R1.</div>
+</div>
+</div>
+
+<!-- =========================================================== R3 -->
+<div class="block">
+<span class="tag">R3</span>
+<h2>Source — a request is a filter, not a page</h2>
+<p class="lead">The most literal reading of "requests are just prompts". There is <b>no Requests page</b>. Submitting is a drawer from anywhere; a request becomes a <b>column and a facet in the case catalog</b>, and progress lives in a submissions popover in the header. You never navigate to a request — you filter by one.</p>
+
+<div class="shot">
+<div class="ui">
+  <div class="nav">
+    <div class="brand">QOps Harness</div>
+    <div class="grp">Tests</div>
+    <div class="nl on">Repository <span class="c">313</span></div>
+    <div class="nl sub">Proposed <span class="w">3</span></div>
+    <div class="nl sub">Failed <span class="c">87</span></div>
+    <div class="nl sub">Executed history</div>
+    <div class="grp">Group by</div>
+    <div class="nl">Feature</div>
+    <div class="nl on" style="font-weight:600">Source request</div>
+    <div class="nl sub on" style="background:#e4e0fd">REQ-1042 <span class="c">15</span></div>
+    <div class="nl sub">REQ-1038 <span class="c">6</span></div>
+    <div class="nl sub">REQ-1035 <span class="c">4</span></div>
+    <div class="nl sub" style="color:#a52a1f">REQ-1040 <span class="c">0</span></div>
+  </div>
+
+  <div class="main">
+    <div class="top">
+      <div style="font-size:15px; font-weight:600">Test cases</div>
+      <span style="font-size:10px; color:#7b8496">source: <b style="color:#5a3ff0">REQ-1042</b> · 15 cases</span>
+      <span style="margin-left:auto" class="btn bs">⟳ Submissions · 2 need you</span>
+      <span class="btn bp">+ New prompt</span>
+    </div>
+
+    <div class="pop">
+      <div style="font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#7b8496; padding-bottom:5px; border-bottom:1px solid #e3e6ec">Recent submissions</div>
+      <div class="pr">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1042</span>
+          <span class="lz" style="background:#fff3e0; color:#8a5300; margin-left:auto">3 to review</span></div>
+        <div style="font-size:10px; color:#414b5e; margin-top:2px">15 cases created · risk / dashboard</div>
+      </div>
+      <div class="pr">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1041</span>
+          <span class="lz" style="background:#deebff; color:#0747a6; margin-left:auto">Executing 2/5</span></div>
+        <div style="font-size:10px; color:#414b5e; margin-top:2px">5 cases created · qops / requests</div>
+      </div>
+      <div class="pr">
+        <div style="display:flex; align-items:center; gap:6px"><span class="k">REQ-1040</span>
+          <span class="lz" style="background:#fde9e7; color:#a52a1f; margin-left:auto">Stuck</span></div>
+        <div style="font-size:10px; color:#414b5e; margin-top:2px"><b>No cases produced</b> — generation stopped</div>
+        <div style="margin-top:6px; display:flex; gap:5px"><span class="btn bp" style="padding:3px 9px; font-size:9.5px">Retry</span><span class="btn bs" style="padding:3px 9px; font-size:9.5px">Why?</span></div>
+      </div>
+    </div>
+
+    <div class="bar">
+      <span class="chip" style="background:#eceafe; border-color:#c9c0fb; color:#5a3ff0">Source: REQ-1042 ✕</span>
+      <span class="chip">Category ⌄</span><span class="chip">Status ⌄</span><span class="chip">Flaky ⌄</span>
+      <span style="margin-left:auto; font-size:10px; color:#7b8496">Save as view</span>
+    </div>
+
+    <div style="background:#fff; flex:1">
+      <div class="r3h"><span></span><span>Key</span><span>Case</span><span>Category</span><span>Source</span><span>Status</span></div>
+      <div class="r3 sel">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">NEW</span><span style="font-weight:600">Verify NAV and Beta are numeric</span>
+        <span style="color:#7b8496">boundary</span><span class="k">REQ-1042</span>
+        <span class="lz" style="background:#fff3e0; color:#8a5300">Extends</span>
+      </div>
+      <div class="r3">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">NEW</span><span style="font-weight:600">Verify Total Risk table is displayed</span>
+        <span style="color:#7b8496">positive</span><span class="k">REQ-1042</span>
+        <span class="lz" style="background:#efeafd; color:#5b3bb5">Duplicate</span>
+      </div>
+      <div class="r3">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">RISK-0088</span><span>Download Report button is enabled</span>
+        <span style="color:#7b8496">positive</span><span class="k">REQ-1042</span>
+        <span class="lz" style="background:#e2f7ec; color:#136c46">Passed</span>
+      </div>
+      <div class="r3">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">RISK-0089</span><span>Total Risk table renders 8 rows</span>
+        <span style="color:#7b8496">boundary</span><span class="k">REQ-1042</span>
+        <span class="lz" style="background:#e2f7ec; color:#136c46">Passed</span>
+      </div>
+      <div class="r3">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">RISK-0090</span><span>Risk tab rejects empty fund selection</span>
+        <span style="color:#7b8496">negative</span><span class="k">REQ-1042</span>
+        <span class="lz" style="background:#fde9e7; color:#a52a1f">Failed</span>
+      </div>
+      <div class="r3">
+        <span style="width:11px;height:11px;border:1px solid #c3c9d4;border-radius:2px"></span>
+        <span class="k">RISK-0091</span><span>Download Report produces a file</span>
+        <span style="color:#7b8496">positive</span><span class="k">REQ-1042</span>
+        <span class="lz" style="background:#eef0f4; color:#5c6579">Not run</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="meta">
+  <div><b>A request is…</b>Metadata on a case. A source, like an author.</div>
+  <div><b>Fixes the live bug by</b>Removing the place where a false status could be displayed. A request with no output appears in the popover as <b>"No cases produced"</b> and as a source with a count of <b>0</b> — the emptiness is the message.</div>
+  <div><b>Best for</b>The stated model. If requests really are only prompts, this is the design that behaves as though that were true, and it removes a whole page from the product.</div>
+  <div><b>Weakness</b>The boldest and least reversible. Provenance, retry and prompt history all have to find homes elsewhere, and a popover is a thin place to run a retry from. Loses the batch as a unit — you can no longer see one request's 15 cases as a family unless you filter for them.</div>
+</div>
+</div>
+
+<!-- =========================================================== COMPARE -->
+<h2 style="margin-top:40px">Comparison</h2>
+<table>
+<thead><tr><th style="width:20%"></th><th style="width:27%">R1 · Receipt</th><th style="width:27%">R2 · Diagnostic</th><th>R3 · Source</th></tr></thead>
+<tbody>
+<tr><td><b>A request is</b></td><td>A delivery</td><td>A process</td><td>A filter</td></tr>
+<tr><td><b>Row leads with</b></td><td>What it produced</td><td>Where it stopped</td><td>Nothing — rows are cases</td></tr>
+<tr><td><b>Answers "did I get cases?"</b></td><td><b>Immediately</b></td><td>Via the stage bar</td><td>By the source count</td></tr>
+<tr><td><b>Answers "why did it break?"</b></td><td>After expanding</td><td><b>Immediately, in plain words</b></td><td>Via the popover</td></tr>
+<tr><td><b>Keeps the batch as a unit</b></td><td>Yes</td><td>Yes</td><td>Only as a filter</td></tr>
+<tr><td><b>Pages removed</b></td><td>None</td><td>None</td><td><b>One</b></td></tr>
+<tr><td><b>Change from today</b></td><td>Moderate</td><td>Moderate</td><td>Large</td></tr>
+<tr><td><b>Needs backend work</b></td><td>Outcome field per request</td><td>Stage model + plain-language cause mapping</td><td>Source facet on cases</td></tr>
+<tr><td><b>Build cost</b></td><td>Low</td><td>Medium</td><td>Medium–high</td></tr>
+</tbody>
+</table>
+
+<h2 style="margin-top:34px">Recommendation</h2>
+<p class="lead"><b>R1 as the shape, with R2's failure card inside it.</b> They are not really rivals — R1 decides what a row says, R2 decides what the panel says when something breaks. Together they answer both questions a QA person has, and neither requires removing a page.</p>
+<p class="lead">Hold <b>R3</b>. It is the most faithful to "requests are just prompts", and it may well be right eventually — but it should not be decided while generation is unreliable. When two requests are stuck for three and a half hours, that is exactly when you want a dedicated place to see and fix them, not a popover.</p>
+
+<div class="flag" style="border-left-color:#5a3ff0">
+<b class="h">The change that matters most, whichever is chosen</b>
+Replace the single word <span class="mono">failed</span> with outcomes that name what actually happened: <b>no cases produced</b> · <b>cases created</b> · <b>awaiting review</b> · <b>execution failed</b> · <b>stuck</b>. And never show <span class="mono">awaiting_review</span> on a request that generated nothing. That one rule would have prevented the state observed on the live system today, and it costs nothing in layout.
+</div>
+
+<p class="lead" style="margin-top:22px; font-size:12.5px">Draft prepared by the Business Analyst, 18 August 2026. Mockup data is illustrative; the live observations are real. Companions: <b>Harness_TestCase_UI_Three_Directions.html</b> · <b>Harness_TestCase_Workbench_Plan.md</b>.</p>
+
+</div>
+</body>
+</html>

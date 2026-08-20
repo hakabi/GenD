@@ -2,7 +2,7 @@
 
 **Purpose:** carry the full working context of the Harness BA project into a new chat session.
 **Role:** you are the **BA**; work with the PO and QA on improving the Harness system.
-**Last updated:** 6 August 2026
+**Last updated:** 6 August 2026 · **amended 20 August 2026** — §2 mockup convention (light + dark), §5 theme system shipped
 
 > **Start here for context, then go to [`00_Active/README.md`](./00_Active/README.md) for what needs doing.**
 > This file explains the project; `00_Active/` is the working desk.
@@ -28,7 +28,9 @@
 - **Names:** always role titles (BA / PO / QA). No personal names or emails in tickets, docs, or mockups.
 - **Technical detail stays as-is:** keep internal step names visible (`crew_phase_a_build`, `render_nlonly_spec`, `crew_phase_b_migrate`, "Quest") — the team relies on them. Do **not** propose renaming them.
 - **Tickets:** clean, forward-only suggestions with acceptance criteria, under **Epic QG-138**. Jira: `gendvn.atlassian.net`, project **QG**.
-- **Mockups:** dark theme using the real `tokens.css` (green `#10a37f`, Söhne fonts). HTML, opened in a browser.
+- **Mockups: light *and* dark, always — never one alone.** Harness ships a real **Day / Night / System** switch (Settings → Appearance: *"Choose day, night, or match your operating system. Applies across all QOps Harness screens."*). A single-theme mockup cannot be evaluated against an app the user can flip. **Token source of truth: [`Harness Page/Harness_UI_Tokens_Shipped_2026-08-20.md`](../Harness%20Page/Harness_UI_Tokens_Shipped_2026-08-20.md)** — all 92 properties, both themes, read live from the running app on 20 Aug. The two 14 Aug `_Jira_Aligned` documents are the *proposal* and are now superseded for values (they remain useful for component specs and reasoning). `<html>` carries `data-appearance` (`day`/`night`/`system`) and `data-theme` (`light`/`dark`); because "System" follows the OS, honour `prefers-color-scheme` as well as an explicit choice. HTML, opened in a browser.
+  > ⚠️ **Superseded 20 Aug.** This bullet used to read *"dark theme using the real `tokens.css` (green `#10a37f`, Söhne fonts)"*. That described the pre-August app. Söhne is gone — the shipped stack is the OS system font. `QOps_Harness/css/tokens.css` is now a **migration reference only**, not the target.
+  > **Two rules that catch people out:** dark mode has **no shadows at all** (depth comes from a five-step surface ladder), and `--radius-pill` is **3px**, so nothing is drawn as a capsule.
 - **Work-item IDs are names, not numbers** — `VOCAB`, `VALIDATE`, `CLASSIFY`, `QUEUE`, `MODEL`, `BACKFILL`, `GROUPS`, `HEATMAP`, `FILTERS`. They were `T1`–`T9` until 4 Aug; renamed because numbers implied a sequence they never had **and collided with the unrelated `T1`–`T5` UX themes in `Harness_UXUI_Review.md`**. Do not reintroduce numbered IDs.
 - **Bilingual docs:** the **English file is always authoritative**; `_VN.md` files are reading copies for the team. Edit English first, then re-translate the changed section. ⚠️ Only the **English** taxonomy goes to the Knowledge base — the classifier reads it and every vocabulary value is an English identifier.
 - **Live access:** `qops-harness.lab.gend.vn` uses Google SSO and needs **the user's real Chrome** (`mcp__claude-in-chrome__*`). The in-app browser has no session.
@@ -103,6 +105,7 @@ Three spec streams landed 1–3 Aug. Several overlap our proposal — **read the
 | **040** | NATS event bus driving Execution steps | Context only |
 | **041** | **Test groups** — CRUD, membership, nesting, cron schedules, webhooks, manual runs, status/history | Membership is a **hand-ticked static list**, verified 4 Aug. `GROUPS` survives, rewritten as *add query membership to the groups that already exist* |
 | — | `feat(web-ui): add CaseFilterBar` | **`FILTERS` delivered.** Cases now filter on Search · Feature · Labels · Status · Reason |
+| — | **Light/dark theme system + app-wide restyle** *(measured live 20 Aug)* | **D2 and D3 have effectively shipped.** Settings → Appearance offers **Day / Night / System**; the app renders in the Atlassian palette, not the old dark green. Settings has grown to nine tabs (Appearance · Configuration · Events · Queue · Secrets · Sessions · Projects · Integrations · Maintenance). All 92 tokens captured in [`Harness Page/Harness_UI_Tokens_Shipped_2026-08-20.md`](../Harness%20Page/Harness_UI_Tokens_Shipped_2026-08-20.md). **Every mockup must ship both themes** — see §2. Measurement also surfaced **five findings**, two of them candidate QG-138 bugs: `--surface-hover` is identical to `--surface` in light mode (hover is invisible in Day), and the `ai` and `duplicate` status pills are byte-identical in both themes |
 
 🔴 **`fix(catalog): prefer managed app_project for Phase A taxonomy` (4 Aug)** — an existing taxonomy workstream. **Blocking.** See §7.
 
