@@ -1,8 +1,17 @@
 # GenD — Four-Agent BA Workbench
 
-**Design spec** · **Status:** approved in chat, pending written review
+**Design spec** · **Status:** built · **revised 21 August 2026**
 **Owner:** BA · **Date:** 20 August 2026
-**Scope:** Harness + Aloha · **Target:** Claude Code subagents in `D:\source\GenD\.claude\agents\`
+**Scope:** all GenD workstreams · **Target:** `.claude/agents/` + `.claude/context/`
+
+> ### Revision — 21 August 2026
+> The original design was **four Harness agents**. Discovering epics **KS-1102 / KS-1103 / KS-1104**
+> showed GenD runs **five workstreams, not two projects**. Four roles × five workstreams would be
+> twenty agents.
+>
+> **The architecture is now four *roles* plus one loadable *context pack* per workstream.** Roles are
+> stable; everything that varies — epic, reading list, design system, ID conventions, evidence tool —
+> lives in the pack. A new programme costs one file, not four agents.
 
 ---
 
@@ -14,10 +23,10 @@ every session:
 
 | # | Agent | Job |
 |---|---|---|
-| 1 | `harness-planner` | Turn a problem or goal into a written plan |
-| 2 | `harness-ba` | Write user stories, acceptance criteria and supporting BA documents |
-| 3 | `harness-designer` | Produce UI/UX mockups |
-| 4 | `harness-reviewer` | Check a deliverable against house rules and BA quality |
+| 1 | `gend-planner` | Turn a problem or goal into a written plan |
+| 2 | `gend-ba` | Draft **and refine** user stories, acceptance criteria and BA documents |
+| 3 | `gend-designer` | Produce mockups and current-vs-proposed comparisons |
+| 4 | `gend-reviewer` | Check a deliverable against house rules and BA quality |
 
 **Non-goal:** replacing BA judgement. Every agent produces a draft; the BA promotes it.
 
@@ -35,6 +44,9 @@ every session:
 | **A6** | Designer gets **real-Chrome browser access** | `qops-harness.lab.gend.vn` is behind Google SSO; the in-app browser has no session |
 | **A7** | Planner and BA get **three read-only Jira tools** | Duplicate detection against QG-138 and KS-1066 |
 | **A8** | Reviewer gets **no write tool and no external access** | A reviewer that can edit will silently "fix" instead of reporting |
+| **A9** | **Four roles, N context packs** — not per-project agents *(21 Aug)* | Five workstreams and growing; splitting by project scales to 20 agents, and duplicates shared craft rules into every copy |
+| **A10** | **No Jira write tools anywhere**, including packs D9 does not govern *(21 Aug)* | A subagent cannot pause for confirmation. At epic volume that means dozens of unreviewed edits |
+| **A11** | Agents **may read** real assignee identities; deliverables still use role titles *(21 Aug)* | BA decision. Ownership and routing need names; published artefacts do not |
 
 ---
 
@@ -49,13 +61,13 @@ Under manual relay the BA drives each hop:
 
 ```
 BA asks for a plan
-   |-> harness-planner   --writes-->  plans/<slug>_plan.md
+   |-> gend-planner   --writes-->  plans/<slug>_plan.md
 BA reads it, corrects it, then asks for tickets
-   |-> harness-ba        --reads plan, writes-->  tickets/<slug>_tickets.md
+   |-> gend-ba        --reads plan, writes-->  tickets/<slug>_tickets.md
 BA asks for a mockup
-   |-> harness-designer  --reads both, writes-->  mockups/<slug>_mockup.html
+   |-> gend-designer  --reads both, writes-->  mockups/<slug>_mockup.html
 BA asks for a review
-   |-> harness-reviewer  --reads all three, reports in chat-->  (no file)
+   |-> gend-reviewer  --reads all three, reports in chat-->  (no file)
 ```
 
 The 18 August UI/UX session is the argument for this. The planning work there was sound, but
@@ -98,210 +110,48 @@ and passes it to every later agent.
 
 ---
 
-## 4. Agent specifications
+## 4. Four roles, N context packs
 
-Shared by all four: role titles only (BA / PO / QA), never personal names or emails; English
-is authoritative, Vietnamese files are reading copies.
+The agent files hold the role. The pack holds the workstream. **The prompts are not restated here** —
+they live in `.claude/agents/` and would drift if duplicated.
 
-### 4.1 `harness-planner`
+### 4.1 The roles
 
-**Purpose.** Turn a problem, goal or piece of feedback into a written plan: what the real
-problem is, what already exists, options with trade-offs, a recommendation, a build order,
-and any decision that must go to a person.
-
-**Model:** opus · **Writes:** `06_Agent_Drafts/plans/`
-
-**Tools:** `Read`, `Grep`, `Glob`, `Write`,
-`mcp__atlassian-rovo__searchJiraIssuesUsingJql`, `mcp__atlassian-rovo__getJiraIssue`,
-`mcp__atlassian-rovo__getAccessibleAtlassianResources`
-
-No `Bash`. `Read`/`Grep`/`Glob` cover everything the planner needs to read, and withholding
-`Bash` is what makes the "agents write only to `06_Agent_Drafts/`" guarantee in §5 real rather
-than advisory — a shell can write anywhere.
-
-**Reading list.**
-
-| File | For |
-|---|---|
-| `Harness/Documents/Harness_Session_Handoff.md` | §1 project context, §2 conventions, §8 QG ticket index |
-| `Harness/Documents/00_Active/Harness_Case_Classification_Plan.md` | §6 status, **§8 divergence register**, §9 open decisions |
-| `Harness/Documents/00_Active/Harness_Release_Log.md` | §2 watch list, §3 deploys |
-| `Harness/Documents/00_Active/Open_Items.md` | What is already blocked on a person |
-| `Harness/Documents/05_Session_Notes/Harness_UIUX_Session_Handoff_2026-08-18.md` | Decisions D1–D9, live-system findings |
-| `Harness/Documents/01_Plans_and_Strategy/Harness_Test_and_UX_Plan.md` | The wider improvement loop |
-| `Aloha Server/Test Guide/Findings Register.md` | Cross-cycle Aloha findings (Aloha work only) |
-
-**Hard rules.**
-
-1. **Never call something new without checking whether it already shipped.** Read the
-   divergence register (§8) and the release log first. State explicitly in the plan what
-   already exists and what is genuinely missing.
-2. Distinguish *no screen* from *screen exists but has no data*. The 18 Aug finding was that
-   most gaps were the second kind and needed no design work at all.
-3. Anything blocked on a person becomes a proposed row for `Open_Items.md` — do not duplicate
-   existing rows.
-4. Recommend one option. Do not present a neutral survey.
-
-**Output shape.** Problem · What already exists (with evidence) · Options and trade-offs ·
-Recommendation · Build order · Decisions needed from PO/QA · What was checked and not found.
-
-### 4.2 `harness-ba`
-
-**Purpose.** Write Jira-ready user stories, acceptance criteria, bug reports and the
-supporting BA documents (workflow descriptions, as-is/to-be narratives).
-
-**Model:** opus · **Writes:** `06_Agent_Drafts/tickets/`
-
-**Tools:** `Read`, `Grep`, `Glob`, `Write`, `Edit`,
-`mcp__atlassian-rovo__searchJiraIssuesUsingJql`, `mcp__atlassian-rovo__getJiraIssue`,
-`mcp__atlassian-rovo__getAccessibleAtlassianResources`
-
-**No create, edit, transition, comment or Confluence-write tool exists in its allowlist.**
-This is the mechanical enforcement of D9 — not a prompt instruction that can be argued with.
-
-**Two house styles, by project.**
-
-| Project | Epic | Convention source |
+| Agent | Writes | Outside reach |
 |---|---|---|
-| **QG** — Harness improvement | QG-138 | `Harness_Session_Handoff.md` §8 · `02_Reviews_and_Analysis/Harness_UXUI_Review.md` ticket index · `Open_Items.md` BUG-1 as the bug-format exemplar |
-| **KS** — Aloha MCP QA | KS-1066 | `Aloha Server/Test Guide/aloha_mcp_uat_tickets.md` — the authoritative exemplar |
+| `gend-planner` | `06_Agent_Drafts/plans/` | 3 read-only Jira tools |
+| `gend-ba` | `06_Agent_Drafts/tickets/` | 3 read-only Jira tools |
+| `gend-designer` | `06_Agent_Drafts/mockups/` | Real Chrome, inspect-only |
+| `gend-reviewer` | **nothing** | none |
 
-Jira site: `gendvn.atlassian.net`, cloud id `a5cab9f1-9fa7-40f1-9025-cd77c2fdcfb4`.
+No agent holds `Bash`, and none holds a Jira write tool. Both omissions are what make the "writes only to
+`06_Agent_Drafts/`" and "files nothing" guarantees structural rather than advisory.
 
-**The draft-ID pattern.** Because nothing is filed automatically, every draft gets a stable
-local ID and a mapping table the BA fills in after filing by hand — exactly the pattern
-already used in `aloha_mcp_uat_tickets.md`:
+### 4.2 The packs
 
-```
-| Draft ID | Jira Key  | Story | Status |
-|----------|-----------|-------|--------|
-| HN-01    | (unfiled) | ...   | not filed |
-```
+| Pack | Programme | Jira | Design system |
+|---|---|---|---|
+| `harness-ux` | QOps Harness improvement | **QG** · QG-138 | Atlassian, light-base |
+| `aloha-ui-rewrite` | Aloha Angular 22 rewrite | **KS** · KS-1102 | Inter/Tailwind, dark-base |
+| `aloha-mcp-qa` | Aloha MCP verification | **KS** · KS-1066 | — |
+| `aloha-data-platform` | Postgres POC + Airflow | **KS** · KS-1103/1104 | — |
 
-**Hard rules.**
+`_house-rules.md` is read on every task by every agent and holds only what never varies.
 
-1. Never call a Jira write tool — it has none. Output is a markdown file.
-2. Never propose renaming internal step names: `crew_phase_a_build`, `render_nlonly_spec`,
-   `crew_phase_b_migrate`, `validate_pre_run_spec`, `execute_run_playwright_spec`,
-   `finalize_artifacts`, "Quest". The team relies on them.
-3. Work-item IDs are names (`VOCAB`, `CLASSIFY`, `BACKFILL`), never `T1`–`T9`.
-4. Suggestions are forward-only, with acceptance criteria.
-5. The Environment enum has **no `lab` value** — do not write criteria that assume one.
-6. Search Jira for an existing ticket before drafting a new one; if one exists, say so and
-   propose an edit instead.
-7. Vietnamese copies only on request, translated from the approved English.
+**An agent given no pack must stop and ask.** The packs use different Jira projects, incompatible design
+systems, and in one case a governed ID namespace where inventing an ID has already caused dead links in
+live Jira.
 
-### 4.3 `harness-designer`
+### 4.3 Why not per-project agents
 
-**Purpose.** Two deliverable types:
+Splitting by project scales as roles × workstreams. With five workstreams that is twenty agents, and the
+shared craft rules — testable criteria, role titles, English authoritative, evidence before assertion —
+get copied twenty times and drift. The reviewer especially must stay single: its whole value is applying
+one standard consistently.
 
-1. **Mockups** — static HTML of Harness and Aloha screens in the Jira/Atlassian-aligned design
-   system, light and dark specified together.
-2. **Current-vs-proposed comparison** — screenshot the live screen, put it beside the
-   proposal, and state what changed and why. This is the deliverable that matters most while
-   the dev is shipping fast: it is the only way to tell whether a proposal is still needed.
-   Precedent exists — Confluence page 2, *"Visual Comparison — Current vs Jira-Aligned"*.
-
-Type 2 is why the browser rules below permit clicking. A comparison the agent cannot navigate
-to is a comparison it has to guess at, and guessing is what produced the wrong premise on
-18 Aug.
-
-**Model:** opus · **Writes:** `06_Agent_Drafts/mockups/`
-
-**Tools:** `Read`, `Grep`, `Glob`, `Write`, `Edit`, plus real-Chrome (Google SSO session):
-`mcp__claude-in-chrome__navigate`, `mcp__claude-in-chrome__read_page`,
-`mcp__claude-in-chrome__get_page_text`, `mcp__claude-in-chrome__find`,
-`mcp__claude-in-chrome__tabs_context_mcp`, `mcp__claude-in-chrome__computer`
-
-`computer` gives click, type and screenshot in one tool — they cannot be separated. The
-boundary below is therefore a **prompt** constraint, not a tool constraint: the one place in
-this design where a rule is not mechanically enforced. Noted rather than papered over.
-
-**Token source of truth.**
-
-| File | Role |
-|---|---|
-| `Harness/Harness Page/Harness_UI_Tokens_Shipped_2026-08-20.md` | ⭐ **The source of truth.** All 92 properties in both themes, measured live from the running app on 20 Aug |
-| `Harness/Harness Page/Harness_UI_Style_Guide_Jira_Aligned.md` | Component specs, accessibility, reasoning. **Superseded for values** |
-| `Harness/Harness Page/Harness_UI_DarkMode_Jira_Aligned.md` | The 14 Aug dark *proposal*. **Superseded for values** — the shipped dark theme differs materially |
-| `Harness/QOps_Harness/css/tokens.css` | Migration reference only. Not the target |
-
-**Three things the designer must not get wrong**, all verified on 20 Aug:
-
-1. **Dark mode has no shadows.** `--elev-raised`, `--elev-overlay`, `--shadow-soft` and
-   `--shadow-dialog` are all `none`. Depth comes from a five-step surface ladder
-   (`#161A1D` → `#1D2125` → `#22272B` → `#282E33` → `#2C333A`).
-2. **`--radius-pill` is 3px.** Nothing is a capsule.
-3. **The font is the OS system stack**, not Söhne, not a webfont.
-
-**Pattern exemplars** (match their structure, do not copy their styling):
-`03_Mockups/Harness_TestCase_Workbench_Mockup.html` (11 numbered callouts + explanation) ·
-`Harness_TestCase_UI_Three_Directions.html` (options with build status marked) ·
-`Harness_TestCase_Workflow_AsIs_Mockup.html` (swimlanes).
-
-**Screenshots for current-state reference:** `Harness/Harness Page/*.jpg`,
-`Harness/Aloha Page/*.jpg`.
-
-**Hard rules.**
-
-1. **Browser: inspect freely, never trigger work.** The rule is about *which control*, not
-   about clicking. Most of Harness is only reachable by clicking — sub-tabs, side panels and
-   filters are client-side state, not URLs — so an observe-only agent could not see the app it
-   is redesigning.
-
-   | | |
-   |---|---|
-   | **Do** | Click nav items, tabs and sub-tabs, table rows, side panels, expanders, pagination · type into **search and filter** boxes · toggle **Settings → Appearance** between Day and Night to capture both themes · scroll, hover, screenshot |
-   | **Never** | **New request** · **Confirm and process** · **Retry** · Delete or bulk actions on cases · **Upload** / **Use default** on session files · anything under Settings → **Secrets**, **Integrations**, **Maintenance** · Knowledge base edits |
-   | **Never, in Aloha** | Any save, edit or submit on `workbench-app.lab.gend.vn` — it is *writable*. `aloha.conceptia.com` is read-only by nature but gets the same treatment |
-
-   The test is *"does this create work, spend budget, or change state another person can
-   see?"* Toggling your own theme fails all three and is fine. **Confirm and process** passes
-   all three and is not. **If unsure, do not click — report that the screen needs a human.**
-
-2. Every mockup ships light **and** dark, because the app ships **Day / Night / System**
-   (verified live 20 Aug). "System" follows the OS, so honour `prefers-color-scheme` as well
-   as an explicit choice. Never dark-only, never light-only.
-3. Numbered callouts with a written explanation beneath — a mockup is an argument, not a
-   picture.
-4. Mark build status against the live system where known: shipped / partial / not built.
-5. Self-contained HTML. No CDN links, no external stylesheets.
-
-### 4.4 `harness-reviewer`
-
-**Purpose.** Check a draft against this project's written house rules, against BA quality, and
-against internal consistency with existing documents.
-
-**Model:** opus · **Writes: nothing.** **External access: none.**
-
-**Tools:** `Read`, `Grep`, `Glob` — that is the complete list.
-
-Withholding `Write` and `Edit` is deliberate. A reviewer with edit access repairs problems
-quietly and the BA never learns the draft was wrong. It reports; the BA decides.
-
-**The house-rules checklist.** Each item is checkable against a written source:
-
-| # | Rule | Source |
-|---|---|---|
-| 1 | Role titles only (BA / PO / QA); no personal names or emails | Handoff §2 |
-| 2 | Internal step names preserved, never renamed | Handoff §2 |
-| 3 | Work-item IDs are names, never `T1`–`T9` | Handoff §2 |
-| 4 | English authoritative; VN is a reading copy; VN never published to Knowledge | Handoff §2 |
-| 5 | Tickets under the right epic (QG-138 / KS-1066), forward-only, with acceptance criteria | Handoff §8 |
-| 6 | Nothing filed to Jira or Confluence without asking | Decision D9 |
-| 7 | Nothing claimed as "new" without checking the divergence register and release log | Classification plan §8 |
-| 8 | No spec assuming a `lab` value in the Environment enum | Handoff §3 |
-| 9 | `Open_Items.md` content not duplicated elsewhere | Handoff §7 |
-
-**Beyond the checklist,** the reviewer also judges: is the problem statement supported by
-evidence, are acceptance criteria testable, does the draft contradict a document already in
-the repo, and is anything asserted that no cited source actually says.
-
-**Output shape.** Findings ranked most-serious first, each with the file, the rule or document
-it violates, and the concrete correction. Then an overall verdict: ready to promote / needs
-revision / premise is wrong.
-
----
+**The rule:** split when workstreams need different *tools*, *output format* or *vocabulary*. Share when
+they differ only in subject matter. Under that test all four roles are shared and every difference is a
+pack.
 
 ## 5. Guardrails
 
@@ -334,10 +184,12 @@ Each agent gets one smoke task with a known-good answer drawn from existing work
 
 | Agent | Smoke task | Passes if |
 |---|---|---|
-| `harness-planner` | "Plan how to populate `FAILED STEP`" (open item O2) | Identifies that the field already renders and is unpopulated; recommends no new UI |
-| `harness-ba` | "Draft the two bugs in open item O4: internal jargon in user-facing steps, raw DB error shown to users" | Produces QG-house-style drafts under QG-138 with draft IDs and testable criteria; files nothing |
-| `harness-designer` | "Mock the Requests page failure card (R2 direction)" | Light and dark, Jira-aligned tokens, numbered callouts, no state-changing clicks |
-| `harness-reviewer` | Review a draft with a planted violation (a personal name, a renamed step) | Catches both, cites handoff §2 |
+| `gend-planner` · `harness-ux` | "Plan how to populate `FAILED STEP`" (open item O2) | Identifies that the field already renders and is unpopulated; recommends no new UI |
+| `gend-ba` · `harness-ux` | "Draft the two bugs in open item O4: internal jargon in user-facing steps, raw DB error shown to users" | Produces QG-house-style drafts under QG-138 with draft IDs and testable criteria; files nothing |
+| `gend-designer` · `harness-ux` | "Mock the Requests page failure card (R2 direction)" | Light and dark, Jira-aligned tokens, numbered callouts, no state-changing clicks |
+| `gend-reviewer` | Review a draft with a planted violation (a published personal name, a renamed step) | Catches both, cites the house rules |
+| **pack switch** | `gend-designer` · `aloha-ui-rewrite` — "mock the At a Glance KPI row" | Uses Inter + `--up`/`--dn`, **dark as base**. Any Atlassian blue means the pack mechanism failed |
+| **no pack** | `gend-ba` with no pack named | **Stops and asks.** Does not guess a project |
 
 Run them in that order. If the planner's smoke task fails, fix it before building the rest —
 everything downstream reads its output.
@@ -365,7 +217,10 @@ everything downstream reads its output.
 | **AG4** | If a 4th Jira tool is ever wanted, `getConfluencePage` opens the QG space UI/UX pages | BA |
 | ~~**AG5**~~ | ~~Capture the Night palette and reconcile it~~ — **done 20 Aug.** Both themes measured into `Harness_UI_Tokens_Shipped_2026-08-20.md`; both proposal docs carry a superseded-for-values banner | BA |
 | **AG6** | The 18 Aug note "the Requests page is still the July build" is now partly stale — the page is restyled and themed, though native `<select>` dropdowns remain. Re-verify before reusing R1/R2/R3 | BA |
-| **AG7** | Two candidate QG-138 bugs found by measurement: **T-1** `--surface-hover` equals `--surface` in light mode, so hover is invisible in Day; **T-3** the `ai` and `duplicate` status pills are byte-identical in both themes. A good first real task for `harness-ba` | BA |
+| **AG7** | Two candidate QG-138 bugs found by measurement: **T-1** `--surface-hover` equals `--surface` in light mode, so hover is invisible in Day; **T-3** the `ai` and `duplicate` status pills are byte-identical in both themes. A good first real task for `gend-ba` | BA |
+| **AG9** | KS-1102 gap "Risk Model Scenario Testing tab" — design side confirmed (Risk has 3 tabs), but Scenario Test **exists under the Equity Beta Model**. Relocation vs removal is the question for KS. Production side still inferred from screenshot filenames | BA |
+| **AG10** | `conceptia-aloha` MCP unauthorized — `aloha-mcp-qa` cannot reproduce findings live until connected | BA |
+| **AG11** | The Aloha handoff defines **no radius scale** (values 2–9px, ad hoc). M0 must pick one and record it | BA |
 | **AG8** | **T-2** — light uses the *classic* Atlassian palette (`#0052CC`), dark uses the *refreshed* one (`#0C66E4`/`#579DFF`). Two vintages of one design system. A question for the PO, not a defect | PO |
 
 ---
